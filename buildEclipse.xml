@@ -11,9 +11,12 @@
     <!-- Added for for functionality. Requires a ant-contrib.jar in classpath. -->
     <taskdef resource="net/sf/antcontrib/antlib.xml"/>
     
-	<target name="init" description="init" 
-		depends="set_version">
-		
+	<target name="init" description="init"  >
+  	  <tstamp>
+  	    <format property="wattos_version" pattern="yyyyMMdd-HHmm" />
+  	  </tstamp>
+	  <echo message="Initiating Wattos version: ${wattos_version}"/>
+      <antcall target="set_version"/>		
 	</target>
 	<!-- Is done automatically by ant build -->
 	<target name="compile" description="compile">
@@ -153,9 +156,6 @@
         <echo message="${error_list}"/>
     </target>
     <target name="set_version" >
-    	  <tstamp>
-    	    <format property="wattos_version" pattern="yyyyMMdd-HHmm" />
-    	  </tstamp>
     	  <replaceregexp file="${src.dir}/Wattos/CloneWars/UserInterface.java"
     	                         match="String WATTOS_VERSION=(.*)" 
     	                         replace='String WATTOS_VERSION="${wattos_version}";'
@@ -278,7 +278,7 @@
         </sshexec>
     </target>    
     <target name="home-zip" depends="init">
-        <delete file="${home.zipfile}"></delete>
+    	<property name="home.zipfile" value="${home.zipfileprefix}${wattos_version}.zip"/>
         <zip destfile="${home.zipfile}" basedir=".."
                includes="Wattos/build.xml Wattos/Makefile Wattos/README.txt Wattos/wattos.properties Wattos/tmp_dir Wattos/data/** Wattos/macros/** Wattos/nbproject/** Wattos/scripts/** Wattos/src/** Wattos/lib/** Wattos/web/** Wattos/test/**"
                excludes="**/.nbattrs **/keystore **/keyinfo.txt Wattos/data/test_data/tmp_dir/* Wattos/data/test_data/tmp_dir/sql/* Wattos/tmp_dir/*"                
