@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- JFD DON'T DELETE edited by JFD -->
+<!-- added memory setting for Java and Junit testing -->
+
+
+<project name="Wattos" default="jar" basedir="." >
+    <description>Builds, tests, and runs the project Wattos.</description>
+    <echo>Starting Ant with updated build file</echo>
+    <property file="wattos.properties"/>
+
+    <!-- Added for for functionality. Requires a ant-contrib.jar in classpath. -->
+    <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+    
+	<target name="init" description="init" 
+		depends="set_version">
+		
+	</target>
+	<!-- Is done automatically by ant build -->
+	<target name="compile" description="compile">
+        <javac srcdir="${src.dir}" destdir="${build.classes.dir}"/>
+    </target>
+	
+    <target name="-init-macrodef-junit">
+        <macrodef name="junit" uri="http://www.netbeans.org/ns/web-project/2">
+            <attribute name="includes" default="**/*Test.java"/>
+            <sequential>
+                <junit showoutput="true" fork="true" maxmemory="256m" dir="tmp_dir" failureproperty="tests.failed" errorproperty="tests.failed" jvm="${platform.java}">
+                    <batchtest todir="${build.test.results.dir}">
+                        <fileset dir="${test.test.dir}" includes="@{includes}"/>
+                    </batchtest>
+                    <classpath>
+                        <path path="${run.test.classpath}"/>
+                    </classpath>
+                    <syspropertyset>
+                        <propertyref prefix="test-sys-prop."/>
+                        <mapper type="glob" from="test-sys-prop.*" to="*"/>
+                    </syspropertyset>
+                    <formatter type="brief" usefile="false"/>
+                    <formatter type="xml"/>
+                </junit>
+            </sequential>
+        </macrodef>
+    </target>
+    
+    
+    <target name="-init-macrodef-java">
+        <macrodef name="java" uri="http://www.netbeans.org/ns/web-project/1">
+            <attribute name="classname" default="${main.class}"/>
+            <attribute name="args" default="${application.args}"/>
+            <element name="customize" optional="true"/>
+            <sequential>
+                <java fork="true" maxmemory="256m" dir="tmp_dir" classname="@{classname}" jvm="${platform.java}">
+                    <jvmarg line="${runmain.jvmargs}"/>
+                    <classpath>
+                        <path path="${build.classes.dir.real}:${javac.classpath}:${j2ee.platform.classpath}"/>
+                    </classpath>
+                    <syspropertyset>
+                        <propertyref prefix="run-sys-prop."/>
+                        <mapper type="glob" from="run-sys-prop.*" to="*"/>
+                    </syspropertyset>
+                    <customize/>
+                    <arg line="@{args}"/>
+                </java>
+            </sequential>
+        </macrodef>
+    </target>
+    
+    <!--
+    ====================
+    JAR BUILDING SECTION
+    ====================
+    Use: 
+    	for resigning all jars. They need to be the same for WebApps such as Sjors.
+    -->
+    <target name="jar" depends="init" description="Build JAR.">
+        <jar destfile="${jar.name}" basedir="${build.classes.dir}"/>
+        <signjar    
+                    alias="business" 
+                    storepass="secret" 
+                    keypass="test123"
+                    keystore="${keystore}">            
+            <fileset dir="lib" 
+                    includes="Wattos.jar" />            
+        </signjar>
+    </target>    
+    
+    <target name="jarsign" depends="init" description="Resign all jars">        
+        <signjar    alias="business" 
+                    storepass="secret" 
+                    keypass="test123"
+                    keystore="${keystore}">            
+            <fileset dir="lib" includes="**.jar" 
+            	excludes="JFlex.jar ant-contrib.jar"
+            />            
+        </signjar>
+    </target>    
+    
+    
+    <!--
+    ====================
+    MACRO FILE EXECUTION.
+    ====================
+        <for list="FilterSTAR.wcf" param="fn">
+        <for list="ReadEntryNMRSTAR.wcf" param="fn">
+        <for list="CheckSurplus.wcf" param="fn">
+        <for list="WriteSQLDump.wcf" param="fn">        
+        <for list="CalcDistConstrViolation.wcf,CalcDistance.wcf,CheckAssignment.wcf,CheckCompleteness.wcf,CheckSurplus.wcf,FilterSTAR.wcf,GetCoplanarBases.wcf,GetHydrogenBonds.wcf,ReadEntryPDB.wcf,QuitBeforeBegun.wcf,SetAtomNomenclatureToIUPAC.wcf,ShowClassification.wcf,Sleep.wcf,WriteEntryXplor.wcf" param="fn">        
+            <replace file="${tmp.local.dir}/@{fn}.log" token="ERROR" value="ERROR" summary="true"/>
+    -->                
+    <target name="macro_tests" depends="init" description="" >        
+        <echo message="Running in: ${test_data.local.dir}"/>
+        <echo message="Output to : ${tmp.local.dir}"/>
+        <for list="ReadEntryMmCIF.wcf" param="fn">        
+            <sequential>
+            <echo message="Executing macro: ${macros.local.dir}/@{fn}"/>
+            <java   jvm="${platform.java}"
+                    fork="true" 
+                    failonerror="false"
+                    resultproperty="result" 
+                    maxmemory="512m" 
+                    classname="Wattos.CloneWars.UserInterface" 
+                    dir="${test_data.local.dir}" 
+                    input="${macros.local.dir}/@{fn}"
+                    output="${tmp.local.dir}/@{fn}.log"
+                    timeout="240000"                    
+                >            
+                <!-- FAILS IN IDE <jvmarg line="-DWATTOSSCRIPT=${wattos.root}/${macros.local.dir}/@{fn}"/> -->
+                <arg    line="-at -verbosity 9" /> 
+                <classpath>
+                    <path path="${build.classes.dir.real}:${javac.classpath}:${j2ee.platform.classpath}"/>
+                </classpath>
+            </java>
+            <loadfile   property="error_list"
+                        srcFile="${tmp.local.dir}/@{fn}.log">
+                <filterchain>
+                    <linecontainsregexp>
+                        <regexp pattern="(^ERROR)|(^Exception in thread)|(^\tat )"/>
+                    </linecontainsregexp>
+                </filterchain>
+             </loadfile>        
+             <antcall target="report_errors"/>
+            	<echo/>
+            	<echo/>
+            	<echo message="Log file:"/>
+             <loadfile property="contentLogFile"
+                    srcFile="${tmp.local.dir}/@{fn}.log"/>
+             <echo message="${contentLogFile}"/> 
+        </sequential>        
+        </for>                
+    </target>           
+
+    <target name="report_errors" if="error_list" >
+        <echo message="${error_list}"/>
+    </target>
+    <target name="set_version" >
+    	  <tstamp>
+    	    <format property="wattos_version" pattern="yyyyMMdd-HHmm" />
+    	  </tstamp>
+    	  <replaceregexp file="${src.dir}/Wattos/CloneWars/UserInterface.java"
+    	                         match="String WATTOS_VERSION=(.*)" 
+    	                         replace='String WATTOS_VERSION="${wattos_version}";'
+    	                         byline="true"/>        
+    </target>
+    <!--
+    ======================
+    JAVADOC SECTION
+    ======================  
+    Can't use "linksource" as there's a bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4511110
+    trying with javadoc 1.5 as set in wattos.properties: platform.javadoc
+    -->
+    <target name="javadoc" 
+            depends="init,javadoc-build,javadoc-copy" 
+            description="Build Javadoc and copy some extra files from the src to doc dir"/>
+    <target name="javadoc-build-old" depends="init">
+        <mkdir dir="${dist.javadoc.dir}"/>
+        <javadoc 
+                additionalparam="" 
+                author="true"     
+                breakiterator="true"
+                destdir="${dist.javadoc.dir}"       
+                executable="${platform.javadoc}"
+                failonerror="true" 
+                linksource="true" 
+                noindex="false"        
+                nonavbar="false" 
+                notree="false"          
+	            overview="${src.dir}/${project.name}/overview.html"
+                private="true" 
+                source="1.5" 
+                splitindex="true" 
+                use="true" 
+                useexternalfile="false"              
+                version="false" 
+	            Windowtitle="${ant.project.name}">
+            <classpath>
+                <path path="${javac.classpath}:${j2ee.platform.classpath}"/>
+            </classpath>
+            <packageset dir="${src.dir}" includes="*/**"/>
+        </javadoc>
+    </target>
+	<target name="javadoc-build">
+        <mkdir dir="${dist.javadoc.dir}"/>
+		<javadoc 
+            additionalparam="" 
+			access="private" 
+			author="true" 
+            breakiterator="true"
+			destdir="${dist.javadoc.dir}"  
+			doctitle="Wattos" 
+			nodeprecated="false" 
+			nodeprecatedlist="false" 
+			noindex="false" 
+			nonavbar="false" 
+			notree="false" 
+	        overview="${src.dir}/${ant.project.name}/overview.html"		
+			source="1.4" 
+			sourcepath="src" 
+			splitindex="true" 
+			use="true" 
+            useexternalfile="false"              
+			version="false"
+	        Windowtitle="${ant.project.name}"	>	
+	        <classpath>
+	            <path path="${javac.classpath}"/>
+	        </classpath>
+	        <packageset dir="${src.dir}" includes="*/**"/>
+        </javadoc>
+	</target>
+
+    <!-- A couple of items should be moved along with the newly generated html -->
+    <target name="javadoc-copy" depends="init">
+        <copy todir="${dist.javadoc.dir}">
+            <fileset dir="${src.dir}" 
+                    includes="**/*.gif **/*.str **/*.xls **/*.html **/*.csv"
+                    excludes="**/package.html"
+            />
+        </copy>
+    </target>    
+    <!-- Installation of productin site jars including Wattos -->
+    <target name="install-jars" depends="jar">
+        <copy todir="${install.dir}/lib" verbose="true">
+            <fileset dir="lib" includes="Wattos.jar"/>
+        </copy>
+    </target>
+    <!-- Installation of production site scripts -->
+    <target name="install-scripts">
+        <copy todir="${install.dir}/scripts" verbose="true">
+            <fileset dir="scripts" includes="*"/>
+        </copy>
+    </target>    
+    <!-- Installation of production site python code -->
+    <target name="install-python">
+        <copy todir="${install.dir}/python" verbose="true">
+            <fileset dir="python" includes="**"/>
+        </copy>
+    </target>    
+    
+    <!-- 
+    ======================
+    HOME SECTION
+    ======================  
+    -->
+    <target name="home" depends="init,jar,home-clean,home-zip,home-cp,home-doc-cp,macro-resources-cp"
+            description="Creates the Wattos home page with new zip and javadoc files."
+    />
+    <target name="home-clean" depends="init">
+        <input message="Sure you want to delete the Wattos webserver directory: ${home.web.dir}"
+        validargs="y,n" addproperty="do.delete"
+                />
+        <condition property="do.abort">
+            <equals arg1="n" arg2="${do.delete}"/>
+        </condition>
+        <fail if="do.abort">Build aborted by user.</fail>        
+        <sshexec host="${home.web.machine}" username="${home.web.user}"
+                keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}"                
+                command="\rm -rf ${home.web.dir}/*;mkdir ${home.web.dir}/doc;mkdir ${home.web.dir}/scripts;mkdir ${home.web.dir}/lib;mkdir ${home.web.dir}/macros"
+        >
+        </sshexec>
+    </target>    
+    <target name="home-zip" depends="init">
+        <delete file="${home.zipfile}"></delete>
+        <zip destfile="${home.zipfile}" basedir=".."
+               includes="Wattos/build.xml Wattos/Makefile Wattos/README.txt Wattos/wattos.properties Wattos/tmp_dir Wattos/data/** Wattos/macros/** Wattos/nbproject/** Wattos/scripts/** Wattos/src/** Wattos/lib/** Wattos/web/** Wattos/test/**"
+               excludes="**/.nbattrs **/keystore **/keyinfo.txt Wattos/data/test_data/tmp_dir/* Wattos/data/test_data/tmp_dir/sql/* Wattos/tmp_dir/*"                
+          />
+    </target>        
+    <target name="home-cp" depends="init">
+        <scp    todir="${home.web.usermachine}:${home.web.dir}"
+                keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}"                
+            >
+            <fileset dir="${home.local.dir}" />        
+        </scp>
+    </target>        
+    <target name="home-doc-cp" depends="init" 
+        description="takes forever (2:20) so perhaps send a tar and untar locally so that only 1 scp is needed">
+        <scp  todir="${home.web.usermachine}:${home.web.dir}/${doc.web.dir}"
+                keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}"                
+            >            
+            <fileset dir="${doc.local.dir}"/>               
+        </scp>
+    </target>
+  
+    <!-- 
+    ======================
+    SERVLET SECTION
+    ======================  
+    -->
+    <target name="servlet-install" depends="init,jar,servlet-jar-cp,servlet-resources-cp"
+            description="Publishes the Wattos jar. Manual restart of server still needed.">
+        <echo message="Make sure the following two remote directories are open for writing:"/>
+        <echo message="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.lib.dir}"/>
+        <echo message="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.resource.remote.dir}"/>
+    </target>
+    
+    <target name="servlet-jar-cp" depends="init,jar">
+        <echo message="Installing Wattos jar(s) to servlet engine: ${servlet.web.usermachine}:${servlet.web.dir}/${servlet.lib.dir}"/>
+        <scp    todir="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.lib.dir}"
+                keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}"                
+            >
+            <fileset dir="${lib.local.dir}"  includes="Wattos.jar"/>                     
+        </scp>
+    </target>
+
+    <target name="servlet-resources-cp" depends="init">
+        <echo message="Installing giffies and html to servlet engine"/>
+        <scp    todir="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.resource.remote.dir}"
+                keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}"                
+            >
+            <fileset dir="${servlet.resource.local.dir}"/>                     
+        </scp>
+    </target>    
+
+    <target name="servlet-dependencies" depends="init">
+        <!-- 
+    	/molgrap/ du -hs molgrap
+    	20G     molgrap (Only 1/10 for nmr with restraints)
+    	/molgrap/ du -sh /dumpzone/pdb/nozip/data/structures/all/pdb
+    	28G     /dumpzone/pdb/nozip/data/structures/all/pdb    	
+    	/molgrap/ du -sh /dumpzone/pdb/nozip/data/structures/all/nmr_restraints
+    	3.0G    /dumpzone/pdb/nozip/data/structures/all/nmr_restraints
+    	/~/ du -sh /big/jurgen/DB/mrgrid/bfiles/wattos2
+    	16G     /big/jurgen/DB/mrgrid/bfiles/wattos2
+    	/~/ du -sh /big/jurgen/DB/mysql
+    	942M    /big/jurgen/DB/mysql
+    	total: 48+19+1=68 Gb.
+    	-->
+    </target>    
+	
+    <!-- 
+    ======================
+    WEB APP SECTION
+    ======================  
+    -->
+    <target name="webapp-install" depends="init,jar,home-cp,webapp-jar-cp,webapp-resources-cp"
+            description="Publishes the Wattos jar. Manual restart of server still needed.">
+        <echo message="Make sure the following two remote directories are open for writing:"/>
+        <echo message="${webapp.web.usermachine}:${webapp.web.dir}/${webapp.lib.dir}"/>
+        <echo message="${webapp.web.usermachine}:${webapp.web.dir}/${scripts.local.dir}"/>
+    </target>
+    
+    <target name="webapp-jar-cp" depends="init">
+        <echo message="Installing Wattos jar(s) to webapp engine: ${webapp.web.usermachine}:${webapp.web.dir}/${webapp.lib.dir}"/>
+        <scp    todir="${webapp.web.usermachine}:${webapp.web.dir}/${webapp.lib.dir}"
+                keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}"                
+            >
+            <!--
+            <fileset dir="${lib.local.dir}"  includes="*.jar"/>                     
+            -->
+            <fileset dir="${lib.local.dir}"  includes="Wattos.jar"/>                     
+        </scp>
+    </target>
+
+    <target name="webapp-resources-cp" depends="init">
+        <echo message="Installing jnlp, giffies and html to webapp engine"/>
+        <scp    todir="${webapp.web.usermachine}:${webapp.web.dir}/${scripts.local.dir}"
+                keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}"                
+            >
+            <fileset dir="${scripts.local.dir}" includes="*.jnlp"/>                     
+            <fileset dir="${macros.local.dir}" includes="*.wcf"/>                     
+        </scp>
+    </target>    
+
+    <target name="macro-resources-cp" depends="init">
+        <echo message="Installing macros to webapp engine"/>
+        <scp    todir="${webapp.web.usermachine}:${webapp.web.dir}/${macros.local.dir}"
+                keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}"                
+            >
+            <fileset dir="${macros.local.dir}" includes="*.wcf"/>                     
+        </scp>
+    </target>    
+
+    <!--
+    ====================
+    PROFILE EXECUTION.
+    ====================
+    Failed to work with redirecting the output.
+                output="${tmp.local.dir}/${fn}.log"
+    -->                
+    <target name="profile-wattos" depends="init" description="" >   
+        <property name="fn" value="FilterSTAR.wcf"/>
+        <echo message="Executing macro: ${macros.local.dir}/${fn}"/>
+        <java   jvm="${platform.java}"
+                fork="true" 
+                failonerror="false"
+                resultproperty="result" 
+                maxmemory="512m" 
+                classname="Wattos.CloneWars.UserInterface" 
+                dir="${test_data.local.dir}" 
+                input="${macros.local.dir}/${fn}"
+                timeout="960000"                 
+            >
+            <arg    line="-at" />
+            <jvmarg line="${profile.jvmarg}" />            
+            <classpath>
+                <path path="${build.classes.dir.real}:${javac.classpath}:${j2ee.platform.classpath}"/>
+            </classpath>
+        </java>
+    </target>
+    
+    <!--
+        Found that after checkout to Windows there were extra eols but fixed with the below.
+Default is based on the platform on which you are running this task. 
+For Unix platforms, the default is "lf". 
+For DOS based systems (including Windows), the default is "crlf". 
+For Mac OS, the default is "cr".        
+    -->                    
+    <target name="fixcrlf" description="Change the end-of-line string to single cr like under Linux"
+            depends="init" >
+        <property name="dir_todo" value="scripts"/>        
+        <echo message="Starting to fixcrlf on dir: ${dir_todo}"/>
+        <fixcrlf srcDir="${dir_todo}" eol="lf"/>     
+    </target>
+    
+    <!--Dimitri's STAR parser now with line by line processing instead of character at
+        a time for semi colon delimited values-->                    
+ <taskdef   name="jflex" 
+            classname="JFlex.anttask.JFlexTask" 
+            classpath="${lib.local.dir}/JFlex.jar"/>
+ <target name="star_scanner" description="generate scanner class" depends="init">
+    <jflex file="${src.dir}/Wattos/Star/star.flex" verbose="on"/>
+ </target>
+
+	<!--
+	rm -f ParseException.java SimpleCharStream.java Token.java TokenMgrError.java 
+	rm -f AmberParser.java AmberParserConstants.java AmberParserTokenManager.java    	
+	-->
+	
+    <target name="parserAmber" depends="init" description="JavaCC compiler compiler Amber" >   
+	    <echo message="JavaCC compiler compiler Amber"/>
+        <delete verbose="true">
+	    	<fileset dir="${src.dir}/Wattos/Converters/Amber" 
+	    			includes="ParseException.java SimpleCharStream.java Token.java TokenMgrError.java AmberParser.java AmberParserConstants.java AmberParserTokenManager.java"/>
+	  	</delete>
+	    <java   jvm="${platform.java}"
+	            fork="true" 
+	            failonerror="true"
+	            classname="javacc" 
+	            dir="${src.dir}/Wattos/Converters/Amber" 
+	            timeout="9600"                 
+	        >
+	        <arg    line="AmberParserAll.jj" />
+	        <jvmarg line="-classpath C:\Docume~1\JURGEN~1.000\workspace\Wattos\lib\javacc.jar" />            
+	    </java>
+ 	 </target>
+</project>
