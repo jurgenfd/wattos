@@ -20,16 +20,16 @@ public class InOutTest extends TestCase {
 	}
      
     public void testReadTextFromUrl() {
-        String baseInputName = "1buf";  // use only 1buf as example and remove other .Zs as they're big
-        File input = new File(inputDir, baseInputName+".mr.Z");
+        String baseInputName = "1brv";  // use only 1buf as example and remove other .Zs as they're big
+        File input = new File(inputDir, baseInputName+".pdb.gz");
         String text = InOut.readTextFromUrl( InOut.getUrlFileFromName(input.toString()));
         assertEquals(true, text!=null);
 //        General.showOutput(text);
     }
 
     public void testGunzipFile() { 
-        String baseInputName = "1buf";
-        File input = new File(inputDir, baseInputName+".mr.Z");
+        String baseInputName = "1brv";
+        File input = new File(inputDir, baseInputName+".pdb.gz");
         File tmpOutputFile = null;
         try {
             tmpOutputFile = File.createTempFile(baseInputName, ".mr");

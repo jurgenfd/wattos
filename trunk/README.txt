@@ -5,9 +5,9 @@ Content files           Description
 ------------------------+-------------------------------------------------------
 .classpath				Classpath specifics for Eclipse
 .cvsignore				File with info for Eclipse CVS
-.project                File for Eclipse
+.project                File for Eclipse to regenerate (not included). Eclipse doesn't 
+						like this one present if I want to make a web module.
 buildEclipse.xml        Ant makefile.
-Makefile                Makefile outdated by Ant since several years.
 README.txt              This file.
 wattos.properties       Settings for Ant.
 
