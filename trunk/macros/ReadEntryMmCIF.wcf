@@ -1,0 +1,23 @@
+# simple one line comments are allowed
+InitAll
+SetProp
+interactiveSession
+false
+SetProp
+verbosity
+9
+SetProp
+writeSessionOnExit
+false
+ListProp
+
+ReadEntryMmCIF
+2hgh_rem_small.cif.gz
+
+Quit
+
+WriteEntryNMRSTAR
+tmp_dir/2hgh_rem_small.str.gz
+
+Quit
+
