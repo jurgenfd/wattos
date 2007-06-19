@@ -4,16 +4,29 @@
 	Wattos</display-name>
 	<servlet>
 		<description>
-		</description>
+		empty</description>
 		<display-name>
 		MRGridServlet</display-name>
 		<servlet-name>MRGridServlet</servlet-name>
 		<servlet-class>
 		Wattos.Servlet.MRGridServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>
+		TestServlet</display-name>
+		<servlet-name>TestServlet</servlet-name>
+		<servlet-class>
+		testServlet.TestServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>MRGridServlet</servlet-name>
 		<url-pattern>/MRGridServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>TestServlet</servlet-name>
+		<url-pattern>/TestServlet</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

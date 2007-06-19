@@ -25,6 +25,8 @@ src                     Java source files and resources
 test                    JUnit test Java source files.
 tmp_dir                 Temporary files directory.
 wattos_home             Homepage files accessible at http://www.bmrb.wisc.edu/wattos.
-web                     NMR Restraint Grid servlet related files.
+WebContent              NMR Restraint Grid servlet related files. For eclipse this needs to
+						be in this location otherwise it will not be picked up. Also note
+						that Eclipse setting: web project settings/Context Root -> WebModule
 
 
