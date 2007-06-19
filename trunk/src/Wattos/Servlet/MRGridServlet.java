@@ -16,6 +16,7 @@ import javax.servlet.http.*;
 
 import Wattos.Episode_II.*;
 import Wattos.Utils.*;
+import Wattos.CloneWars.UserInterface;
 import Wattos.Database.*;
 import java.text.DecimalFormat;
  
@@ -30,9 +31,22 @@ import java.text.DecimalFormat;
 public class MRGridServlet extends HttpServlet {     
     private static final long serialVersionUID = 5504236505334962699L;
 
-    /** Global settings. */ 
-    Globals g=null;
-    
+    /** Global       // sanity checks first
+        if ( !Defs.isNull(low) && !Defs.isNull(tar) && low > tar ) {
+            General.showError("Found lowerbound (" + low + ") larger than target (" + tar + ")");
+            return null;
+        }
+        if ( !Defs.isNull(low) && !Defs.isNull(upp) && low > upp ) {
+            General.showError("Found lowerbound (" + low + ") larger than upperbound (" + upp + ")");
+            return null;
+        }
+        if ( !Defs.isNull(tar) && !Defs.isNull(upp) && tar > upp ) {
+            General.showError("Found target (" + tar + ") larger than upperbound (" + upp + ")");
+            return null;
+        }
+ settings. */ 
+    Globals g=null; 
+       
     /** DB connection for the Episode_II package.*/
     SQL_Episode_II sql_epiII=null; 
     
@@ -82,14 +96,15 @@ public class MRGridServlet extends HttpServlet {
         // Get info like db connection
         g = new Globals();
         // Open Episode_II database connection
-        initDb();   
+        initDb();    
     }
             
-    public void initDb() throws ServletException {
+    public void initDb() throws ServletException { 
 
         /** Set the desired verbosity level */
         General.setVerbosityToDebug();
         General.showDebug("Now in initDb");
+        General.showDebug("Wattos version: " + UserInterface.WATTOS_VERSION);
         System.setOut( System.err );
         General.showDebug("this message to System.out after redirect");
         g.setDbUserNameDerivedVariables(); // perhaps the db user name changed?
