@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE attributes PUBLIC "-//NetBeans//DTD DefaultAttributes 1.0//EN" "http://www.netbeans.org/dtds/attributes-1_0.dtd">
+<attributes version="1.0">
+    <fileobject name="ComparatorEnclosedNumber.java">
+        <attr name="class_dependency_java.util.Comparator" stringvalue="ComparatorEnclosedNumber"/>
+    </fileobject>
+    <fileobject name="ComparatorIntArray.java">
+        <attr name="class_dependency_java.util.Comparator" stringvalue="ComparatorIntArray"/>
+    </fileobject>
+    <fileobject name="ComparatorStringArray.java">
+        <attr name="class_dependency_java.util.Comparator" stringvalue="ComparatorStringArray"/>
+    </fileobject>
+</attributes>

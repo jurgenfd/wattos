@@ -1,0 +1,114 @@
+/*
+ * File31Test.java
+ * JUnit based test
+ *
+ * Created on November 30, 2005, 11:24 AM
+ */
+
+package Wattos.Star.MmCif;
+
+import java.io.File;
+import java.net.URL;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import Wattos.CloneWars.UserInterface;
+import Wattos.Database.DBMS;
+import Wattos.Soup.Gumbo;
+import Wattos.Utils.General;
+import Wattos.Utils.InOut;
+
+/**
+ *
+ * @author jurgen
+ */
+public class CIFCoordTest extends TestCase {
+     
+    String fs = File.separator;    
+    String baseInputName = "2hgh_rem_small";    
+    String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
+    File inputDir       = new File( wattosRoot,"Data"+fs+"test_data" );
+    File outputDir      = new File( wattosRoot,"tmp_dir" );
+    String outputFileName = baseInputName + "_out.str.gz";
+    File outputFile     = new File( outputDir,outputFileName );
+    UserInterface ui = UserInterface.init(true);
+    DBMS dbms = ui.dbms;
+    Gumbo gumbo = ui.gumbo;
+//    Constr constr   = ui.constr;
+    boolean status = true;
+    long start;
+    long taken;
+    
+    public CIFCoordTest(String testName) {
+        super(testName);
+        // Select to show no output if all goes well because the routine in normal mode has
+        // to produce output. Set to debug when unit testing shows a bug.
+        General.setVerbosityToDebug();
+//        General.verbosity = General.verbosityNothing;
+        //General.showEnvironment();
+        
+        General.showDebug("wattos root: " + wattosRoot);
+        General.showDebug("inputDir: " + inputDir);
+                
+        if ( gumbo == null ) {
+            fail("gumbo from ui still null");
+        }
+    }
+    
+    public static Test suite() {
+        TestSuite suite = new TestSuite(CIFCoordTest.class);
+        return suite;
+    }
+    
+    public void test() {
+        File input = new File(inputDir, baseInputName+".cif.gz");
+        URL url = InOut.getUrlFileFromName(input.toString());
+        if ( url == null ) {
+            fail("specify a valid name for input");
+        }
+        start = System.currentTimeMillis();
+        status = gumbo.entry.readmmCIFFormattedFile(url,ui);
+        taken = System.currentTimeMillis() - start;
+        General.showDebug( "to Wattos took: " + taken + "(" + (taken/1000.0) + " sec)" );
+        if ( ! status ) {
+            fail("Failed to convert mmcif file to wattos.");
+        }
+        if ( ! dbms.foreignKeyConstrSet.checkConsistencySet(false, true) ) {
+            fail("DBMS is NOT consistent after reading in file.");
+        } else {
+            General.showDebug("DBMS is consistent after reading in file.");
+        }        
+        if ( !writeStar()) {
+            fail("writeStar");
+        }
+        return;
+    }
+    
+    /**
+     */
+    public boolean writeStar() {
+        start = System.currentTimeMillis();
+        if ( ! gumbo.entry.writeNmrStarFormattedFileSet( outputFile.toString(), null, ui) ) {
+            fail("Failed to convert TO nmr star 3.0 file FROM wattos.");
+        }
+        taken = System.currentTimeMillis() - start;
+        General.showDebug( "to STAR took: " + taken + "(" + (taken/1000.0) + " sec)" );
+        
+//        File listFile               = new File( inputDir,   outputFileName);// reference
+//        String msg = InOut.getLines(outputFile.toString(),0,99999);         // produced
+//        String exp = InOut.getLines(listFile.toString(),0,99999);           // expected
+//        msg = Strings.dos2unix(msg);
+//        exp = Strings.dos2unix(exp);
+//        if ( ! Strings.equalsIgnoreWhiteSpace(exp,msg)) {
+//            if ( ! DiffPrint.printDiff( msg, exp)) {
+//                fail("DiffPrint.printDiff");
+//            }
+//            fail("Output STAR representation is not as before.");
+//        }
+//        
+        return true;
+    }
+    
+    
+}
