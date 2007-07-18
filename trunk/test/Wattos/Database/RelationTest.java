@@ -33,7 +33,7 @@ public class RelationTest extends TestCase {
     
     public RelationTest(String testName) {
         super(testName);
-        //General.verbosity = General.verbosityDebug;        
+        General.verbosity = General.verbosityDebug;        
     }
 
     public static Test suite() {
@@ -479,19 +479,9 @@ public class RelationTest extends TestCase {
             t.setValue(5, "id", 0);          
             t.setValue(6, "id", 3);          
             t.setValue(7, "id", 0);          
-            t.setValue(8, "id", Defs.NULL_INT);          
+            t.setValue(8, "id", Defs.NULL_INT);
+            
             BitSet selection = new BitSet();
-            /**
-            selection.set( 0 );
-            selection.set( 1 );
-            //selection.set( 2 );
-            //selection.set( 3 );
-            selection.set( 4 );
-            //selection.set( 5 );
-            selection.set( 6 );
-            selection.set( 7 );
-            selection.set( 8 );
-             */
             selection.set( 0,9 );
             General.showDebug("Selection     : " + PrimitiveArray.toString( selection ) );
             General.showDebug("Before reorder: " + t);

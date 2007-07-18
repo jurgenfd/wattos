@@ -183,7 +183,7 @@ public class STARParser {
 //                        General.showDebug("Parsed value: " + value);
 //                        General.showDebug("tok         : " + tok);
                         if( ( tok == STARLexer.DVNSEMICOLON ) && 
-                            ( value.substring( 0, 1 ).equals( General.eol ) )) {
+                            ( value.substring( 0, 1 ).equals( "\n" ) )) {
                             value = value.substring( 1 );
                         }
                         if( fCh.data( value ) ) {

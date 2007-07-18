@@ -62,7 +62,7 @@ public class StarFileReader implements ErrorHandler, ContentHandler {
         boolean status = initTagTableVariables();
         return status;
     }
-    
+     
     public boolean initTagTableVariables( ) {
         nextFreeRow      = 0;
         previousFreeRow  = 0;

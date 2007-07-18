@@ -40,7 +40,8 @@ public class Molecule extends GumboItem implements Serializable {
     public int[]       entryId;          
     //public int[]       type;    // e.g. polymer
     public int[]       polType; // e.g. polydeoxyribonucleotide
-
+    public String[]     asymId;
+    
     // enumerations will be taken as an integer value.
     public static String[] typeEnum = new String[] {
             "polymer", // 0
@@ -53,6 +54,8 @@ public class Molecule extends GumboItem implements Serializable {
     public static int POLYMER_TYPE      =  0;
     /** Molecule is NOT a polymer */
     public static int NON_POLYMER_TYPE  =  1;   
+    /** Molecule is a polymer */
+    public static int WATER_TYPE        =  2;
     /** Molecule might be a polymer, non-polymer, water, or other, it's unknown at this point.*/
     public static int UNKNOWN_TYPE      =  typeEnum.length -1;   
     public static StringIntMap typeEnumMap;
@@ -145,10 +148,13 @@ public class Molecule extends GumboItem implements Serializable {
         DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[RELATION_ID_COLUMN_NAME], new Integer(DATA_TYPE_INT));
         DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[RELATION_ID_COLUMN_NAME], new Integer(DATA_TYPE_INT));
         DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_POL_TYPE,                           new Integer(DATA_TYPE_INT));
+        DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_ASYM_ID,                            new Integer(DATA_TYPE_STRINGNR));
+
         
         DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RELATION_ID_COLUMN_NAME ]);         
         DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RELATION_ID_COLUMN_NAME ]);         
         DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_POL_TYPE);         
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_ASYM_ID);        
         
         DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[RELATION_ID_COLUMN_NAME],  Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[RELATION_ID_MAIN_RELATION_NAME]});
         DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[RELATION_ID_COLUMN_NAME],  Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[RELATION_ID_MAIN_RELATION_NAME]});
@@ -186,7 +192,7 @@ public class Molecule extends GumboItem implements Serializable {
      *sort (%03i).
      *Returns -1 for failure.
      */
-    public int add(String molName, char chainId, int parentId) {
+    public int add(String molName, char chainId, int parentId, String asymIdValue) {
         // How many molecules are already in this model?
         /** Something like the sql:
          *SELECT FROM MOLECULE m
@@ -213,16 +219,21 @@ public class Molecule extends GumboItem implements Serializable {
             molName = Format.sprintf("%s%03i", p);                            
             //General.showDebug("Came up with molecule name: [" + molName + "]");
         }
-        //General.showDebug("In Molecule.add used molecule name: [" + molName + "]");
+//        General.showDebug("In Molecule.add used molecule name: [" + molName + "]");
         int result = super.add( molName );
         if ( result < 0 ) {
             General.showCodeBug( "Failed to get a new row id for a molecule with name: " + molName);
             return -1;
         }        
+        if ( asymIdValue == null ) {
+           asymIdValue = toChain(molCount);
+//           General.showDebug("asymIdValue: ["+asymIdValue+"]");
+        }
+//        General.showDebug("asymIdValue(2): ["+asymIdValue+"]");
         modelId[    result ] = parentId;
         entryId[    result ] = gumbo.model.entryId[ parentId ];
         number[     result ] = molCount;
-
+        asymId[     result ] = asymIdValue;
         return result;
     }
 
@@ -368,6 +379,7 @@ public class Molecule extends GumboItem implements Serializable {
         modelId         = (int[])   mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RelationSet.RELATION_ID_COLUMN_NAME]);
         entryId         = (int[])   mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME]);        
         polType         = (int[])   mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_POL_TYPE );
+        asymId          = (String[])mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_ASYM_ID);        
         return true;
     }    
     
@@ -448,6 +460,52 @@ public class Molecule extends GumboItem implements Serializable {
         for (int i=molSet.nextSetBit(0);i>=0;i=molSet.nextSetBit(i+1)) {
             float mass = getMass(i);
             result += mass;
+        }
+        return result;
+    }
+
+    public BitSet getRes(BitSet molSet) {
+        BitSet result = new BitSet();
+        for (int molRid=molSet.nextSetBit(0);molRid>=0;molRid=molSet.nextSetBit(molRid+1)) {
+            BitSet resSet = getRes(molRid);
+            if ( resSet == null ) {
+                General.showCodeBug("Failed to getRes(BitSet molSet) for molecule: " + nameList[molRid]);
+                return null;
+            }
+            result.or(resSet);
+        }
+        return result;
+    }     
+    
+    private BitSet getRes(int molRid) {
+        BitSet result = SQLSelect.selectBitSet(dbms, gumbo.res.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[  RELATION_ID_COLUMN_NAME], 
+                SQLSelect.OPERATION_TYPE_EQUALS, new Integer(molRid), false);
+        if ( result == null ) {
+            General.showCodeBug("Failed to getRes(int molRid) for molecule: " + nameList[molRid]);
+            return null;
+        }
+        return result;
+    }
+
+    public BitSet getAtoms(BitSet molSet) {
+        BitSet result = new BitSet();
+        for (int molRid=molSet.nextSetBit(0);molRid>=0;molRid=molSet.nextSetBit(molRid+1)) {
+            BitSet atomSet = getAtoms(molRid);
+            if ( atomSet == null ) {
+                General.showCodeBug("Failed to getAtoms(BitSet molSet) for molecule(A): " + nameList[molRid]);
+                return null;
+            }
+            result.or(atomSet);
+        }
+        return result;
+    }     
+    
+    public BitSet getAtoms(int molRid) {
+        BitSet result = SQLSelect.selectBitSet(dbms, gumbo.atom.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[  RELATION_ID_COLUMN_NAME], 
+                SQLSelect.OPERATION_TYPE_EQUALS, new Integer(molRid), false);
+        if ( result == null ) {
+            General.showCodeBug("Failed to getAtoms(BitSet molSet) for molecule(B): " + nameList[molRid]);
+            return null;
         }
         return result;
     }     

@@ -50,6 +50,36 @@ public class Biochemistry {
     
     /** The default character for an unknown residue name */
     public static char DEFAULT_RESIDUE_NAME_1CHAR = 'X';
+
+    /** The Cys SG bound to another residue SG or other atom (3 states plus mixing)? 
+     * 1: free 
+     * 2: disulfide
+     * 3: other
+     * */
+    public static final String[] thiolStateEnumerationAsInStar = new String[] {
+        //                                  1 2 3
+        "unknown",              
+        "not present",                   //1
+        "all disulfide bound",           //2  +
+        "all free",                      //3+
+        "all other bound",               //4    +
+        "disulfide and other bound",     //5  + +
+        "free and disulfide bound",      //6+ +
+        "free and other bound",          //7+   +
+        "free disulfide and other bound",//8+ + +
+        "not reported", 
+        "not available", 
+//      "free and bound",                // +  ????
+    };
+    public static final int THIOL_STATE_UNKNOWN                         = 0;
+    public static final int THIOL_STATE_NOT_PRESENT                     = 1;
+    public static final int THIOL_STATE_ALL_DISULFIDE_BOUND             = 2;
+    public static final int THIOL_STATE_ALL_FREE                        = 3;
+    public static final int THIOL_STATE_ALL_OTHER_BOUND                 = 4;
+    public static final int THIOL_STATE_DISULFIDE_AND_OTHER_BOUND       = 5;
+    public static final int THIOL_STATE_FREE_AND_DISULFIDE_BOUND        = 6;
+    public static final int THIOL_STATE_FREE_AND_OTHER_BOUND            = 7;
+    public static final int THIOL_STATE_FREE_DISULFIDE_AND_OTHER_BOUND  = 8;
     
     static {    
         ArrayList gc = new ArrayList();
@@ -273,7 +303,6 @@ public class Biochemistry {
         backboneNA.put("P", null);
         backboneAAandNA.putAll( backboneAA );
         backboneAAandNA.putAll( backboneNA );
-        
         
         
     }

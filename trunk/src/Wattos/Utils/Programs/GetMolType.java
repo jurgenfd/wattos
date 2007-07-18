@@ -20,7 +20,7 @@ import Wattos.Utils.Strings;
 
 public class GetMolType {
     
-    static String urlDB = "http://tang.bmrb.wisc.edu/servlet_data/viavia/mr_mysql_backup/";        
+    static String urlDB = "http://restraintsgrid.bmrb.wisc.edu/servlet_data/viavia/mr_mysql_backup/";        
 //    static File linkDir = new File( "M:\\jurgen\\DOCR_big_tmp_\\link" );
     static File linkDir = new File( "/big/jurgen/DOCR_big_tmp_/link" );
         

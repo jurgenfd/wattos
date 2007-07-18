@@ -1,9 +1,8 @@
+
 /*
  * File31.java
- *
  * Created on September 12, 2003, 3:53 PM
  */
-
 package Wattos.Star.NMRStar;
 
 import java.io.File;
@@ -56,7 +55,6 @@ import Wattos.Utils.HashOfHashesOfHashes;
 import Wattos.Utils.InOut;
 import Wattos.Utils.PrimitiveArray;
 import Wattos.Utils.StringIntMap;
-import Wattos.Utils.Strings;
 import cern.colt.list.IntArrayList;
 import cern.colt.list.ObjectArrayList;
 /**
@@ -134,7 +132,15 @@ public class File31 {
     public String tagNameMolAssEntityId;   
     public String tagNameMolAssEntityLabel;
     public String tagNameMolSFCategory;    
-//    public String tagNameMolEntityId;      
+
+    public String tagNamePDBX_nonpoly_schemeEntity_assembly_ID; 
+    public String tagNamePDBX_nonpoly_schemeEntity_ID;          
+    public String tagNamePDBX_nonpoly_schemeMon_ID;             
+    public String tagNamePDBX_nonpoly_schemeComp_index_ID;      
+    public String tagNamePDBX_nonpoly_schemeComp_ID;            
+    public String tagNamePDBX_nonpoly_schemeAuth_seq_num;       
+
+    public String tagNameMolName;          
     public String tagNameMolType;          
     public String tagNameMolPolType;       
     public String tagNameMolSeqLength;     
@@ -142,6 +148,7 @@ public class File31 {
     public String tagNameResEntityId;      
     public String tagNameResNum_1;         
     public String tagNameResCompId;        
+    public String tagNameResCompLabel;        
     public String tagNameResMolId;         
     public String tagNameResResId;         
     public String tagNameResNum_2;         
@@ -402,9 +409,10 @@ public class File31 {
                 int[]        varDCvalueTreenodeID                    =  null;
                 String[]     varDCvalueSourceexperimentID            =  null;
                 String[]     varDCvalueSpectralpeakID                =  null;
-                float[]      varDCvalueIntensityval                  =  null;
-                float[]      varDCvalueIntensitylowervalerr          =  null;
-                float[]      varDCvalueIntensityuppervalerr          =  null;
+                // TODO: add the following 3 again after FC update.
+//                float[]      varDCvalueIntensityval                  =  null;
+//                float[]      varDCvalueIntensitylowervalerr          =  null;
+//                float[]      varDCvalueIntensityuppervalerr          =  null;
                 float[]      varDCvalueDistanceval                   =  null;
                 float[]      varDCvalueDistancelowerboundval         =  null;
                 float[]      varDCvalueDistanceupperboundval         =  null;
@@ -514,34 +522,41 @@ public class File31 {
                 float[]    varRDC_upper_bound=null;                  
                 float[]    varRDC_val_err=null;                      
                 
-                String[] varStudy_listSf_category = null;
+//                String[] varStudy_listSf_category = null;
 //                String[] varStudy_listEntry_ID = null;   
 //                String[] varStudy_listID = null;         
-                String[] varStudyID = null;
-                String[] varStudyName = null;
-                String[] varStudyType = null;
-                String[] varStudyDetails = null;
-//                String[] varStudyEntry_ID = null;
-//                String[] varStudyStudy_list_ID = null;
-                String[] varEntrySf_category = null;        
-//                String[] varEntryID = null;                 
-                String[] varEntryTitle = null;              
-                String[] varEntryNMR_STAR_version = null;   
-                String[] varEntryExperimental_method = null;
-                String[] varEntryDetails = null;        
+//                String[] varStudyID = null;
+//                String[] varStudyName = null;
+//                String[] varStudyType = null;
+//                String[] varStudyDetails = null;
+////                String[] varStudyEntry_ID = null;
+////                String[] varStudyStudy_list_ID = null;
+//                String[] varEntrySf_category = null;        
+////                String[] varEntryID = null;                 
+//                String[] varEntryTitle = null;              
+//                String[] varEntryNMR_STAR_version = null;   
+//                String[] varEntryExperimental_method = null;
+//                String[] varEntryDetails = null;        
+//                
+////                String[] varAssemblyEntry_ID                    = null;        
+//                String[] varAssemblyNumber_of_components        = null;        
+//                String[] varAssemblyOrganic_ligands             = null;        
+//                String[] varAssemblyMetal_ions                  = null;        
+//                String[] varAssemblyParamagnetic                = null;        
+//                String[] varAssemblyThiol_state                 = null;        
+//                String[] varAssemblyMolecular_mass              = null;        
+//                String[] varEntity_assemblyEntity_assembly_name = null;        
+//                String[] varEntity_assemblyAsym_ID              = null;        
+//                String[] varEntity_assemblyDetails              = null;        
+////                String[] varEntity_assemblyEntry_ID             = null;        
                 
-//                String[] varAssemblyEntry_ID                    = null;        
-                String[] varAssemblyNumber_of_components        = null;        
-                String[] varAssemblyOrganic_ligands             = null;        
-                String[] varAssemblyMetal_ions                  = null;        
-                String[] varAssemblyParamagnetic                = null;        
-                String[] varAssemblyThiol_state                 = null;        
-                String[] varAssemblyMolecular_mass              = null;        
-                String[] varEntity_assemblyEntity_assembly_name = null;        
-                String[] varEntity_assemblyAsym_ID              = null;        
-                String[] varEntity_assemblyDetails              = null;        
-//                String[] varEntity_assemblyEntry_ID             = null;        
-                
+
+//                int[]       varPDBX_nonpoly_schemeEntity_assembly_ID=null; 
+//                int[]       varPDBX_nonpoly_schemeEntity_ID=null;          
+//                String[]    varPDBX_nonpoly_schemeMon_ID=null;             
+//                int[]       varPDBX_nonpoly_schemeComp_index_ID=null;      
+//                String[]    varPDBX_nonpoly_schemeComp_ID=null;            
+//                int[]       varPDBX_nonpoly_schemeAuth_seq_num=null;                     
     /** END BLOCK */
 
                 static final int LOC_ENTITY_ASSEMBLY_ID = 0; 
@@ -645,12 +660,14 @@ public class File31 {
             tagNameMolSFCategory              = (String) ((ArrayList)starDict.toStar2D.get( "mol_main",       "_Entity.Sf_category"                          )).get(StarDictionary.POSITION_STAR_TAG_NAME);
 //            tagNameMolEntityId                = (String) ((ArrayList)starDict.toStar2D.get( "mol_main",       "_Entity.ID"                                   )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameMolType                    = (String) ((ArrayList)starDict.toStar2D.get( "mol_main",       "type"                                         )).get(StarDictionary.POSITION_STAR_TAG_NAME);
+            tagNameMolName                    = (String) ((ArrayList)starDict.toStar2D.get( "mol_main",       "name"                                         )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameMolPolType                 = (String) ((ArrayList)starDict.toStar2D.get( "mol_main",       "pol_type"                                     )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameMolSeqLength               = (String) ((ArrayList)starDict.toStar2D.get( "mol_main",       "_Entity.Seq_length"                           )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameMolSeq                     = (String) ((ArrayList)starDict.toStar2D.get( "mol_main",       "_Entity.Seq"                                  )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameResEntityId                = (String) ((ArrayList)starDict.toStar2D.get( "res_main",       "_Entity_comp_index.Entity_ID"                 )).get(StarDictionary.POSITION_STAR_TAG_NAME);
-            tagNameResNum_1                   = (String) ((ArrayList)starDict.toStar2D.get( "res_main",       "_Entity_comp_index.Num"                       )).get(StarDictionary.POSITION_STAR_TAG_NAME);
+            tagNameResNum_1                   = (String) ((ArrayList)starDict.toStar2D.get( "res_main",       "_Entity_comp_index.ID"                       )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameResCompId                  = (String) ((ArrayList)starDict.toStar2D.get( "res_main",       "_Entity_comp_index.Comp_ID"                   )).get(StarDictionary.POSITION_STAR_TAG_NAME);
+            tagNameResCompLabel               = (String) ((ArrayList)starDict.toStar2D.get( "res_main",       "_Entity_comp_index.Comp_label"                   )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameResMolId                   = (String) ((ArrayList)starDict.toStar2D.get( "res_main",       "mol_id"                                       )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameResResId                   = (String) ((ArrayList)starDict.toStar2D.get( "res_main",       "res_id"                                       )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameResNum_2                   = (String) ((ArrayList)starDict.toStar2D.get( "res_main",       Relation.DEFAULT_ATTRIBUTE_NUMBER                                       )).get(StarDictionary.POSITION_STAR_TAG_NAME);
@@ -876,7 +893,12 @@ public class File31 {
             tagNameEntity_assemblyAsym_ID              = (String) ((ArrayList)starDict.toStar2D.get( "mol_main"      ,       "_Entity_assembly.Asym_ID"                                    )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameEntity_assemblyDetails              = (String) ((ArrayList)starDict.toStar2D.get( "mol_main"      ,       "_Entity_assembly.Details"                                    )).get(StarDictionary.POSITION_STAR_TAG_NAME);
 //            tagNameEntity_assemblyEntry_ID             = (String) ((ArrayList)starDict.toStar2D.get( "mol_main"      ,       "_Entity_assembly.Entry_ID"                                    )).get(StarDictionary.POSITION_STAR_TAG_NAME);
-            
+            tagNamePDBX_nonpoly_schemeEntity_assembly_ID = (String) ((ArrayList)starDict.toStar2D.get( "res_main"      ,       "_PDBX_nonpoly_scheme.Entity_assembly_ID"                                    )).get(StarDictionary.POSITION_STAR_TAG_NAME);
+            tagNamePDBX_nonpoly_schemeEntity_ID          = (String) ((ArrayList)starDict.toStar2D.get( "res_main"      ,       "_PDBX_nonpoly_scheme.Entity_ID"                                    )).get(StarDictionary.POSITION_STAR_TAG_NAME);
+            tagNamePDBX_nonpoly_schemeMon_ID             = (String) ((ArrayList)starDict.toStar2D.get( "res_main"      ,       "_PDBX_nonpoly_scheme.Mon_ID"                                    )).get(StarDictionary.POSITION_STAR_TAG_NAME);
+            tagNamePDBX_nonpoly_schemeComp_index_ID      = (String) ((ArrayList)starDict.toStar2D.get( "res_main"      ,       "_PDBX_nonpoly_scheme.Comp_index_ID"                                    )).get(StarDictionary.POSITION_STAR_TAG_NAME);
+            tagNamePDBX_nonpoly_schemeComp_ID            = (String) ((ArrayList)starDict.toStar2D.get( "res_main"      ,       "_PDBX_nonpoly_scheme.Comp_ID"                                    )).get(StarDictionary.POSITION_STAR_TAG_NAME);
+            tagNamePDBX_nonpoly_schemeAuth_seq_num       = (String) ((ArrayList)starDict.toStar2D.get( "res_main"      ,       "_PDBX_nonpoly_scheme.Auth_seq_num"                                    )).get(StarDictionary.POSITION_STAR_TAG_NAME);            
         } catch ( Exception e ) {
             General.showThrowable(e);
             General.showError("Failed to get all the tag names from dictionary compare code with dictionary");
@@ -1079,6 +1101,12 @@ public class File31 {
 //                tagNameEntity_assemblyAsym_ID,             
 //                tagNameEntity_assemblyDetails,             
 ////                tagNameEntity_assemblyEntry_ID,                
+//        tagNamePDBX_nonpoly_schemeEntity_assembly_ID, 
+//        tagNamePDBX_nonpoly_schemeEntity_ID,          
+//        tagNamePDBX_nonpoly_schemeMon_ID,             
+//        tagNamePDBX_nonpoly_schemeComp_index_ID,      
+//        tagNamePDBX_nonpoly_schemeComp_ID,            
+//        tagNamePDBX_nonpoly_schemeAuth_seq_num,       
 //            };
 //            General.showDebug("Tagnames:\n"+Strings.toString(tagNames,true));
 //            if (tagNames==null) {}; // disabling debugging warnings
@@ -1129,20 +1157,13 @@ public class File31 {
         // intro, not required anymore beyond the first 2 tags.
         varDCSfcategory                         =  tTIntro.getColumnString(      tagNameDCSfcategory );
 //        varDCID                                 =  tTIntro.getColumnInt(         tagNameDCID );
+        varDCType                               =  null;
+        varDCMRfileblockposition                =  null;
+        varDCFileID                             =  null;
         if ( tTIntro.containsColumn( tagNameDCType ) ) { // Prevent some error messages.
             varDCMRfileblockposition                =  tTIntro.getColumnInt(         tagNameDCMRfileblockposition );
-//            varDCProgram                            =  tTIntro.getColumnString(      tagNameDCProgram );
             varDCType                               =  tTIntro.getColumnString(      tagNameDCType );
             varDCFileID                             =  tTIntro.getColumnInt(      tagNameDCConstraint_file_ID);
-//            varDCSubtype                            =  tTIntro.getColumnString(      tagNameDCSubtype );
-//            varDCFormat                             =  tTIntro.getColumnString(      tagNameDCFormat );
-        } else {
-            varDCMRfileblockposition                =  null;
-//            varDCProgram                            =  null;
-            varDCType                               =  null;
-            varDCFileID                             =  null;
-//            varDCSubtype                            =  null;
-//            varDCFormat                             =  null;
         }
 
         // tree
@@ -1176,9 +1197,9 @@ public class File31 {
         varDCvalueTreenodeID                    =  tTDist.getColumnInt(         tagNameDCvalueTreenodeID );
         varDCvalueSourceexperimentID            =  tTDist.getColumnString(      tagNameDCvalueSourceexperimentID );
         varDCvalueSpectralpeakID                =  tTDist.getColumnString(      tagNameDCvalueSpectralpeakID );
-        varDCvalueIntensityval                  =  tTDist.getColumnFloat(       tagNameDCvalueIntensityval );
-        varDCvalueIntensitylowervalerr          =  tTDist.getColumnFloat(       tagNameDCvalueIntensitylowervalerr );
-        varDCvalueIntensityuppervalerr          =  tTDist.getColumnFloat(       tagNameDCvalueIntensityuppervalerr );
+//        varDCvalueIntensityval                  =  tTDist.getColumnFloat(       tagNameDCvalueIntensityval );
+//        varDCvalueIntensitylowervalerr          =  tTDist.getColumnFloat(       tagNameDCvalueIntensitylowervalerr );
+//        varDCvalueIntensityuppervalerr          =  tTDist.getColumnFloat(       tagNameDCvalueIntensityuppervalerr );
         varDCvalueDistanceval                   =  tTDist.getColumnFloat(       tagNameDCvalueDistanceval );
         varDCvalueDistancelowerboundval         =  tTDist.getColumnFloat(       tagNameDCvalueDistancelowerboundval );
         varDCvalueDistanceupperboundval         =  tTDist.getColumnFloat(       tagNameDCvalueDistanceupperboundval );
@@ -1211,12 +1232,7 @@ public class File31 {
 //        }
         if ( 
                 varDCSfcategory                         == null ||
-//                varDCID                                 == null ||
-                
-//                varDCMRfileblockposition                == null ||
-//                varDCProgram                            == null ||
                 varDCType                               == null
-//                varDCFileID                             == null 
         ) {
             General.showError("Failed to find all required columns in the distance constraint saveframe (A)." );
             return false;
@@ -1672,25 +1688,46 @@ public class File31 {
                 General.showError("Failed to find Assembly tT.");
                 return false;
             }
-            /**We got:
-             *   loop_
-          _Entity_assembly.Assembly_ID
-          _Entity_assembly.ID
-          _Entity_assembly.Entity_ID
-          _Entity_assembly.Entity_label
-           1   1   1  $molecule_1 
-           1   2   1  $molecule_1 
-             *We assume to ignore Assembly_ID (assume they're all the same)
-             *and will check but only allow sequential _Entity_assembly.ID in the table.
-             */
+            /**We got for 1ai0:
+             *   
+       _Entity_assembly.ID
+       _Entity_assembly.Entity_assembly_name
+       _Entity_assembly.Entity_ID
+       _Entity_assembly.Entity_label
+       _Entity_assembly.Asym_ID
+       _Entity_assembly.Details
+       _Entity_assembly.Entry_ID
+       _Entity_assembly.Assembly_ID
+
+        1 . 1 $R6_INSULIN_HEXAMER   A . 1ai0 1 
+        2 . 2 $R6_INSULIN_HEXAMER_2 B . 1ai0 1 
+        3 . 1 $R6_INSULIN_HEXAMER   C . 1ai0 1 
+        4 . 2 $R6_INSULIN_HEXAMER_2 D . 1ai0 1 
+        5 . 1 $R6_INSULIN_HEXAMER   E . 1ai0 1 
+        6 . 2 $R6_INSULIN_HEXAMER_2 F . 1ai0 1 
+        7 . 1 $R6_INSULIN_HEXAMER   G . 1ai0 1 
+        8 . 2 $R6_INSULIN_HEXAMER_2 H . 1ai0 1 
+        9 . 1 $R6_INSULIN_HEXAMER   I . 1ai0 1 
+       10 . 2 $R6_INSULIN_HEXAMER_2 J . 1ai0 1 
+       11 . 1 $R6_INSULIN_HEXAMER   K . 1ai0 1 
+       12 . 2 $R6_INSULIN_HEXAMER_2 L . 1ai0 1 
+       13 . 3 $ZINC_ION             M . 1ai0 1 
+       14 . 3 $ZINC_ION             N . 1ai0 1 
+       15 . 4 $PHENOL               O . 1ai0 1 
+       16 . 4 $PHENOL               P . 1ai0 1 
+       17 . 4 $PHENOL               Q . 1ai0 1 
+       18 . 4 $PHENOL               R . 1ai0 1 
+       19 . 4 $PHENOL               S . 1ai0 1 
+       20 . 4 $PHENOL               T . 1ai0 1 
+       21 . 5 $water                U . 1ai0 1 
+
+             Only allow sequential _Entity_assembly.ID in the table.*/
             if ( ! tTAssembly.isSortedFromOneInColumn( tagNameMolId ) ) {
                 General.showError("The Assembly tT needs to be ordered on the entity id.");
                 return false;
             }
             // Assume no rows are deleted (Safe after test above)
             int molCountMax = tTAssembly.sizeRows;
-
-
 
             int[] entityIdList = (int[]) tTAssembly.getColumn(tagNameMolAssEntityId);
             // Cache the rids so we don't need fancy lookup below. 
@@ -1702,13 +1739,11 @@ public class File31 {
 
     // ENTRY
             String entryName    = InOut.getFilenameBase( new File(url.getFile()));
-            String assemblyName = tTAssemblyIntro.getValueString(0, tagNameEntryName );
-            if ( assemblyName == null ) {
-                General.showWarning("Missing assembly name; documented/corresponded bug in STAR files from EBI");
+            if ( entryName.length() > 4 ) {
+                entryName    = entryName.substring(0, 4);
             }
-
             OrfIdList orfIdList = null;
-            currentEntryId = entry.add(entryName, orfIdList, assemblyName);
+            currentEntryId = entry.add(entryName, orfIdList, entryName);
             if ( currentEntryId < 0 ) {
                 General.showCodeBug("Failed to add an entry into dbms.");
                 return false;
@@ -1723,7 +1758,6 @@ public class File31 {
 
     // MODEL; this loop could be redone so not all code needs to be repeated for each model.
             // we'll keep an eye for it in the profiler.
-            boolean showWarningtTResHeader = true;
             for (int modelCount=1;modelCount<=modelCountMax;modelCount++) {
                 currentModelId = model.add(modelCount, currentEntryId);            
                 if ( currentModelId < 0 ) {
@@ -1735,18 +1769,35 @@ public class File31 {
                 rid_model[ modelCount ] = currentModelId;
 
                 int tTAssemblyRID = 0;            
-    // TODO: MOLECULE
+    // XXX mark of MOLECULE 
                 for (int molCount=1;molCount<=molCountMax;molCount++) {
                     int entityId = entityIdList[ tTAssemblyRID ];
 //                    SaveFrame sFRes = SaveFrame.selectSaveFrameByTagNameAndFreeValue( sfEntityList, tagNameMolEntityId, new Integer(entityId));
+                    // Assumes they are written in order of appearance in the assembly.
                     SaveFrame sFRes = (SaveFrame) sfEntityList.get(entityId-1);
                     if ( sFRes == null ) {
 //                        General.showError("Failed to get entity sf by tag name and free value for column name:" + tagNameMolEntityId + " and value: " + molCount);
                         General.showError("Failed to get entity sf by order for molcount value: " + molCount);
                         return false;
                     }
-
-                    currentMolId = mol.add(null,Defs.NULL_CHAR,currentModelId);
+                    /** Got:
+                        _Entity.Sf_category  entity
+                        _Entity.Entry_ID     1ai0
+                        _Entity.ID           5
+                        _Entity.Name         water
+                        _Entity.Type         water
+                    
+                        loop_
+                           _Entity_comp_index.ID
+                           _Entity_comp_index.Comp_ID
+                           _Entity_comp_index.Comp_label
+                           _Entity_comp_index.Entry_ID
+                           _Entity_comp_index.Entity_ID
+                    
+                           1 HOH $HOH 1ai0 5 
+                           2 HOH $HOH 1ai0 5 
+                     */
+                    currentMolId = mol.add(null,Defs.NULL_CHAR,currentModelId,null);
                     if ( currentMolId < 0 ) {
                         General.showCodeBug("Failed to add mol number:" + currentMolId + " into dbms.");
                         return false;
@@ -1760,43 +1811,51 @@ public class File31 {
                     String molPolType   = Molecule.polTypeEnum[  Molecule.UNKNOWN_POL_TYPE];
                     TagTable tTResHeader = sFRes.getTagTable(tagNameMolType, true);   
                     if ( tTResHeader == null ) {
-                        if ( showWarningtTResHeader ) {
-                            General.showWarning("Failed to get tTResHeader by tag name:" + tagNameMolType +
-                                " for saveframe: " + sFRes.title +
-                                " and entity id: " + entityId + " for all models, assuming unknown mol type and mol pol types.");
-                            General.showDebug("Not reporting similar errors again.");
-                            showWarningtTResHeader = false;                        
-                        }
+                        General.showError("Failed to get tTResHeader by tag name:" + tagNameMolType +
+                            " for saveframe: " + sFRes.title +
+                            " and entity id: " + entityId + " for all models, assuming unknown mol type and mol pol types.");
+                        return false;
+                    } 
+                    molType    = tTResHeader.getValueString(0, tagNameMolType);
+                    if ( molType.equals(Molecule.typeEnum[Molecule.POLYMER_TYPE])) {
+                        molPolType = tTResHeader.getValueString(0, tagNameMolPolType);
                     } else {
-                        molType    = tTResHeader.getValueString(0, tagNameMolType);
-                        if ( molType.equals(Molecule.typeEnum[Molecule.POLYMER_TYPE])) {
-                            molPolType = tTResHeader.getValueString(0, tagNameMolPolType);
-                        } else {
-                            molPolType = Molecule.polTypeEnum[Molecule.NON_POLYMER_POL_TYPE];
-                        }
+                        molPolType = Molecule.polTypeEnum[Molecule.NON_POLYMER_POL_TYPE];
                     }
+
                     // bad 3 lines of code following.
                     if ( molType.equals(Molecule.typeEnum[Molecule.NON_POLYMER_TYPE]) ) {
                         molPolType = Molecule.polTypeEnum[Molecule.NON_POLYMER_POL_TYPE];
                     }
-                    mol.setName(   currentMolId, sFRes.title ); 
-                    mol.setType(   currentMolId, molType); 
-                    mol.setPolType(currentMolId, molPolType); 
-
-                    TagTable tTRes = sFRes.getTagTable(tagNameResResId, false);
-                    int resCountMax = 1; // in case of non-polymer
-                    if ( tTRes == null ) {
-                        General.showDebug("No tT by tag name:" + tagNameResResId + " indicates a non-polymer");
-                    } else {
-                        // Check to see the first is 1
-                        if ( tTRes.getValueInt(0, tagNameResResId) != 1 ) {
-                            General.showError("The residue's ids need to be numbered starting at 1 but at start found:" + tTRes.getValueInt(0, tagNameResResId));
-                            General.showError("Table is: " + tTRes);
-                            return false;
-                        }
-                        // Last residue's id
-                        resCountMax = tTRes.getValueInt(tTRes.sizeRows-1, tagNameResResId);
+                    String molName = tTAssembly.getValueString(tTAssemblyRID, tagNameMolAssEntityLabel );
+                    // TODO skip next 3 lines when FC updates.
+                    if ( tTResHeader.hasColumn(tagNameMolName)) {
+                        molName = tTResHeader.getValueString(0, tagNameMolName );
                     }
+                    molName = convertEntityName2MolName(molName);
+                    mol.setName(   currentMolId, convertEntityName2MolName(molName) ); 
+                    mol.setType(   currentMolId, molType); 
+                    mol.setPolType(currentMolId, molPolType);
+
+                    /** First residue table that's always there even in case of water */
+                    TagTable tTRes1 = sFRes.getTagTable(tagNameResNum_1, false);
+                    /** Not encouraged to use 
+                    TagTable tTRes = sFRes.getTagTable(tagNameResResId, false);
+                    */
+                    int resCountMax = 1; // in case of non-polymer
+                    if ( tTRes1 == null ) {
+                        General.showDebug("No tT by tag name:" + tagNameResNum_1 + " ; aborting as it should be present.");
+                        return false;
+                    }                        
+                    // Check to see the first is 1
+                    if ( tTRes1.getValueInt(0, tagNameResNum_1) != 1 ) {
+                        General.showError("The residue's ids need to be numbered starting at 1 but at start found:" + tTRes1.getValueInt(0, tagNameResNum_1));
+                        General.showError("Table is: " + tTRes1);
+                        return false;
+                    }
+                    // Last residue's id
+                    resCountMax = tTRes1.getValueInt(tTRes1.sizeRows-1, tagNameResNum_1);
+
                     if ( resCountMax < 1 || Defs.isNull(resCountMax) ) {
                         General.showError("Expected a positive resCountMax (not null either) but found:" + resCountMax);
                         return false;
@@ -1804,42 +1863,54 @@ public class File31 {
                     rid_res[modelCount][molCount] = new int[resCountMax+1]; // assign last dimension within.                
 
                     // RESIDUES
-                    if ( tTRes != null ) {
-                        String[] resNameList    = (String[])    tTRes.getColumn( tagNameResName );
-                        int[] resSeqId          = (int[])       tTRes.getColumn( tagNameResNum_2 );
-                        int tTResRID = 0;                 
-                        for (int resCount=1;resCount<=resCountMax;resCount++) {
-                            // 16,000 iterations is still limited for execution so that not all optimized
-                            // routines are needed.
-                            currentResId = res.add( resNameList[tTResRID], resSeqId[tTResRID], Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );                    
-                            if ( currentResId < 0 ) {
-                                General.showCodeBug("Failed to add res number:" + currentResId + " into dbms.");
-                                return false;
-                            }
-                            res.selected.set( currentResId );
-    
-                            // cache rid residue
-                            rid_res[modelCount][molCount][resCount] = currentResId;
-                            tTResRID++;
-                        }
-                    } else {
-//                        String resName = tTResHeader.getValueString(0, tagName);
-                        String resName = "XXXX"; // no tag in this table for it filled in yet.
-                        currentResId = res.add( resName, 1, Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, 
-                                currentMolId );                
+                    String[] resNameList    = (String[])    tTRes1.getColumn( tagNameResCompId );
+                    int[] resSeqId          = (int[])       tTRes1.getColumn( tagNameResNum_1 );
+                    int tTResRID = 0;                 
+                    for (int resCount=1;resCount<=resCountMax;resCount++) {
+                        // 16,000 iterations is still limited for execution so that not all optimized
+                        // routines are needed.
+                        currentResId = res.add( resNameList[tTResRID], resSeqId[tTResRID], Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );                    
                         if ( currentResId < 0 ) {
                             General.showCodeBug("Failed to add res number:" + currentResId + " into dbms.");
                             return false;
                         }
                         res.selected.set( currentResId );
-                        rid_res[modelCount][molCount][1] = currentResId;                        
+                        // cache rid residue
+                        rid_res[modelCount][molCount][resCount] = currentResId;
+                        tTResRID++;
                     }
                     tTAssemblyRID++;
                 }            
             }
-
-
-            //TODO mark of ATOMS 
+//            General.showDebug("Done so far");
+//            if (true) return false;
+            //XXX mark of ATOMS 
+            /**    _Atom_site.Model_ID
+                   _Atom_site.ID
+                   _Atom_site.Label_entity_assembly_ID
+                   _Atom_site.Label_entity_ID
+                   _Atom_site.Label_comp_index_ID
+                   _Atom_site.Label_comp_ID
+                   _Atom_site.Label_atom_ID
+                   _Atom_site.Type_symbol
+                   _Atom_site.Cartn_x
+                   _Atom_site.Cartn_y
+                   _Atom_site.Cartn_z
+                   _Atom_site.Occupancy
+                   _Atom_site.Auth_asym_ID
+                   _Atom_site.Auth_seq_ID
+                   _Atom_site.Auth_comp_ID
+                   _Atom_site.Auth_atom_ID
+                   _Atom_site.Entry_ID
+                   _Atom_site.Conformer_family_coord_set_ID            
+                   1    1  1 1  1 GLY N    N    3.445  18.796 -24.642 0.0 A  1 GLY N    1ai0 1 
+                   1    2  1 1  1 GLY CA   C    3.375  18.022 -25.915 0.0 A  1 GLY CA   1ai0 1 
+            ...
+                   2 9601 21 5  1 HOH H2   H    0.862  -2.010 -23.901 0.0 .  9 HOH H2   1ai0 1 
+                   2 9602 21 5  2 HOH O    O    0.272  -1.726  -3.829 0.0 . 10 HOH O    1ai0 1 
+                   2 9603 21 5  2 HOH H1   H    0.698  -1.088  -3.255 0.0 . 10 HOH H1   1ai0 1 
+                   2 9604 21 5  2 HOH H2   H    0.960  -2.359  -4.041 0.0 . 10 HOH H2   1ai0 1 
+                    */
             if ( sfCoor != null ) { // Make just one model without atoms if there're no coordinates.
                 TagTable tTCoor = sfCoor.getTagTable(tagNameAtomModelId,true);
                 // Already checked to see the first is 1
@@ -2026,7 +2097,8 @@ public class File31 {
         }
                 
 
-        //TODO mark of DISTANCE CONSTRAINTS probably too complicate of a code
+        //XXX mark of DISTANCE CONSTRAINTS 
+        // probably too complicate of a code
         ArrayList sfDCList          = db.getSaveFrameListByCategory( "distance_constraints" );        
         if ( sfDCList == null ) {
             General.showDebug("No distance constraint list.");
@@ -2069,13 +2141,29 @@ public class File31 {
                 dcList.numberMonomers[ currentDCListId ]    = DistConstrList.DEFAULT_AVERAGING_MONOMER_COUNT;
                 dcList.selected.set( currentDCListId );
 
-                //General.showDebug("dc sf title is: " + dcList.nameList[ currentDCListId ] + " for dcList with RID: " + currentDCListId);
+                General.showDebug("dc sf title is: " + dcList.nameList[ currentDCListId ] + " for dcList with RID: " + currentDCListId);
 
                 /** BEGIN BLOCK Convenience variables. File3.0 */
                 if ( ! initConvenienceVariablesStarWattosDC(sFDC) ) {
                     General.showWarning("Not all the necessary components in the distance constraint saveframe are present, skipping this one");
                     continue;
-                }                
+                }
+                if ( varDCType == null ) {
+                    dcList.type[currentDCListId] = DistConstrList.DEFAULT_TYPE_UNKNOWN;
+                } else {
+                    String dCtype = varDCType[0];
+                    if ( Defs.isNull( dCtype )) {
+                        dcList.type[currentDCListId] = DistConstrList.DEFAULT_TYPE_UNKNOWN;
+                    } else {
+                        int idx = DistConstrList.DEFAULT_TYPE_ARRAYLIST.indexOf(dCtype);
+                        if ( idx < 0 ) {
+                            dcList.type[currentDCListId] = DistConstrList.DEFAULT_TYPE_UNKNOWN;
+                        } else {
+                            dcList.type[currentDCListId] = idx;
+                        }
+                    }                       
+                }
+                
                 // END BLOCK
 
                 /**The following algorithm assumes that the rows in the 3 tables are sorted by
@@ -2093,29 +2181,8 @@ public class File31 {
                 String  logicalOperationString  = null;
                 Integer logicalOperationInteger = null;
 
-                /** Scan all the tagtables for the column with the distance list ids and
-                 *make sure that all are the same as assumed. This can be done more efficiently by
-                 *a scan than by a sort. Optimalization todo if needed.*/
-                if (
-//                ! tTIntro.areAllElementsOfIntValue(tagNameDCID, dcCountList ) ||
-                ! tTTree.areAllElementsOfIntValue( tagNameDCtreeConstraintsID, dcCountList ) ||
-                ! tTAtom.areAllElementsOfIntValue( tagNameDCConstraintsID, dcCountList ) 
-//                ! tTDist.areAllElementsOfIntValue( tagNameDCvalueConstraintsID, dcCountList ) 
-//                            (( tTComm != null ) && (                
-//                ! tTComm.areAllElementsOfIntValue( tagNameDCcommentorgConstraintsID, dcCountList )
-//                            ))||
-//                            (( tTPar1 != null ) && (                
-//                ! tTPar1.areAllElementsOfIntValue( tagNameDCparsefileConstraintsID, dcCountList )
-//                            ))||
-//                            (( tTPar2 != null ) && (                
-//                ! tTPar2.areAllElementsOfIntValue( tagNameDCparsefileconverrConstraintsID, dcCountList ) 
-//                            ))
-                ) {
-                    General.showError("dcCountList id should have been: " + dcCountList + " but was found to be different in at least one of the tables on at least one of the rows");
-                    return false;
-                }
                 while ( starDCTreeRId < tTTree.sizeRows ) { // scan the whole tree tagtable.                    
-                    //General.showDebug( "Working on dc tree rid: " + starDCTreeRId);
+//                    General.showDebug( "Working on dc tree rid: " + starDCTreeRId);
                     boolean atomFoundForAllInDC = true;
                     if ( dCNumb !=  varDCtreeConstraintsID[starDCTreeRId] ) { // start a new constraint; will be executed on first tree row.                                                
                         if ( dCNumb != (varDCtreeConstraintsID[starDCTreeRId]-1)) {
@@ -2434,12 +2501,12 @@ public class File31 {
             }           
         } // end of block for presence of dc.
 
-        //TODO mark of DIHEDRAL CONSTRAINTS 
+        //XXX mark of DIHEDRAL CONSTRAINTS 
 //        Note that as much as possible is specified in terms of Cdih's superclass SimpleConstr
 //        so that copying this code to rdcs etc. will be easy.
         ArrayList sfSCList          = db.getSaveFrameListByCategory( "torsion_angle_constraints" );        
         if ( sfSCList == null ) {
-            General.showDebug("No simple constraint list.");
+            General.showDebug("No simple constraint list (CDIH).");
         } else {
             Integer atomRID = null;
 //                Rids into the specific tables. Values set are to start search, will be reset later.
@@ -2511,8 +2578,12 @@ public class File31 {
                     sc.entryIdMain[             currentSCId ] = currentEntryId;                                                    
                     sc.selected.set(            currentSCId ); 
                     sc.hasUnLinkedAtom.clear(   currentSCId ); // presume that all atoms can be linked to those in the definition. Actually already clear by default.
+                    String angleName = tTMain.getValueString(starSCMainId, tagNameCDIH_Torsion_angle_name);
+                    if ( ! Defs.isNull(angleName) ) {
+                        sc.nameList[                currentSCId] = sc.nameListNR.intern(angleName);
+                    }
 
-
+                    
                     //General.showDebug( "Getting info from star dist rid: " + starCDIHDistRId);
                     sc.target[      currentSCId ] = Defs.NULL_FLOAT;
                     sc.uppBound[    currentSCId ] = varCDIH_Angle_upper_bound_val[    starSCMainId ];
@@ -2587,9 +2658,9 @@ public class File31 {
                             atomFoundForAllInSC = false;
                             break; // loop over atoms
                         }
-                        General.showDebug("Looking for mol: " + molId + " res: " + resNumb + " atom: " + atomName);
+//                        General.showDebug("Looking for mol: " + molId + " res: " + resNumb + " atom: " + atomName);
                         atomRID = (Integer) res2AtomMap.get( atomName );
-                        General.showDebug("Looking for atom in res2AtomMap: " + Strings.toString(res2AtomMap));
+//                        General.showDebug("Looking for atom in res2AtomMap: " + Strings.toString(res2AtomMap));
                         if ( atomRID == null ) {
                             General.showWarning("Did not find atom in res2AtomMap" );
                             atomFoundForAllInSC = false;
@@ -2614,7 +2685,7 @@ public class File31 {
                         
 //                        General.showDebug( "filling info into sc atom rid: " + currentSCAtomId);
                         sc.scListIdAtom[    currentSCAtomId ] = currentSCListId;
-                        sc.scMainIdAtom[    currentSCAtomId ] = currentSCId;
+                        sc.scIdAtom[        currentSCAtomId ] = currentSCId;
                         sc.entryIdAtom[     currentSCAtomId ] = currentEntryId;
                         if ( var_StarAuth_segment_code_x == null ) {
 //                            sc.authMolNameList[ currentSCAtomId ] = sc.authMolNameListNR.intern( var_StarAuth_segment_code_x[ starSCMainId] );
@@ -2667,12 +2738,12 @@ public class File31 {
 
         
         
-//      TODO mark of RDC CONSTRAINTS          
+//      XXX mark of RDC CONSTRAINTS          
 //    Note that as much as possible is specified in terms of Rdc's superclass SimpleConstr
 //    so that copying this code to rdcs etc. will be easy.
-    sfSCList          = db.getSaveFrameListByCategory( "residual_dipolar_couplings" );        
+    sfSCList          = db.getSaveFrameListByCategory( "RDC_constraints" );
     if ( sfSCList == null ) {
-        General.showDebug("No simple constraint list.");
+        General.showDebug("No simple constraint list (RDC).");
     } else {
         Integer atomRID = null;
 //            Rids into the specific tables. Values set are to start search, will be reset later.
@@ -2682,14 +2753,14 @@ public class File31 {
         SimpleConstrList scList = rdcList;
         SimpleConstr     sc     = rdc;
         int scCountListTotal = sfSCList.size();
-        General.showDebug( "Found number of sc lists: " + scCountListTotal);
+        General.showDebug( "Found number of sc lists (RDC): " + scCountListTotal);
         for (int scCountList=1;scCountList<=scCountListTotal;scCountList++) {
-//            General.showDebug( "Working on sc list: " + scCountList);
+            General.showDebug( "Working on sc list: " + scCountList);
             //Collect unique unlinked atoms to show as a warning later on
             HashOfHashesOfHashes unlinkedAtoms = new HashOfHashesOfHashes();
             SaveFrame sFSC = (SaveFrame) sfSCList.get(scCountList-1);
             if ( sFSC == null ) {
-                General.showError("Failed to select constraints sf by order for scCountList value: " + scCountList);
+                General.showError("Failed to select constraints sf by order for scCountList (RDC) value: " + scCountList);
                 return false;
             }
             currentSCListId = scList.mainRelation.getNextReservedRow(currentSCListId);
@@ -2714,14 +2785,6 @@ public class File31 {
             }                
 
 
-            /** Scan all the tagtables for the column with the distance list ids and
-             *make sure that all are the same as assumed. This can be done more efficiently by
-             *a scan than by a sort. Optimalization todo if needed.*/
-//            if (! tTIntro.areAllElementsOfIntValue(tagNameRDC_ID1, scCountList ) ||
-//                ! tTMain.areAllElementsOfIntValue( tagNameRDC_Constraints_ID, scCountList ) ) {
-//                General.showError("scCountList id should have been: " + scCountList + " but was found to be different in at least one of the tables on at least one of the rows");
-//                return false;
-//            }
             int starSCMainId = 0; // RID into the main star loop
             while ( starSCMainId < tTMain.sizeRows ) { // scan the whole tagtable.
                 boolean atomFoundForAllInSC = true;
@@ -2744,15 +2807,10 @@ public class File31 {
                 sc.hasUnLinkedAtom.clear(   currentSCId ); // presume that all atoms can be linked to those in the definition. Actually already clear by default.
 
 
-                //General.showDebug( "Getting info from star dist rid: " + starRDCDistRId);
                 sc.target[      currentSCId ] = varRDC_val[starSCMainId];                
-                float err = varRDC_val_err[starSCMainId];
-                if ( Defs.isNull(err)) {
-                    err = 0f;
-                }
-                err = Math.abs(err);
-                sc.uppBound[    currentSCId ] = sc.target[ currentSCId ]+err;
-                sc.lowBound[    currentSCId ] = sc.target[ currentSCId ]-err;
+                sc.targetError[ currentSCId ] = varRDC_val_err[starSCMainId];                
+                sc.uppBound[    currentSCId ] = varRDC_upper_bound[ currentSCId ];
+                sc.lowBound[    currentSCId ] = varRDC_lower_bound[ currentSCId ];
 //                      Now do the hard part in looking up the atom ids.
 //                      Tie the atoms in the restraints to the atoms in the soup or leave them unlinked.
                 Object[][] varAtomXLol = new Object[][] { // needs to match order in e.g. LOC_ENTITY_ASSEMBLY_ID
@@ -2780,9 +2838,7 @@ public class File31 {
 
                 for ( int atomId=0; atomId < varAtomXLol.length; atomId++ ) { 
                     int[] var_Label_entity_assembly_ID_x= (int[]) varAtomXLol[atomId]   [LOC_ENTITY_ASSEMBLY_ID];
-//                    int[] var_Label_entity_ID_x         = (int[]) varAtomXLol[atomId]   [LOC_ENTITY_ID];
                     int[] var_Label_comp_index_ID_x     = (int[]) varAtomXLol[atomId]   [LOC_COMP_INDEX_ID];
-//                    String[] var_Label_comp_ID_x        = (String[]) varAtomXLol[atomId][LOC_COMP_ID];
                     String[] var_Label_atom_ID_x        = (String[]) varAtomXLol[atomId][LOC_ATOM_ID];
                     
                     String[] var_StarAuth_segment_code_x    = (String[]) varAtomXLolAuthor[atomId][LOC_AUTHOR_SEGMENT_CODE];
@@ -2831,7 +2887,7 @@ public class File31 {
                     
 //                    General.showDebug( "filling info into sc atom rid: " + currentSCAtomId);
                     sc.scListIdAtom[    currentSCAtomId ] = currentSCListId;
-                    sc.scMainIdAtom[    currentSCAtomId ] = currentSCId;
+                    sc.scIdAtom[        currentSCAtomId ] = currentSCId;
                     sc.entryIdAtom[     currentSCAtomId ] = currentEntryId;
                     sc.authMolNameList[ currentSCAtomId ] = sc.authMolNameListNR.intern( var_StarAuth_segment_code_x[ starSCMainId] );
                     sc.authResIdList[   currentSCAtomId ] = sc.authResIdListNR.intern(   var_StarAuth_seq_ID_x[       starSCMainId] );
@@ -2882,6 +2938,17 @@ public class File31 {
         return true;
     }    
     
+    /**
+     * remove any $ if present and replace _ by space
+     * @param molName
+     * @return
+     */
+    private String convertEntityName2MolName(String molName) {
+        molName = molName.replaceAll("[$]", ""); // only at start if present
+        molName = molName.replaceAll("[_]", " ");
+        return molName;
+    }
+
     /** Convert the data in Wattos in components in the gumbo etc. 
     * General strategy is:
     *-1- for each entry ask for a file name
@@ -2907,6 +2974,7 @@ public class File31 {
             General.showError( "Failed to get datablock in STAR in-memory tree for this entry; not attempting any other entries.");
             return false;
         }
+//        db.general.setStarFlavor( StarGeneral.STANDARD_FLAVOR_NMRSTAR );  
         if ( ! db.toSTAR(outputFileName)) { // same method name but different instance class
             General.showError( "Failed to write file for this entry; not attempting any other entries.");
             return false;
@@ -2938,7 +3006,7 @@ public class File31 {
             namesAndTypes.put( tagNameAssemblyNumber_of_components,        new Integer(Relation.DATA_TYPE_INT));
             namesAndTypes.put( tagNameAssemblyOrganic_ligands,             new Integer(Relation.DATA_TYPE_INT));
             namesAndTypes.put( tagNameAssemblyMetal_ions,                  new Integer(Relation.DATA_TYPE_INT));
-            namesAndTypes.put( tagNameAssemblyParamagnetic,                new Integer(Relation.DATA_TYPE_BIT));
+            namesAndTypes.put( tagNameAssemblyParamagnetic,                new Integer(Relation.DATA_TYPE_STRING));
             namesAndTypes.put( tagNameAssemblyThiol_state,                 new Integer(Relation.DATA_TYPE_STRING));
             namesAndTypes.put( tagNameAssemblyMolecular_mass,              new Integer(Relation.DATA_TYPE_FLOAT));            
 
@@ -2992,6 +3060,39 @@ public class File31 {
             
             tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, foreignKeyConstrSet);
             sF.add( tT );
+
+            // Additional info mostly to get Water in. Maybe absent so nill it if no rows.
+            namesAndTypes           = new HashMap();
+            order                   = new ArrayList();
+            namesAndValues          = new HashMap();
+            tT                      = new TagTable(dbms.getNextRelationName(), dbms);
+            tT.isFree = false;
+            /**    
+_PDBX_nonpoly_scheme.Entity_assembly_ID  EntityAssemblyID    INTEGER     no  no  yes 
+_PDBX_nonpoly_scheme.Entity_ID  EntityID    INTEGER     no  no  no 
+_PDBX_nonpoly_scheme.Mon_ID     MonID   CHAR(12)    no  no  no 
+_PDBX_nonpoly_scheme.Comp_index_ID # should start at one so from  _pdbx_nonpoly_scheme.ndb_seq_num 
+_PDBX_nonpoly_scheme.Comp_ID     
+_PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num 
+            */  
+
+            namesAndTypes.put( tagNamePDBX_nonpoly_schemeEntity_assembly_ID,                                new Integer(Relation.DATA_TYPE_INT));
+            namesAndTypes.put( tagNamePDBX_nonpoly_schemeEntity_ID         ,                                new Integer(Relation.DATA_TYPE_INT));
+            namesAndTypes.put( tagNamePDBX_nonpoly_schemeMon_ID            ,                                new Integer(Relation.DATA_TYPE_STRING));
+            namesAndTypes.put( tagNamePDBX_nonpoly_schemeComp_index_ID     ,                                new Integer(Relation.DATA_TYPE_INT));
+            namesAndTypes.put( tagNamePDBX_nonpoly_schemeComp_ID           ,                                new Integer(Relation.DATA_TYPE_STRING));
+//            namesAndTypes.put( tagNamePDBX_nonpoly_schemeAuth_seq_num      ,                                new Integer(Relation.DATA_TYPE_INT));
+
+            order.add(tagNamePDBX_nonpoly_schemeEntity_assembly_ID);                 
+            order.add(tagNamePDBX_nonpoly_schemeEntity_ID         );                 
+            order.add(tagNamePDBX_nonpoly_schemeMon_ID            );                 
+            order.add(tagNamePDBX_nonpoly_schemeComp_index_ID     );                 
+            order.add(tagNamePDBX_nonpoly_schemeComp_ID           );                 
+//            order.add(tagNamePDBX_nonpoly_schemeAuth_seq_num      );                 
+            
+            tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, foreignKeyConstrSet);
+            sF.add( tT );
+            
         } catch ( Exception e ) {
             General.showThrowable(e);
             return null;
@@ -3086,8 +3187,8 @@ public class File31 {
             order.add(tagNameEntryExperimental_method);                 
             order.add(tagNameEntryDetails            );                 
             namesAndValues.put( tagNameEntrySf_category,        "entry_information");
-//            namesAndValues.put( tagNameEntryID,                 "1");
-            namesAndValues.put( tagNameEntryNMR_STAR_version,   "3.0");
+            //"3.0.8.88"
+            namesAndValues.put( tagNameEntryNMR_STAR_version,  ui.wattosLib.validDictionary.NMR_STAR_version);
             namesAndValues.put( tagNameEntryExperimental_method,"NMR");
             // Append columns after order id column.
             tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, foreignKeyConstrSet);
@@ -3122,13 +3223,13 @@ public class File31 {
             tT.isFree               = true;
             tT.getNewRowId(); // Sets first row bit in used to true.
             namesAndTypes.put( tagNameChem_compSFCategory,              new Integer(Relation.DATA_TYPE_STRING));
-//            namesAndTypes.put( tagNameChem_compId,                      new Integer(Relation.DATA_TYPE_STRING));
+            namesAndTypes.put( tagNameChem_compId,                      new Integer(Relation.DATA_TYPE_STRING));
             namesAndTypes.put( tagNameChem_compType,                    new Integer(Relation.DATA_TYPE_STRING));
             order.add(tagNameChem_compSFCategory);                 
-//            order.add(tagNameChem_compId);                 
+            order.add(tagNameChem_compId);                 
             order.add(tagNameChem_compType);                 
             namesAndValues.put( tagNameChem_compSFCategory,         "chem_comp");
-//            namesAndValues.put( tagNameChem_compId,                 resName);
+            namesAndValues.put( tagNameChem_compId,                 resName);
             namesAndValues.put( tagNameChem_compType,               "non-polymer");
             // Append columns after order id column.
             tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, foreignKeyConstrSet);
@@ -3162,12 +3263,14 @@ public class File31 {
             namesAndTypes.put( tagNameMolSFCategory,             new Integer(Relation.DATA_TYPE_STRING));
 //            namesAndTypes.put( tagNameMolEntityId,               new Integer(Relation.DATA_TYPE_INT));
             namesAndTypes.put( tagNameMolType,                   new Integer(Relation.DATA_TYPE_STRING));
+            namesAndTypes.put( tagNameMolName,                   new Integer(Relation.DATA_TYPE_STRING));
             namesAndTypes.put( tagNameMolPolType,                new Integer(Relation.DATA_TYPE_STRING));
             namesAndTypes.put( tagNameMolSeqLength,              new Integer(Relation.DATA_TYPE_INT));
             namesAndTypes.put( tagNameMolSeq,                    new Integer(Relation.DATA_TYPE_STRING));
             order.add(tagNameMolSFCategory);                 
 //            order.add(tagNameMolEntityId);                 
             order.add(tagNameMolType);                 
+            order.add(tagNameMolName);                 
             order.add(tagNameMolPolType);                 
             order.add(tagNameMolSeqLength);                 
             order.add(tagNameMolSeq);                 
@@ -3187,9 +3290,11 @@ public class File31 {
 //            namesAndTypes.put( tagNameResEntityId,             new Integer(Relation.DATA_TYPE_INT));
             namesAndTypes.put( tagNameResNum_1,                new Integer(Relation.DATA_TYPE_INT));
             namesAndTypes.put( tagNameResCompId,               new Integer(Relation.DATA_TYPE_STRING));
+            namesAndTypes.put( tagNameResCompLabel,            new Integer(Relation.DATA_TYPE_STRING));
 //            order.add(tagNameResEntityId);                 
             order.add(tagNameResNum_1);                 
             order.add(tagNameResCompId);                 
+            order.add(tagNameResCompLabel);                 
             tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, foreignKeyConstrSet);
             sF.add( tT );
 
@@ -3443,13 +3548,12 @@ public class File31 {
      *sequence they will be combined and referred to as 1 entity. The instance of an entity
      *is called a molecule here.
      *
-     *Todo: not loose the author names in case multiple atoms
+     *TODO: not loose the author names in case multiple atoms
      *are specified on input but Wattos would normally combine them
      *and show the author info of one of the input atoms.
      */
     private DataBlock toSTARDataBlock( boolean usePostFixedOrdinalsAtomName ) {
         DataBlock db = new DataBlock();
-
         if ( ! usePostFixedOrdinalsAtomName ) {
             atom.swapPostFixedOrdinalsAtomName(false);
         }
@@ -3471,6 +3575,7 @@ public class File31 {
         }
         
         String entryName = assemblyName;
+        entryName = "1"; // TODO: delete this line after FC updates.
         int endIndex = 4;
         if (entryName.length()>endIndex) {
             entryName = entryName.substring(0, endIndex);
@@ -3505,7 +3610,7 @@ public class File31 {
         TagTable tTEntry = (TagTable) sFEntryInfo.get(0);
         tTEntry.setValue(0, tagNameEntryExperimental_method, "NMR");
         tTEntry.setValue(0, tagNameEntryTitle, "Data for entry "+entryName);
-        tTEntry.setValue(0, tagNameEntryDetails, "Contains restraints for entry " +entryName);
+//        tTEntry.setValue(0, tagNameEntryDetails, "Contains restraints for entry " +entryName);
         
 
         // Molecular SYSTEM
@@ -3586,12 +3691,26 @@ public class File31 {
         }
         // Use assembly name twice.
         sFAssembly.setTitle( "assembly_" + assemblyName );
+        BitSet atomSet = mol.getAtoms(molSet);
+//        General.showDebug("Looking at number of residues: " + allResSet.cardinality());
+//        General.showDebug("Looking at number of atoms   : " + atomSet.cardinality());
+        int thiolState = atom.getThiolState(atomSet,allResSet);
+//        General.showDebug("Found THIOL_STATE: " + Biochemistry.thiolStateEnumerationAsInStar[thiolState]);
+        if ( thiolState < 0 ) {
+            General.showCodeBug("Let's mention it's unknown and don't crash");
+            thiolState = Biochemistry.THIOL_STATE_UNKNOWN;
+        }
+        
         TagTable tTAssemblyIntro = (TagTable) sFAssembly.get(0);
-        tTAssemblyIntro.setValue(0, tagNameAssemblyMolecular_mass, mol.getMass(molSet));
+        tTAssemblyIntro.setValue(0, tagNameAssemblyNumber_of_components,    molSet.cardinality());
+        tTAssemblyIntro.setValue(0, tagNameAssemblyOrganic_ligands,         res.getOrganic_ligands(allResSet));
+        tTAssemblyIntro.setValue(0, tagNameAssemblyMetal_ions,              atom.getMetalIons(atomSet));
+        tTAssemblyIntro.setValue(0, tagNameAssemblyMolecular_mass,          mol.getMass(molSet));
+        tTAssemblyIntro.setValue(0, tagNameAssemblyParamagnetic,            Defs.NULL_STRING_DOT);
+        tTAssemblyIntro.setValue(0, tagNameAssemblyThiol_state,             Biochemistry.thiolStateEnumerationAsInStar[thiolState]);
         tTAssemblyIntro.setValue(0, tagNameEntryName, assemblyName);
         TagTable tTAssemblyEntity = (TagTable) sFAssembly.get(1);
         // Add saveframe to datablock.
-        int counter = 1;
         // Next object maps molecule rid to entity number for molecules in first model.
         int[] mol2EntityMap = createMol2EntityMap( molSet ); // big array.
         // Create a map to be used in the coordinate table. It maps molecule numbers to
@@ -3608,6 +3727,7 @@ public class File31 {
             return null;
         }            
 
+        int counterEntityAssembly = 1;
         for (molRID=molSet.nextSetBit(0); molRID >=0; molRID=molSet.nextSetBit(molRID+1)) {
             int entityRID = tTAssemblyEntity.getNewRowId();
             if ( entityRID < 0 ) {
@@ -3617,10 +3737,11 @@ public class File31 {
             Integer entityNumber = new Integer(mol2EntityMap[molRID]);
             String molLabel = "$" + entityNameMap.get(entityNumber);
 //            General.showDebug("Created molLabel: " + molLabel);
-            tTAssemblyEntity.setValue( entityRID, tagNameMolId,             new Integer(counter));
+            tTAssemblyEntity.setValue( entityRID, tagNameMolId,             new Integer(counterEntityAssembly));
             tTAssemblyEntity.setValue( entityRID, tagNameMolAssEntityId,    entityNumber);
             tTAssemblyEntity.setValue( entityRID, tagNameMolAssEntityLabel, molLabel);
-            counter++;
+            tTAssemblyEntity.setValue( entityRID, tagNameEntity_assemblyAsym_ID, mol.asymId[entityRID]);
+            counterEntityAssembly++;
         }
         // Set all ids for assembly to 1 after rows are claimed.
 //        tTAssemblyEntity.setValueByColumn(tagNameMolEntryId,new Integer(1));            
@@ -3629,6 +3750,43 @@ public class File31 {
             General.showError("Failed to set the order for the ordered entity instances in the assembly tag table.");
             return null;
         }        
+        
+        // Set the ligand and water info.
+        TagTable tTAssemblyPDBX_nonpoly_scheme = (TagTable) sFAssembly.get(2);
+        counterEntityAssembly = 1;
+        for (molRID=molSet.nextSetBit(0); molRID >=0; molRID=molSet.nextSetBit(molRID+1)) {
+            if ( mol.type[molRID]==Molecule.POLYMER_TYPE ) {
+                counterEntityAssembly++;
+                continue;
+            }
+            Integer entityNumber = new Integer(mol2EntityMap[molRID]);
+            BitSet resSet = SQLSelect.selectBitSet(dbms, res.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[RelationSet.RELATION_ID_COLUMN_NAME], 
+                    SQLSelect.OPERATION_TYPE_EQUALS, new Integer(molRID), false);
+            if ( resSet == null ) {
+                General.showError("Failed to get a residue(s) for nonpoly molecule: " + mol.nameList[molRID]);
+                return null;                
+            }            
+            for (resRID=resSet.nextSetBit(0); resRID >=0; resRID=resSet.nextSetBit(resRID+1)) {
+                int entityRID = tTAssemblyPDBX_nonpoly_scheme.getNewRowId();
+                if ( entityRID < 0 ) {
+                    General.showError("Failed to get a new row in the table for assembly entities.");
+                    return null;
+                }
+                tTAssemblyPDBX_nonpoly_scheme.setValue( entityRID, Relation.DEFAULT_ATTRIBUTE_ORDER_ID, entityRID); 
+                tTAssemblyPDBX_nonpoly_scheme.setValue( entityRID, tagNamePDBX_nonpoly_schemeEntity_assembly_ID, counterEntityAssembly);
+                tTAssemblyPDBX_nonpoly_scheme.setValue( entityRID, tagNamePDBX_nonpoly_schemeEntity_ID,          entityNumber);
+                tTAssemblyPDBX_nonpoly_scheme.setValue( entityRID, tagNamePDBX_nonpoly_schemeMon_ID,             res.nameList[resRID]);
+                tTAssemblyPDBX_nonpoly_scheme.setValue( entityRID, tagNamePDBX_nonpoly_schemeComp_index_ID,      res.number[resRID]);
+                tTAssemblyPDBX_nonpoly_scheme.setValue( entityRID, tagNamePDBX_nonpoly_schemeComp_ID,            res.nameList[resRID]);
+//                tTAssemblyPDBX_nonpoly_scheme.setValue( entityRID, tagNamePDBX_nonpoly_schemeAuth_seq_num,       res.authResNameList[resRID]);                            
+            }
+            counterEntityAssembly++;
+        }
+        if ( tTAssemblyPDBX_nonpoly_scheme.sizeRows == 0 ) {
+            General.showDebug("Removing empty tT: " + ((TagTable)sFAssembly.get(2)).toSTAR());
+            sFAssembly.remove(2);
+        }
+        
         General.showDebug("Done with sFAssembly");
         if ( molecularSystemDescriptionToWrite ) {
             db.add( sFAssembly );
@@ -3649,24 +3807,27 @@ public class File31 {
                 return null;
             }
             String molLabel = molMain.getValueString(molRID, Relation.DEFAULT_ATTRIBUTE_NAME );;
-            sFEntity.setTitle( molLabel );
+            String sFTitle = molName2STAR(molLabel); 
+            sFEntity.setTitle( sFTitle );
             TagTable tTIntro = (TagTable) sFEntity.get(0);
 //            tTIntro.setValue(0, tagNameMolEntityId, new Integer(mol2EntityMap[molRID]));
             int mol_type = mol.type[  molRID ];
             if ( Defs.isNull( mol_type )) {
                 mol_type = Molecule.UNKNOWN_TYPE;
             }
+            tTIntro.setValue(0, tagNameMolType,    Molecule.typeEnum[    mol_type ]);
+            tTIntro.setValue(0, tagNameMolName,    molLabel);
+            int seqLength = 0;
             int pol_type = mol.polType[  molRID ];
             if ( Defs.isNull( pol_type )) {
                 pol_type = Molecule.UNKNOWN_POL_TYPE;
             }
-            tTIntro.setValue(0, tagNameMolType,    Molecule.typeEnum[    mol_type ]);
             tTIntro.setValue(0, tagNameMolPolType, Molecule.polTypeEnum[ pol_type ]);
-            String sequence = mol.getSequence( molRID, false, 0, Defs.NULL_CHAR, General.eol );
+            String sequence = mol.getSequence( molRID, false, 0, Defs.NULL_CHAR, "\n" );
             tTIntro.setValue(0, tagNameMolSeq,       sequence);
             TagTable tTUnordered = (TagTable) sFEntity.get(1);
             TagTable tTOrdered   = (TagTable) sFEntity.get(2);
-            counter = 1;
+            counterEntityAssembly = 1;
             // Get the molecule descriptions for first model in selection and assume the others are the same.
             BitSet resSet = SQLSelect.selectBitSet( dbms, resMain, Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[ RelationSet.RELATION_ID_COLUMN_NAME], 
                 SQLSelect.OPERATION_TYPE_EQUALS, new Integer(molRID), false);
@@ -3674,7 +3835,7 @@ public class File31 {
                 General.showError("Failed to get a residues in molecule.");
                 return null;
             }
-            int seqLength = resSet.cardinality();
+            seqLength = resSet.cardinality();
             tTIntro.setValue(0, tagNameMolSeqLength, new Integer(seqLength));
 
             for (resRID=resSet.nextSetBit(0); resRID >=0; resRID=resSet.nextSetBit(resRID+1)) {
@@ -3690,16 +3851,18 @@ public class File31 {
                 if ( Defs.isNull( resNum )) {
                     General.showError("Failed to get residue number: output contains STAR nills for residue numbers.");
                 }                    
-
 //                tTUnordered.setValue( entityResRID, tagNameResEntityId, new Integer(mol2EntityMap[molRID]));
-                tTUnordered.setValue( entityResRID, tagNameResNum_1,    new Integer(counter));
+                tTUnordered.setValue( entityResRID, tagNameResNum_1,    new Integer(counterEntityAssembly));
                 tTUnordered.setValue( entityResRID, tagNameResCompId,   resName);
-
+                if ( ! Biochemistry.commonResidueNameAA_NA.containsKey(resName) ) {
+                    tTUnordered.setValue( entityResRID, tagNameResCompLabel,"$"+resName);
+                }
+                
 //                tTOrdered.setValue(   entityResRID, tagNameResMolId,    new Integer(mol2EntityMap[molRID]));
-                tTOrdered.setValue(   entityResRID, tagNameResResId,    new Integer(counter));
+                tTOrdered.setValue(   entityResRID, tagNameResResId,    new Integer(counterEntityAssembly));
                 tTOrdered.setValue(   entityResRID, tagNameResNum_2,    new Integer(resNum));
                 tTOrdered.setValue(   entityResRID, tagNameResName,     resName);
-                counter++;
+                counterEntityAssembly++;
             }
             if ( ! tTUnordered.copyToOrderColumn( tagNameResNum_1, shift ) ) { 
                 General.showError("Failed to set the order for the ordered residues tag table.");
@@ -3709,11 +3872,17 @@ public class File31 {
                 General.showError("Failed to set the order for the ordered residues tag table.");
                 return null;
             }
+            
+            if ( mol_type == Molecule.NON_POLYMER_TYPE || mol_type == Molecule.WATER_TYPE ) {
+                tTIntro.removeColumn( tagNameMolPolType );
+                tTIntro.removeColumn( tagNameMolSeq );
+                tTIntro.removeColumn( tagNameMolSeqLength );
+                sFEntity.remove(2);
+            } 
             // Don't use the loops if they don't have rows.
             if ( seqLength == 0 ) {
-                sFEntity.remove(2);
                 sFEntity.remove(1);
-            }                
+            }    
             if ( molecularSystemDescriptionToWrite ) {
                 db.add( sFEntity );
             }
@@ -3732,11 +3901,16 @@ public class File31 {
                 General.showError("Failed to get a template saveframe for the entity.");
                 return null;
             }
+            
+            TagTable tTIntro = (TagTable) sFNonStandardResidue.get(0);
+            tTIntro.setValue(0, Relation.DEFAULT_ATTRIBUTE_ORDER_ID, 0);
+            tTIntro.setValue(0, tagNameChem_compId, resName);
+            
             db.add( sFNonStandardResidue );            
         }
         General.showDebug("Done with zero or more sFNonStandardResidue");
         
-        // CONSTRAINTS
+        // XXX writing DISTANCE CONSTRAINTS
         dcList.selected.and( dcList.used ); // Just to make sure.
         BitSet dcSetDistinctList = SQLSelect.getDistinct(dbms,dc.mainRelation,
             Constr.DEFAULT_ATTRIBUTE_SET_DC_LIST[ RelationSet.RELATION_ID_COLUMN_NAME ], dc.selected);
@@ -3758,13 +3932,13 @@ public class File31 {
                     General.showError("Failed to get a template saveframe for the dc list.");
                     return null;
                 }
-                sFDC.setTitle( dcList.nameList[ currentDCListId ]);            
+                sFDC.setTitle( dcList.nameList[ currentDCListId ]);                
                 if ( ! initConvenienceVariablesStarWattosDC(sFDC) ) {
                     General.showCodeBug("Failed to initConvenienceVariablesStarWattos.");
                     return null;
-                }           
-//                varDCID[0] = dcListCount; // Have to set the id!
-
+                }  
+                tTIntro.setValue(0, tagNameDCType, DistConstrList.DEFAULT_TYPE_LIST[ dcList.type[currentDCListId]]);
+                
                 BitSet dcSet = SQLSelect.selectBitSet( dbms, dc.mainRelation, Constr.DEFAULT_ATTRIBUTE_SET_DC_LIST[ RelationSet.RELATION_ID_COLUMN_NAME], 
                     SQLSelect.OPERATION_TYPE_EQUALS, new Integer(currentDCListId), false);
                 if ( dcSet == null ) {
@@ -3790,11 +3964,6 @@ public class File31 {
                 // Need to reinitialize these again after this big reservation!
                 if ( ! initConvenienceVariablesStarWattosDC(sFDC) ) {
                     General.showCodeBug("Failed to initConvenienceVariablesStarWattos.");
-                    return null;
-                }
-
-                if ( ! dc.sortAll( dcSet, 0 )) {
-                    General.showError("Couldn'sort the dcs");
                     return null;
                 }
 
@@ -3891,7 +4060,7 @@ public class File31 {
                             return null;
                         }
 //                        General.showDebug("Preparing node: " + dCNodeNumber + " at rid: " + currentDCNodeId + " to star rid: " + currentStarDCTreeId);
-                        varDCtreeConstraintsID[ currentStarDCTreeId ] = dcListCount; // can be optimized by array fill.
+                        varDCtreeConstraintsID[ currentStarDCTreeId ] = dcCount; // can be optimized by array fill.
 //                        varDCtreeID[            currentStarDCTreeId ] = dcCount;    
                         varDCtreeNodeID[        currentStarDCTreeId ] = dCNodeNumber;    // todo increment
                         varDCtreeDownnodeID[    currentStarDCTreeId ] = dc.downId[currentDCNodeId]; 
@@ -4106,6 +4275,408 @@ public class File31 {
         }    
         
         
+        // XXX writing simple (CDIH) CONSTRAINTS
+        cdihList.selected.and( cdihList.used ); // Just to make sure.
+        BitSet cdihSetDistinctList = SQLSelect.getDistinct(dbms,cdih.mainRelation,
+            Constr.DEFAULT_ATTRIBUTE_SET_CDIH_LIST[ RelationSet.RELATION_ID_COLUMN_NAME ], cdih.selected);
+        if ( cdihSetDistinctList == null ) {
+            General.showError("Failed to get cdihSetDistinctList");
+            return null;
+        }
+        int cdihListCountTotal = cdihSetDistinctList.cardinality();
+        if ( cdihListCountTotal < 1) {
+            General.showDebug("No cdihSetDistinctList");
+        } else {                    
+            General.showDebug("Will write number of sc (CDIH) lists: " + cdihListCountTotal);
+            int cdihListCount = 1;
+            for (int currentSCListSCId = cdihSetDistinctList.nextSetBit(0);currentSCListSCId>=0;currentSCListSCId=cdihSetDistinctList.nextSetBit(currentSCListSCId+1)) {            
+                currentSCListId = cdih.scListIdMain[currentSCListSCId];
+
+                SaveFrame sFCDIH = getSFTemplateCDIH();
+                if ( sFCDIH == null ) {
+                    General.showError("Failed to get a template saveframe for the cdih list.");
+                    return null;
+                }
+                sFCDIH.setTitle( cdihList.nameList[ currentSCListId ]);                
+                if ( ! initConvenienceVariablesStarWattosCDIH(sFCDIH) ) {
+                    General.showCodeBug("Failed to initConvenienceVariablesStarWattosCDIH.");
+                    return null;
+                }  
+                BitSet cdihSet = SQLSelect.selectBitSet( dbms, cdih.mainRelation, Constr.DEFAULT_ATTRIBUTE_SET_CDIH_LIST[ RelationSet.RELATION_ID_COLUMN_NAME], 
+                    SQLSelect.OPERATION_TYPE_EQUALS, new Integer(currentSCListId), false);
+                if ( cdihSet == null ) {
+                    General.showError("Failed to get set of simple (CDIH) constraints in list: " + cdihListCount + " to write again.");
+                    return null;
+                }            
+                cdihSet.and( cdih.selected ); // this reduces it nicely.
+                int scCount = 1;
+                int scCountTotal = cdihSet.cardinality();
+                General.showDebug("Number of simple (CDIH) constraints in list: " + scCountTotal);
+                if ( scCountTotal < 1 ) {
+                    General.showWarning("Failed to find any selected simple (CDIH) constraint in list:" + cdihListCount + ". Skipping list.");                
+                    cdihListCount++;
+                    continue;
+                }
+                db.add( sFCDIH );
+                // Need to reinitialize these again after this big reservation!
+                if ( ! initConvenienceVariablesStarWattosCDIH(sFCDIH) ) {
+                    General.showCodeBug("Failed to initConvenienceVariablesStarWattos.");
+                    return null;
+                }
+                tTMain.reserveRows( scCountTotal );
+
+                // Important to get the indexes after the sc.sortAll (not done anymore).
+                IndexSortedInt indexMainAtom = (IndexSortedInt) cdih.simpleConstrAtom.getIndex(
+                        Constr.DEFAULT_ATTRIBUTE_SET_CDIH[ RelationSet.RELATION_ID_COLUMN_NAME ], 
+                        Index.INDEX_TYPE_SORTED);
+                if ( indexMainAtom == null ) {
+                    General.showCodeBug("Failed to get all indexes to sc main in atom");
+                    return null;
+                }
+                
+//                int currentStarSC_Id = 0;
+                // FOR EACH CONSTRAINT
+                // Write them in a sorted fashion
+                int[] map = cdih.mainRelation.getRowOrderMap(Relation.DEFAULT_ATTRIBUTE_ORDER_ID  ); // Includes just the scs in this list
+                if ( (map != null) && (map.length != scCountTotal )) {
+                    General.showError("Trying to get an order map but failed to give back the correct number of elements: " + scCountTotal + " instead found: " + map.length );
+                    map = null;
+                }
+                if ( map == null ) {
+                    General.showWarning("Failed to get the row order sorted out for simple (CDIH) constraints; using physical ordering."); // not fatal
+                    map = PrimitiveArray.toIntArray( cdihSet );
+                    if ( map == null ) {
+                        General.showError("Failed to get the used row map list so not writing this table.");
+                        return null;
+                    }
+                }
+                BitSet mapAsSet = PrimitiveArray.toBitSet(map,-1);
+                if ( mapAsSet == null ) { 
+                    General.showCodeBug("Failed to create bitset back from map.");
+                    return null;
+                }   
+                BitSet mapXor = (BitSet) mapAsSet.clone();
+                mapXor.xor(cdihSet);
+                if ( mapXor.cardinality() != 0 ) {
+                    General.showError("The map after reordering doesn't contain all the elements in the original set or vice versa.");
+                    General.showError("In the original set:" + PrimitiveArray.toString( cdihSet ));
+                    General.showError("In the ordered  set:" + PrimitiveArray.toString( mapAsSet ));
+                    General.showError("Xor of both sets   :" + PrimitiveArray.toString( mapXor ));
+                    General.showError("The order column   :" + PrimitiveArray.toString( cdih.mainRelation.getColumnInt(Relation.DEFAULT_ATTRIBUTE_ORDER_ID)));
+                    return null;
+                }
+
+                int currentStarSCId = 0;
+                for (int d = 0; d<map.length;d++) {                        
+                    currentSCId = map[ d ];
+                    // extra checks for safety.
+                    if ( ! cdihSet.get( currentSCId ) ) { // this is actually check above so shouldn't occur.
+                        General.showError("Trying an unselected sc rid: " + currentSCId );
+                        return null;
+                    }
+                    if ( ! cdih.mainRelation.used.get( currentSCId ) ) {
+                        General.showCodeBug("Trying an unused sc rid; that was checked earlier.");
+                        return null;
+                    }
+
+//                    General.showDebug("Preparing simple (CDIH) constraint: " + scCount + " at rid: " + currentSCId);
+//                    BitSet bs = new BitSet();
+//                    bs.set(currentSCId);
+//                    General.showDebug(cdih.toSTAR(bs));
+                    
+                    Integer currentSCIdInteger = new Integer(currentSCId);
+
+                    IntArrayList scAtoms = (IntArrayList) indexMainAtom.getRidList(  currentSCIdInteger, 
+                            Index.LIST_TYPE_INT_ARRAY_LIST, null);
+//                    General.showDebug("Found the following rids of sc atoms in constraint: " + 
+//                            PrimitiveArray.toString( scAtoms ));                
+                    if ( scAtoms == null ) {
+                        General.showError("Failed to get any atoms");
+                        return null;
+                    }              
+                    if ( scAtoms.size() != 4 ) {
+                        General.showError("Failed to get exactly four atoms");
+                        return null;
+                    }
+                    if ( ! PrimitiveArray.orderIntArrayListByIntArray( scAtoms, cdih.orderAtom )) {
+                        General.showError("Failed to order atoms by order column");
+                        return null;
+                    }
+                    
+                    currentStarSCId = tTMain.getNextReservedRow(currentStarSCId);
+                    if ( currentStarSCId == Relation.DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW ) {                            
+                        currentStarSCId = tTMain.getNextReservedRow(0); // now it should be fine.
+                        if ( ! initConvenienceVariablesStarWattosCDIH(sFCDIH) ) {
+                            General.showCodeBug("Failed to initConvenienceVariablesStarWattosCDIH.");
+                            return null;
+                        }
+                    }                          
+                    if ( currentStarSCId < 0 ) {
+                        General.showCodeBug("Failed to get next reserved row in STAR simple (CDIH) constraint atom table.");
+                        return null;
+                    }
+                    String angleName = cdih.nameList[currentSCId];
+                    if ( ! Defs.isNull(angleName)) {
+                        tTMain.setValue(currentStarSCId, tagNameCDIH_Torsion_angle_name, angleName);
+                    }
+                    tTMain.setValue(currentStarSCId, tagNameCDIH_Angle_lower_bound_val, cdih.lowBound[currentSCId]);                      
+                    tTMain.setValue(currentStarSCId, tagNameCDIH_Angle_upper_bound_val, cdih.uppBound[currentSCId]);                      
+                    tTMain.setValue(currentStarSCId, tagNameCDIH_ID2, scCount);                      
+                    
+                    int columnsPerAtom = 5;
+                    int columnsPerAuthorAtom = 4;
+                    int offsetToFirstAtom = 3;
+                    int offsetToFirstAuthorAtom = 25;
+                    int prevMolNum  = Defs.NULL_INT;
+                    int entityNum  = Defs.NULL_INT;
+                    for (int atom_id=0;atom_id<4;atom_id++) {
+                        // FOR EACH ATOM in member
+                        int offsetAtom = offsetToFirstAtom + columnsPerAtom * atom_id;
+                        int offsetAuthorAtom = offsetToFirstAuthorAtom + columnsPerAuthorAtom * atom_id;
+                        int currentSCAtomId = scAtoms.getQuick( atom_id );
+                        int currentAtomId   = cdih.atomIdAtom[  currentSCAtomId];
+                        int currentResId    = gumbo.atom.resId[ currentAtomId];
+                        int currentMolId    = gumbo.res.molId[  currentResId];
+                        if ( Defs.isNull( currentAtomId ) ) { // Was the atom actually matched in the structure?
+                            General.showError("Got null for atomId in Cdih");
+                            return null;
+                        }
+
+                        String atomName = gumbo.atom.nameList[currentAtomId ];
+                        int resNum      = gumbo.res.number[   currentResId ];
+                        String resName  = gumbo.res.nameList[ currentResId ];
+                        int molNum      = gumbo.mol.number[   currentMolId];                        
+                        if ( molNum != prevMolNum ) { 
+                            entityNum    = ((Integer)molNumber2EntityNumberMap.get( new Integer(molNum))).intValue(); // expensive so only do when changes are possible.
+                        }                        
+                        tTMain.setValue(currentStarSCId, offsetAtom+0, molNum);                      
+                        tTMain.setValue(currentStarSCId, offsetAtom+1, entityNum);                      
+                        tTMain.setValue(currentStarSCId, offsetAtom+2, resNum);                      
+                        tTMain.setValue(currentStarSCId, offsetAtom+3, resName);                      
+                        tTMain.setValue(currentStarSCId, offsetAtom+4, atomName);                      
+                        
+                        
+                        tTMain.setValue(currentStarSCId, offsetAuthorAtom+0, cdih.authMolNameList[  currentSCAtomId ]);                      
+                        tTMain.setValue(currentStarSCId, offsetAuthorAtom+1, cdih.authResIdList[    currentSCAtomId ]);                      
+                        tTMain.setValue(currentStarSCId, offsetAuthorAtom+2, cdih.authResNameList[  currentSCAtomId ]);                      
+                        tTMain.setValue(currentStarSCId, offsetAuthorAtom+3, cdih.authAtomNameList[ currentSCAtomId ]);                      
+                    } // end of loop per atom
+
+                    scCount++;
+                }
+                cdihListCount++;
+                // Make it into a valid saveframe by cancelling reservations on all the tag tables.
+                tTMain.cancelAllReservedRows();
+            }
+        }    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        // XXX writing simple (RDC) CONSTRAINTS
+        rdcList.selected.and( rdcList.used ); // Just to make sure.
+        BitSet rdcSetDistinctList = SQLSelect.getDistinct(dbms,rdc.mainRelation,
+            Constr.DEFAULT_ATTRIBUTE_SET_RDC_LIST[ RelationSet.RELATION_ID_COLUMN_NAME ], rdc.selected);
+        if ( rdcSetDistinctList == null ) {
+            General.showError("Failed to get rdcSetDistinctList");
+            return null;
+        }
+        int rdcListCountTotal = rdcSetDistinctList.cardinality();
+        if ( rdcListCountTotal < 1) {
+            General.showDebug("No rdcSetDistinctList");
+        } else {                    
+            General.showDebug("Will write number of sc (RDC) lists: " + rdcListCountTotal);
+            int rdcListCount = 1;
+            for (int currentSCListSCId = rdcSetDistinctList.nextSetBit(0);currentSCListSCId>=0;currentSCListSCId=rdcSetDistinctList.nextSetBit(currentSCListSCId+1)) {            
+                currentSCListId = rdc.scListIdMain[currentSCListSCId];
+
+                SaveFrame sFRDC = getSFTemplateRDC();
+                if ( sFRDC == null ) {
+                    General.showError("Failed to get a template saveframe for the rdc list.");
+                    return null;
+                }
+                sFRDC.setTitle( rdcList.nameList[ currentSCListId ]);                
+                if ( ! initConvenienceVariablesStarWattosRDC(sFRDC) ) {
+                    General.showCodeBug("Failed to initConvenienceVariablesStarWattosRDC.");
+                    return null;
+                }  
+                BitSet rdcSet = SQLSelect.selectBitSet( dbms, rdc.mainRelation, Constr.DEFAULT_ATTRIBUTE_SET_RDC_LIST[ RelationSet.RELATION_ID_COLUMN_NAME], 
+                    SQLSelect.OPERATION_TYPE_EQUALS, new Integer(currentSCListId), false);
+                if ( rdcSet == null ) {
+                    General.showError("Failed to get set of simple (RDC) constraints in list: " + rdcListCount + " to write again.");
+                    return null;
+                }            
+                rdcSet.and( rdc.selected ); // this reduces it nicely.
+                int scCount = 1;
+                int scCountTotal = rdcSet.cardinality();
+                General.showDebug("Number of simple (RDC) constraints in list: " + scCountTotal);
+                if ( scCountTotal < 1 ) {
+                    General.showWarning("Failed to find any selected simple (RDC) constraint in list:" + rdcListCount + ". Skipping list.");                
+                    rdcListCount++;
+                    continue;
+                }
+                db.add( sFRDC );
+                // Need to reinitialize these again after this big reservation!
+                if ( ! initConvenienceVariablesStarWattosRDC(sFRDC) ) {
+                    General.showCodeBug("Failed to initConvenienceVariablesStarWattos.");
+                    return null;
+                }
+                tTMain.reserveRows( scCountTotal );
+
+                // Important to get the indexes after the sc.sortAll (not done anymore).
+                IndexSortedInt indexMainAtom = (IndexSortedInt) rdc.simpleConstrAtom.getIndex(
+                        Constr.DEFAULT_ATTRIBUTE_SET_RDC[ RelationSet.RELATION_ID_COLUMN_NAME ], 
+                        Index.INDEX_TYPE_SORTED);
+                if ( indexMainAtom == null ) {
+                    General.showCodeBug("Failed to get all indexes to sc main in atom");
+                    return null;
+                }
+                
+//                int currentStarSC_Id = 0;
+                // FOR EACH CONSTRAINT
+                // Write them in a sorted fashion
+                int[] map = rdc.mainRelation.getRowOrderMap(Relation.DEFAULT_ATTRIBUTE_ORDER_ID  ); // Includes just the scs in this list
+                if ( (map != null) && (map.length != scCountTotal )) {
+                    General.showError("Trying to get an order map but failed to give back the correct number of elements: " + scCountTotal + " instead found: " + map.length );
+                    map = null;
+                }
+                if ( map == null ) {
+                    General.showWarning("Failed to get the row order sorted out for simple (RDC) constraints; using physical ordering."); // not fatal
+                    map = PrimitiveArray.toIntArray( rdcSet );
+                    if ( map == null ) {
+                        General.showError("Failed to get the used row map list so not writing this table.");
+                        return null;
+                    }
+                }
+                BitSet mapAsSet = PrimitiveArray.toBitSet(map,-1);
+                if ( mapAsSet == null ) { 
+                    General.showCodeBug("Failed to create bitset back from map.");
+                    return null;
+                }   
+                BitSet mapXor = (BitSet) mapAsSet.clone();
+                mapXor.xor(rdcSet);
+                if ( mapXor.cardinality() != 0 ) {
+                    General.showError("The map after reordering doesn't contain all the elements in the original set or vice versa.");
+                    General.showError("In the original set:" + PrimitiveArray.toString( rdcSet ));
+                    General.showError("In the ordered  set:" + PrimitiveArray.toString( mapAsSet ));
+                    General.showError("Xor of both sets   :" + PrimitiveArray.toString( mapXor ));
+                    General.showError("The order column   :" + PrimitiveArray.toString( rdc.mainRelation.getColumnInt(Relation.DEFAULT_ATTRIBUTE_ORDER_ID)));
+                    return null;
+                }
+
+                int currentStarSCId = 0;
+                for (int d = 0; d<map.length;d++) {                        
+                    currentSCId = map[ d ];
+                    // extra checks for safety.
+                    if ( ! rdcSet.get( currentSCId ) ) { // this is actually check above so shouldn't occur.
+                        General.showError("Trying an unselected sc rid: " + currentSCId );
+                        return null;
+                    }
+                    if ( ! rdc.mainRelation.used.get( currentSCId ) ) {
+                        General.showCodeBug("Trying an unused sc rid; that was checked earlier.");
+                        return null;
+                    }
+
+//                    General.showDebug("Preparing simple (RDC) constraint: " + scCount + " at rid: " + currentSCId);
+//                    BitSet bs = new BitSet();
+//                    bs.set(currentSCId);
+//                    General.showDebug(rdc.toSTAR(bs));
+                    
+                    Integer currentSCIdInteger = new Integer(currentSCId);
+
+                    IntArrayList scAtoms = (IntArrayList) indexMainAtom.getRidList(  currentSCIdInteger, 
+                            Index.LIST_TYPE_INT_ARRAY_LIST, null);
+//                    General.showDebug("Found the following rids of sc atoms in constraint: " + 
+//                            PrimitiveArray.toString( scAtoms ));                
+                    if ( scAtoms == null ) {
+                        General.showError("Failed to get any atoms");
+                        return null;
+                    }              
+                    if ( scAtoms.size() != 2 ) {
+                        General.showError("Failed to get exactly two atoms");
+                        return null;
+                    }
+                    if ( ! PrimitiveArray.orderIntArrayListByIntArray( scAtoms, rdc.orderAtom )) {
+                        General.showError("Failed to order atoms by order column");
+                        return null;
+                    }
+                    
+                    currentStarSCId = tTMain.getNextReservedRow(currentStarSCId);
+                    if ( currentStarSCId == Relation.DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW ) {                            
+                        currentStarSCId = tTMain.getNextReservedRow(0); // now it should be fine.
+                        if ( ! initConvenienceVariablesStarWattosRDC(sFRDC) ) {
+                            General.showCodeBug("Failed to initConvenienceVariablesStarWattosRDC.");
+                            return null;
+                        }
+                    }                          
+                    if ( currentStarSCId < 0 ) {
+                        General.showCodeBug("Failed to get next reserved row in STAR simple (RDC) constraint atom table.");
+                        return null;
+                    }
+                    tTMain.setValue(currentStarSCId, tagNameRDC_RDC_lower_bound, rdc.lowBound[currentSCId]);                      
+                    tTMain.setValue(currentStarSCId, tagNameRDC_RDC_upper_bound, rdc.uppBound[currentSCId]);                      
+                    tTMain.setValue(currentStarSCId, tagNameRDC_RDC_val,         rdc.target[currentSCId]);                      
+                    tTMain.setValue(currentStarSCId, tagNameRDC_RDC_val_err,     rdc.targetError[currentSCId]);                      
+                    tTMain.setValue(currentStarSCId, tagNameRDC_ID2, scCount);                      
+                    
+                    int columnsPerAtom = 5;
+                    int columnsPerAuthorAtom = 4;
+                    int offsetToFirstAtom = 2;
+                    int offsetToFirstAuthorAtom = 16;
+                    int prevMolNum  = Defs.NULL_INT;
+                    int entityNum  = Defs.NULL_INT;
+                    for (int atom_id=0;atom_id<scAtoms.size();atom_id++) {
+                        // FOR EACH ATOM in member
+                        int offsetAtom = offsetToFirstAtom + columnsPerAtom * atom_id;
+                        int offsetAuthorAtom = offsetToFirstAuthorAtom + columnsPerAuthorAtom * atom_id;
+                        int currentSCAtomId = scAtoms.getQuick( atom_id );
+                        int currentAtomId   = rdc.atomIdAtom[  currentSCAtomId];
+                        int currentResId    = gumbo.atom.resId[ currentAtomId];
+                        int currentMolId    = gumbo.res.molId[  currentResId];
+                        if ( Defs.isNull( currentAtomId ) ) { // Was the atom actually matched in the structure?
+                            General.showError("Got null for atomId in Rdc");
+                            return null;
+                        }
+
+                        String atomName = gumbo.atom.nameList[currentAtomId ];
+                        int resNum      = gumbo.res.number[   currentResId ];
+                        String resName  = gumbo.res.nameList[ currentResId ];
+                        int molNum      = gumbo.mol.number[   currentMolId];                        
+                        if ( molNum != prevMolNum ) { 
+                            entityNum    = ((Integer)molNumber2EntityNumberMap.get( new Integer(molNum))).intValue(); // expensive so only do when changes are possible.
+                        }               
+                        tTMain.setValue(currentStarSCId, offsetAtom+0, molNum);                      
+                        tTMain.setValue(currentStarSCId, offsetAtom+1, entityNum);                      
+                        tTMain.setValue(currentStarSCId, offsetAtom+2, resNum);                      
+                        tTMain.setValue(currentStarSCId, offsetAtom+3, resName);                      
+                        tTMain.setValue(currentStarSCId, offsetAtom+4, atomName);                      
+                        
+                        
+                        tTMain.setValue(currentStarSCId, offsetAuthorAtom+0, rdc.authMolNameList[  currentSCAtomId ]);                      
+                        tTMain.setValue(currentStarSCId, offsetAuthorAtom+1, rdc.authResIdList[    currentSCAtomId ]);                      
+                        tTMain.setValue(currentStarSCId, offsetAuthorAtom+2, rdc.authResNameList[  currentSCAtomId ]);                      
+                        tTMain.setValue(currentStarSCId, offsetAuthorAtom+3, rdc.authAtomNameList[ currentSCAtomId ]);                      
+                    } // end of loop per atom
+
+                    scCount++;
+                }
+                rdcListCount++;
+                // Make it into a valid saveframe by cancelling reservations on all the tag tables.
+                tTMain.cancelAllReservedRows();
+            }
+        }    
+        
 // COORDINATES
         int atomRID = atom.selected.nextSetBit(0);
         if ( atomRID < 0 ) {
@@ -4302,7 +4873,7 @@ public class File31 {
         String sequence;
         
         for (int molRID=molSet.nextSetBit(0); molRID >=0; molRID=molSet.nextSetBit(molRID+1)) {
-            sequence = mol.getSequence( molRID, true, 0, ',', General.eol );
+            sequence = mol.getSequence( molRID, true, 0, ',', "\n" );
             if ( sequence == null ) {
                 General.showError("Failed to get sequence for molecule");
                 return null;
@@ -4332,7 +4903,11 @@ public class File31 {
                 int entityNumb = mol2EntityMap[ molRID ];                
                 if ( prevEntityNumb != entityNumb ) {
                     prevEntityNumb = entityNumb;
-                    result.put(new Integer( entityNumb ), molMain.getValueString(molRID, Relation.DEFAULT_ATTRIBUTE_NAME ));
+                    String molNameOrg = molMain.getValueString(molRID, Relation.DEFAULT_ATTRIBUTE_NAME );
+//                    General.showDebug("Found org molName: ["+molNameOrg+"]");
+                    String molName = molName2STAR(molNameOrg);
+//                    General.showDebug("Found molName: ["+molName+"]");
+                    result.put(new Integer( entityNumb ), molName);
                 }
             }
         } catch ( Exception e ) {
@@ -4343,7 +4918,21 @@ public class File31 {
         return result;
     }
     
-    
+    /** replaces any invalid character in input with an underscore
+     * to make it suitable for use as a saveframe label.
+     * @param valueString
+     * @return
+     */
+    public String molName2STAR(String valueString) {
+        char newChar = '_';
+        final String badChars = " !@#$%^&*()-=+{}[]:\"\\|;'<>?,./`~";
+        for ( int c=0;c<badChars.length();c++) {
+            char ch = badChars.charAt(c);
+            valueString = valueString.replace(ch, newChar);
+        }
+        return valueString;
+    }
+
     /** Create a map to be used in the coordinate table. It maps molecule numbers to
      *entity numbers which if all models are the same this is correct.
      */
@@ -4441,12 +5030,234 @@ public class File31 {
         return true;
     }
 
+    public SaveFrame getSFTemplateCDIH() {
+            SaveFrame sF = new SaveFrame();
+            // Default variables.
+            HashMap             namesAndTypes;
+            ArrayList           order;
+            HashMap             namesAndValues;
+            ForeignKeyConstrSet foreignKeyConstrSet = null;
+            TagTable            tT;
+            try {
+                // INTRO
+                namesAndTypes           = new HashMap();
+                order                   = new ArrayList();
+                namesAndValues          = new HashMap();
+                tT                      = new TagTable(dbms.getNextRelationName(), dbms);
+                tT.isFree               = true;
+                tT.getNewRowId(); // Sets first row bit in used to true.
+                namesAndTypes.put( tagNameCDIH_Sf_category,            new Integer(Relation.DATA_TYPE_STRING));
+                namesAndTypes.put( tagNameCDIH_Constraint_file_ID,     new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put( tagNameCDIH_MR_file_block_position, new Integer(Relation.DATA_TYPE_INT));
+                order.add(tagNameCDIH_Sf_category);               
+                order.add(tagNameCDIH_Constraint_file_ID);              
+                order.add(tagNameCDIH_MR_file_block_position);         
+                namesAndValues.put( tagNameCDIH_Sf_category,            "torsion_angle_constraints");
+                // Append columns after order id column.
+                tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, foreignKeyConstrSet);
+                sF.add( tT );
+                
+                // LOOP
+                namesAndTypes           = new HashMap();
+                order                   = new ArrayList();
+                namesAndValues          = new HashMap();
+                tT                      = new TagTable(dbms.getNextRelationName(), dbms);
+                tT.isFree = false;
+                namesAndTypes.put( tagNameCDIH_ID2,                 new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put( tagNameCDIH_Torsion_angle_name,  new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put( tagNameCDIH_Entity_assembly_ID_1,new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put(          tagNameCDIH_Entity_ID_1,new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put(      tagNameCDIH_Comp_index_ID_1,new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put(            tagNameCDIH_Comp_ID_1,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(            tagNameCDIH_Atom_ID_1,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put( tagNameCDIH_Entity_assembly_ID_2,new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put(          tagNameCDIH_Entity_ID_2,new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put(      tagNameCDIH_Comp_index_ID_2,new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put(            tagNameCDIH_Comp_ID_2,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(            tagNameCDIH_Atom_ID_2,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put( tagNameCDIH_Entity_assembly_ID_3,new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put(          tagNameCDIH_Entity_ID_3,new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put(      tagNameCDIH_Comp_index_ID_3,new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put(            tagNameCDIH_Comp_ID_3,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(            tagNameCDIH_Atom_ID_3,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put( tagNameCDIH_Entity_assembly_ID_4,new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put(          tagNameCDIH_Entity_ID_4,new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put(      tagNameCDIH_Comp_index_ID_4,new Integer(Relation.DATA_TYPE_INT));
+                namesAndTypes.put(            tagNameCDIH_Comp_ID_4,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(            tagNameCDIH_Atom_ID_4,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(tagNameCDIH_Angle_lower_bound_val,new Integer(Relation.DATA_TYPE_FLOAT));
+                namesAndTypes.put(tagNameCDIH_Angle_upper_bound_val,new Integer(Relation.DATA_TYPE_FLOAT));               
+                namesAndTypes.put( tagNameCDIH_Auth_segment_code_1,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(       tagNameCDIH_Auth_seq_ID_1,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(      tagNameCDIH_Auth_comp_ID_1,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(      tagNameCDIH_Auth_atom_ID_1,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put( tagNameCDIH_Auth_segment_code_2,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(       tagNameCDIH_Auth_seq_ID_2,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(      tagNameCDIH_Auth_comp_ID_2,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(      tagNameCDIH_Auth_atom_ID_2,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put( tagNameCDIH_Auth_segment_code_3,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(       tagNameCDIH_Auth_seq_ID_3,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(      tagNameCDIH_Auth_comp_ID_3,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(      tagNameCDIH_Auth_atom_ID_3,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put( tagNameCDIH_Auth_segment_code_4,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(       tagNameCDIH_Auth_seq_ID_4,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(      tagNameCDIH_Auth_comp_ID_4,new Integer(Relation.DATA_TYPE_STRINGNR));
+                namesAndTypes.put(      tagNameCDIH_Auth_atom_ID_4,new Integer(Relation.DATA_TYPE_STRINGNR));
+
+                order.add(                  tagNameCDIH_ID2);             
+                order.add(   tagNameCDIH_Torsion_angle_name);             
+                order.add( tagNameCDIH_Entity_assembly_ID_1);             
+                order.add(          tagNameCDIH_Entity_ID_1);             
+                order.add(      tagNameCDIH_Comp_index_ID_1);             
+                order.add(            tagNameCDIH_Comp_ID_1);             
+                order.add(            tagNameCDIH_Atom_ID_1);             
+                order.add( tagNameCDIH_Entity_assembly_ID_2);             
+                order.add(          tagNameCDIH_Entity_ID_2);             
+                order.add(      tagNameCDIH_Comp_index_ID_2);             
+                order.add(            tagNameCDIH_Comp_ID_2);             
+                order.add(            tagNameCDIH_Atom_ID_2);             
+                order.add( tagNameCDIH_Entity_assembly_ID_3);             
+                order.add(          tagNameCDIH_Entity_ID_3);             
+                order.add(      tagNameCDIH_Comp_index_ID_3);             
+                order.add(            tagNameCDIH_Comp_ID_3);             
+                order.add(            tagNameCDIH_Atom_ID_3);             
+                order.add( tagNameCDIH_Entity_assembly_ID_4);             
+                order.add(          tagNameCDIH_Entity_ID_4);             
+                order.add(      tagNameCDIH_Comp_index_ID_4);             
+                order.add(            tagNameCDIH_Comp_ID_4);             
+                order.add(            tagNameCDIH_Atom_ID_4);             
+                order.add(tagNameCDIH_Angle_lower_bound_val);             
+                order.add(tagNameCDIH_Angle_upper_bound_val);             
+                order.add(  tagNameCDIH_Auth_segment_code_1);             
+                order.add(        tagNameCDIH_Auth_seq_ID_1);             
+                order.add(       tagNameCDIH_Auth_comp_ID_1);             
+                order.add(       tagNameCDIH_Auth_atom_ID_1);             
+                order.add(  tagNameCDIH_Auth_segment_code_2);             
+                order.add(        tagNameCDIH_Auth_seq_ID_2);             
+                order.add(       tagNameCDIH_Auth_comp_ID_2);             
+                order.add(       tagNameCDIH_Auth_atom_ID_2);             
+                order.add(  tagNameCDIH_Auth_segment_code_3);             
+                order.add(        tagNameCDIH_Auth_seq_ID_3);             
+                order.add(       tagNameCDIH_Auth_comp_ID_3);             
+                order.add(       tagNameCDIH_Auth_atom_ID_3);             
+                order.add(  tagNameCDIH_Auth_segment_code_4);             
+                order.add(        tagNameCDIH_Auth_seq_ID_4);             
+                order.add(       tagNameCDIH_Auth_comp_ID_4);             
+                order.add(       tagNameCDIH_Auth_atom_ID_4);             
+
+                tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, foreignKeyConstrSet);
+                sF.add( tT );
+    
+            } catch ( Exception e ) {
+                General.showThrowable(e);
+                return null;
+            }
+        
+//            General.showDebug("SC (CDIH) SF is:[" + sF.toSTAR() + General.eol);
+            return sF;
+        }
+
+    public SaveFrame getSFTemplateRDC() {
+        SaveFrame sF = new SaveFrame();
+        // Default variables.
+        HashMap             namesAndTypes;
+        ArrayList           order;
+        HashMap             namesAndValues;
+        ForeignKeyConstrSet foreignKeyConstrSet = null;
+        TagTable            tT;
+        try {
+            // INTRO
+            namesAndTypes           = new HashMap();
+            order                   = new ArrayList();
+            namesAndValues          = new HashMap();
+            tT                      = new TagTable(dbms.getNextRelationName(), dbms);
+            tT.isFree               = true;
+            tT.getNewRowId(); // Sets first row bit in used to true.
+            namesAndTypes.put( tagNameRDC_Sf_category,            new Integer(Relation.DATA_TYPE_STRING));
+            namesAndTypes.put( tagNameRDC_Constraint_file_ID,     new Integer(Relation.DATA_TYPE_INT));
+            namesAndTypes.put( tagNameRDC_MR_file_block_position, new Integer(Relation.DATA_TYPE_INT));
+            order.add(tagNameRDC_Sf_category);               
+            order.add(tagNameRDC_Constraint_file_ID);              
+            order.add(tagNameRDC_MR_file_block_position);         
+            namesAndValues.put( tagNameRDC_Sf_category,            "RDC_constraints");
+            // Append columns after order id column.
+            tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, foreignKeyConstrSet);
+            sF.add( tT );
+            
+            // LOOP
+            namesAndTypes           = new HashMap();
+            order                   = new ArrayList();
+            namesAndValues          = new HashMap();
+            tT                      = new TagTable(dbms.getNextRelationName(), dbms);
+            tT.isFree = false;
+            namesAndTypes.put( tagNameRDC_ID2,                 new Integer(Relation.DATA_TYPE_INT));
+            namesAndTypes.put( tagNameRDC_Entity_assembly_ID_1,new Integer(Relation.DATA_TYPE_INT));
+            namesAndTypes.put(          tagNameRDC_Entity_ID_1,new Integer(Relation.DATA_TYPE_INT));
+            namesAndTypes.put(      tagNameRDC_Comp_index_ID_1,new Integer(Relation.DATA_TYPE_INT));
+            namesAndTypes.put(            tagNameRDC_Comp_ID_1,new Integer(Relation.DATA_TYPE_STRINGNR));
+            namesAndTypes.put(            tagNameRDC_Atom_ID_1,new Integer(Relation.DATA_TYPE_STRINGNR));
+            namesAndTypes.put( tagNameRDC_Entity_assembly_ID_2,new Integer(Relation.DATA_TYPE_INT));
+            namesAndTypes.put(          tagNameRDC_Entity_ID_2,new Integer(Relation.DATA_TYPE_INT));
+            namesAndTypes.put(      tagNameRDC_Comp_index_ID_2,new Integer(Relation.DATA_TYPE_INT));
+            namesAndTypes.put(            tagNameRDC_Comp_ID_2,new Integer(Relation.DATA_TYPE_STRINGNR));
+            namesAndTypes.put(            tagNameRDC_Atom_ID_2,new Integer(Relation.DATA_TYPE_STRINGNR));
+            namesAndTypes.put(            tagNameRDC_RDC_val,new Integer(Relation.DATA_TYPE_FLOAT));
+            namesAndTypes.put(            tagNameRDC_RDC_val_err,new Integer(Relation.DATA_TYPE_FLOAT));
+            namesAndTypes.put(            tagNameRDC_RDC_lower_bound,new Integer(Relation.DATA_TYPE_FLOAT));
+            namesAndTypes.put(            tagNameRDC_RDC_upper_bound,new Integer(Relation.DATA_TYPE_FLOAT));            
+            namesAndTypes.put( tagNameRDC_Auth_segment_code_1,new Integer(Relation.DATA_TYPE_STRINGNR));
+            namesAndTypes.put(       tagNameRDC_Auth_seq_ID_1,new Integer(Relation.DATA_TYPE_STRINGNR));
+            namesAndTypes.put(      tagNameRDC_Auth_comp_ID_1,new Integer(Relation.DATA_TYPE_STRINGNR));
+            namesAndTypes.put(      tagNameRDC_Auth_atom_ID_1,new Integer(Relation.DATA_TYPE_STRINGNR));
+            namesAndTypes.put( tagNameRDC_Auth_segment_code_2,new Integer(Relation.DATA_TYPE_STRINGNR));
+            namesAndTypes.put(       tagNameRDC_Auth_seq_ID_2,new Integer(Relation.DATA_TYPE_STRINGNR));
+            namesAndTypes.put(      tagNameRDC_Auth_comp_ID_2,new Integer(Relation.DATA_TYPE_STRINGNR));
+            namesAndTypes.put(      tagNameRDC_Auth_atom_ID_2,new Integer(Relation.DATA_TYPE_STRINGNR));
+
+            order.add(                  tagNameRDC_ID2);             
+            order.add( tagNameRDC_Entity_assembly_ID_1);             
+            order.add(          tagNameRDC_Entity_ID_1);             
+            order.add(      tagNameRDC_Comp_index_ID_1);             
+            order.add(            tagNameRDC_Comp_ID_1);             
+            order.add(            tagNameRDC_Atom_ID_1);             
+            order.add( tagNameRDC_Entity_assembly_ID_2);             
+            order.add(          tagNameRDC_Entity_ID_2);             
+            order.add(      tagNameRDC_Comp_index_ID_2);             
+            order.add(            tagNameRDC_Comp_ID_2);             
+            order.add(            tagNameRDC_Atom_ID_2);            
+            order.add(            tagNameRDC_RDC_val);
+            order.add(            tagNameRDC_RDC_val_err);
+            order.add(            tagNameRDC_RDC_lower_bound);
+            order.add(            tagNameRDC_RDC_upper_bound);            
+            order.add(  tagNameRDC_Auth_segment_code_1);             
+            order.add(        tagNameRDC_Auth_seq_ID_1);             
+            order.add(       tagNameRDC_Auth_comp_ID_1);             
+            order.add(       tagNameRDC_Auth_atom_ID_1);             
+            order.add(  tagNameRDC_Auth_segment_code_2);             
+            order.add(        tagNameRDC_Auth_seq_ID_2);             
+            order.add(       tagNameRDC_Auth_comp_ID_2);             
+            order.add(       tagNameRDC_Auth_atom_ID_2);             
+
+            tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, foreignKeyConstrSet);
+            sF.add( tT );
+
+        } catch ( Exception e ) {
+            General.showThrowable(e);
+            return null;
+        }
+    
+//        General.showDebug("SC (RDC) SF is:[" + sF.toSTAR() + General.eol);
+        return sF;
+    }
+    
     /** Adds the .Entry_ID and .ID tags to the first tt (tag table) in each sf
      * (save frame)
      * and .Entry_ID and .XXXX_ID tags to any further tts in each sf.
      * Keeps track of the ids of some sf categoried instances as they appear in
      * sequential order.
-     * The only exception is for _Entry.Sf_category entry_information 
+     * The only exceptions are for:
+     *          _Entry.Sf_category  entry_information 
+     *      _Chem_comp.Sf_category  chem_comp
      * where there is no .Entry_ID in first tt and no .XXXX_ID in the further tts.
      * Even for the exception above; the correct tags will be added and 
      * filled.
@@ -4490,7 +5301,8 @@ public class File31 {
             }
             tTFirst.insertColumn(localTagNameEntryId);
             tTFirst.setValue( 0, localTagNameEntryId,entry_id);
-            if ( ! sFcategory.equals("entry_information")) {
+            if (!( sFcategory.equals("entry_information") ||
+                    sFcategory.equals("chem_comp"))) {
                 tTFirst.insertColumn(tagNameListId,Relation.DATA_TYPE_INT,null);                
                 tTFirst.setValue(0, tagNameListId,value);
             }
@@ -4515,12 +5327,13 @@ public class File31 {
                 }
                 
                 String tagNameBaseEcho = tagNameSplit2[0];
-                localTagNameEntryId = tagNameBaseEcho + ".Entry_ID";                             // overloaded
-                tagNameListId  = tagNameBaseEcho + "."+tagNameSplit[0].substring(1) + "_ID";// overloaded
-
+                localTagNameEntryId = tagNameBaseEcho + ".Entry_ID";                        // overloaded
                 tTEcho.insertColumn(localTagNameEntryId);
                 tTEcho.setValueByColumn(localTagNameEntryId,entry_id);
-                if ( ! sFcategory.equals("entry_information")) {                    
+
+                tagNameListId  = tagNameBaseEcho + "."+tagNameSplit[0].substring(1) + "_ID";// overloaded
+                if (!( sFcategory.equals("entry_information") ||
+                       sFcategory.equals("chem_comp"))) {
                     tTEcho.insertColumn(tagNameListId,Relation.DATA_TYPE_INT,null);
                     tTEcho.setValueByColumn(tagNameListId,value);
                 }

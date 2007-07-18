@@ -35,6 +35,21 @@ public class DistConstrList extends ConstrItem implements Serializable {
     public static int DEFAULT_AVERAGING_METHOD                     = DEFAULT_AVERAGING_METHOD_SUM;
     public static int DEFAULT_AVERAGING_MONOMER_COUNT              = 1;
     
+    public static String[] DEFAULT_TYPE_LIST = new String[] {
+        "unknown",
+        "disulfide bond",          //Disulfide bond distance constraints" 
+        "general distance",        //Specific distance constraint is not known" 
+        "hydrogen bond",           //Hydrogen bond distance constraints" 
+        "NOE",                     //Distance constraints determined from NOE experiments" 
+        "NOE build-up",            //Distance constraints determined from a series of NOE experiments with different mixing times" 
+        "NOE not seen",            //Distance constraints supplied when an expected NOE was not observed" 
+        "paramagnetic relaxation", //Distance constraints determined from paramagnetic relaxation studies" 
+        "ROE",                     //Distance constraints determined from ROE experiments" 
+        "ROE build-up",            //Distance constraints determine from a series of ROE experiments with different mixing times" 
+        "symmetry",                //Distance constraint enforces symmetry - for example to enforce symmetry between monomers in a multimer"                 
+    };
+    public static int DEFAULT_TYPE_UNKNOWN = 0; // Matches above
+    public static StringArrayList DEFAULT_TYPE_ARRAYLIST = null;
     /** Convenience variables */
     public int[]       entry_id;                    // starting with fkcs
     
@@ -121,6 +136,7 @@ public class DistConstrList extends ConstrItem implements Serializable {
     public static String explanation = null;
     
     static {
+        DEFAULT_TYPE_ARRAYLIST = new StringArrayList( PrimitiveArray.toArrayList(DEFAULT_TYPE_LIST));
         int i=1;
         explanation =
                 "\nDescription of the tags in this list:\n" +

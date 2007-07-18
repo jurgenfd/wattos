@@ -864,6 +864,14 @@ public class PrimitiveArray {
             }
             return al;
         }
+        if ( primitiveArray instanceof String[] ) {            
+            String[] ar = (String[]) primitiveArray;
+            ArrayList al = new ArrayList( ar.length );
+            for (int i=0;i<ar.length;i++) {
+                al.add( ar[i] );
+            }
+            return al;
+        }
         General.showError("have to code toArrayList in PrimitiveArray for type: " + primitiveArray.getClass().getName());
         return null;
     }
@@ -1945,7 +1953,7 @@ public class PrimitiveArray {
         currentString =  column[sizeMax-1];
         //General.showError("string: [" + currentString + "]");
         if ( Defs.isNullString( currentString ) ) {
-            currentValue = Defs.NULL_BIT; // Default value for bit
+            currentValue = false; // Default value for bit
         } else {
             currentValue = Strings.parseBoolean( currentString );
         }
@@ -1958,7 +1966,7 @@ public class PrimitiveArray {
             // Only do parse if previous string was different.
             currentString =  column[r];
             if (Defs.isNullString( currentString )) {
-                result.set(r, Defs.NULL_BIT);
+                result.set(r, false);
             } else if ( currentString.equals( previousString ) ) {
                 result.set(r, previousValue);
             } else {

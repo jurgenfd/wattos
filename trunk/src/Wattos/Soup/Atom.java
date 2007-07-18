@@ -622,7 +622,7 @@ public class Atom extends GumboItem implements Serializable {
      * in the Atom class to find the others.
      * Only a certain maximum number of bonds will be maintained per atom. E.g. 4 for carbons.
      * @param resInMaster 
-     * @param tolerance 
+     * @param tolerance 0.1 recommended
      * @return true if successful. Can be successful without selected atoms and residues and
      *without calculating bonds.
      */    
@@ -1658,7 +1658,7 @@ public class Atom extends GumboItem implements Serializable {
         return true;
     }
     
-    /**Unique sequential number within model. Number the atoms according to row order map
+    /**Unique sequential number within entry. Number the atoms according to row order map
      *starting at 1 for each new model.
      *Static method because it acts on the argument relation, not this class.
      *Returns true on success.
@@ -1670,13 +1670,13 @@ public class Atom extends GumboItem implements Serializable {
     public static boolean setAtomIdsPerModel( Relation relation ) {
         
         // Overwrite the local convenience variables. Watch out can be confusing.
-        int[] modelId = relation.getColumnInt( Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RelationSet.RELATION_ID_COLUMN_NAME ]);
+//        int[] modelId = relation.getColumnInt( Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RelationSet.RELATION_ID_COLUMN_NAME ]);
         int[] number  = relation.getColumnInt( Relation.DEFAULT_ATTRIBUTE_NUMBER );
         
-        if ( (modelId==null) ||(number==null)) {            
-            General.showWarning("Failed to get required columns in setAtomIdsPerModel");
-            return false;
-        }
+//        if ( (modelId==null) ||(number==null)) {            
+//            General.showWarning("Failed to get required columns in setAtomIdsPerModel");
+//            return false;
+//        }
         
         int[] map = relation.getRowOrderMap(Relation.DEFAULT_ATTRIBUTE_ORDER_ID);
         if ( map == null ) {
@@ -1690,7 +1690,7 @@ public class Atom extends GumboItem implements Serializable {
         
         // The atoms are already ordered by model, mol, res, atom so easy to check.
         // Just need to use the order column too.
-        int prevModelNum = -1; // never happens
+//        int prevModelNum = -1; // never happens
         int atomId = 1; // starts at 1.
         int rowId = -1;
         // Loop requires only 3 array lookups per atom! 
@@ -1698,11 +1698,11 @@ public class Atom extends GumboItem implements Serializable {
         int s=0;
         for (int r=relation.used.nextSetBit(0); r>=0; r=relation.used.nextSetBit(r+1))  {
             rowId = map[s];
-            if ( modelId[rowId] != prevModelNum ) { // infrequently true (true the first iteration though)
-                //General.showDebug("Starting renumber of atoms at: " + atomId + " after model num changed from: " + prevModelNum + " to: " + modelNumNew[rowId] );
-                atomId = 1;
-                prevModelNum = modelId[rowId];
-            }
+//            if ( modelId[rowId] != prevModelNum ) { // infrequently true (true the first iteration though)
+//                //General.showDebug("Starting renumber of atoms at: " + atomId + " after model num changed from: " + prevModelNum + " to: " + modelNumNew[rowId] );
+//                atomId = 1;
+//                prevModelNum = modelId[rowId];
+//            }
             number[rowId] = atomId++;
             s++;
         }
@@ -2543,6 +2543,137 @@ public class Atom extends GumboItem implements Serializable {
         }
         return true;
     }
-    
+
+    /** Returns the number of atoms that are metals (and COULD PERHAPS be ions)
+     * Very inefficient routine but...*/
+    public int getMetalIons(BitSet atomSet) {
+        int count = 0;
+        for (int atomRid=atomSet.nextSetBit(0);atomRid>=0;atomRid=atomSet.nextSetBit(atomRid+1)) {
+            if ( Chemistry.METAL_ION_ELEMENT_ID_Set.get(elementId[atomRid])) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /** Input atoms and residues should only be in single model */
+    public int getThiolState(BitSet atomSet, BitSet resInMaster ) {
+        boolean hasFree         = false;
+        boolean hasDisulfide    = false;
+        boolean hasOtherBound   = false;
+                
+        calcBond(resInMaster, 0.1f);
+        
+        BitSet resRidCysSet = SQLSelect.selectBitSet(dbms, gumbo.res.mainRelation, Relation.DEFAULT_ATTRIBUTE_NAME, 
+                SQLSelect.OPERATION_TYPE_EQUALS, "CYS", false);
+        resRidCysSet.and(resInMaster);
+        General.showDebug("Found number of cys in model: " + resRidCysSet.cardinality());
+        if ( resRidCysSet.cardinality() == 0 ) {
+            return Biochemistry.THIOL_STATE_NOT_PRESENT;
+        }
+        
+        for (int resRidCys=resRidCysSet.nextSetBit(0);resRidCys>=0;resRidCys=resRidCysSet.nextSetBit(resRidCys+1)) {
+            BitSet atomRidSGSet = SQLSelect.selectCombinationBitSet(dbms, mainRelation,
+                    Relation.DEFAULT_ATTRIBUTE_NAME, 
+                    SQLSelect.OPERATION_TYPE_EQUALS, "SG", 
+                    Gumbo.DEFAULT_ATTRIBUTE_SET_RES[  RELATION_ID_COLUMN_NAME], 
+                    SQLSelect.OPERATION_TYPE_EQUALS, new Integer(resRidCys), 
+                    SQLSelect.OPERATOR_AND, false);
+            atomRidSGSet.and(atomSet);
+//            General.showDebug("Found number of SG in Cys residue (should be 1 or less): " + atomRidSGSet.cardinality());
+            int atomRidSG = atomRidSGSet.nextSetBit(0);
+//            General.showDebug("Looking at SG : " + toString(atomRidSG));
+            if ( atomRidSG<0 ) {
+                General.showDebug("No SG atom in Cys residue found; assuming the Cys thiol state of the entry is unknown");
+                return Biochemistry.THIOL_STATE_UNKNOWN;
+            }
+            BitSet bondRidSetFromS = SQLSelect.selectBitSet(dbms, gumbo.bond.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, 
+                    SQLSelect.OPERATION_TYPE_EQUALS, new Integer(atomRidSG), false);
+            BitSet bondRidSetToS   = SQLSelect.selectBitSet(dbms, gumbo.bond.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, 
+                    SQLSelect.OPERATION_TYPE_EQUALS, new Integer(atomRidSG), false);
+//            General.showDebug("Found number of atom bound FROM this SG in residue rid: " + resRidCys + 
+//                    " is: " +bondRidSetFromS.cardinality());
+//            General.showDebug("Found number of atom bound TO   this SG in residue rid: " + resRidCys + 
+//                    " is: " +bondRidSetToS.cardinality());
+            int i=0;
+            BitSet[] bondRidSetList = new BitSet[] { bondRidSetFromS, bondRidSetToS, null };
+            BitSet bondRidSet=bondRidSetFromS;
+            boolean thisResHasDisulfide = false;
+            boolean thisResHasOtherBound = false;
+            for ( ;i<2;bondRidSet=bondRidSetList[i]) {
+                for (int bondRid=bondRidSet.nextSetBit(0);bondRid>=0;bondRid=bondRidSet.nextSetBit(bondRid+1)) {
+                    int[] otherAtomList = gumbo.bond.atom_B_Id;
+                    if ( i==1 ) {
+                        otherAtomList = gumbo.bond.atom_A_Id;
+                    }
+                    int otherAtomRid = otherAtomList[bondRid];
+                    int otherAtomResRid = resId[otherAtomRid];
+                    String otherAtomName = nameList[otherAtomRid];
+                    String otherAtomResName = gumbo.res.nameList[otherAtomResRid];
+//                    General.showDebug("Looking at bonded atom: " + toString(otherAtomRid));
+                    if ( otherAtomResRid == resId[ atomRidSG ] ) {
+                        continue;
+                    }
+                    if ( otherAtomResName.equals("CYS") && otherAtomName.equals("SG")) {
+//                        General.showDebug("Found disulfide thiol on: " + gumbo.res.toString(resRidCys));
+                        hasDisulfide = true;
+                        thisResHasDisulfide = true;
+                    } else {
+//                        General.showDebug("Found other bound thiol on: " + gumbo.res.toString(resRidCys));
+                        hasOtherBound = true;
+                        thisResHasOtherBound = true;
+                    }
+                }
+                i++;                
+            }
+            if (!( thisResHasDisulfide || thisResHasOtherBound )) {
+                hasFree = true;
+                General.showDebug("Found free thiol on          : " + gumbo.res.toString(resRidCys));
+            } else if ( thisResHasDisulfide ) {
+                General.showDebug("Found disulfide thiol on     : " + gumbo.res.toString(resRidCys));
+            } else {
+                General.showDebug("Found other bound thiol on   : " + gumbo.res.toString(resRidCys));
+            }
+        }
+        
+        
+        General.showDebug("hasFree          : " + hasFree);
+        General.showDebug("hasDisulfide     : " + hasDisulfide);
+        General.showDebug("hasOtherBound    : " + hasOtherBound);
+        
+        if ( hasFree ) {
+            if ( hasDisulfide ) {
+                if ( hasOtherBound ) {
+                    return Biochemistry.THIOL_STATE_FREE_DISULFIDE_AND_OTHER_BOUND;
+                } else {
+                    return Biochemistry.THIOL_STATE_FREE_AND_DISULFIDE_BOUND;
+                }
+            } else {
+                if ( hasOtherBound ) {
+                    return Biochemistry.THIOL_STATE_FREE_AND_OTHER_BOUND;
+                } else {
+                    General.showDebug("Found THIOL_STATE_ALL_FREE");
+                    return Biochemistry.THIOL_STATE_ALL_FREE;
+                    
+                }
+            }
+        } else {
+            if ( hasDisulfide ) {
+                if ( hasOtherBound ) {
+                    return Biochemistry.THIOL_STATE_DISULFIDE_AND_OTHER_BOUND;
+                } else {
+                    return Biochemistry.THIOL_STATE_ALL_DISULFIDE_BOUND;
+                }
+            } else {
+                if ( hasOtherBound ) {
+                    return Biochemistry.THIOL_STATE_ALL_OTHER_BOUND;
+                } else {
+                    General.showCodeBug("There are Cys but they are not any of the 3 states; an error for sure");
+                    return -1;
+                    
+                }
+            }            
+        }        
+    }    
 }
  

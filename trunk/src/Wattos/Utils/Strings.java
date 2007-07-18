@@ -2306,5 +2306,26 @@ public class Strings {
     }
     public static String removeEols(String value) {
         return EOL_ANY.matcher(value).replaceAll("");
+    }
+    public static void deriveUniqueNames(String[] columnString) {
+        for (int i=1;i<columnString.length;i++) {
+            if ( columnString[i] == null ) {
+                continue;
+            }
+            int count = 1;
+            int strLenght = columnString[i].length();
+//            boolean done = false;
+            for (int j=0;j<i;j++) {
+                if ( columnString[j] == null ) {
+                    continue;
+                }
+                if ( columnString[j].equals(columnString[i])) {
+                    count++;
+                    columnString[i] = columnString[i].substring(0,strLenght) + " " + count;
+                    j--; // check again
+                }
+            }
+        }
+        
     }    
 }

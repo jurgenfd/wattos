@@ -384,8 +384,12 @@ public class DBMS implements Serializable {
         
         // Add tables.
         Set relations = tables.keySet();
-        for (Iterator it=relations.iterator();it.hasNext();) {
+        ArrayList relationList = new ArrayList( relations );
+//        General.showDebug("relations: " + Strings.toString(relationList));
+        Collections.sort( relationList );
+        for (Iterator it=relationList.iterator();it.hasNext();) {
             String key = (String) it.next();
+//            General.showDebug("Adding table to graph with name: " + key);
             graph.addVertex(key); // they are unique
         }
         

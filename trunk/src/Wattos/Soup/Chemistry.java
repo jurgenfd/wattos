@@ -275,6 +275,7 @@ Zn 1.39
     public static float smallestBondEver = 0.74611f;    // in H2 and are there smaller ones?
 
     private static StringArrayList ION_RESIDUE_NAME_LIST = new StringArrayList();
+    public static BitSet METAL_ION_ELEMENT_ID_Set = new BitSet();
     
     // In case we want to be redundant -> see redundant 
     public static final int ISOTOPE_ID_HYDROGEN    = 1; 
@@ -314,6 +315,12 @@ Zn 1.39
         MAX_BONDS[ ELEMENT_ID_HYDROGEN ] = 1;
         // Extend as capabilities in xplor-nih extend.
         ION_RESIDUE_NAME_LIST.add("ZN");
+        
+        METAL_ION_ELEMENT_ID_Set.set(11,14); // Na, Mg, Al
+        METAL_ION_ELEMENT_ID_Set.set(19,33); // K, thru Ge
+        METAL_ION_ELEMENT_ID_Set.set(37,52); // Rb, thru Sb
+        METAL_ION_ELEMENT_ID_Set.set(55,85); // Cs, thru Po
+        METAL_ION_ELEMENT_ID_Set.set(87,107);// Fr, thru Unh
     }
     
     /** Creates new Chemistry */

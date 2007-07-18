@@ -15,7 +15,7 @@ explanation added.
 
         1  a                                                                                                                                                                                                                    
         2 $sfCode                                                                                                                                                                                                            
-        3 'a b'                                                                                                                                                                                                                 
+        3 "a b"                                                                                                                                                                                                               
         4  c_d                                                                                                                                                                                                                  
         5  e"f                                                                                                                                                                                                                  
         6  g'h                                                                                                                                                                                                                  
@@ -23,20 +23,19 @@ explanation added.
 ;
 values in semi-colons enclose
 and multiple lines
-;
-                                                                                                                                                            
+;                                                                                                                                                            
         8  
 ; values with not real # comments enclosed
 and multiple lines
 ;
-                                                                                                                                                 
-        9 'not ### a "" comment'                                                                                                                                                                                                
+                                                                                                                                  
+        9 'not ### a "" comment'
        10  H1'-H2"                                                                                                                                                                                                              
-       11 'h1'-H2': internal quotes are not ending :'                                                                                                                                                                                                          
+       11 "h1"-H2": internal quotes are not ending :"                                                                                                                                                                                                          
        12  .                                                                                                                                                                                                                    
-       13 '_tagNameOrNot'                                                                                                                                                                                                       
-       14 '$$$$$$$$---A value starting with dollar but with spaces--$$$$$$$#'   
-       15 '$$$$$$$$---PRO35 is TRANS- but qd is doubtfull!--$$$$$$$#'                                                                                                                                                        
+       13 "_tagNameOrNot"                                                                                                                                                                                                       
+       14 "$$$$$$$$---A value starting with dollar but with spaces--$$$$$$$#"
+       15 "$$$$$$$$---PRO35 is TRANS- but qd is doubtfull!--$$$$$$$#"
        16 
 ;
 some text from entry 1tus that can't be expressed in star as defined. 

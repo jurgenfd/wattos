@@ -54,7 +54,8 @@ public class Gumbo extends RelationSoS implements Serializable {
     public static String      DEFAULT_ATTRIBUTE_BFACTOR          = "b_factor";
     public static String      DEFAULT_ATTRIBUTE_ELEMENT_ID       = "element_id";    
     public static String      DEFAULT_ATTRIBUTE_POL_TYPE         = "pol_type";    
-
+    public static String      DEFAULT_ATTRIBUTE_ASYM_ID          = "asym_id"; // under molecule    
+    
     /** The different levels in the gumbo: the physical rid. Array elements:
      set name; main relation name, main relation default column for id*/
     public static String[]      DEFAULT_ATTRIBUTE_SET_ATOM         = {"atom",   null,null};

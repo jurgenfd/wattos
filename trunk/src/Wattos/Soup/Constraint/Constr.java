@@ -52,6 +52,7 @@ public class Constr extends RelationSoS implements Serializable {
     public static String      DEFAULT_ATTRIBUTE_MEMBER_ID                                = "member_id";       
     public static String      DEFAULT_ATTRIBUTE_CONTRIBUTION                             = "contribution";       
     public static String      DEFAULT_ATTRIBUTE_TARGET                                   = "target";       
+    public static String      DEFAULT_ATTRIBUTE_TARGET_ERR                               = "target_err";       
     public static String      DEFAULT_ATTRIBUTE_UPP_BOUND                                = "upp_bound";       
     public static String      DEFAULT_ATTRIBUTE_LOW_BOUND                                = "low_bound";       
     public static String      DEFAULT_ATTRIBUTE_PEAK_ID                                  = "peak_id";       
@@ -122,9 +123,9 @@ public class Constr extends RelationSoS implements Serializable {
 //        General.showDebug("Adding relation set for cdih constraints");
         cdih         = new Cdih(dbms, this);            addRelationSet( cdih );          
 //        General.showDebug("Adding relation set for RDC constraint lists");
-//        rdcList     = new RdcList(dbms, this);        addRelationSet( rdcList );          
+        rdcList     = new RdcList(dbms, this);        addRelationSet( rdcList );          
 //        General.showDebug("Adding relation set for RDC constraints");
-//        rdc         = new Rdc(dbms, this);            addRelationSet( rdc );          
+        rdc         = new Rdc(dbms, this);            addRelationSet( rdc );          
     }     
 
     

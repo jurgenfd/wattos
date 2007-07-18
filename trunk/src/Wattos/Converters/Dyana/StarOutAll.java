@@ -539,6 +539,7 @@ public class StarOutAll{
                     looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "lower" ) ));
                     looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "upper" ) ));
                     looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "error" ) ));
+                    looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY )); // _RDC_constraint.Source_experiment_ID
                     looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY )); // resonances
                     looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY ));
                     // Store info on both atoms

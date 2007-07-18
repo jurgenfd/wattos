@@ -837,4 +837,9 @@ public class Residue extends GumboItem implements Serializable {
                    SQLSelect.OPERATOR_AND, false );                
         return residuesInSameMol.nextSetBit(0);
     }
+
+    public int getOrganic_ligands(BitSet allResSet) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }

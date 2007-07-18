@@ -45,16 +45,16 @@ public class StarGeneral {
     public static final String WILDCARD             = "*"; // In selections will select all
     public static final String STAR_NULL_STRING     = "."; // In selections will select NOTHING
             
-    public static final boolean USE_SINGLE_QUOTE_BY_DEFAULT = true;
+    public static final boolean USE_SINGLE_QUOTE_BY_DEFAULT = false; // to make consistent with Python STAR API
     
-    public static int verbosity               = STANDARD_VERBOSITY_DEFAULT;
+    public int verbosity               = STANDARD_VERBOSITY_DEFAULT;
     /** Indent for loop_ */
-    public static int loopIdentSize           = 4;
+    public int loopIdentSize           = 4;
     /** Indent for free tag names  */
-    public static int freeIdentSize           = loopIdentSize;       
+    public int freeIdentSize           = loopIdentSize;       
     /** Indent for looped tag names  */
-    public static int tagnamesIdentSize       = loopIdentSize + 3;
-    public static boolean showStopTag         = true;
+    public int tagnamesIdentSize       = loopIdentSize + 3;
+    public boolean showStopTag         = true;
 
     /** StarParser to be used only once; silly */
     public static EDU.bmrb.starlibj.StarParser sp = null;
@@ -268,11 +268,11 @@ public class StarGeneral {
         }
         // Anything is allowed to occur in this quote style except the situation 
         // caught above.
-        return General.eol +
+        return "\n" +
                ";" + in + 
-                General.eol+ 
+                "\n"+ 
                ";" + 
-                General.eol;          
+                "\n";          
     }
     
     /** Return null on error or a valid string. For now only all white spaces are caught.

@@ -9,17 +9,35 @@
 
 package Wattos.Star.MmCif;
 
-import Wattos.CloneWars.*;
-import Wattos.Common.*;
-import Wattos.Database.*;
-import Wattos.Soup.*;
-import Wattos.Star.NMRStar.*;
-import Wattos.Star.*;
-import Wattos.Utils.*;
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+
+import Wattos.CloneWars.UserInterface;
+import Wattos.Common.OrfIdList;
+import Wattos.Database.DBMS;
+import Wattos.Database.Defs;
+import Wattos.Database.Relation;
+import Wattos.Database.RelationSet;
+import Wattos.Database.SQLSelect;
+import Wattos.Soup.Atom;
+import Wattos.Soup.Chemistry;
+import Wattos.Soup.Entry;
+import Wattos.Soup.Gumbo;
+import Wattos.Soup.Model;
+import Wattos.Soup.Molecule;
+import Wattos.Soup.Residue;
+import Wattos.Star.DataBlock;
+import Wattos.Star.StarFileReader;
+import Wattos.Star.StarNode;
+import Wattos.Star.TagTable;
+import Wattos.Star.NMRStar.StarDictionary;
+import Wattos.Utils.General;
 import Wattos.Utils.InOut;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import Wattos.Utils.ObjectIntMap;
+import Wattos.Utils.Strings;
 
 /**
  * Fri Jun 15 15:01:43 CDT 2007
@@ -60,6 +78,7 @@ public class CIFCoord {
 //    public String tagNameMolSFCategory;    
     public String tagNameMolEntityId;      
     public String tagNameMolType;          
+    public String tagNameMolName; // same values as another?          
     public String tagNameMolPolType;       
     public String tagNameMolPolMolId;       
     
@@ -164,6 +183,7 @@ public class CIFCoord {
             tagNameMolAssEntityId             = (String) ((ArrayList)starDict.toCIF2D.get( "mol_main",       "_Entity_assembly.Entity_ID"                   )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameMolEntityId                = (String) ((ArrayList)starDict.toCIF2D.get( "mol_main",       "_Entity.ID"                                   )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameMolType                    = (String) ((ArrayList)starDict.toCIF2D.get( "mol_main",       "type"         )).get(StarDictionary.POSITION_CIF_TAG_NAME);
+            tagNameMolName                    = (String) ((ArrayList)starDict.toCIF2D.get( "mol_main",       "name"         )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameMolPolType                 = (String) ((ArrayList)starDict.toCIF2D.get( "mol_main",       "pol_type"         )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameMolPolMolId                = (String) ((ArrayList)starDict.toCIF2D.get( "mol_main",       "_entity_poly.entity_id" )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             
@@ -240,7 +260,7 @@ public class CIFCoord {
             General.showCodeBug("Couldn find the star dictionary in ui.wattosLib");            
             return false;
         }
-        boolean isMMCIF = true;
+        boolean isMMCIF = true;        
         boolean status = db.translateToNativeTypesByDict( starDict, isMMCIF);            
         if ( ! status ) {
             General.showError("Failed to automatically convert to native types as defined in the star dictionary. Check input and try again please.");
@@ -261,6 +281,8 @@ public class CIFCoord {
         /** 
             _entity.id 
             _entity.type 
+            _entity.pdbx_description 
+            
             ...
             1 polymer     syn 55-MER                      17626.533 1 ? ? ?                                     ? 
             2 polymer     man 'Transcription factor IIIA' 10299.908 1 ? ? 'zinc fingers 4-6 (residues 127-212)' ? 
@@ -270,24 +292,25 @@ public class CIFCoord {
         /** _entity_poly.entity_id                      1 
             _entity_poly.type                           polypeptide(L) */
         TagTable tTEntityPoly = db.getTagTable(tagNameMolPolType,false);  // if present
+        
         /** _entity_poly_seq.entity_id
             _entity_poly_seq.num
             _entity_poly_seq.mon_id
             1  1 MET 
             1  2 SER etc... Optional for when there are no polymers.*/
         TagTable tTEntityPolySeq = db.getTagTable(tagNameResMolId,false); // if present
+        
         /** _pdbx_nonpoly_scheme.asym_id 
             _pdbx_nonpoly_scheme.entity_id 
             _pdbx_nonpoly_scheme.mon_id 
-            _pdbx_nonpoly_scheme.ndb_seq_num 
+            _pdbx_nonpoly_scheme.ndb_seq_num # important tag for numbering within asym
             B 2 MG  1 201 201 MG  MG  ? . 
             C 3 GDP 1 200 200 GDP GDP ? . 
             D 4 HOH 1 1   1   HOH HOH ? . 
-            D 4 HOH 2 2   2   HOH HOH ? . 
-            */
-        
+            D 4 HOH 2 2   2   HOH HOH ? .             */        
         TagTable tTEntityNonPoly = db.getTagTable(tagNameResNonPolMolId,true);
-        /** 
+        
+        /**
 _atom_site.group_PDB 
 _atom_site.id 
 _atom_site.type_symbol 
@@ -314,15 +337,17 @@ _atom_site.auth_asym_id
 _atom_site.auth_atom_id 
 _atom_site.pdbx_PDB_model_num 
 
-2hgh:
+2hgh / 1ai0 waters without residue nummer in same entity:
 
 ATOM   1     P  P      . G   A 1 1  ? -6.937  29.285  -10.973 1.00 0.00 ? ? ? ? ? 1   G   B P      1  
 ATOM   6329  H  HB3    . ASP B 2 87 ? -13.031 33.553  -1.159  1.00 0.00 ? ? ? ? ? 190 ASP A HB3    2  
 HETATM 6330  ZN ZN     . ZN  C 3 .  ? 15.007  -10.087 -10.730 1.00 0.00 ? ? ? ? ? 191 ZN  A ZN     2  
 HETATM 6331  ZN ZN     . ZN  D 3 .  ? -7.655  6.077   -12.407 1.00 0.00 ? ? ? ? ? 192 ZN  A ZN     2  
-HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? ? 193 ZN  A ZN     2  
-
-         */        
+HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? ? 193 ZN  A ZN     2                 
+HETATM 4797  O  O      . HOH U 5 .  ? 0.104   -1.907  -19.678 1.00 0.00 ? ? ? ? ? 9  HOH ? O    1  
+HETATM 4798  H  H1     . HOH U 5 .  ? 0.336   -2.657  -19.128 1.00 0.00 ? ? ? ? ? 9  HOH ? H1   1  
+HETATM 4799  H  H2     . HOH U 5 .  ? 0.882   -1.736  -20.204 1.00 0.00 ? ? ? ? ? 9  HOH ? H2   1  
+HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? ? 10 HOH ? O    1   */ 
         TagTable tTCoor       = db.getTagTable(tagNameAtomMolId,true);
                                 
         if ( tTStructAsym == null ) {
@@ -348,11 +373,20 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
          *Per asym_id only 1 entity id.
          */
         ObjectIntMap asymId2IntMap = getMapAsymId2Int( tTStructAsym, tagNameMolId );
-        General.showDebug("asymId2IntMap is: " + Strings.toString(asymId2IntMap));
+//        General.showDebug("asymId2IntMap is: " + Strings.toString(asymId2IntMap));
+        // Save the column too
+        String savedColumnName = tagNameMolId+"saved";
+        tTStructAsym.insertColumn(savedColumnName,Relation.DATA_TYPE_STRINGNR,null);
+        tTStructAsym.copyColumnBlock(tTStructAsym, tagNameMolId, 0, savedColumnName, 0, tTStructAsym.sizeMax);
         if ( ! convertChainId2EntityId(tTStructAsym, tagNameMolId,  asymId2IntMap)) {
             General.showError("Failed to convertChainId2EntityId for: "+tagNameMolId);
             return false;            
         }        
+//        General.showDebug("Column: "+ tagNameMolName+" is (2): " + Strings.toString( 
+//                tTEntity.getColumnString(tagNameMolName)));
+        Strings.deriveUniqueNames( tTEntity.getColumnString(tagNameMolName) );
+//        General.showDebug("Column: "+ tagNameMolName+" is (2): " + Strings.toString( 
+//                tTEntity.getColumnString(tagNameMolName)));
         if ( ! convertChainId2EntityId(tTEntityNonPoly,tagNameResNonPolMolId, asymId2IntMap)) {
             General.showError("Failed to convertChainId2EntityId for: "+tagNameResNonPolMolId);
             return false;            
@@ -397,10 +431,10 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
 
 // ENTRY
         String entryName    = InOut.getFilenameBase( new File(url.getFile()));
-        String assemblyName = entryName;
-        if ( assemblyName == null ) {
-            General.showWarning("Missing assembly name; documented/corresponded bug in STAR files from EBI");
+        if ( entryName.length() > 4 ) {
+            entryName    = entryName.substring(0, 4);
         }
+        String assemblyName = entryName;
         
         OrfIdList orfIdList = null;
         currentEntryId = entry.add(entryName, orfIdList, assemblyName);
@@ -413,7 +447,7 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
             General.showError( "Failed dbms.setValuesInAllTablesInColumn");
             return false;
         }
-        General.showDebug("Setting selected for entry with rid: " + currentEntryId);
+//        General.showDebug("Setting selected for entry with rid: " + currentEntryId);
         entry.selected.set( currentEntryId );
         
 // MODEL
@@ -432,8 +466,19 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
 // MOLECULE
             for (int molCount=1;molCount<=molCountMax;molCount++) {
                 General.showDebug("Working on molecule: " + Integer.toString(molCount));
-                int entityId = entityIdList[ tTAssemblyRID ];                                
-                currentMolId = mol.add(null,Defs.NULL_CHAR,currentModelId);
+                int entityId = entityIdList[ tTAssemblyRID ];
+                String asymId = tTStructAsym.getValueString(tTAssemblyRID, savedColumnName);
+//                General.showDebug("Found asymId from savedColumnName: ["+asymId+"]");
+//                Parameters p = new Parameters(); // Printf parameters
+//                p.add( gumbo.entry.nameList[ gumbo.model.entryId[ currentModelId ]] );            
+//                p.add( entityId );
+//                String molName = Format.sprintf("%s%03i", p);       
+                String molName = tTEntity.getValueString(entityId-1,tagNameMolName);                    
+                if ( molName == null ) {
+                    General.showError("Failed to get molName for molecule entity: " + entityId);
+                    return false;
+                }
+                currentMolId = mol.add(molName,Defs.NULL_CHAR,currentModelId,asymId);
                 if ( currentMolId < 0 ) {
                     General.showCodeBug("Failed to add mol number:" + currentMolId + " into dbms.");
                     return false;
@@ -461,6 +506,9 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
                     }
                     int rid = entitySet.nextSetBit(0);
                     molType = tTEntity.getValueString(rid,tagNameMolType);                    
+                } else {
+                    General.showError("Each entity should have been defined; none found for molecule: " + mol.nameList[currentMolId]);
+                    return false;
                 }
                 if ( tTEntityPoly != null ) {
                     BitSet entitySet = SQLSelect.selectBitSet(dbmsTemp,tTEntityPoly,tagNameMolPolMolId,
@@ -470,8 +518,8 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
                         return false;
                     }
                     if ( entitySet.cardinality() != 1 ) {
-                        General.showDebug("Expected exactly 1 hit for entity: "+entityId+" in tTEntityPoly: " + tTEntityPoly.name);
-                        General.showDebug("Assuming it's a non-polymer");
+//                        General.showDebug("Expected exactly 1 hit for entity: "+entityId+" in tTEntityPoly: " + tTEntityPoly.name);
+//                        General.showDebug("Assuming it's a non-polymer");
                         molPolType   = Molecule.polTypeEnum[  Molecule.NON_POLYMER_POL_TYPE];
                     } else {
                         int rid = entitySet.nextSetBit(0);
@@ -480,11 +528,12 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
                 } else {
                     molPolType   = Molecule.polTypeEnum[  Molecule.NON_POLYMER_POL_TYPE];
                 }
-                General.showDebug("Found molType    : "+ molType);
-                General.showDebug("Found molPolType : "+ molPolType);
+//                General.showDebug("Found molType    : "+ molType);
+//                General.showDebug("Found molPolType : "+ molPolType);
 //                mol.setName(   currentMolId, sFRes.title );
                 mol.setType(   currentMolId, molType); 
-                mol.setPolType(currentMolId, molPolType); 
+                mol.setPolType(currentMolId, molPolType);
+                mol.nameList[currentMolId] = molName;
 // RESIDUES
                 // Can the sequence be retrieved from the poly section or does
                 // it come from the coordinate list
@@ -510,7 +559,7 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
                         }
                         // Last residue's id
                         int resCountMax = resSet.cardinality();
-                        General.showDebug("Found number of residues: " + resCountMax);
+//                        General.showDebug("Found number of residues: " + resCountMax);
                         if ( resCountMax < 1 ) {
                             General.showError("Expected a positive resCountMax (not null either) but found:" + resCountMax);
                             return false;
@@ -525,7 +574,8 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
                                         resSeqId[tTResRID] + " and: " + resCount + " at tTResRID: " + tTResRID);
                                 return false;
                             }
-                            currentResId = res.add( resNameList[tTResRID], resSeqId[tTResRID], Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );                    
+                            currentResId = res.add( resNameList[tTResRID], resSeqId[tTResRID], 
+                                    Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );                    
                             if ( currentResId < 0 ) {
                                 General.showCodeBug("Failed to add res id:" + resCount + " into dbms.");
                                 return false;
@@ -543,32 +593,67 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
                 
                 // Try to add from Coor 
                 if ( ! doneWithEntityPolyOrNonPoly) { // try to get residue name(s) from the coordinates
-                    General.showDebug("Not done with entity poly; must be a nonpoly.");
+//                    General.showDebug("Not done with entity poly; must be a nonpoly/water.");
                     BitSet atomSet = SQLSelect.selectBitSet(dbmsTemp,tTCoor,tagNameAtomEntityId,
-                        SQLSelect.OPERATION_TYPE_EQUALS,new Integer(entityId),false);
+                            SQLSelect.OPERATION_TYPE_EQUALS,new Integer(entityId),false);
+                    BitSet atomSetModel = SQLSelect.selectBitSet(dbmsTemp,tTCoor,tagNameAtomModelId,
+                            SQLSelect.OPERATION_TYPE_EQUALS,new Integer(modelCount),false);
                     if ( atomSet.cardinality() < 0 ) {
                         General.showError("Expected at least one unique residue name in coor list for entity: " + entityId );
                         return false;
                     }
-                    int firstResRid = atomSet.nextSetBit(0);
-                    General.showDebug("Looking at coor table for record: " + tTCoor.toStringRow(firstResRid, false));
-                    int resCount=1;
-                    rid_res[modelCount][molCount] = new int[resCount+1]; // assign last dimension within.                
-//                    String[] resNameList    = tTCoor.getColumnString(   tagNameResName );
-//                    int[] resSeqId          = tTCoor.getColumnInt(      tagNameAtomResId);
-//                    if ( resSeqId[firstResRid] != resCount ) {
-//                        General.showError("Expected resSeqId[firstResRid] == resCount but found: " + resSeqId[firstResRid] + " and: " + resCount );
-//                        return false;
-//                    }
-                    String resName = tTCoor.getValueString(firstResRid, tagNameAtomResName);
-                    currentResId = res.add( resName, 1, Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );                    
-                    if ( currentResId < 0 ) {
-                        General.showCodeBug("Failed to add res rid (A):" + resCount + " into dbms.");
+                    if ( atomSetModel.cardinality() < 0 ) {
+                        General.showError("Expected at least one unique residue name in coor list for entity in current model: " + entityId );
                         return false;
                     }
-                    res.selected.set( currentResId );
-                    // cache rid residue
-                    rid_res[modelCount][molCount][resCount] = currentResId;
+                    atomSet.and(atomSetModel);
+                    int firstAtomRid = atomSet.nextSetBit(0);
+//                    General.showDebug("Looking at coor table for record: " + tTCoor.toStringRow(firstAtomRid, false));
+                    int resCount=1;
+                    String resName = tTCoor.getValueString(firstAtomRid, tagNameAtomResName);
+                    // Water is so special for live on earth.
+                    if ( mol.type[currentMolId]!=Molecule.WATER_TYPE ) {
+                        rid_res[modelCount][molCount] = new int[resCount+1]; // assign last dimension within.                
+                        currentResId = res.add( resName, resCount, Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );                    
+                        if ( currentResId < 0 ) {
+                            General.showCodeBug("Failed to add res count:" + resCount + " into dbms.");
+                            return false;
+                        }
+                        res.selected.set( currentResId );
+                        // cache rid residue
+                        rid_res[modelCount][molCount][resCount] = currentResId;
+                    } else {
+                        if ( ! resName.equals("HOH")) {
+                            General.showError("Found a water posing residue: " + resName);
+                            return false;
+                        }
+                        BitSet atomOSet = SQLSelect.selectBitSet(dbmsTemp,tTCoor,tagNameAtomName,
+                                SQLSelect.OPERATION_TYPE_EQUALS,"O",false);
+                        atomOSet.and(atomSet); // only within this specific entity
+                        int water_count = atomOSet.cardinality();
+//                        General.showDebug("Found number of oxygen atoms indicating a water molecule: "+water_count);
+                        rid_res[modelCount][molCount] = new int[water_count+1]; // assign last dimension within.
+                        for ( int atomRid=atomOSet.nextSetBit(0);atomRid>=0;atomRid = atomOSet.nextSetBit(atomRid+1)) {
+                            tTCoor.setValue(atomRid, tagNameAtomResId, new Integer(resCount));
+                            currentResId = res.add( resName, resCount, Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );                    
+                            if ( currentResId < 0 ) {
+                                General.showCodeBug("Failed to add WATER:" + resCount + " into dbms.");
+                                return false;
+                            }
+                            res.selected.set( currentResId );
+                            // cache rid residue
+                            rid_res[modelCount][molCount][resCount] = currentResId;      
+                            // are there follow up Hydrogens?
+                            for (int offset=1;offset<3;offset++) {
+                                int atomRid2 = atomRid+offset;                                
+                                if ( atomSet.get(atomRid2) && tTCoor.getValueString(atomRid2, tagNameAtomName).startsWith("H")) {
+                                    tTCoor.setValue(atomRid2, tagNameAtomResId, new Integer(resCount));                                            
+//                                    General.showDebug("Renumbered water residue for coor table at: " + tTCoor.toStringRow(atomRid2, false));
+                                }
+                            }
+                            resCount++;
+                        }                        
+                    }
                 }
                 tTAssemblyRID++;
             } // end of loop over molecules      
@@ -668,7 +753,6 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
              General.showError("Failed to get all the required columns; skipping the read of all atoms.");
              return false;
         }
-
         int modelNum;
         int molNum;
         int resNum;
@@ -679,7 +763,8 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
                 molNum      = atomMolIdList[    atomCount];
                 resNum      = atomResIdList[    atomCount];
                 if ( Defs.isNull(resNum)) {
-                    resNum = 1; // unnumbered residues such as ions.
+                    resNum = 1; // unnumbered residues such as ions and waters
+                    // waters will be renumbered again later.
                 }
                 model_main_id[  atomCount] = rid_model[ modelNum];
                 mol_main_id[    atomCount] = rid_mol[   modelNum][molNum];
@@ -701,6 +786,7 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
             return false;
         }                
            
+        
         // Sync the atoms over the models in the entry. Note that this will remove unsynced atoms.
         if ( (! entry.modelsSynced.get( currentEntryId  )) && 
              (! entry.syncModels( currentEntryId ))) {
@@ -722,7 +808,11 @@ HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? 
     
     /** @see Wattos.Utils.PrimitiveArray#convertString2Int
      */
-   public static boolean convertChainId2EntityId(TagTable t, String label, ObjectIntMap asymId2IntMap) {               
+   public static boolean convertChainId2EntityId(TagTable t, String label, ObjectIntMap asymId2IntMap) {
+       if ( t == null ) {
+//           General.showDebug("got empty tagtable for convertChainId2EntityId");
+           return true;
+       }
         String[] column = t.getColumnString(label);
         if ( column == null ) {
             General.showError("Failed to get String[] for column labeled: " + label);            

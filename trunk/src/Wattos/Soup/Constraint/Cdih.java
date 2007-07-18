@@ -118,10 +118,9 @@ public class Cdih extends SimpleConstr implements Serializable {
         super.resetConvenienceVariables();
         ATTRIBUTE_SET_SUB_CLASS         = Constr.DEFAULT_ATTRIBUTE_SET_CDIH;
         ATTRIBUTE_SET_SUB_CLASS_LIST    = Constr.DEFAULT_ATTRIBUTE_SET_CDIH_LIST;
-        scListIdMain          =             mainRelation.getColumnInt(    Constr.DEFAULT_ATTRIBUTE_SET_CDIH_LIST[  RELATION_ID_COLUMN_NAME]);
+        scListIdMain          =             mainRelation.getColumnInt(      Constr.DEFAULT_ATTRIBUTE_SET_CDIH_LIST[  RELATION_ID_COLUMN_NAME]);
         scListIdAtom          =             simpleConstrAtom.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_CDIH_LIST[  RELATION_ID_COLUMN_NAME]);
-        scMainIdAtom          =             simpleConstrAtom.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_CDIH[  RELATION_ID_COLUMN_NAME]);
-        scIdAtom              =             simpleConstrAtom.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_CDIH[      RELATION_ID_COLUMN_NAME ]);
+        scIdAtom              =             simpleConstrAtom.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_CDIH[  RELATION_ID_COLUMN_NAME ]);
                        
         scListIdViol          =             simpleConstrViol.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_CDIH_LIST[  RELATION_ID_COLUMN_NAME]);
         scMainIdViol          =             simpleConstrViol.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_CDIH[       RELATION_ID_COLUMN_NAME]);

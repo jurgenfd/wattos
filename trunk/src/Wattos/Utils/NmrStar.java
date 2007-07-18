@@ -993,7 +993,8 @@ public class NmrStar {
                 loopnamelistnode_constraint.addElement( new DataNameNode( "_RDC_constraint.RDC_lower_bound" ));
                 loopnamelistnode_constraint.addElement( new DataNameNode( "_RDC_constraint.RDC_upper_bound" ));
                 loopnamelistnode_constraint.addElement( new DataNameNode( "_RDC_constraint.RDC_val_err" ));
-
+                loopnamelistnode_constraint.addElement( new DataNameNode( "_RDC_constraint.Source_experiment_ID" ));
+                
                 loopnamelistnode_constraint.addElement( new DataNameNode( "_RDC_constraint.Resonance_ID_1" ));
                 loopnamelistnode_constraint.addElement( new DataNameNode( "_RDC_constraint.Resonance_ID_2" ));
                 

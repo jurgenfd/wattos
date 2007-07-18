@@ -25,12 +25,41 @@ import Wattos.Utils.InOut;
  */
 public class CIFCoordTest extends TestCase {
      
-    String fs = File.separator;    
-    String baseInputName = "2hgh_rem_small";    
+    String fs = File.separator;
+    /** This entry is a beauty to test with. It consists of:
+     * NON-SYMMETRIC INSULIN (dimeric) HEXAMER (total of 12 chains)
+     *  FORMUL  13   ZN    2(ZN1 2+)     2 asym IDs
+        FORMUL  14  IPH    6(C6 H6 O1)
+        FORMUL  15  HOH   *2(H2 O1)      1 asym ID!
+In remediated mmCIF: 21 asyms (chains)
+        A N N 1 ? 
+        B N N 2 ? 
+        C N N 1 ? 
+        D N N 2 ? 
+        E N N 1 ? 
+        F N N 2 ? 
+        G N N 1 ? 
+        H N N 2 ? 
+        I N N 1 ? 
+        J N N 2 ? 
+        K N N 1 ? 
+        L N N 2 ? # last of peptides
+        M N N 3 ? 
+        N N N 3 ? # last of Zn
+        O N N 4 ? 
+        P N N 4 ? 
+        Q N N 4 ? 
+        R N N 4 ? 
+        S N N 4 ? 
+        T N N 4 ? # last of IPH
+        U N N 5 ? # water     */
+    String pdb_id = "1ai0";
+//    String pdb_id = "2hgh";
+    String baseInputName = pdb_id + "_rem_small";    
     String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
     File inputDir       = new File( wattosRoot,"Data"+fs+"test_data" );
     File outputDir      = new File( wattosRoot,"tmp_dir" );
-    String outputFileName = baseInputName + "_out.str.gz";
+    String outputFileName = baseInputName + "_out.str";
     File outputFile     = new File( outputDir,outputFileName );
     UserInterface ui = UserInterface.init(true);
     DBMS dbms = ui.dbms;
