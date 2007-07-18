@@ -161,9 +161,9 @@ public class MRSTARFileTest extends TestCase {
 //                {0,2},      // 1iv6 dipolar
         };
         
-        int startTestIdx = 12;   // test to start with;    
+        int startTestIdx = 1;   // test to start with;    
         int countTest = 1;      // tests todo;   
-        boolean doAllTests = false;
+        boolean doAllTests = true;
         if ( doAllTests ) {
             startTestIdx = 0;
             countTest = statusExp.length;
@@ -220,7 +220,7 @@ public class MRSTARFileTest extends TestCase {
     }        
 
     
-    public void ttttestEnterStandardIDs() {
+    public void ttestEnterStandardIDs() {
         General.setVerbosityToDebug();
         String buf = "data_test "+
         

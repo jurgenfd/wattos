@@ -39,7 +39,7 @@ public class SaveFrame extends StarNode implements Serializable {
     /** Specify a valid title without the save_ part */
     public boolean setTitle( String titleNew ) {
         String titleMod = StarGeneral.toValidSaveFrameName( titleNew );
-        if ( titleMod == null ) {
+        if ( ! titleMod.equals( titleNew ) ) {
             General.showWarning("Failed to set valid saveframe title with input: [" + titleNew + "]");
             return false;
         }
@@ -51,10 +51,10 @@ public class SaveFrame extends StarNode implements Serializable {
     public boolean toSTAR( Writer w) {
         StringBuffer sb = new StringBuffer();
         try {             
-            sb.append(General.eol); // Just like Steve's starlib
+            sb.append('\n'); // Just like Steve's starlib
             sb.append("save_");
             sb.append(title);
-            sb.append(General.eol);
+            sb.append('\n');
             w.write(sb.toString());
             for (Iterator it=datanodes.iterator();it.hasNext();) {
                 Object o = it.next();

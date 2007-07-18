@@ -60,9 +60,11 @@ public class Rdc extends SimpleConstr implements Serializable {
         
         relationName    = Constr.DEFAULT_ATTRIBUTE_SET_RDC[RELATION_ID_MAIN_RELATION_NAME];
         atomRelationName=relationName+SimpleConstr.DEFAULT_ATTRIBUTE_ATOM_RELATION_EXTENSION;
+        violRelationName=relationName+SimpleConstr.DEFAULT_ATTRIBUTE_VIOL_RELATION_EXTENSION;
         try {
             mainRelation = new Relation(relationName, dbms, this);
             simpleConstrAtom = new Relation(atomRelationName, dbms, this);
+            simpleConstrViol = new Relation(violRelationName, dbms, this);
         } catch ( Exception e ) {
             General.showThrowable(e);
             return false;
@@ -92,6 +94,17 @@ public class Rdc extends SimpleConstr implements Serializable {
         simpleConstrAtom.insertColumnSet( 0, A_DEFAULT_ATTRIBUTES_TYPES, A_DEFAULT_ATTRIBUTES_ORDER, 
                 A_DEFAULT_ATTRIBUTE_VALUES, A_DEFAULT_ATTRIBUTE_FKCS);
         addRelation( simpleConstrAtom );        
+
+        V_DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_SET_RDC[      RelationSet.RELATION_ID_COLUMN_NAME ],  new Integer(DATA_TYPE_INT));
+        V_DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_SET_RDC_LIST[ RelationSet.RELATION_ID_COLUMN_NAME ],  new Integer(DATA_TYPE_INT));
+        V_DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_SET_RDC[      RelationSet.RELATION_ID_COLUMN_NAME ] );
+        V_DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_SET_RDC_LIST[ RelationSet.RELATION_ID_COLUMN_NAME ] );
+        V_DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Constr.DEFAULT_ATTRIBUTE_SET_RDC[      RelationSet.RELATION_ID_COLUMN_NAME ],    Constr.DEFAULT_ATTRIBUTE_SET_RDC[         RELATION_ID_MAIN_RELATION_NAME]});
+        V_DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Constr.DEFAULT_ATTRIBUTE_SET_RDC_LIST[ RelationSet.RELATION_ID_COLUMN_NAME ],    Constr.DEFAULT_ATTRIBUTE_SET_RDC_LIST[    RELATION_ID_MAIN_RELATION_NAME]});
+        
+        simpleConstrViol.insertColumnSet( 0, V_DEFAULT_ATTRIBUTES_TYPES, V_DEFAULT_ATTRIBUTES_ORDER, 
+                V_DEFAULT_ATTRIBUTE_VALUES, V_DEFAULT_ATTRIBUTE_FKCS);
+        addRelation( simpleConstrViol );   
         return true;
     }    
         
@@ -102,8 +115,10 @@ public class Rdc extends SimpleConstr implements Serializable {
         ATTRIBUTE_SET_SUB_CLASS_LIST    = Constr.DEFAULT_ATTRIBUTE_SET_RDC_LIST;
         scListIdMain          =             mainRelation.getColumnInt(    Constr.DEFAULT_ATTRIBUTE_SET_RDC_LIST[  RELATION_ID_COLUMN_NAME]);
         scListIdAtom          =             simpleConstrAtom.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_RDC_LIST[  RELATION_ID_COLUMN_NAME]);
-        scMainIdAtom          =             simpleConstrAtom.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_RDC[  RELATION_ID_COLUMN_NAME]);
-        scIdAtom              =             simpleConstrAtom.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_RDC[      RELATION_ID_COLUMN_NAME ]);
+        scIdAtom              =             simpleConstrAtom.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_RDC[  RELATION_ID_COLUMN_NAME ]);
+        
+        scListIdViol          =             simpleConstrViol.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_RDC_LIST[  RELATION_ID_COLUMN_NAME]);
+        scMainIdViol          =             simpleConstrViol.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_RDC[       RELATION_ID_COLUMN_NAME]);
         
         return true;
     }

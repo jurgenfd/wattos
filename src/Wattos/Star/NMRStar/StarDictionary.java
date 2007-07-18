@@ -362,6 +362,8 @@ public class StarDictionary implements Serializable {
         StringBuffer sb = new StringBuffer();
         sb.append("fromCIF\n");
         sb.append(Strings.toString(fromCIF));
+        sb.append("fromStar\n");
+        sb.append(Strings.toString(fromStar));
         return sb.toString();
     }
 }

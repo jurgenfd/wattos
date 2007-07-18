@@ -21,9 +21,9 @@ public class Defs {
     /** The primitive data types below are overloaded to deal with null values such
      *as encountered in relational databases and star. Every time arithmetic is
      *performed make sure to check that the values aren't 'nilled'.
-     *For boolean, BitSet, and even bytes no NULLs are possible because of limited range.
+     *For BitSet no NULLs are possible because of limited range.
      */
-    public static final boolean NULL_BIT        = false; // can't distinguish 
+    public static final short   NULL_BYTE       = Byte.MAX_VALUE - 1; 
     public static final short   NULL_SHORT      = Short.MAX_VALUE - 1; 
     public static final int     NULL_INT        = Integer.MAX_VALUE - 1;
     public static final float   NULL_FLOAT      = Float.intBitsToFloat(0x7f7ffffe);             // Like: MAX_VALUE - 1 bit;

@@ -91,7 +91,7 @@ public class TopologyLib implements Serializable {
         // brew a good stew
         int entry_rid = gumbo.entry.add(  "reference", null, null);
         int model_rid = gumbo.model.add(  1,entry_rid);
-        int mol_rid   = gumbo.mol.add(    "reference", ' ', model_rid);
+        int mol_rid   = gumbo.mol.add(    "reference", ' ', model_rid, null);
         int res_rid     = 0;
         int atom_rid    = 0;
         int bond_rid    = 0;

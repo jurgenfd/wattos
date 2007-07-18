@@ -39,7 +39,7 @@ public class ValidatorDictionary implements Serializable {
     
     static final String TAGCAT  = "_TAGCAT";
     static final String TAGNAME = "_TAGNAME";
-
+    public String NMR_STAR_version = null;
     public ValidatorDictionary() {
     }
     
@@ -69,6 +69,11 @@ public class ValidatorDictionary implements Serializable {
 
         General.showDebug("Read number of star tag names from Validator STAR dictionary: " + 
                 tagTt.sizeRows);
+        // Get version
+        //"3.0.8.100"        
+        SaveFrame sFVersion = db.getSaveFrameByName("INFO", true);        
+        TagTable tagTtVersion = sFVersion.getTagTable(StarGeneral.WILDCARD, true);        
+        NMR_STAR_version = tagTtVersion.getValueString(0, "_VERSION");;
 //        General.showDebug("Dictionary looks like: ");
 //        General.showDebug(sn.toSTAR().substring(0,1000));
         return true;

@@ -42,7 +42,6 @@ public class IndexSortedFloatTest extends TestCase {
         General.setVerbosityToDebug();
         General.showDebug("getRidListForQuery");
         
-//        int operator = 0;
         DBMS dbms = new DBMS();
         Relation t = null;
         try {
@@ -51,11 +50,8 @@ public class IndexSortedFloatTest extends TestCase {
             
         t.insertColumn(0,"test",Relation.DATA_TYPE_FLOAT, null);
 
-    //        [0.0,0.0,1.0,2.0,2.0,3.0,4.0]
-    //         0   1   2   3   4   5   6
         
         int[] idx = t.getNewRowIdList(7);
-//        int i = 0;
         t.setValue(idx[0],"test",0f);
         t.setValue(idx[1],"test",0f);
         t.setValue(idx[2],"test",1f);
@@ -66,9 +62,9 @@ public class IndexSortedFloatTest extends TestCase {
         
         int expResult = 4;
         int operationType = SQLSelect.OPERATION_TYPE_GREATER_THAN_OR_EQUAL;
-        Float value = new Float( 1.999f );
+        Float value = new Float( 1.99f );
         BitSet result = SQLSelect.selectBitSet(dbms,t,"test",operationType,value,false);
-        General.showDebug("result: " + PrimitiveArray.toString(result));
+        General.showDebug("result A: " + PrimitiveArray.toString(result));
         assertEquals(expResult, result.cardinality());        
 
         t.setValue(idx[0],"test",0f);
@@ -80,8 +76,8 @@ public class IndexSortedFloatTest extends TestCase {
         t.setValue(idx[6],"test",Defs.NULL_FLOAT);
         
         expResult = 2;
-        result = SQLSelect.selectBitSet(dbms,t,"test",operationType,value,false);
-        General.showDebug("result: " + PrimitiveArray.toString(result));
-        assertEquals(expResult, result.cardinality());            
+        BitSet result2 = SQLSelect.selectBitSet(dbms,t,"test",operationType,value,false);
+        General.showDebug("result B: " + PrimitiveArray.toString(result2));
+        assertEquals(expResult, result2.cardinality());            
     }    
 }

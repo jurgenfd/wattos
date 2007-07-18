@@ -77,9 +77,11 @@ public class SimpleConstr extends ConstrItem implements Serializable {
     public int[]       scListIdViol;
     public int[]       scListIdAtom;    
     public int[]       scMainIdViol;                     // refs to scMain
+    /** In main relation point to ... Set by subclass. */ 
+//    public int[]       scMainIdAtom;              
+    /** In simpleConstrAtom relation point to REAL atom relation. Set by subclass. */
+    public int[]       atomIdAtom;                       
     /** In simpleConstrAtom relation point to main relation. Set by subclass. */ 
-    public int[]       scMainIdAtom;                      
-    public int[]       atomIdAtom;                       // refs to atom
     public int[]       scIdAtom;
     
     
@@ -107,7 +109,7 @@ public class SimpleConstr extends ConstrItem implements Serializable {
     public float[]     uppBound;
     public float[]     lowBound;
     
-    public String[]    authMolNameList;              // non-fkcs in scAtom
+    public String[]    authMolNameList;             // non-fkcs in scAtom
     public StringSet   authMolNameListNR;           // Only the first atom contains actual references, the other refs are null.
     public String[]    authResNameList;
     public StringSet   authResNameListNR;
@@ -165,6 +167,8 @@ public class SimpleConstr extends ConstrItem implements Serializable {
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_HAS_UNLINKED_ATOM,                                   new Integer(DATA_TYPE_BIT));
 
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_TARGET,                              new Integer(DATA_TYPE_FLOAT));
+            DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_TARGET_ERR,                          new Integer(DATA_TYPE_FLOAT));
+            
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_UPP_BOUND,                           new Integer(DATA_TYPE_FLOAT));
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_LOW_BOUND,                           new Integer(DATA_TYPE_FLOAT));
             
@@ -175,6 +179,7 @@ public class SimpleConstr extends ConstrItem implements Serializable {
             DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_VIOL_LOW_MAX_MODEL_NUM);
             DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_HAS_UNLINKED_ATOM );
             DEFAULT_ATTRIBUTES_ORDER.add(Constr.DEFAULT_ATTRIBUTE_TARGET      );
+            DEFAULT_ATTRIBUTES_ORDER.add(Constr.DEFAULT_ATTRIBUTE_TARGET_ERR      );
             DEFAULT_ATTRIBUTES_ORDER.add(Constr.DEFAULT_ATTRIBUTE_UPP_BOUND   );
             DEFAULT_ATTRIBUTES_ORDER.add(Constr.DEFAULT_ATTRIBUTE_LOW_BOUND   );
             
@@ -279,9 +284,10 @@ public class SimpleConstr extends ConstrItem implements Serializable {
             hasUnLinkedAtom       =             mainRelation.getColumnBit(  Constr.DEFAULT_ATTRIBUTE_HAS_UNLINKED_ATOM );
                         
             target                  = (float[])   mainRelation.getColumn(     Constr.DEFAULT_ATTRIBUTE_TARGET );
+            targetError             = (float[])   mainRelation.getColumn(     Constr.DEFAULT_ATTRIBUTE_TARGET_ERR );
             uppBound                = (float[])   mainRelation.getColumn(     Constr.DEFAULT_ATTRIBUTE_UPP_BOUND );
             lowBound                = (float[])   mainRelation.getColumn(     Constr.DEFAULT_ATTRIBUTE_LOW_BOUND );
-                        
+
             authMolNameList     = (String[])    simpleConstrAtom.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME );
             authMolNameListNR   =               simpleConstrAtom.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME );
             authResNameList     = (String[])    simpleConstrAtom.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME );
@@ -320,6 +326,8 @@ public class SimpleConstr extends ConstrItem implements Serializable {
                     violation          == null ||
                     uppBound           == null ||
                     lowBound           == null ||
+                    target             == null ||
+                    targetError        == null ||
                     authMolNameList    == null ||
                     authMolNameListNR  == null ||
                     authResNameList    == null ||

@@ -38,7 +38,10 @@ public class File31Test extends TestCase {
     int avg_method              = DistConstrList.DEFAULT_AVERAGING_METHOD_SUM;
     int monomers                = 1; // e.g. set to 2 for a symmetric dimer.
     
-    String baseInputName = "2hgh_wim_small_2007-05-25";
+//    String baseInputName = "2hgh_wim_small_2007-05-25";
+//    String baseInputName = "1ai0_rem_small_out";
+//    String baseInputName = "2hgh_rem_small_out";
+    String baseInputName = "2hgh_chris_small_patched_2007-06-25";
 //    String baseInputName = "1brv_DOCR_small";
 //    String baseInputName = "2hgh-nmrif_small";
     
@@ -84,7 +87,7 @@ public class File31Test extends TestCase {
         }
         start = System.currentTimeMillis();
         boolean doEntry                             = true;     // default true
-        boolean doRestraints                        = false;     // default true
+        boolean doRestraints                        = true;     // default true
         boolean matchRestraints2Soup                = true;     // default true
         boolean matchRestraints2SoupByAuthorDetails = false;    // default false
         boolean removeUnlinkedRestraints            = true;     // default true

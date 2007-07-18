@@ -1814,7 +1814,7 @@ public class Relation implements Serializable  {
      */
     public boolean setValue( int row, String label, Object value) {
         if ( ! hasColumn( label )  ) {
-            General.showWarning("in setValue label not present for label: [" + label + "]");
+            General.showWarning("in setValue column not present: [" + label + "]");
             return false;
         }
         int columnIdx = columnOrder.indexOf( label );
@@ -1838,6 +1838,7 @@ public class Relation implements Serializable  {
     /** Low efficiency method; use direct access in stead to set the value of cells by column.
      * This method has to fetch the column every time which is kind of inefficient.
      *Note: For non-redundant strings the value should be interned before calling this routine.
+     *Note2: If the value is null then NOTHING will be done and true will be returned.
      * @param row Row id.
      * @param value Value to set to.
      * @return <CODE>true</CODE> for success.
@@ -1877,7 +1878,11 @@ public class Relation implements Serializable  {
                     General.showWarning("given value is of type: " + value.getClass().getName() + " but column is Character" );
                     return false;
                 }
-                temp[row] = ((Character) value).charValue();
+                char valueInType = Defs.NULL_CHAR;
+                if ( value != null ) {
+                    valueInType = ((Character) value).charValue();
+                }
+                temp[row] = valueInType;
                 break;
             }
             case DATA_TYPE_BYTE: {
@@ -1887,7 +1892,11 @@ public class Relation implements Serializable  {
                     General.showWarning("given value is of type: " + value.getClass().getName() + " but column is Byte" );
                     return false;
                 }
-                temp[row] = ((Byte) value).byteValue();
+                byte valueInType = Defs.NULL_BYTE;
+                if ( value != null ) {
+                    valueInType = ((Byte) value).byteValue();
+                }                
+                temp[row] = valueInType;
                 break;
             }
             case DATA_TYPE_SHORT: {
@@ -1897,7 +1906,11 @@ public class Relation implements Serializable  {
                     General.showWarning("given value is of type: " + value.getClass().getName() + " but column is Short" );
                     return false;
                 }
-                temp[row] = ((Short) value).shortValue();
+                short valueInType = Defs.NULL_SHORT;
+                if ( value != null ) {
+                    valueInType = ((Short) value).shortValue();
+                }                
+                temp[row] = valueInType;
                 break;
             }
             case DATA_TYPE_INT: {
@@ -1907,7 +1920,11 @@ public class Relation implements Serializable  {
                     General.showWarning("given value is of type: " + value.getClass().getName() + " but column is Integer" );
                     return false;
                 }
-                temp[row] = ((Integer) value).intValue();
+                int valueInType = Defs.NULL_INT;
+                if ( value != null ) {
+                    valueInType = ((Integer) value).intValue();
+                }                
+                temp[row] = valueInType;                
                 break;
             }
             case DATA_TYPE_FLOAT: {
@@ -1917,7 +1934,11 @@ public class Relation implements Serializable  {
                     General.showWarning("given value is of type: " + value.getClass().getName() + " but column is Float" );
                     return false;
                 }
-                temp[row] = ((Float) value).floatValue();
+                float valueInType = Defs.NULL_FLOAT;
+                if ( value != null ) {
+                    valueInType = ((Float) value).floatValue();
+                }                
+                temp[row] = valueInType;                
                 break;
             }
             case DATA_TYPE_DOUBLE: {
@@ -1927,7 +1948,11 @@ public class Relation implements Serializable  {
                     General.showWarning("given value is of type: " + value.getClass().getName() + " but column is Double" );
                     return false;
                 }
-                temp[row] = ((Double) value).doubleValue();
+                double valueInType = Defs.NULL_DOUBLE;
+                if ( value != null ) {
+                    valueInType = ((Double) value).doubleValue();
+                }                
+                temp[row] = valueInType;                
                 break;
             }
             case DATA_TYPE_LINKEDLIST: {
@@ -1940,24 +1965,19 @@ public class Relation implements Serializable  {
                 General.showWarning("given value is LinkedListInfo can't set value for this type.");
                 return false;
             }
-            case DATA_TYPE_STRING: {
+            case DATA_TYPE_STRING: 
+            case DATA_TYPE_STRINGNR: {
                 String[] temp = (String[]) attr.get( label );
                 if ( ! (value instanceof String)) {
                     General.showWarning("in setValue for column with label: [" + label + "]");
                     General.showWarning("given value is of type: " + value.getClass().getName() + " but column is String" );
                     return false;
                 }
-                temp[row] = (String) value;
-                break;
-            }
-            case DATA_TYPE_STRINGNR: {
-                if ( ! (value instanceof String)) {
-                    General.showWarning("in setValue for column with label: [" + label + "]");
-                    General.showWarning("given value is of type: " + value.getClass().getName() + " but column is StringNR" );
-                    return false;
-                }
-                String[] temp = (String[]) attr.get( label );
-                temp[row] = (String) value;
+                String valueInType = Defs.NULL_STRING_NULL;
+                if ( value != null ) {
+                    valueInType = (String) value;
+                }                
+                temp[row] = valueInType;                
                 break;
             }
             case DATA_TYPE_ARRAY_OF_INT: {
@@ -5208,6 +5228,7 @@ public class Relation implements Serializable  {
                 case DATA_TYPE_STRING:       
                 case DATA_TYPE_STRINGNR:     
                 case DATA_TYPE_OBJECT: { // Just copies a reference.
+//                    General.showDebug("Doing System.arraycopy((Object[])");
                     System.arraycopy((Object[])     src, src_position, (Object[])       dst, dst_position, length );
                     break;
                 }

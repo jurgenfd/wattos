@@ -56,7 +56,8 @@ public class TagTable extends Relation {
         isFree   = STANDARD_IS_FREE;
         name     = STANDARD_TITLE;
         addColumnForOverallOrder();
-        parent = null; 
+        parent = new StarNode(); // Just give it an empty placeholder for some 'more global' props; overwrite
+        // is usually in place.
         return true;
     }
     
@@ -131,9 +132,9 @@ public class TagTable extends Relation {
 //        General.showDebug("Now in TagTable.toSTAR for table: " + name);
         char spaceBetweenLoopedValues = ' ';
         StringBuffer sb         = new StringBuffer();
-        String loopIndent       = Strings.createStringOfXTimesTheCharacter(' ', StarGeneral.loopIdentSize);
-        String freeIndent       = Strings.createStringOfXTimesTheCharacter(' ', StarGeneral.freeIdentSize);
-        String tagNameIndent    = Strings.createStringOfXTimesTheCharacter(' ', StarGeneral.tagnamesIdentSize);
+        String loopIndent       = Strings.createStringOfXTimesTheCharacter(' ', parent.general.loopIdentSize);
+        String freeIndent       = Strings.createStringOfXTimesTheCharacter(' ', parent.general.freeIdentSize);
+        String tagNameIndent    = Strings.createStringOfXTimesTheCharacter(' ', parent.general.tagnamesIdentSize);
         
         int lastColumnIdx       = sizeColumns();
 //        int valueCount          = 0;
@@ -192,9 +193,9 @@ public class TagTable extends Relation {
                     sb.append( label );
                     sb.append( Strings.getSpacesString(maxTagNameSize + 2 - labelLength));
                     sb.append( StarGeneral.addQuoteStyle( getValueString(0,c)));
-                    sb.append( General.eol );
+                    sb.append( '\n' );
                 }
-                sb.append( General.eol );
+                sb.append( '\n' );
                 w.write(sb.toString());
                 return true;
             } 
@@ -215,9 +216,9 @@ public class TagTable extends Relation {
                     sb.append( '_' );
                 }
                 sb.append( label );
-                sb.append( General.eol );
+                sb.append( '\n' );
             }
-            sb.append( General.eol );
+            sb.append( '\n' );
 
             int[] map = null;
             if ( ! useDefaultOrdering ) {
@@ -376,14 +377,14 @@ public class TagTable extends Relation {
                     sb.append( colList[c][r] );
                     sb.append( spaceBetweenLoopedValues );
                 }
-                sb.append( General.eol );
+                sb.append( '\n' );
             }
 
-            if ( StarGeneral.showStopTag ) {
+            if ( parent.general.showStopTag ) {
                 sb.append( loopIndent );
                 sb.append( "stop_" );
-                sb.append( General.eol );
-                sb.append( General.eol );
+                sb.append( '\n' );
+                sb.append( '\n' );
             }
 
             w.write(sb.toString());                          

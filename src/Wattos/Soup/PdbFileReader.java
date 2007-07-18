@@ -242,7 +242,7 @@ COLUMNS       DATA TYPE      FIELD         DEFINITION
                 needNewMolecule = false;
                 needNewResidue = true;
                 chainIdOld = chainId;                
-                currentMolId = mol.add(null, chainId, currentModelId);
+                currentMolId = mol.add(null, chainId, currentModelId, null);
                 if ( currentMolId < 0 ) {
                     General.showCodeBug( "Failed to add a new molecule; stop reading");
                     General.showCodeBug( "PDB chain id is: " + chainId);
