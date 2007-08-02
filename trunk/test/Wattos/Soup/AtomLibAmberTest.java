@@ -14,14 +14,14 @@ import Wattos.Utils.*;
  *
  * @author jurgen
  */
-public class AtomLibTest extends TestCase {
+public class AtomLibAmberTest extends TestCase {
     
-    public AtomLibTest(String testName) {
+    public AtomLibAmberTest(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite(AtomLibTest.class);
+        TestSuite suite = new TestSuite(AtomLibAmberTest.class);
         
         return suite;
     }
@@ -31,8 +31,8 @@ public class AtomLibTest extends TestCase {
      */
     public void testMain() {
         General.setVerbosityToDebug();
-        AtomLib am = new AtomLib();                
+        AtomLibAmber am = new AtomLibAmber();                
         assertEquals(true,am.readStarFile( null ));
-        General.showDebug("Done with AtomLib map parsing.");
+        General.showDebug("Done with AtomLibAmber map parsing.");
     }    
 }

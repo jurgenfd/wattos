@@ -117,7 +117,7 @@ public class PdbFileReader extends FastFileReader {
     
     public boolean processSeqRes(char buf[], int offset, int length_line) {
         if ( ! shownSeqResWarning ) {
-            General.showDebug("No code for processing seqres records yet.");        
+//            General.showDebug("No code for processing seqres records yet.");        
             shownSeqResWarning=true;
         }
         return true;
@@ -445,7 +445,7 @@ COLUMNS       DATA TYPE      FIELD         DEFINITION
     public boolean preprocessForFileCharacteristics( URL url ) {                
         /** Get file size using a corrected number if compressed */
         int file_size = InOut.getContentLength(url, true); // Wastes a perfect good connection but heck it's java.
-        General.showDebug("Estimating the file size at: " +  file_size + " bytes");
+//        General.showDebug("Estimating the file size at: " +  file_size + " bytes");
         // -2 signals a regular file without a retrievable size.
         if ( file_size == -2 ) {
             General.showError("Failed to get size from file.");
@@ -457,8 +457,8 @@ COLUMNS       DATA TYPE      FIELD         DEFINITION
             file_size = 10 * 1024 * 1024;
         }
         int atom_size_estimate = (int) (1.5 * (file_size / PdbFile.LENGTH_MAX_LINE));
-        General.showDebug("The number of atoms in file is most likely below : " + atom_size_estimate);
-        General.showDebug("Entities grow as needed beyond initial capacity.");
+//        General.showDebug("The number of atoms in file is most likely below : " + atom_size_estimate);
+//        General.showDebug("Entities grow as needed beyond initial capacity.");
 
         if ( atom == null ) {
             General.showCodeBug("atom not initialized in preprocessForFileCharacteristics");
@@ -483,7 +483,7 @@ COLUMNS       DATA TYPE      FIELD         DEFINITION
         /** Mark the unused atoms for future use. No need to reset to
          *default values because they have not been touched.
          */
-        General.showDebug("Post processing records in pdb file");
+//        General.showDebug("Post processing records in pdb file");
         boolean status_1 = atomMain.cancelAllReservedRows();        
         boolean status_2 = resMain.cancelAllReservedRows();        
         boolean status_3 = molMain.cancelAllReservedRows();        
@@ -493,7 +493,7 @@ COLUMNS       DATA TYPE      FIELD         DEFINITION
         /** Check the consistency of the data as it's read in.
          */
         boolean status_6 = dbms.foreignKeyConstrSet.checkConsistencySet(false,false);        
-        General.showDebug("Fkcs in dbms check out: " + status_6);
+//        General.showDebug("Fkcs in dbms check out: " + status_6);
         if ( ! status_6 ) {
             General.showError("DBMS is NOT consistent after post process in reading PDB file.");
         }
@@ -512,7 +512,7 @@ COLUMNS       DATA TYPE      FIELD         DEFINITION
             General.showError("Didn't read any residue?");
             return false;
         }
-        General.showDebug("Unique residue names in this model: " + Strings.toString(diffRes));
+//        General.showDebug("Unique residue names in this model: " + Strings.toString(diffRes));
         //General.showDebug( dbms.toSTAR());
         return status_overall;
     }

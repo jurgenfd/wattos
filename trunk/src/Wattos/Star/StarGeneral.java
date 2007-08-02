@@ -123,6 +123,25 @@ public class StarGeneral {
     }
      */
     
+    /** Oposite of addQuoteStyle;-)
+     * coded for speed so it DOESN'T remove semicolon quoted styles
+     *  
+     * */
+        public static String removeQuoteStyle( String in )    {   
+            int len = in.length();
+            if ( len < 2 ) {
+                return in;
+            }
+            char c0 = in.charAt(0);
+            char cn = in.charAt(in.charAt(len-1));
+            
+            if ( ( c0 == '"' && cn == '"' ) ||
+                 ( c0 == '\'' && cn == '\'' )) {
+                return in.substring(1,len-1);
+            }
+            return in;
+        }
+
     /** Returns true if the string given is valid for a
       * single-quote delimiter in a DataValueNode.
      *Stolen from starlibj added case of tab following ' and

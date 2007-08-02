@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import Wattos.Database.DBMS;
@@ -38,19 +39,35 @@ public class TopologyLib implements Serializable {
     /** Using a slightly different name to clearly distinguish from main soup.
      */
     public Gumbo gumbo = new Gumbo(dbms);
+
+    public static HashMap resNameMap = new HashMap();
     
     public static final int ATOM_NAMES_PER_LINE     = 14;
     public static final int BONDS_PER_LINE          = 10;
     public static final int TORSION_ANGLES_PER_LINE =  5;
 
-        
+       
+    static {
+        /** nb this software only reads the first 4 chars from the lib file */
+        resNameMap.put("DADE", "DA");
+        resNameMap.put("DTHY", "DT");
+        resNameMap.put("DGUA", "DG");
+        resNameMap.put("DCYT", "DC");
+        resNameMap.put("DINO", "DI");
+        resNameMap.put("OADE", "A");
+        resNameMap.put("OTHY", "T");
+        resNameMap.put("OURA", "U");
+        resNameMap.put("OGUA", "G");
+        resNameMap.put("OCYT", "C");
+        // etc.
+    }
     /** Watch out with the added properties here. The convenience variables don't get automatically updated
      *as do the main attributes of these classes do.
      */
     public TopologyLib() {
     }
     
-    public boolean readWIFFile( URL url) {
+    public boolean readWIFFile( URL url, AtomLibAmber atomLibAmber) {
         if ( url == null ) {
             url = getClass().getResource(WIF_FILE_LOCATION);
         }
@@ -125,8 +142,11 @@ public class TopologyLib implements Serializable {
                     resCount++;
                     res_rid = gumbo.res.add( null, resCount, null, null, mol_rid );
                     String residueName = line.substring(0,4).trim();
-                    if (residueName.length() == 4 ) {
-                        residueName = residueName.substring(0,3);
+                    if ( resNameMap.containsKey(residueName)) {
+                        residueName = (String) resNameMap.get(residueName);
+                    }
+                    if (residueName.length() > 3 ) {
+                        General.showError("Failed to get a residue name with max length 3: ["+residueName+"]");
                     }
                     gumbo.res.nameList[      res_rid ] = residueName;
                     gumbo.res.molId[         res_rid ] = mol_rid;
@@ -200,6 +220,11 @@ public class TopologyLib implements Serializable {
                             gumbo.atom.molId[         atom_rid ] = mol_rid;
                             gumbo.atom.modelId[       atom_rid ] = model_rid;
                             gumbo.atom.entryId[       atom_rid ] = entry_rid;
+                            gumbo.atom.elementId[     atom_rid ] = Chemistry.getElementId( atomName );
+                            if ( atomLibAmber != null ) {
+                                gumbo.atom.type[          atom_rid ] = atomLibAmber.getAtomTypeId(residueName, atomName);
+                            }
+                            
                             if ( i==atomCount ) {
                                 //General.showDebug("done reading atom names");
                                 enoughDone = true;

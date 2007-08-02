@@ -1,21 +1,34 @@
 # simple one line comments are allowed
+
 InitAll
+
 SetProp
 interactiveSession
 false
+
 SetProp
 verbosity
 9
+
 SetProp
 writeSessionOnExit
 false
+
 ListProp
 
-ReadEntryMmCIF
-1ai0_rem_small.cif.gz
+#Input file
+ReadEntryMMCIF
+1cjg_rem_small.cif.gz
+y
 
-WriteEntryNMRSTAR
-C:/Documents and Settings/jurgen.WHELK.000/workspace/Wattos/tmp_dir/1ai0_rem_small.str.gz
+#ShowSoupSTAR
+
+CheckAtomNomenclature
+y
+
+
+#WriteEntryNMRSTAR
+#5znf_CheckAtomNomenclature.str
 
 Quit
 

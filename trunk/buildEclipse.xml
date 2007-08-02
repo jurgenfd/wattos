@@ -104,16 +104,20 @@
     MACRO FILE EXECUTION.
     ====================
         <for list="FilterSTAR.wcf" param="fn">
-        <for list="ReadEntryNMRSTAR.wcf" param="fn">
+        <for list="ReadEntryMmCIF.wcf" param="fn">
         <for list="CheckSurplus.wcf" param="fn">
-        <for list="WriteSQLDump.wcf" param="fn">        
+        <for list="WriteSQLDump.wcf" param="fn">  
+        <for list="AddMissingAtoms.wcf" param="fn">
+        <for list="WriteEntryPDB.wcf" param="fn">
+        <for list="CheckAtomNomenclature.wcf" param="fn">       
         <for list="CalcDistConstrViolation.wcf,CalcDistance.wcf,CheckAssignment.wcf,CheckCompleteness.wcf,CheckSurplus.wcf,FilterSTAR.wcf,GetCoplanarBases.wcf,GetHydrogenBonds.wcf,ReadEntryPDB.wcf,QuitBeforeBegun.wcf,SetAtomNomenclatureToIUPAC.wcf,ShowClassification.wcf,Sleep.wcf,WriteEntryXplor.wcf" param="fn">        
             <replace file="${tmp.local.dir}/@{fn}.log" token="ERROR" value="ERROR" summary="true"/>
     -->                
     <target name="macro_tests" depends="init" description="" >        
         <echo message="Running in: ${test_data.local.dir}"/>
         <echo message="Output to : ${tmp.local.dir}"/>
-        <for list="ReadEntryMmCIF.wcf" param="fn">        
+        
+        <for list="AddMissingAtoms.wcf" param="fn">
             <sequential>
             <echo message="Executing macro: ${macros.local.dir}/@{fn}"/>
             <java   jvm="${platform.java}"
@@ -122,7 +126,7 @@
                     resultproperty="result" 
                     maxmemory="512m" 
                     classname="Wattos.CloneWars.UserInterface" 
-                    dir="${test_data.local.dir}" 
+                    dir="${test_data.local.dir}"
                     input="${macros.local.dir}/@{fn}"
                     output="${tmp.local.dir}/@{fn}.log"
                     timeout="240000"                    
@@ -145,9 +149,11 @@
             	<echo/>
             	<echo/>
             	<echo message="Log file:"/>
+            	<!--
              <loadfile property="contentLogFile"
                     srcFile="${tmp.local.dir}/@{fn}.log"/>
              <echo message="${contentLogFile}"/> 
+               -->
         </sequential>        
         </for>                
     </target>           

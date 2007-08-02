@@ -236,11 +236,11 @@ public class CommandHub implements Serializable {
             location = InOut.getPossibleFileName(UserInterface.in, prompt);
             maxTries++;
         }
-        Integer PdbVersion = Integer.valueOf( Strings.getInputInt(UserInterface.in, "PDB version: (0 for 2.1; 1 for 3.0)"));
+//        Integer PdbVersion = Integer.valueOf( Strings.getInputInt(UserInterface.in, "PDB version: (0 for 2.1; 1 for 3.1)"));
         Boolean generateStarFileToo = Boolean.valueOf( Strings.getInputBoolean(UserInterface.in, "Create a STAR file too, at no extra cost;-)"));
-        Object[] methodArgs = { location, PdbVersion, generateStarFileToo };
+        Object[] methodArgs = { location, generateStarFileToo };
         General.showOutput( "Doing WriteEntryPDB with arguments: " + PrimitiveArray.toString( methodArgs ) );
-        entry.writePdbFormattedFileSet(location, PdbVersion, generateStarFileToo, ui);
+        entry.writePdbFormattedFileSet(location, generateStarFileToo, ui);
         return true;
     }
 
@@ -1091,6 +1091,36 @@ public class CommandHub implements Serializable {
         General.showOutput( "Doing CheckSoup with arguments: " + PrimitiveArray.toString( methodArgs ) );
         if ( ! gumbo.check(makeCorrections.booleanValue())) {
             General.showError("Failed the soup check.");            
+        }
+        return true;
+    }
+    
+    /** @see Residue#addMissingAtoms
+     */
+    public boolean AddMissingAtoms() {
+        Object[] methodArgs = {                 
+        };
+        General.showOutput( "Doing AddMissingAtoms with arguments: " + PrimitiveArray.toString( methodArgs ) );
+        if ( ! entry.addMissingAtoms()) {
+            General.showError("Failed to entry.addMissingAtoms");
+            return false;
+        }
+        return true;
+    }
+    
+    /** Swaps atom nomenclature if asked.
+     */
+    public boolean CheckAtomNomenclature() {
+        Boolean doCorrect = Boolean.valueOf( Strings.getInputBoolean(UserInterface.in, "Should corrections be made (y suggested)"));
+    
+        Object[] methodArgs = { 
+                doCorrect
+        };
+        General.showOutput( "Doing CheckAtomNomenclature with arguments: " + PrimitiveArray.toString( methodArgs ) );
+    
+        if ( ! entry.checkAtomNomenclature(doCorrect.booleanValue())) {
+            General.showError("Failed to entry.checkAtomNomenclature");
+            return false;
         }
         return true;
     }

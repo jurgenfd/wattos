@@ -133,7 +133,9 @@ public class SQLSelect {
      *but still possible with this method signature using operation type:
      *OPERATION_TYPE_EQUALS_REGULAR_EXPRESSION.
      *
-     *<P>The parameter 'value' is not changed.
+     *
+     *<P>The parameter 'value' is not changed. The parameter 'value' maybe a
+     *BitSet itself in which see IndexSortedInt.getRidList
      */
     public static BitSet selectBitSet( DBMS dbms, 
         Relation relation, 

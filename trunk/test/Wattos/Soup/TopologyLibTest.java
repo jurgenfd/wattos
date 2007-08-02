@@ -31,15 +31,15 @@ public class TopologyLibTest extends TestCase {
         URL url = null;
         TopologyLib instance = new TopologyLib();        
         boolean expResult = true;
-        boolean result = instance.readWIFFile(url);
+        boolean result = instance.readWIFFile(url,null);
         assertEquals(expResult, result);
     }
 
     public void testMain() {        
-        //General.verbosity = General.verbosityDebug;
+        General.verbosity = General.verbosityDebug;
         
         TopologyLib topologyLib = new TopologyLib();
-        if ( ! topologyLib.readWIFFile(null)) {
+        if ( ! topologyLib.readWIFFile(null,null)) {
             fail("Reading topologyLib");            
             return;
         }

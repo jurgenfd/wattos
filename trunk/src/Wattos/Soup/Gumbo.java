@@ -204,5 +204,30 @@ public class Gumbo extends RelationSoS implements Serializable {
      */
     public String toSTAR() {
         return dbms.toSTAR();
-    }    
+    }
+
+    public void removeAllIndices() {
+        entry.removeAllIndices();
+        model.removeAllIndices();            
+        mol.removeAllIndices();          
+        res.removeAllIndices();          
+        atom.removeAllIndices();          
+        bond.removeAllIndices();  
+        angle.removeAllIndices();  
+        dihedral.removeAllIndices();  
+        distance.removeAllIndices();  
+    }
+    
+    public void resetConvenienceVariables() {
+        entry.resetConvenienceVariables();  
+        model.resetConvenienceVariables();            
+        mol.resetConvenienceVariables();          
+        res.resetConvenienceVariables();          
+        atom.resetConvenienceVariables();          
+        bond.resetConvenienceVariables();  
+        angle.resetConvenienceVariables();  
+        dihedral.resetConvenienceVariables();  
+        distance.resetConvenienceVariables();          
+    }
+    
 }

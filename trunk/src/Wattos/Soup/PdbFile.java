@@ -399,6 +399,18 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
         }
     }
     
+    /** Sometimes the residue has a trailing sign indicating charge:
+     * "HIS+" -> "HIS". The sign will be removed if present.
+     */
+    public static String translateResidueNameFromPDB( String buf ) {
+        int len = buf.length();
+        char last_char = buf.charAt(len-1);
+        if ( last_char == '+' || last_char == '-' ) {
+             return buf.substring(0,len-1);
+        }
+        return buf;
+    }
+    
     /** Sometimes the residue has a trailing sign in the charge string:
      * "1-" -> -1.0e+00.
      */

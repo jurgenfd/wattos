@@ -51,12 +51,24 @@ public class Biochemistry {
     /** The default character for an unknown residue name */
     public static char DEFAULT_RESIDUE_NAME_1CHAR = 'X';
 
+    /** Atom names that are are the last N-terminal / 5' terminal atom */
+    public static final String[] N_TERMINAL_ATOM_NAME_LIST = new String[] {
+        "H1","H2", "H3",  "H",  "HN", "H'", "H''", "HO'", "HXT", "HO5'", "P"        
+    };
+
+    /** Atom names that are are the last C-terminal / 3' terminal atom */
+    public static final String[] C_TERMINAL_ATOM_NAME_LIST = new String[] {
+        "HXT", "HO3'"    
+    };
+    public static HashMap N_TERMINAL_ATOM_NAME_MAP = null;
+    public static HashMap C_TERMINAL_ATOM_NAME_MAP = null;
+    
     /** The Cys SG bound to another residue SG or other atom (3 states plus mixing)? 
      * 1: free 
      * 2: disulfide
      * 3: other
-     * */
-    public static final String[] thiolStateEnumerationAsInStar = new String[] {
+     * */    
+     public static final String[] thiolStateEnumerationAsInStar = new String[] {
         //                                  1 2 3
         "unknown",              
         "not present",                   //1
@@ -82,6 +94,8 @@ public class Biochemistry {
     public static final int THIOL_STATE_FREE_DISULFIDE_AND_OTHER_BOUND  = 8;
     
     static {    
+        N_TERMINAL_ATOM_NAME_MAP = MapSpecific.toHashMap( N_TERMINAL_ATOM_NAME_LIST);
+        C_TERMINAL_ATOM_NAME_MAP = MapSpecific.toHashMap( C_TERMINAL_ATOM_NAME_LIST);
         ArrayList gc = new ArrayList();
         gc.add(new String[] {"1","N4", "0","O6"});
         gc.add(new String[] {"0","N1", "1","N3"});
@@ -302,9 +316,7 @@ public class Biochemistry {
         backboneNA.put("OP2", null);
         backboneNA.put("P", null);
         backboneAAandNA.putAll( backboneAA );
-        backboneAAandNA.putAll( backboneNA );
-        
-        
+        backboneAAandNA.putAll( backboneNA );               
     }
     
     

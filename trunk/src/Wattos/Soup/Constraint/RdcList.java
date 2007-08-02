@@ -32,7 +32,7 @@ public class RdcList extends SimpleConstrList implements Serializable {
     
     public RdcList(DBMS dbms, RelationSoS relationSoSParent) {
         super(dbms, relationSoSParent);
-        General.showDebug("back in RdcList constructor");
+//        General.showDebug("back in RdcList constructor");
         constr = (Constr) relationSoSParent;
         resetConvenienceVariables();
     }

@@ -1,7 +1,10 @@
 package Wattos.Utils.Wiskunde;
 
-import Wattos.Database.*;
-import Wattos.Utils.*;
+import java.util.Random;
+
+import Wattos.Database.Defs;
+import Wattos.Utils.General;
+import Wattos.Utils.Strings;
 
 /**
  *Static methods for calculating distances, angles, dihedral angles, areas, 
@@ -9,8 +12,9 @@ import Wattos.Utils.*;
  *
  * @author  jurgen
  */
-public class Geometry3D extends Geometry {
-        
+public class Geometry3D extends Geometry {        
+    public static Random random = new Random();
+    
     /**
      * For the cases where you don't want to use a matrix to do the rotation
      * This routine will rotate a number of points around the x,y, or z axis.
@@ -50,10 +54,9 @@ public class Geometry3D extends Geometry {
      *Adapted from the routine C program GENC by JFD based on routines
      *by Chang-Shung Tung and Eugene S. Carter (T10, Los Alamos 1994).
      */
-    public static double calcDihedral( 
+    public static double dihedral( 
             double[] vector_a, double[] vector_b, 
             double[] vector_c, double[] vector_d ) {
-//        final int ATOM_COUNT = 4;
 
         double dx, dy, dz, dxy, phi1, phi2, phi3, theta, tors;  
         
@@ -66,7 +69,7 @@ public class Geometry3D extends Geometry {
         
         double[][] vertices = new double[][] { v_0, v_1, v_2, v_3 };
         // Get the vector between the two middle points.
-        double d[] = getVector( v_2, v_1 );
+        double d[] = Geometry.sub( v_2, v_1 );
         dx = d[0];
         dy = d[1];
         dz = d[2]; 
@@ -101,10 +104,10 @@ public class Geometry3D extends Geometry {
      *Result is in radians. The formula is:
      *phi = arcsin( |x outproduct y|/|x|*|y| )
      */
-    public static double calcAngle( double[] x, double[] y  ) {    
-        double dxy = getVectorNorm(vectorCrossProduct( x, y ));
-        double dx = getVectorNorm(x);
-        double dy = getVectorNorm(y);        
+    public static double angle( double[] x, double[] y  ) {    
+        double dxy = Geometry.size(crossProduct( x, y ));
+        double dx = Geometry.size(x);
+        double dy = Geometry.size(y);        
         return Math.asin(dxy/(dx*dy));
     }
     
@@ -112,17 +115,17 @@ public class Geometry3D extends Geometry {
      *The second point is connected to a and c.
      *Result is in radians.
      */
-    public static double calcAngle( double[] vector_a, double[] vector_b, double[] vector_c ) {    
-        double[] v1 = getVector( vector_b, vector_a );
-        double[] v2 = getVector( vector_b, vector_c );        
-        normalizeVector(v1);
-        normalizeVector(v2);
-        double dp = vectorDotProduct(v1, v2);
+    public static double angle( double[] vector_a, double[] vector_b, double[] vector_c ) {    
+        double[] v1 = Geometry.sub( vector_b, vector_a );
+        double[] v2 = Geometry.sub( vector_b, vector_c );        
+        normalize(v1);
+        normalize(v2);
+        double dp = dotProduct(v1, v2);
         return Math.acos(dp);
     }
     
 
-    public static double calcArea( double[] vector_a, double[] vector_b, double[] vector_c ) {    
+    public static double area( double[] vector_a, double[] vector_b, double[] vector_c ) {    
         double result = Defs.NULL_DOUBLE;
         General.showError("Still to adapt from c code");
         /**
@@ -143,12 +146,27 @@ public class Geometry3D extends Geometry {
     /**
      *Cross product is easiest to code for each dimension separately.
      */
-    public static double[] vectorCrossProduct( double[] a, double[] b ) {    
+    public static double[] crossProduct( double[] a, double[] b ) {    
         double r[] = new double[DIM];
         r[0] = a[1]*b[2] - a[2]*b[1];
         r[1] = a[2]*b[0] - a[0]*b[2];
         r[2] = a[0]*b[1] - a[1]*b[0];        
         return r;
+    }
+        
+    /**
+     *Get's the same vector scaled back to unit lenght.
+     */
+    public static double[] normalize( double[] v) {    
+        double vlen = Math.sqrt((v[0]*v[0]) + (v[1]*v[1]) + (v[2]*v[2]));
+        if (vlen<DISTANCE_EPSILON) {
+            return getNullVector();
+        }
+        return new double[] { v[0]/vlen, v[1]/vlen, v[2]/vlen, };        
+    }
+    
+    public static double[] getNullVector() {
+        return new double[] { 0,0,0 };
     }
         
     /** Calculates volume of tetrahedron formed by a,b,c and d.
@@ -159,10 +177,43 @@ public class Geometry3D extends Geometry {
             double[] vector_a, double[] vector_b, 
             double[] vector_c, double[] vector_d ) {
         General.showError("Check this routine.");
-        double[] aa = getVector(vector_a, vector_b);
-        double[] bb = getVector(vector_a, vector_c);
-        double[] cc = getVector(vector_a, vector_d);
-        double[] out = vectorCrossProduct(bb,cc);
-        return vectorDotProduct(aa,out)/3.0;
+        double[] aa = Geometry.sub(vector_a, vector_b);
+        double[] bb = Geometry.sub(vector_a, vector_c);
+        double[] cc = Geometry.sub(vector_a, vector_d);
+        double[] out = crossProduct(bb,cc);
+        return dotProduct(aa,out)/3.0;
+    }
+
+    public static double[] scale(double[] v, double f) {
+        return new double[] { v[0] * f, v[1] * f, v[2] * f, };
+    }
+
+    public static double[] add(double[] a, double[] b) {        
+        return new double[] { a[0]+b[0], a[1]+b[1], a[2]+b[2] };
     }        
+    /** convenience method */
+    public static String toString( double[] a) {
+        return toString( a, 8, 3 );
+    }
+    public static String toString( double[] a, int length, int precision ) {
+        StringBuffer sb = new StringBuffer();
+        String fmt = "%"+length+"."+precision+"f";
+        for (int i=0;i<3;i++) {
+            sb.append( Strings.sprintf(a[i], fmt));
+            sb.append(' ');
+        }
+        sb.delete(sb.length()-1, sb.length());
+        return sb.toString();
+    }
+
+    public static double[] randomSphere(double[] vector, double dist) {
+        double[] v = new double[] {
+                random.nextDouble(),
+                random.nextDouble(),
+                random.nextDouble()                
+        };
+        v = normalize(v);
+        v = scale(v,dist);
+        return add( vector, v);
+    }
 }

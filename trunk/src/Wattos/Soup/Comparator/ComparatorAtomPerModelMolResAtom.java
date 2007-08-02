@@ -4,7 +4,7 @@
  * Created on September 29, 2003, 2:15 PM
  */
 
-package Wattos.Soup;
+package Wattos.Soup.Comparator;
 
 import java.util.Comparator;
 import Wattos.Utils.ObjectIntPair;

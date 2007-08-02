@@ -37,8 +37,9 @@ public class Geometry {
     public static final double TWO_PI = 2.0*Math.PI;
     
     /** A small distance that can be added to prevent division by zero etc.
+     * was 1e-300d
      */
-    public static double DISTANCE_EPSILON = 1e-300d;
+    public static double DISTANCE_EPSILON = 1e-30d; // 
     /** A small angle (in rads) that is used to determine real differences. */
     public static double ANGLE_EPSILON = 1e-10d;
         
@@ -61,7 +62,7 @@ public class Geometry {
     
     /** Dot product is easily generalized for any dimension
      */
-    public static double vectorDotProduct(double[] vector_a, double[] vector_b) {
+    public static double dotProduct(double[] vector_a, double[] vector_b) {
         double result = 0;
         for (int i=0;i<DIM;i++) {
             result += vector_a[i]*vector_b[i];
@@ -73,7 +74,8 @@ public class Geometry {
     /**
      *Translate a bunch of points by a vector.
      */
-    public static void translate( double[] trans, double[][] points ) {    
+    public static void translate( double[] trans, double[][] points ) {
+        /** Take reference for speed if the JIT doesn't already */
         double xx = trans[0];
         double yy = trans[1];
         double zz = trans[2];
@@ -84,8 +86,7 @@ public class Geometry {
             point[1] += yy;
             point[2] += zz;
         }
-    }
-        
+    }       
     
     /** Render a coordinate/vector */
     public static String toString(double[] vector) {
@@ -100,41 +101,11 @@ public class Geometry {
         return sb.toString();
     }
     
-    /** Get the vector from a to b */
-    public static double[] getVector(double[] pos_a, double[] pos_b) {
-        double[] result = new double[DIM];
-        for (int i=0;i<DIM;i++) {
-            result[i] = pos_b[i]-pos_a[i];
-        }
-        return result;
-    }
-    
-    /**
-     * Get the vector lenght.
-     */
-    public static double getVectorNorm(double[] vector) {
-        double result = 0;
-        for (int i=0;i<DIM;i++) {
-            result += vector[i]*vector[i];
-        }
-        return Math.sqrt(result);
-    }
-    
-    /**
-     * Get the vector from a to b
-     */
-    public static void normalizeVector(double[] vector) {
-        double norm = getVectorNorm(vector);
-        for (int i=0;i<DIM;i++) {
-            vector[i] /= norm;
-        }
-    }
-
     /**
      * No checks of validity. 
      *         Returns Defs.NULL_FLOAT on error
      */
-    public static double calcDistance(double[] pos_a, double[] pos_b) {
+    public static double distance(double[] pos_a, double[] pos_b) {
         double dist = 0;
         double diff;
         for (int i=0;i<DIM;i++) {
@@ -147,7 +118,7 @@ public class Geometry {
     /**
      * No checks of validity. 
      */
-    public static float calcDistance(float[] pos_a, float[] pos_b) {
+    public static float distance(float[] pos_a, float[] pos_b) {
         double dist = 0;
         double diff;
         for (int i=0;i<DIM;i++) {
@@ -341,6 +312,26 @@ public class Geometry {
             }
         }
         return null;
+    }
+
+    /** Get the vector from a to b */
+    public static double[] sub(double[] pos_a, double[] pos_b) {
+        double[] result = new double[DIM];
+        for (int i=0;i<DIM;i++) {
+            result[i] = pos_b[i]-pos_a[i];
+        }
+        return result;
+    }
+
+    /**
+     * Get the vector lenght.
+     */
+    public static double size(double[] vector) {
+        double result = 0;
+        for (int i=0;i<DIM;i++) {
+            result += vector[i]*vector[i];
+        }
+        return Math.sqrt(result);
     }
     
 }
