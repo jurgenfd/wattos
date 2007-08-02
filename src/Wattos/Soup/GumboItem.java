@@ -256,14 +256,14 @@ public class GumboItem extends WattosItem implements Serializable {
     }
     
     /** No checks done.*/
-    public float calcDistanceFast( int objRidA, int objRidB ) {
-        float x_a = xList[objRidA];
-        float y_a = yList[objRidA];
-        float z_a = zList[objRidA];
-        float x_b = xList[objRidB];
-        float y_b = yList[objRidB];
-        float z_b = zList[objRidB];
-        return (float) Math.sqrt( (x_a-x_b)*(x_a-x_b) + (y_a-y_b)*(y_a-y_b) + (z_a-z_b)*(z_a-z_b) );
+    public float calcDistanceFast( int a, int b ) {
+        float xa = xList[a];
+        float ya = yList[a];
+        float za = zList[a];
+        float xb = xList[b];
+        float yb = yList[b];
+        float zb = zList[b];
+        return (float) Math.sqrt( (xa-xb)*(xa-xb) + (ya-yb)*(ya-yb) + (za-zb)*(za-zb) );
     }
     
     /**
@@ -276,17 +276,17 @@ public class GumboItem extends WattosItem implements Serializable {
         double[] vector_b = getVector( rid_b );
         double[] vector_c = getVector( rid_c );
         double[] vector_d = getVector( rid_d );
-        return Geometry3D.calcDihedral( vector_a, vector_b, vector_c, vector_d );
+        return Geometry3D.dihedral( vector_a, vector_b, vector_c, vector_d );
     }
 
     
     /** Get the vector from a to b */
     public double[] getVector(int rid_a, int rid_b) {
-        double[] result = new double[Geometry3D.DIM];
-        result[0] = xList[rid_a] - xList[rid_b];
-        result[1] = yList[rid_a] - yList[rid_b];
-        result[2] = zList[rid_a] - zList[rid_b];
-        return result;
+        return new double[] {
+            xList[rid_a] - xList[rid_b],
+            yList[rid_a] - yList[rid_b],
+            zList[rid_a] - zList[rid_b]
+        };
     }
 
     /** Get the vector from zero to a*/
@@ -306,7 +306,7 @@ public class GumboItem extends WattosItem implements Serializable {
         double[] vector_a = getVector(rid_a);
         double[] vector_b = getVector(rid_b);
         double[] vector_c = getVector(rid_c);
-        return Geometry3D.calcAngle( vector_a, vector_b, vector_c);     
+        return Geometry3D.angle( vector_a, vector_b, vector_c);     
     }
     
     /**
@@ -367,7 +367,7 @@ public class GumboItem extends WattosItem implements Serializable {
         BitSet todoNew = (BitSet) todo.clone();
         todoNew.and( hasCoor );
         double[][] corners = getEnclosingBoxCorners( todoNew );
-        float distance = (float) Geometry3D.calcDistance( corners[0], corners[1] );
+        float distance = (float) Geometry3D.distance( corners[0], corners[1] );
         return distance;
     }
 
@@ -468,7 +468,7 @@ public class GumboItem extends WattosItem implements Serializable {
                 IntArrayList gumboItemRidsB = gumboItemsSet[1];
                 float[] avgA = getAveragePosition( gumboItemRidsA ); // average of gumboItems in set A
                 float[] avgB = getAveragePosition( gumboItemRidsB );
-                return Geometry3D.calcDistance( avgA, avgB );
+                return Geometry3D.distance( avgA, avgB );
             }
             General.showError("Type of averaging not allowed by id: " + avgMethod + " Look in DistConstrList code for definitions");
         } catch ( Exception e ) {

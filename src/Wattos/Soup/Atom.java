@@ -24,6 +24,8 @@ import Wattos.Database.RelationSoS;
 import Wattos.Database.SQLSelect;
 import Wattos.Database.Indices.Index;
 import Wattos.Database.Indices.IndexHashedIntToMany;
+import Wattos.Soup.Comparator.ComparatorAtom;
+import Wattos.Soup.Comparator.ComparatorAuthorAtomWithoutEntry;
 import Wattos.Star.DataBlock;
 import Wattos.Star.SaveFrame;
 import Wattos.Star.StarNode;
@@ -84,13 +86,19 @@ public class Atom extends GumboItem implements Serializable {
     public static final String IS_HB_ACCEP                  = "is_HB_accep";
     
     private final static boolean DEBUG = true;
+    static final float DEFAULT_TOLERANCE_CALCULATE_BONDS = 0.1f;
+    static final float DEFAULT_TYPE_UNKNOWN     = 0;
+    static final float DEFAULT_TYPE_NONLINEAR   = 1;
+    static final float DEFAULT_TYPE_TETRAHEDRAL = 2;
+    static final float DEFAULT_TYPE_PLANAR      = 3;
     
     /** Convenience variables */
     public int[]       resId;          // starting with fkcs
     public int[]       molId;          
     public int[]       modelId;          
     public int[]       entryId;          
-    public int[][]     modelSiblingIds;// the index of the first model is zero  
+    /** the index of the first model is zero*/ 
+    public int[][]     modelSiblingIds; 
     public int[]       masterAtomId;
     public int[]       elementId;      // non fkcs
     public float[]     occupancy;     
@@ -226,6 +234,8 @@ public class Atom extends GumboItem implements Serializable {
         authResIdList[      result ] = authResNameListNR.intern( authResId );          
         authAtomNameList[   result ] = authAtomNameListNR.intern( authAtomName );          
         
+        
+        type[ result ] = dbms.ui.wattosLib.atomLibAmber.getAtomTypeId( gumbo.res.nameList[parentId], name);
         return result;
     }            
 
@@ -618,21 +628,31 @@ public class Atom extends GumboItem implements Serializable {
      * atoms to be able to bound.
      * The argument tolerance is the added distance to half the sum of radii involved that is still to be 
      * considered a bond. 0.1 is recommended with atom radii defined in the class Chemistry.
-     * NB only bonds to the first model will be added. Use the information on model-related atoms
+     * NB ONLY bonds to the first model will be added. Use the information on model-related atoms
      * in the Atom class to find the others.
-     * Only a certain maximum number of bonds will be maintained per atom. E.g. 4 for carbons.
      * @param resInMaster 
-     * @param tolerance 0.1 recommended
+     * @param tolerance 0.1 recommended. Maybe a null value specified so default will be taken.
      * @return true if successful. Can be successful without selected atoms and residues and
      *without calculating bonds.
+     *
      */    
     public boolean calcBond(BitSet resInMaster, float tolerance) {
+        General.showOutput("Starting calcBond");
         boolean printProgress = true;
         boolean status = true;
         boolean isValid;
         if ( resInMaster.cardinality() == 0 ) {
             General.showWarning("No residues in master selected so not able to do calcBond.");
             return true;
+        }
+        
+        BitSet bondRidSet = gumbo.bond.getBondListForResRidSet(resInMaster);
+        if ( bondRidSet.cardinality()==0) {
+            General.showDebug("No bonds found for given residues before doing calcBond");
+        } else {
+//            General.showDebug("Removing all bonds for given residues before doing calcBond");
+            gumbo.bond.mainRelation.removeRows(bondRidSet, false, false);
+            gumbo.bond.resetConvenienceVariables();
         }
         BitSet atomsInMaster = gumbo.entry.getAtomsInMasterModel();
         if ( atomsInMaster == null ) {
@@ -642,6 +662,9 @@ public class Atom extends GumboItem implements Serializable {
         if ( atomsInMaster.cardinality() == 0 ) {
             General.showWarning("No atoms in master so not able to do calcBond.");
             return true;
+        }
+        if ( Defs.isNull(tolerance)) {
+            tolerance = DEFAULT_TOLERANCE_CALCULATE_BONDS;
         }
         /** Calculated distance or an approximation of it        */
         float d, d_sibling;
@@ -898,6 +921,7 @@ public class Atom extends GumboItem implements Serializable {
          */
         //General.showOutput("Found new bonds: " + gumbo.bond.toString( gumbo.bond.selected));
 
+        gumbo.bond.resetConvenienceVariables();
         
         if ( ! status ) {
             General.showError("Failed to calcBond");
@@ -1956,9 +1980,9 @@ public class Atom extends GumboItem implements Serializable {
         p.add( resNumber);
         p.add( resName);
         p.add( molNumber);
-        String fmt = "Atom: %4s Res: %3d(%4s) Mol: %3d";
+        String fmt = "Atom: %-4s Res: %3d(%4s) Mol: %3d";
         if ( ! showMeaning ) {
-            fmt = "%4s %3d(%4s) %3d ";
+            fmt = "%-4s %3d(%4s) %3d ";
         }
         StringBuffer sb = new StringBuffer();
         sb.append( Format.sprintf(fmt,p));
@@ -1975,7 +1999,7 @@ public class Atom extends GumboItem implements Serializable {
             p.add( resNumb);
             p.add( resName);
             p.add( chainId);            
-            fmt = " [%4s %3s(%4s) %3s]";
+            fmt = " [%-4s %3s(%4s) %3s]";
             sb.append( Format.sprintf(fmt,p));
         }
         if ( showModel ) {
@@ -2517,7 +2541,15 @@ public class Atom extends GumboItem implements Serializable {
     
 
     /**
-     * Modify the atom names from 1HD2 to HD21 and vica versa.
+     * Modify the atom names from 1HD2 to HD21 and vica versa. See:
+     * http://www.wwpdb.org/documentation/remediation_overview.pdf
+     * """Atom names uniformly begin with their
+element symbol. In PDB format (Appendix B), heavy atom names follow the traditional
+PDB justification rules. Any 4-character names for atoms with 1-character element
+symbols have been compressed. Hydrogen atoms names all begin with “H” and are not
+subject to the justification rule. Therefore the PDB element column or mmCIF
+type_symbol data item should be used to determine the element type, rather than using
+the atom name."""
      * @param usePostFixedOrdinalsAtomName
      * @return
      */
@@ -2674,6 +2706,68 @@ public class Atom extends GumboItem implements Serializable {
                 }
             }            
         }        
-    }    
+    }
+
+    public void swapNames(int atomRid1, int atomRid2) {
+        String tmpStr = nameList[ atomRid1 ];
+        nameList[ atomRid1 ] = nameList[ atomRid2 ];
+        nameList[ atomRid2 ] = tmpStr;        
+    }
+
+    /** Takes the first numerical char at position 2 and swaps it
+     * from 1 to 2 or from 2 to 1.
+     * @param atomRidExtra
+     */
+    public boolean swapNameForStereo(int atomRidExtra) {
+        String tmpStr = nameList[ atomRidExtra ];
+        char c = tmpStr.charAt(2);
+        StringBuffer sb = new StringBuffer(tmpStr);
+        if ( c == '1' ) {
+            sb.setCharAt(2, '2');
+        } else if ( c == '2' ) {
+            sb.setCharAt(2, '1');
+        } else {
+            General.showCodeBug("Expected a 1 or 2 as the third char in atom name: " + tmpStr);
+            return false;              
+        }    
+        nameList[ atomRidExtra ] = nameListNR.intern( sb.toString());
+        return true;        
+    }
+
+    /** Convenience method */
+    public int add(String name, double[] coor, int resId) {        
+        int elId = Chemistry.getElementId(name);
+        float[] coorf = new float[] { 
+                (float) coor[0], 
+                (float) coor[1], 
+                (float) coor[2]};
+        int atomRid = add(name, 
+                true, coorf, Defs.NULL_FLOAT, 
+                elId, 1.0f, Defs.NULL_FLOAT,
+                null, null, null, null, 
+                resId);
+//        General.showDebug("Added: " + toString(atomRid));
+        return atomRid;
+    }
+
+    /** Convenience method */
+    public boolean calcBond() {
+        BitSet resInMaster = gumbo.entry.getResInMasterModel();
+        if ( resInMaster == null ) {
+            General.showError("Failed to get the master atoms");
+            return false;
+        }
+        return calcBond(resInMaster, Defs.NULL_FLOAT);
+    }
+
+//    public boolean isTerminalAtomLikeNterminalH(int atomRid) {
+//        General.showDebug("Determining terminalness of atom: "+toString(atomRid));
+//        if ( gumbo.res.isTerminal(resId[atomRid]) ) {
+//            if ( Biochemistry.TERMINAL_ATOM_NAME_MAP.containsKey( nameList[atomRid] )) {
+//                return true;
+//            } 
+//        }
+//        return false;
+//    }    
 }
  

@@ -55,8 +55,13 @@ public class ExternalPrograms {
         General.showDebug("           to PDB file   : " + fo);
         File wattosScriptsDir = new File( UserInterface.wattosRootDir, "scripts" );
         File programFile = new File( wattosScriptsDir, "convert_star2pdb");                
-        String PROGRAM = programFile.toString();        
-        String cmd = "gawk -f " + PROGRAM + " " + fi + " " + fo;
+        String PROGRAM = programFile.toString();
+        /** make sure gawk is in your path */
+        String path = "";
+        if ( true ) {
+            path = "c:\\cygwin\\bin\\";
+        }
+        String cmd = path + "gawk -f " + PROGRAM + " \"" + fi + "\" \"" + fo + "\"";
         int status = OSExec.exec( cmd );
         return status;
     }

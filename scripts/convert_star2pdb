@@ -150,7 +150,9 @@ function translateType_symbol( xxx ) {
     return xxx
 }
 BEGIN {
-#    print "DEBUG: Trying to get started." 
+    print "WARNING: This code is dead; will not be update please use the Java code in Wattos.Soup.PdbWriter." 
+    print "WARNING: The Wattos command is: WriteEntryPDB"
+     
     if ( ARGC != 3 ) {
         print "Got number of arguments: " ARGC " but expected 3 (including program name)" > "/dev/stderr"
         showUsage()

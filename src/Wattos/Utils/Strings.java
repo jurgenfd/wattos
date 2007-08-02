@@ -2208,7 +2208,7 @@ public class Strings {
             return null;
         }
         int selectedCardinality = selected.cardinality() ;
-        General.showDebug("Selection BitSet has cardinality in getDistinctSorted: " + selectedCardinality);
+//        General.showDebug("Selection BitSet has cardinality in getDistinctSorted: " + selectedCardinality);
         if ( selectedCardinality == 0 ) {
             General.showWarning("Selection BitSet has zero cardinality in getDistinctSorted");
             return new String[0];

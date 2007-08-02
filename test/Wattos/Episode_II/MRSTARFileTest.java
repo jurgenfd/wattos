@@ -239,7 +239,7 @@ public class MRSTARFileTest extends TestCase {
         Wattos.Star.StarNode sn = sfr.parse( buf );
         assertTrue(sn!=null);                             
         assertTrue(File31.enterStandardIDs(sn, "XXX"));
-        General.showDebug("After enterStandardIDs: "+sn.toSTAR());
+//        General.showDebug("After enterStandardIDs: "+sn.toSTAR());
     }   
     
     

@@ -25,7 +25,6 @@ import Wattos.Database.SQLSelect;
 import Wattos.Soup.Constraint.SimpleConstrList;
 import Wattos.Star.MmCif.CIFCoord;
 import Wattos.Star.NMRStar.File31;
-import Wattos.Utils.ExternalPrograms;
 import Wattos.Utils.General;
 import Wattos.Utils.HashOfHashes;
 import Wattos.Utils.HashOfHashesOfHashes;
@@ -124,6 +123,36 @@ public class Entry extends GumboItem implements Serializable {
         return true;
     }
 
+    /** @see Residue#addMissingAtoms
+     */
+    public boolean addMissingAtoms() {
+        BitSet resInMaster = getResInMasterModel();
+        if ( resInMaster == null ) {
+            General.showError("Failed to get the master res");
+            return false;
+        }
+        if ( ! gumbo.res.addMissingAtoms(resInMaster)) {
+            General.showError("Failed to gumbo.atom.addMissingAtoms");
+            return false;
+        }                      
+        return true;
+    }
+
+    /** @see Residue#calcHydrogenBond
+     */
+    public boolean checkAtomNomenclature(boolean  doCorrect) {
+        BitSet resInMaster = getResInMasterModel();
+        if ( resInMaster == null ) {
+            General.showError("Failed to get the master res");
+            return false;
+        }
+        if ( ! gumbo.res.checkAtomNomenclature(doCorrect, resInMaster)) {
+            General.showError("Failed to gumbo.atom.checkAtomNomenclature");
+            return false;
+        }                      
+        return true;
+    }
+
     /** See Atom.calcBond */
     public boolean calcBond( float tolerance) {  
         BitSet resInMaster = getResInMasterModel();
@@ -160,8 +189,8 @@ public class Entry extends GumboItem implements Serializable {
             General.showError("Failed to do getAtomsInMasterModel because failed to get the models in this entry for rid: " + entryRID);
             return -1;
         }
-        int modelCount = modelsInEntry.cardinality();
-        General.showDebug( "Found number of models in entry: " + modelCount);        
+//        int modelCount = modelsInEntry.cardinality();
+//        General.showDebug( "Found number of models in entry: " + modelCount);        
         int modelOneRid = gumbo.model.getModelRidWithNumber( modelsInEntry, 1 );
         return modelOneRid;
     }
@@ -185,8 +214,8 @@ public class Entry extends GumboItem implements Serializable {
             General.showError("Failed to do getAtomsInMasterModel because failed to get the atoms in first model for this entry for rid: " + entryRID);
             return null;
         }
-        int atomCountMasterModel = atomsInMasterModel.cardinality();
-        General.showDebug("Found number of atoms in master model: " + atomCountMasterModel);        
+//        int atomCountMasterModel = atomsInMasterModel.cardinality();
+//        General.showDebug("Found number of atoms in master model: " + atomCountMasterModel);        
         return atomsInMasterModel;
     }
     
@@ -211,8 +240,8 @@ public class Entry extends GumboItem implements Serializable {
             return null;
         }
         resInMasterModel.and( gumbo.res.selected );
-        int resCountMasterModel = resInMasterModel.cardinality();
-        General.showDebug("Found number of residues in master model: " + resCountMasterModel);        
+//        int resCountMasterModel = resInMasterModel.cardinality();
+//        General.showDebug("Found number of residues in master model: " + resCountMasterModel);        
         return resInMasterModel;
     }
     
@@ -237,10 +266,41 @@ public class Entry extends GumboItem implements Serializable {
             }
             return false;
         }        
+        if ( ! postProcessAfterReading() ) {
+            return false;            
+        }
         return status;
     }    
     
     
+    /** Does action after each read of a molecular system */
+    private boolean postProcessAfterReading() {
+        BitSet atomsInMasterModel = getAtomsInMasterModel();
+        
+        AtomLibAmber atomLibAmber = null;
+
+        try {
+            atomLibAmber = dbms.ui.wattosLib.atomLibAmber;
+        } catch (RuntimeException e) {            
+        }
+
+        if ( atomLibAmber != null ) {
+            // Set atom types from Amber lib.
+            for (int atomRid=atomsInMasterModel.nextSetBit(0);atomRid>=0;atomRid=atomsInMasterModel.nextSetBit(atomRid+1)) {
+                int resRid = gumbo.atom.resId[atomRid]; 
+                gumbo.atom.type[atomRid] = 
+                    atomLibAmber.getAtomTypeId(
+                        gumbo.res.nameList[resRid], 
+                        gumbo.atom.nameList[atomRid]);
+            }
+        } else {
+            General.showDebug("Skipping to assign amber atom types in postProcessAfterReading");
+        }
+
+        // Set atom types from Amber lib.
+        return gumbo.atom.calcBond();
+    }
+
     /** 
      */
     public boolean readNomenclatureWHATIFPDB( URL url, String atomNomenclatureFlavor ) {        
@@ -286,6 +346,9 @@ public class Entry extends GumboItem implements Serializable {
         if ( ! mainRelation.removeRowCascading(newEntryId, true)) {
             General.showError("atom.renameByEntry was unsuccessful.");
             return false;
+        }
+        if ( ! postProcessAfterReading() ) {
+            return false;            
         }
         if ( status ) {
             General.showOutput("Done with nomenclature update from a PDB formatted coordinate list");            
@@ -347,18 +410,22 @@ public class Entry extends GumboItem implements Serializable {
             General.showError("syncModels on selected entry was unsuccessful.");            
             status = false;
         }
+        if ( ! postProcessAfterReading() ) {
+            return false;            
+        }
+        
         return status;
     }    
 
     
     /** Possibly writing multiple files for the selected entries.
      */
-    public boolean writePdbFormattedFileSet( String fn, Integer PdbVersion, Boolean generateStarFileToo, UserInterface ui ) {
+    public boolean writePdbFormattedFileSet( String fn, Boolean generateStarFileToo, UserInterface ui ) {
         
         boolean usePostFixedOrdinalsAtomName = true;
-        if ( PdbVersion.intValue() < 1 ) {
-            usePostFixedOrdinalsAtomName = false;
-        }
+//        if ( PdbVersion != null && PdbVersion.intValue() < 1 ) {
+//            usePostFixedOrdinalsAtomName = false;
+//        }
         String fileNameSTAR = InOut.changeFileNameExtension( fn, "str" );
         if ( ! writeNmrStarFormattedFileSet( fileNameSTAR, null, ui, usePostFixedOrdinalsAtomName ) ) {
             General.showError("Failed to first writeNmrStarFormattedFileSet");
@@ -388,10 +455,9 @@ public class Entry extends GumboItem implements Serializable {
             if ( selEntries.cardinality() != 1 ) {
                 outputFileName = InOut.addFileNumberBeforeExtension(          fn, fileCount, true, 3 );
             }            
-            
-            int status = ExternalPrograms.convert_star2pdb( inputFileName, outputFileName );
-            if ( status != 0 ) {
-                General.showError("Failed to ExternaPrograms.convert_star2pdb; returned status: " + status);
+            boolean status = PdbWriter.processFile( inputFileName, outputFileName );
+            if ( ! status ) {
+                General.showError("Failed PdbWriter.processFile");
                 return false;
             }
             if ( ! generateStarFileToo.booleanValue() ) {
@@ -441,6 +507,7 @@ public class Entry extends GumboItem implements Serializable {
          */
     }    
 
+
     /** It will be read and appended to the list of entries.
      *The file may contain empty lines and comments by # starting a line.
      */
@@ -478,6 +545,9 @@ public class Entry extends GumboItem implements Serializable {
             General.showError("Failed to readNmrStarFormattedFileSet from URL: " + url);
             return false;
         }                
+        if ( ! postProcessAfterReading() ) {
+            return false;            
+        }
         General.showOutput("Done reading STAR formatted entry.");            
         return status; 
     }    
@@ -508,6 +578,9 @@ public class Entry extends GumboItem implements Serializable {
         } else {
             General.showOutput("Done reading STAR formatted entry.");            
         }
+        if ( ! postProcessAfterReading() ) {
+            return false;            
+        }
         return status; 
     }    
 
@@ -526,7 +599,10 @@ public class Entry extends GumboItem implements Serializable {
         if ( ! status ) {
             General.showError("entry.readmmCIFFormattedFile was unsuccessful. Failed to read nmrstar formatted file");
         }
-        General.showOutput("Done reading STAR formatted entry.");            
+        if ( ! postProcessAfterReading() ) {
+            return false;            
+        }
+        General.showOutput("Done readmmCIFFormattedFile.");            
         return status; 
     }    
 
@@ -834,7 +910,7 @@ public class Entry extends GumboItem implements Serializable {
         }
         
         
-        General.showDebug("Set the siblings ids for atoms in models 2 and on.");
+//        General.showDebug("Set the siblings ids for atoms in models 2 and on.");
         for (int m=2;m<=modelCount;m++) {
             //General.showDebug("Working on syncing model with number: " + m);            
             int modelRid = gumbo.model.getModelRidWithNumber( modelsInEntry, m );
@@ -972,7 +1048,7 @@ public class Entry extends GumboItem implements Serializable {
         modelsSynced     = (BitSet)    mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_MODELS_SYNCED);
         return true;
     }               
-        
+                
    /** Adds a new entry in the array. The orf id list can be null;
      *Returns -1 for failure.
      */

@@ -6,7 +6,13 @@
 
 package Wattos.Utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
+import Wattos.Database.Defs;
 
 /**
  * HashMap of HashMap construction. Behaves as close to 1D HashMap
@@ -33,6 +39,15 @@ public class HashOfHashes extends HashMap {
         }
         // m2 was known
         return m2.get(key2);
+    }  
+
+    /** Convenience method; make sure the value is an int */
+    public int getInt( Object key1, Object key2 ) {
+        Object v = get(key1,key2);
+        if ( v == null ) {
+            return Defs.NULL_INT;
+        }
+        return ((Integer)v).intValue();
     }  
     
     /** Use only for String arguments

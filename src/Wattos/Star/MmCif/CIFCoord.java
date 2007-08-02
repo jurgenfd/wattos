@@ -465,7 +465,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
             int tTAssemblyRID = 0;            
 // MOLECULE
             for (int molCount=1;molCount<=molCountMax;molCount++) {
-                General.showDebug("Working on molecule: " + Integer.toString(molCount));
+//                General.showDebug("Working on molecule: " + Integer.toString(molCount));
                 int entityId = entityIdList[ tTAssemblyRID ];
                 String asymId = tTStructAsym.getValueString(tTAssemblyRID, savedColumnName);
 //                General.showDebug("Found asymId from savedColumnName: ["+asymId+"]");

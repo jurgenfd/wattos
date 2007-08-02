@@ -6,10 +6,18 @@
 
 package Wattos.Utils;
 
-import java.util.*;
-import java.io.*;
-import com.braju.format.*;              // printf equivalent
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import Wattos.Database.Defs;
+
+import com.braju.format.Format;
+import com.braju.format.Parameters;
 
 /**
  * Contains some methods so we can return specific types of data based on the
@@ -29,6 +37,16 @@ public class MapSpecific implements Serializable {
         loadMap();
     }
 
+    /** For easy working with maps
+     */
+    public static HashMap toHashMap( Object[] list ) {
+        HashMap result = new HashMap();
+        for (int i=0;i<list.length;i++) {
+            result.put(list[i], null);
+        }
+        return result;
+    }
+    
     /** Loads the global variables */
     public boolean loadMap() {
         General.showCodeBug("Method loadMap in MapSpecific needs to be overriden ");
@@ -77,6 +95,7 @@ public class MapSpecific implements Serializable {
         General.showError("key was not valid reference key for any object in hashmap");
         return null;
     }
+    
     
     /** Returns a boolean value.
      * @param key The key for the object to get.

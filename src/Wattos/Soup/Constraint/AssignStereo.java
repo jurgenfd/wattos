@@ -10,6 +10,7 @@ import java.util.*;
 import cern.colt.list.*;
 import Wattos.Utils.*;
 import Wattos.Soup.*;
+import Wattos.Soup.Comparator.ComparatorTripletByRestraints;
 import Wattos.CloneWars.*;
 import Wattos.Database.*;
 import Wattos.Star.NMRStar.StarDictionary;

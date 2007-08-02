@@ -67,8 +67,8 @@ public class ValidatorDictionary implements Serializable {
         
         tagTt = sF.getTagTable(StarGeneral.WILDCARD, true);
 
-        General.showDebug("Read number of star tag names from Validator STAR dictionary: " + 
-                tagTt.sizeRows);
+//        General.showDebug("Read number of star tag names from Validator STAR dictionary: " + 
+//                tagTt.sizeRows);
         // Get version
         //"3.0.8.100"        
         SaveFrame sFVersion = db.getSaveFrameByName("INFO", true);        

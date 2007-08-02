@@ -1357,7 +1357,7 @@ public static class RegExpFilenameFilter implements FilenameFilter {
      *a System.getenv("PATH") so that could be easier still.
      */
     public static Properties getEnvVars() {
-        //System.getenv("PATH"); for the future.
+//        General.showDebug("Doing getEnvVars");
         Process p = null;
         Properties envVars = new Properties();
         Runtime r = Runtime.getRuntime();
@@ -1392,6 +1392,8 @@ public static class RegExpFilenameFilter implements FilenameFilter {
             General.showThrowable(e);
             return null;
         }
+//        General.showOutput("Got getEnvVars: " +envVars.toString());
+        
         return envVars;
     }
     

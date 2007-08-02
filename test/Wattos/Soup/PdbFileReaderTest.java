@@ -56,7 +56,7 @@ public class PdbFileReaderTest extends TestCase {
         
         String fileNameBase = "1olh_small";
         
-        boolean doWrite = false; // don't use in junit testing as it's not necessarily installed.
+        boolean doWrite = true; // don't use in junit testing as it's not necessarily installed.
 //        String atomNomenclatureFlavor = "";
 //        PdbFile instance = null;
                 
@@ -84,7 +84,7 @@ public class PdbFileReaderTest extends TestCase {
             time = System.currentTimeMillis();
             Boolean generateStarFileToo = new Boolean(true);
             General.showDebug("Writing file: " + outputfileName);
-            status = entry.writePdbFormattedFileSet( outputfileName, null, generateStarFileToo, ui );
+            status = entry.writePdbFormattedFileSet( outputfileName, generateStarFileToo, ui );
             time = System.currentTimeMillis() - time;
             if ( ! status ) {
                 fail("Failed to write the PDB formatted file");

@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-package Wattos.Soup;
+package Wattos.Soup.Comparator;
 
 import Wattos.Soup.Constraint.Triplet;
 import java.util.Comparator;

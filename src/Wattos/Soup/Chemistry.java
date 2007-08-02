@@ -475,4 +475,18 @@ Zn 1.39
     public static boolean isIonResName(String resName) {
         return ION_RESIDUE_NAME_LIST.contains(resName);
     }
+
+    public static int getElementId(String atomName) {
+        char ch = atomName.charAt(0);
+        switch (ch) {
+            case 'H': return ELEMENT_ID_HYDROGEN;
+            case 'C': return ELEMENT_ID_CARBON;
+            case 'S': return ELEMENT_ID_SULFUR;
+            case 'N': return ELEMENT_ID_NITROGEN;
+            case 'O': return ELEMENT_ID_OXYGEN;
+            case 'P': return ELEMENT_ID_PHOSPOR;
+            case 'Q': return ELEMENT_ID_PSEUDO;
+            default: return ELEMENT_ID_UNKNOWN;
+        }
+    }
 }

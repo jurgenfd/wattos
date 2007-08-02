@@ -24,8 +24,10 @@ public class WattosLib implements Serializable {
     public static final String DEFAULT_DICTIONARY_STAR          = "STAR dictionary";
     public static final String DEFAULT_DICTIONARY_VALIDATOR     = "Validator STAR dictionary";
     public static final String DEFAULT_LIBRARY_PSEUDO_LIB       = "pseudo atom library";
+    public static final String DEFAULT_LIBRARY_ATOM_NOMEN_LIB   = "atom nomen library";
     public static final String DEFAULT_LIBRARY_REDUNDANCY       = "redundancy library";
     public static final String DEFAULT_LIBRARY_COMPLETENESS     = "completeness library";
+    public static final String DEFAULT_LIBRARY_ATOM_AMBER       = "atom amber library";
     public static final String DEFAULT_LIBRARY_TOPOLOGY         = "topology library";
     public static final String DEFAULT_LIBRARY_ATOM_MAP         = "atommap library";
     public static final String DEFAULT_LIBRARY_ATOM             = "atom library";
@@ -37,9 +39,11 @@ public class WattosLib implements Serializable {
     public StarDictionary starDictionary    = null;
     public ValidatorDictionary validDictionary = null;
     public PseudoLib pseudoLib              = null;                
+    public AtomNomenLib atomNomenLib        = null;                
     public RedundantLib redundantLib        = null;                
     public CompletenessLib completenessLib  = null;                
-    public TopologyLib topologyLib          = null;    
+    public AtomLibAmber atomLibAmber        = null;    
+    public TopologyLib topologyLib          = null;    // depends on AtomLibAmber 
     public AtomMap atomMap                  = null;    
     public AtomLib atomLib                  = null;    
     
@@ -65,6 +69,15 @@ public class WattosLib implements Serializable {
             General.showError("Failed to read the validator dictionary");
         }
         lib.put( DEFAULT_DICTIONARY_VALIDATOR, validDictionary );
+        
+        //pseudo atom library
+        atomNomenLib = new AtomNomenLib();                
+        status = atomNomenLib.readStarFile( null ); // read from standard resource
+        if (! status) {
+            General.showError(" in AtomNomenLib.main found:");
+            General.showError(" reading AtomNomenLib star file.");
+        }
+        lib.put( DEFAULT_LIBRARY_ATOM_NOMEN_LIB, atomNomenLib );        
         
         //pseudo atom library
         pseudoLib = new PseudoLib();                
@@ -93,9 +106,18 @@ public class WattosLib implements Serializable {
         }
         lib.put( DEFAULT_LIBRARY_COMPLETENESS, completenessLib );        
 
+        //AtomLibAmber
+        atomLibAmber = new AtomLibAmber();                
+        status = atomLibAmber.readStarFile( null ); // read from standard resource
+        if (! status) {
+            General.showError(" in AtomLibAmber.main found:");
+            General.showError(" reading AtomLibAmber file.");
+        }
+        lib.put( DEFAULT_LIBRARY_TOPOLOGY, topologyLib );        
+
         //TopologyLib library
         topologyLib = new TopologyLib();                
-        status = topologyLib.readWIFFile( null ); // read from standard resource
+        status = topologyLib.readWIFFile( null, atomLibAmber ); // read from standard resource
         if (! status) {
             General.showError(" in TopologyLib.main found:");
             General.showError(" reading TopologyLib WHAT IF file.");

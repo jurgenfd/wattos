@@ -1,0 +1,36 @@
+# simple one line comments are allowed
+
+InitAll
+
+SetProp
+interactiveSession
+false
+
+SetProp
+verbosity
+9
+
+SetProp
+writeSessionOnExit
+false
+
+ListProp
+
+#Input file
+ReadEntryMMCIF
+1cjg_rem_small.cif.gz
+y
+
+# Removed hydrogen
+#ATOM 1517  H HD1    . TYR C 2 7  ? 57.863 24.211 33.161 1.00 0.00 ? ? ? ? ? 7  TYR A HD1    1  
+#ATOM 1521  H HH     . TYR C 2 7  ? 55.143 27.832 33.454 1.00 0.00 ? ? ? ? ? 7  TYR A HH     1  
+#ATOM 1639  H HG     . SER C 2 16 ? 63.684 28.966 34.703 1.00 0.00 ? ? ? ? ? 16 SER A HG     1  
+
+AddMissingAtoms
+
+WriteEntryPDB
+1cjg_rem_small_addedAtoms.pdb
+y
+
+Quit
+

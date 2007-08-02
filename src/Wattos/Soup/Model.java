@@ -8,6 +8,10 @@ package Wattos.Soup;
 
 import java.io.*;
 import java.util.*;
+
+import com.braju.format.Format;
+import com.braju.format.Parameters;
+
 import Wattos.Utils.*;
 import Wattos.Database.*;
 
@@ -249,5 +253,22 @@ public class Model extends GumboItem implements Serializable {
         return true;
     }            
 
+    /**
+     * Return the entry, model, and the number of mol, res, and atom ids contained.
+     */
+    public String toString(int modelRrid) {
+        if (modelRrid < 0) {
+            General.showError("Can't do toString for model rid < 0");
+            return null;
+        }
+        int entryNumber = gumbo.entry.number[entryId[modelRrid]];
+        int modelNumber = number[modelRrid];
+        
+        Parameters p = new Parameters(); // for printf
+        p.add(modelNumber);
+        p.add(entryNumber);
+        return Format.sprintf(
+                "Model: %3d Entry: %2d", p);
+    }
 }
  

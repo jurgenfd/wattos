@@ -29,8 +29,12 @@ REM Use the jar everywhere but on test computer named whelk.
 REM There the development classes are used.
 set CLASSPATH=%WATTOSJARSDIR%\Wattos.jar
 if /I %computername% == WHELK  set CLASSPATH=%WATTOSCLASSDIR%
+REM -------------------------------------------------
 REM Use next line if need be to switch to production code.
-set CLASSPATH=S:\wattos\Wattos\lib\Wattos.jar
+REM -------------------------------------------------
+REM set CLASSPATH=S:\wattos\Wattos\lib\Wattos.jar
+
+
 echo Wattos initialized with CLASSPATH: %CLASSPATH%
 
 REM # Then in alphabetical listing (capitals first)

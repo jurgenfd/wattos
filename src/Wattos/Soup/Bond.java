@@ -1,9 +1,15 @@
 package Wattos.Soup;
 
-import java.io.*;
-import java.util.*;
-import Wattos.Utils.*;
-import Wattos.Database.*;
+import java.io.Serializable;
+import java.util.BitSet;
+
+import Wattos.Database.DBMS;
+import Wattos.Database.Defs;
+import Wattos.Database.ForeignKeyConstrSet;
+import Wattos.Database.Relation;
+import Wattos.Database.RelationSoS;
+import Wattos.Database.SQLSelect;
+import Wattos.Utils.General;
 /**
  * Property of 2 atoms. Value contains the bond length.
  *
@@ -94,10 +100,88 @@ public class Bond extends PropNAtom implements Serializable {
         }
     }
     
+    /** Assumes only one residue in soup which is the case for a soup from the
+     * topologylib.
+     * @param resName
+     * @param atomName1
+     * @param atomName2
+     * @return
+     */
+    public double getBondLength( String resName, String atomName1, String atomName2 ) {
+        BitSet resRidSet = SQLSelect.selectBitSet(dbms, gumbo.res.mainRelation, 
+                Relation.DEFAULT_ATTRIBUTE_NAME, SQLSelect.OPERATION_TYPE_EQUALS, 
+                resName, false);
+        int resRid = resRidSet.nextSetBit(0);
+        if ( resRid<0 ) {
+            return Defs.NULL_DOUBLE;
+        }
+        if ( atomName1 == null ) {
+            General.showError("Atom 1 argument can't be null to bond.getBondLength");
+            return Defs.NULL_DOUBLE;
+        }
+        if ( atomName2 == null ) {
+            General.showError("Atom 2 argument can't be null to bond.getBondLength");
+            return Defs.NULL_DOUBLE;
+        }
+        int atomRid1 = gumbo.atom.getRidByAtomNameAndResRid(atomName1, resRid);
+        int atomRid2 = gumbo.atom.getRidByAtomNameAndResRid(atomName2, resRid);
+          
+        Integer atomRid1Int = new Integer(atomRid1);
+        Integer atomRid2Int = new Integer(atomRid2);
+        BitSet bondList = SQLSelect.selectCombinationBitSet(dbms, mainRelation, 
+                Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, SQLSelect.OPERATION_TYPE_EQUALS, atomRid1Int,
+                Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, SQLSelect.OPERATION_TYPE_EQUALS, atomRid2Int,
+                SQLSelect.OPERATOR_AND, false);
+        int bondRid = bondList.nextSetBit(0);
+        if ( bondRid<0 ) {
+            bondList = SQLSelect.selectCombinationBitSet(dbms, mainRelation, 
+                    Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, SQLSelect.OPERATION_TYPE_EQUALS, atomRid1Int,
+                    Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, SQLSelect.OPERATION_TYPE_EQUALS, atomRid2Int,
+                    SQLSelect.OPERATOR_AND, false);
+        }
+        bondRid = bondList.nextSetBit(0);
+        if ( bondRid<0 ) {
+            General.showDebug("Failed to get the bond lenght from What If lib; TODO: add generalized estimate.");
+            return Defs.NULL_DOUBLE;
+        }
+        double bl = gumbo.atom.calcDistanceFast( atomRid1, atomRid2 );
+//        General.showDebug("Found bond lenght in What If lib: " + bl);
+//        General.showDebug(gumbo.atom.toString(atomRid1));
+//        General.showDebug(gumbo.atom.toString(atomRid2));
+        return bl;      
+    }
+    
     /**     */
     public boolean resetConvenienceVariables() {        
         super.resetConvenienceVariables();
         return true;
+    }
+
+    /** Simply uses both sides of the bond to see if it matches */
+    public BitSet getBondListForAtomRid(int atomRid) {
+        Integer atomRidInt = new Integer(atomRid);
+        BitSet bondRidListA = SQLSelect.selectBitSet(dbms, mainRelation, 
+                Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, SQLSelect.OPERATION_TYPE_EQUALS, 
+                atomRidInt, false);                
+        BitSet bondRidListB = SQLSelect.selectBitSet(dbms, mainRelation, 
+                Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, SQLSelect.OPERATION_TYPE_EQUALS, 
+                atomRidInt, false);
+        bondRidListA.or(bondRidListB);
+        return bondRidListA;
+    }
+    
+    /** Simply uses both sides of the bond to see if it matches */
+    public BitSet getBondListForResRidSet(BitSet resRidSet) {        
+        BitSet atomRidSet = gumbo.res.getAtoms(resRidSet);
+        BitSet bondRidListA = SQLSelect.selectBitSet(dbms, mainRelation, 
+                Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, SQLSelect.OPERATION_TYPE_EQUALS, 
+                atomRidSet, false);                
+        BitSet bondRidListB = SQLSelect.selectBitSet(dbms, mainRelation, 
+                Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, SQLSelect.OPERATION_TYPE_EQUALS, 
+                atomRidSet, false);
+        bondRidListA.or(bondRidListB);
+        return bondRidListA;
     }    
+    
 }
  

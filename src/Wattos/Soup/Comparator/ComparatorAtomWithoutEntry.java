@@ -1,6 +1,8 @@
-package Wattos.Soup;
+package Wattos.Soup.Comparator;
 
 import java.util.Comparator;
+
+import Wattos.Soup.Gumbo;
 
 /**
  * @author Jurgen F. Doreleijers
