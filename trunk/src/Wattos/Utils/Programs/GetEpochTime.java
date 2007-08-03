@@ -6,7 +6,7 @@
 
 package Wattos.Utils.Programs;
 
-import Wattos.Utils.*;
+import java.util.Date;
 
 /**
  * The simplest Java program I've ever written.
@@ -22,6 +22,8 @@ class GetEpochTime {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        General.showOutput( Wattos.Utils.Dates.getEpochTime() );
+        Date d = new Date();
+        String e = Long.toString( d.getTime() );
+        System.out.println(e);
     }   
 }
