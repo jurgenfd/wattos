@@ -7,15 +7,26 @@
 
 package Wattos.Star.NMRStar;
 
-import junit.framework.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import Wattos.Database.*;
-import Wattos.CloneWars.*;
-import Wattos.Soup.*;
-import Wattos.Soup.Constraint.*;
-import Wattos.Utils.*;
+import java.io.File;
+import java.net.URL;
+import java.util.BitSet;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import Wattos.CloneWars.UserInterface;
+import Wattos.Database.DBMS;
+import Wattos.Soup.Gumbo;
+import Wattos.Soup.Constraint.AssignStereo;
+import Wattos.Soup.Constraint.Completeness;
+import Wattos.Soup.Constraint.CompletenessLib;
+import Wattos.Soup.Constraint.Constr;
+import Wattos.Soup.Constraint.DistConstrList;
+import Wattos.Soup.Constraint.Surplus;
+import Wattos.Utils.DiffPrint;
+import Wattos.Utils.General;
+import Wattos.Utils.InOut;
+import Wattos.Utils.Strings;
 
 /**
  *
@@ -24,8 +35,8 @@ import Wattos.Utils.*;
 public class File31Test extends TestCase {
      
     String fs = File.separator;
-    // Below paramters are true by default. 
-    //Note that the checks are dependent so e.g. for writeStar to be successfull some (assume all) need to be done.
+    // Below parameters are true by default. 
+    //Note that the checks are dependent so e.g. for writeStar to be successful some (assume all) need to be done.
     boolean calcDist            = false;
     boolean getSurplus          = false;
     boolean doAssignment        = false;

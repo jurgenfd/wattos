@@ -276,7 +276,10 @@ public class Entry extends GumboItem implements Serializable {
     /** Does action after each read of a molecular system */
     private boolean postProcessAfterReading() {
         BitSet atomsInMasterModel = getAtomsInMasterModel();
-        
+        if ( atomsInMasterModel == null ) {
+            General.showError("Failed to getAtomsInMasterModel");
+            return false;
+        }
         AtomLibAmber atomLibAmber = null;
 
         try {
