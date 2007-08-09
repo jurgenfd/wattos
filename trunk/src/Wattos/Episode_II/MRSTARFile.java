@@ -537,7 +537,11 @@ Parsed number of restraints:29
 
         
         if ( ! init( mrf, classi, DBMRFile.BLOCK_ID_INDICATING_ALL, star_version )) {
-            General.showError("Failed to read STAR text from file.");
+        	String fname = "not set";
+        	if ( mrf != null && mrf.file != null ) {
+        		fname = mrf.file.toString();
+        	}
+            General.showError("Failed to read STAR text from file: " + fname);
             return status;            
         }
         status[0] = 0; // success.

@@ -1368,12 +1368,13 @@ public static class RegExpFilenameFilter implements FilenameFilter {
             if( osName.startsWith( "Windows" )) {
                 //p = r.exec( "command.com /c set" ); # Nobody is using old 98 anymore right?
                 p = r.exec( "cmd.exe /c set" );
-            } else if ( osName.equals("Linux") || osName.equals("SunOS")) {
+            } else if ( osName.equals("Linux") || osName.equals("SunOS")
+            		|| osName.startsWith("Mac")) {
                 p = r.exec( "env" );
             } else {
                 General.showOutput("Any Operating System that is not:");
                 General.showOutput("- Windows");
-                General.showOutput("- Linux or SunOS");
+                General.showOutput("- Linux, Mac or SunOS");
                 General.showOutput("is currently not supported by Wattos.Utils.InOut.getEnvVars");
                 General.showOutput("The OS of this machine is determined by Java as: " 
                     + osName);
