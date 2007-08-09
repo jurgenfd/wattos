@@ -80,7 +80,7 @@ public class OSExec
                 cmd[0] = "command.com";
                 cmd[1] = "/C";
             } 
-            else if ( osName.equals("Linux") || osName.equals("SunOS")) {
+            else if ( osName.equals("Linux") || osName.equals("SunOS")|| osName.startsWith("Mac OS")) {
                 // It's a unix variant
                 cmd[0] = "/bin/csh";
                 cmd[1] = "-c";                
@@ -88,7 +88,7 @@ public class OSExec
             else {
                 General.showOutput("Any Operating System that is not:");
                 General.showOutput("- Windows");
-                General.showOutput("- Linux or SunOS");
+                General.showOutput("- Linux, SunOS, or Mac OS");
                 General.showOutput("is currently not supported by Wattos.Utils.OSExec.");
                 General.showOutput("The OS of this machine is determined by Java as: " 
                     + osName);

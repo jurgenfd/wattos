@@ -80,7 +80,7 @@ public class Globals {
        
         /** Use directories etc. that are not production but QA */
         m.put("testing", Boolean.valueOf( true )); 
-        /** Use local servlet engine. Not yet setup in Eclipse */
+        /** Use local servlet engine.  */
         m.put("act_locally", Boolean.valueOf( true ));
         /** Use the local database engine. */
         m.put("act_locally_db", Boolean.valueOf( true )); 
@@ -124,7 +124,8 @@ public class Globals {
         String share_root       = fs+"share";
         //String dbfs_root        = fs+"mnt"+fs+"mrgrid";
         String dbfs_root        = fs+"big"+fs+"jurgen"+fs+"DB"+fs+"mrgrid";
-        String localTestingPlatform = "C:\\jurgen\\tmp_unb_";
+//        String localTestingPlatform = "C:\\jurgen\\tmp_unb_";
+        String localTestingPlatform = "/Users/bmrb/tmp_unb_";
         //String pdbmirror_root   = fs+"pdbmirror2"; // different from "pdbmirr".
         String pdbmirror_root   = fs+"dumpzone"+fs+"pdb";
         
@@ -135,12 +136,18 @@ public class Globals {
             share_root      = "S:";    //share on 'Medusa'
             dbfs_root       = "M:"+fs+"jurgen"+fs+"DB"+fs+"mrgrid";  //big/jurgen/DB/mrgrid on 'tang'
             pdbmirror_root  = "P:"+fs+"pdb";  //dumpzone/pdb on 'clownfish'
+        } else if ( osName.startsWith("Mac OS") ) {
+//            root            = "I:";    //rootdir on 'malvi' 
+//          bmrb_root       = "K:";  //bmrb on 'Medusa'
+//          share_root      = "S:";    //share on 'Medusa'
+//          dbfs_root       = "M:"+fs+"jurgen"+fs+"DB"+fs+"mrgrid";  //big/jurgen/DB/mrgrid on 'tang'
+//          pdbmirror_root  = "P:"+fs+"pdb";  //dumpzone/pdb on 'clownfish'
         } else if ( osName.equals("Linux") || osName.equals("SunOS")) {
             ; // default settings.
         } else {
             General.showOutput("Any Operating System that is not:");
             General.showOutput("- Windows NT, Windows 2000, Windows 98 or");
-            General.showOutput("- Linux or SunOS\n");
+            General.showOutput("- Linux, Mac OS, or SunOS\n");
             General.showOutput("is currently not supported by Wattos.Episode_II.Globals.");
             General.showOutput("The OS of this machine is determined by Java as: " 
                 + osName);
@@ -154,7 +161,8 @@ public class Globals {
         // Favorite editor on Unix or Windows systems
         String jar_file_name = share_root+fs+"linux"+fs+"src"+fs+"jedit"+fs+"4.1"+fs+"jedit.jar";
         if( ( (Boolean) m.get( "act_locally" )).booleanValue() ) {
-            jar_file_name = "\"C:\\Program Files\\jEdit4.3pre9\\jedit.jar\"";
+//            jar_file_name = "\"C:\\Program Files\\jEdit4.3pre9\\jedit.jar\"";
+            jar_file_name = "/Users/bmrb/Desktop/jEdit.app/Contents/Resources/Java/jedit.jar";
         }
         m.put("editor", "java -Xmx96m -Xms24m -jar "+jar_file_name+" -noserver " );
 
@@ -220,7 +228,8 @@ public class Globals {
         m.put("MRGridServlet",                      "MRGridServlet");
         m.put("servlet_top_url",                    "WebModule");
         if ( getValueBoolean("act_locally" ) ) {
-            m.put("servlet_root_url",               "http://whelk.bmrb.wisc.edu:8080");
+//            m.put("servlet_root_url",               "http://whelk.bmrb.wisc.edu:8080");
+            m.put("servlet_root_url",               "http://localhost:8080");
         } else {
             m.put("servlet_root_url",               "http://restraintsgrid.bmrb.wisc.edu:8080");
         }
@@ -270,10 +279,11 @@ public class Globals {
         m.put("db_conn_prefix",     "jdbc:mysql://");
 
         if ( getValueBoolean("testing" ) ) {  
-            m.put("db_username",        "wattos1");
+            m.put("db_username",        "wattos2");
             m.put("db_password",        "4I4KMS");
             if ( getValueBoolean("act_locally_db" ) ) {
-                m.put("db_machine",         "whelk.bmrb.wisc.edu");
+//                m.put("db_machine",         "whelk.bmrb.wisc.edu");
+                m.put("db_machine",         "localhost");
             } else {
                 m.put("db_machine",         "restraintsgrid.bmrb.wisc.edu");                    
             }

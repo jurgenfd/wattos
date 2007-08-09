@@ -49,12 +49,12 @@ public class WattosProp extends Properties {
         String rootDir = null; // directories will always be ended by a slash.
         if ( osName.startsWith("Windows") ) {
             rootDir             = "C:" + fs; 
-        } else if ( osName.equals("Linux") || osName.equals("SunOS")) {
+        } else if ( osName.equals("Linux") || osName.equals("SunOS") || osName.equals("Mac OS") ) {
             rootDir             = fs; 
         } else {
             General.showOutput("Any Operating System that is not:");
             General.showOutput("- Windows");
-            General.showOutput("- Linux or SunOS");
+            General.showOutput("- Linux, SunOS, or Mac OS");
             General.showOutput("is currently not supported by Wattos.CloneWars.WattosProp.");
             General.showOutput("The OS of this machine is determined by Java as: " 
                 + osName);

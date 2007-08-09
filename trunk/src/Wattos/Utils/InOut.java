@@ -31,11 +31,12 @@ public class InOut {
      *be used to back calculate the real size of a file.
      */
     public static final float DEFAULT_COMPRESSION_FACTOR = 5;
+    /** Normally we assume the OS is linux */
     public static boolean isOSLinux   = true;
     public static boolean isOSWindows = false;
 
     public static final ArrayList fileNameExtensionsText;
-    /** Not used yet but correlary of above */
+    /** Not used yet but opposite of above */
     public static final ArrayList fileNameExtensionsBina;
     
     static {
@@ -89,7 +90,7 @@ public class InOut {
             /**
             General.showOutput("Any Operating System that is not:\n"+
             "- Windows\n"+
-            "- Linux or SunOS\n"+
+            "- Linux or SunOS or Mac OS\n"+
             "is currently not supported by Wattos.Utils.InOut.\n"+
             "The OS of this machine is determined by Java as: \n"
                 + osName);
