@@ -9,15 +9,36 @@
 
 package Wattos.Episode_II;
 
-import EDU.bmrb.starlibj.*;
-import Wattos.Utils.*;
-import Wattos.Database.*;
-import Wattos.Converters.Amber.StarOutAll;
-import Wattos.Converters.Common.*;
-import com.braju.format.*;              // printf equivalent
-
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
+import EDU.bmrb.starlibj.BlockNode;
+import EDU.bmrb.starlibj.DataLoopNameListNode;
+import EDU.bmrb.starlibj.DataLoopNode;
+import EDU.bmrb.starlibj.DataValueNode;
+import EDU.bmrb.starlibj.LoopTableNode;
+import EDU.bmrb.starlibj.RemoteInt;
+import EDU.bmrb.starlibj.SaveFrameNode;
+import EDU.bmrb.starlibj.StarFileNode;
+import EDU.bmrb.starlibj.StarNode;
+import EDU.bmrb.starlibj.StarValidity;
+import EDU.bmrb.starlibj.VectorCheckType;
+import Wattos.Converters.Amber.StarOutAll;
+import Wattos.Converters.Common.Varia;
+import Wattos.Database.Defs;
+import Wattos.Utils.General;
+import Wattos.Utils.InOut;
+import Wattos.Utils.NmrStar;
+import Wattos.Utils.PrimitiveArray;
+import Wattos.Utils.Strings;
+
+import com.braju.format.Format;
+import com.braju.format.Parameters;
 
 /** 
  * One block of lines as separated by annotation.
@@ -545,7 +566,7 @@ public class DBMRBlock {
         if ( f == null  ) {
             General.showError("Failed to create amberUrl file");
             return false;
-        }        
+        }                
         return f.exists();
     }
 

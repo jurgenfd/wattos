@@ -161,9 +161,9 @@ public class MRSTARFileTest extends TestCase {
 //                {0,2},      // 1iv6 dipolar
         };
         
-        int startTestIdx = 1;   // test to start with;    
+        int startTestIdx = 9;   // test to start with;    
         int countTest = 1;      // tests todo;   
-        boolean doAllTests = true;
+        boolean doAllTests = false;
         if ( doAllTests ) {
             startTestIdx = 0;
             countTest = statusExp.length;

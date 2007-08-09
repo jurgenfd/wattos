@@ -6,17 +6,45 @@
 package Wattos.Converters.Amber;
 
 
-import EDU.bmrb.starlibj.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Vector;
 
-import com.braju.format.*;              // printf equivalent
-import Wattos.Utils.*;
-import Wattos.Converters.Common.*;
-import Wattos.Database.*;
-import Wattos.Soup.*;
-import Wattos.Episode_II.*;
-import java.net.*;
-import java.io.*; 
-import java.util.*;
+import EDU.bmrb.starlibj.BlockNode;
+import EDU.bmrb.starlibj.DataLoopNode;
+import EDU.bmrb.starlibj.DataValueNode;
+import EDU.bmrb.starlibj.LoopRowNode;
+import EDU.bmrb.starlibj.LoopTableNode;
+import EDU.bmrb.starlibj.SaveFrameNode;
+import EDU.bmrb.starlibj.StarFileNode;
+import EDU.bmrb.starlibj.StarUnparser;
+import EDU.bmrb.starlibj.VectorCheckType;
+import Wattos.Converters.Common.AtomNode;
+import Wattos.Converters.Common.Comment;
+import Wattos.Converters.Common.LogicalNode;
+import Wattos.Converters.Common.ParseError;
+import Wattos.Converters.Common.Varia;
+import Wattos.Database.DBMS;
+import Wattos.Database.Defs;
+import Wattos.Episode_II.Globals;
+import Wattos.Soup.Atom;
+import Wattos.Soup.AtomMap;
+import Wattos.Soup.Entry;
+import Wattos.Soup.Gumbo;
+import Wattos.Soup.Molecule;
+import Wattos.Soup.PdbFile;
+import Wattos.Soup.Residue;
+import Wattos.Utils.General;
+import Wattos.Utils.InOut;
+import Wattos.Utils.NmrStar;
+import Wattos.Utils.Strings;
+
+import com.braju.format.Format;
+import com.braju.format.Parameters;
 
 
 /** StarOutAll class is used to produce Star file output from Amber input
@@ -607,6 +635,15 @@ public class StarOutAll{
         Globals g = new Globals();
         //g.showMap();
         String amber_pdb_dir = g.getValueString( "amber_pdb_dir" );
+
+        File amber_pdb_dirFile = new File(amber_pdb_dir);
+        if ( ! amber_pdb_dirFile.exists() ) {
+            String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
+            File inputDir       = new File( wattosRoot,"Data"+File.separator+"test_data" );
+            if ( inputDir.exists() ) {
+                amber_pdb_dir = inputDir.toString();
+            }
+        }        
         return amber_pdb_dir + File.separator + pdbEntryCode + "_amber.pdb";
     }
 

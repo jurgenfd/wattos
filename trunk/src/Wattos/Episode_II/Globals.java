@@ -9,11 +9,18 @@
 
 package Wattos.Episode_II;
 
-import java.util.*;
-import java.io.*;
-import com.braju.format.*;              // printf equivalent
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
-import Wattos.Utils.*;
+import Wattos.Utils.General;
+
+import com.braju.format.Format;
+import com.braju.format.Parameters;
 
 /** Holds the global settings like directory locations and preferred text editors.
  * The nice thing is that most things can be modified after instantiating.
@@ -177,7 +184,7 @@ public class Globals {
 //        m.put("coordinates_dir", pdbmirror_root+fs+"pdb"+fs+"data"+fs+"structures"+divided+"all"+fs+"pdb" );
         // Directory with external amber pdb coordinate files
         m.put("amber_pdb_dir", pdbmirror_root+fs+"external"+fs+"amber_pdb" );
-
+        
         // Directory with zipped unannotated mr files for annotation use within subdir structure.
         m.put("mr_dir", pdbmirror_root+fs+"pdb"+fs+"data"+fs+"structures"+fs+"divided"+fs+"nmr_restraints");
         // Directory with zipped pdb files within subdir structure.
