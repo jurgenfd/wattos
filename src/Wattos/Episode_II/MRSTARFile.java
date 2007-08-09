@@ -537,7 +537,7 @@ Parsed number of restraints:29
 
         
         if ( ! init( mrf, classi, DBMRFile.BLOCK_ID_INDICATING_ALL, star_version )) {
-            General.showError("Failed to write STAR text to file.");
+            General.showError("Failed to read STAR text from file.");
             return status;            
         }
         status[0] = 0; // success.

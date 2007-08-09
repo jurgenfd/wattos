@@ -76,7 +76,7 @@ public class MRGridServlet extends HttpServlet {
     static final String id_image_small = "_pin"; 
     static final String id_image_medium = ""; 
     static final String id_image_large = "_xl"; 
-    static final String DEFAULT_DB_USERNAME = "wattos1";  // was 2
+    static final String DEFAULT_DB_USERNAME = "wattos2";  // was 2
     //static final String DEFAULT_DB_USERNAME = "jfdplay"; // use for local testing
          
     // Just a couple of larger and easy to find ones.

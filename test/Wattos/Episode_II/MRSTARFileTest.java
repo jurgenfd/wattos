@@ -174,7 +174,7 @@ public class MRSTARFileTest extends TestCase {
             File fileIn  = new File(inputDir,fi[i]);
             MRSTARFile mrf = new MRSTARFile();
             // READ
-//            General.showDebug("Parsing file: " + fileIn.toString());
+            General.showDebug("Parsing file: " + fileIn.toString());
             args[i][4] = pdb_id[i];
             args[i][5] = fileIn.toString();
             int[] status = mrf.read(args[i]);           
