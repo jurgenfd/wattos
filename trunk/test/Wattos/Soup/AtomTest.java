@@ -7,12 +7,19 @@
 
 package Wattos.Soup;
 
-import junit.framework.*;
-import java.io.*;
-import java.net.*;
-import Wattos.Utils.*;
-import Wattos.Database.*;
-import Wattos.CloneWars.*;
+import java.io.File;
+import java.net.URL;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import Wattos.CloneWars.UserInterface;
+import Wattos.Database.DBMS;
+import Wattos.Utils.DiffPrint;
+import Wattos.Utils.General;
+import Wattos.Utils.InOut;
+import Wattos.Utils.PrimitiveArray;
+import Wattos.Utils.Strings;
 
 /**
  *
@@ -62,10 +69,21 @@ public class AtomTest extends TestCase {
         return true;
     }     
 
-    public void testCalcDistance() {
+    
+    public void testRoundToPdbPrecision() {
         
         //General.verbosity = General.verbosityNothing;
         General.verbosity = General.verbosityDebug;
+        
+        float[] c = new float[] {123.456789f,0,0};
+        General.showDebug("Before rounding: " + PrimitiveArray.toString(c));
+        General.showDebug("after          : " + PrimitiveArray.toString(GumboItem.roundToPdbPrecision(c)));
+    }
+    
+    public void testCalcDistance() {
+        
+        General.verbosity = General.verbosityNothing;
+//        General.verbosity = General.verbosityDebug;
         
         float cutoffBonds   = 0.1F;
         int[] minModels             = new int[]     { 1,                    10,                   2 };

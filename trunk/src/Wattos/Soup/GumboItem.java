@@ -594,5 +594,13 @@ public class GumboItem extends WattosItem implements Serializable {
     public double calcDihedral(int[] itemList) {
         return calcDihedral( itemList[0], itemList[1], itemList[2], itemList[3] );        
     }
+
+    /** the int part will truncate. */    
+    public static float[] roundToPdbPrecision(float[] c) {
+        c[0] =  ((int) (c[0]*1000))/1000f; 
+        c[1] =  ((int) (c[1]*1000))/1000f; 
+        c[2] =  ((int) (c[2]*1000))/1000f; 
+        return c;
+    }
     
 }

@@ -7,7 +7,6 @@ package Wattos.Soup;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import Wattos.Database.DBMS;
 import Wattos.Database.Defs;
@@ -125,16 +124,18 @@ public class AtomLibAmber implements Serializable {
     }
     
     public boolean init() {
-        atomTypeStringArrayList = new StringArrayList();
-        Collections.addAll(atomTypeStringArrayList, atomTypeStringList);
-        atomTypeStringArrayListNonlinear = new StringArrayList();
-        Collections.addAll(atomTypeStringArrayListNonlinear, atomTypeStringListNonlinear);
-        atomTypeStringArrayListTetrahedral = new StringArrayList();
-        Collections.addAll(atomTypeStringArrayListTetrahedral, atomTypeStringListTetrahedral);
-        atomTypeStringArrayListPlanar = new StringArrayList();
-        Collections.addAll(atomTypeStringArrayListPlanar, atomTypeStringListPlanar);
+        atomTypeStringArrayList             = new StringArrayList();
+        atomTypeStringArrayListNonlinear    = new StringArrayList();
+        atomTypeStringArrayListTetrahedral  = new StringArrayList();
+        atomTypeStringArrayListPlanar       = new StringArrayList();
+
+        atomTypeStringArrayList.addAll(             atomTypeStringList);
+        atomTypeStringArrayListNonlinear.addAll(    atomTypeStringListNonlinear );
+        atomTypeStringArrayListTetrahedral.addAll(  atomTypeStringListTetrahedral);
+        atomTypeStringArrayListPlanar.addAll(       atomTypeStringListPlanar);
+
         return true;
-    }
+    } 
     
     public boolean readStarFile( URL url) {
         if ( url == null ) {
