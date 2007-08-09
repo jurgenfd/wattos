@@ -32,7 +32,7 @@ if /I %computername% == WHELK  set CLASSPATH=%WATTOSCLASSDIR%
 REM -------------------------------------------------
 REM Use next line if need be to switch to production code.
 REM -------------------------------------------------
-REM set CLASSPATH=S:\wattos\Wattos\lib\Wattos.jar
+set CLASSPATH=S:\wattos\Wattos\lib\Wattos.jar
 
 
 echo Wattos initialized with CLASSPATH: %CLASSPATH%

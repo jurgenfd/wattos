@@ -57,12 +57,12 @@ import com.braju.format.Parameters;
  * <P>Some random documentations:<BR>
  * <UL>
  * <LI> Each atom in the first model has information on it's siblings in related models.
- * <LI> Updates and deletions are tricky. Be carefull with deleting atoms specific
+ * <LI> Updates and deletions are tricky. Be careful with deleting atoms specific
  * to 1 model. For an example look at 
  * {@link Wattos.CloneWars.CommandHub#ReadEntryExtraCoordinatesWHATIFPDB}
  * <LI>When deleting a model in the soup then also nill the atom siblings list. 
  * That is: each affected atom sibling list to be set to null.
- * There is an Entry property that shows if models are synced. That is false if this 
+ * There is an Entry property that shows if models are sync-ed. That is false if this 
  * still needs to be done. If true, it may be assumed that the atoms are in sync. This adds complexity
  * because for each update/deletion the entry attribute has to be set to false.
  * </ul>
@@ -79,7 +79,7 @@ public class Atom extends GumboItem implements Serializable {
     public static final String CAN_HYDROGEN_BOND            = "can_hydrogen_bond";
     /** When CAN_HYDROGEN_BOND is true this parameter identifies a donor.
      *Note that an atom can be a donor and acceptor at the same time in the
-     *topologylib only, depending on protonation.     */
+     *topology lib only, depending on protonation.     */
     public static final String IS_HB_DONOR                  = "is_HB_donor";
     
     /** See IS_HB_DONOR     */
@@ -202,7 +202,9 @@ public class Atom extends GumboItem implements Serializable {
     }            
     
    /** Adds a new entry in the array. Since there are so many parameters it might be faster
-    *to inline this method. Which the JIT might do anyway.
+    *to in-line this method. Which the JIT might do anyway.
+    *Note that the atom coordinates will automatically be rounded to 3 digits after
+    *the decimal dot.
      */
     public int add(String name,                                                 // WattosItem attributes
         boolean has_coor, float[] coor, float charge,                           // GumboItem attributes
@@ -211,7 +213,7 @@ public class Atom extends GumboItem implements Serializable {
         int parentId) {
             
         int maxSize = mainRelation.sizeMax;
-        int result = super.add( name, has_coor, coor, charge);
+        int result = super.add( name, has_coor, GumboItem.roundToPdbPrecision(coor), charge);
         if ( result < 0 ) {
             General.showCodeBug( "Failed to get a new row id for an atom with name: " + name);
             return -1;
@@ -962,7 +964,7 @@ public class Atom extends GumboItem implements Serializable {
      * <P>The algorithm is similar as in calcBond.
      * NB all selected atoms in the first model of the selected entry will be 
      * scanned for all models. E.g. if the atom isn't selected in 
-     *a consequetive model it will still be scanned for it.
+     *a consecutive model it will still be scanned for it.
      *<P>Make sure bonds are already calculated if you want to exclude bonded
      *contacts.
      * @return True for success (use showDistanceList for a printout of selected results)
@@ -1185,7 +1187,7 @@ public class Atom extends GumboItem implements Serializable {
                     }
                 }        
             }
-            if ( printProgress ) {
+            if ( printProgress ) { 
                 General.showOutput( "\nDone. Checked number of potential pairs: " + countAtomsChecked);
             }
             ArrayList keysA = new ArrayList(goodPairs.keySet());

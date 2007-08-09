@@ -6,9 +6,18 @@
 
 package Wattos.Utils;
 
-import java.io.*;
-import java.util.*;
-import Wattos.Utils.Comparators.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.TreeSet;
+
+import Wattos.Utils.Comparators.ComparatorStringArray;
 
 /**
  * Methods for dealing with lists of PDB entry ids or a
@@ -210,5 +219,11 @@ public class StringArrayList extends ArrayList {
         list_3 = list_1.difference(list_2);
         General.showOutput("list 3 is: " + list_3);
         System.exit(1); // testing isn't a normal exit.
+    }
+
+    public void addAll(String[] list) {
+        for (int i=0;i<list.length;i++) {
+            add( list[i]);
+        }        
     }
 }
