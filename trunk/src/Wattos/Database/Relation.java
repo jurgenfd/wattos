@@ -3877,12 +3877,12 @@ public class Relation implements Serializable  {
     }
         
     /** Use the given column to reconstruct the order of the tuples. The method assumes that the column contains
-     *a list of randomly ordered elements 0 through n-1 with each element occuring exactly once. The method
+     *a list of randomly ordered elements 0 through n-1 with each element occurring exactly once. The method
      *is very fast; order of N for one scan.
      *If the order is messed up this routine shouldn't fail but print the error 
      *and return null;
      *The routine will only include rows that actually have a non-null value for the order column.
-     *More explicitely: it will return a map of lenght null if the order column contains null values.
+     *More explicitly: it will return a map of length null if the order column contains null values.
      *Give a negative number like -1 to use the column that has the default name for the order column.
      */
     public int[] getRowOrderMap( int orderColumnIdx ) {
@@ -3935,8 +3935,8 @@ public class Relation implements Serializable  {
         }
         int[] mapReduced = new int[ countDone ];
         System.arraycopy( map, 0, mapReduced, 0, countDone);
-//        General.showDetail("Found map of lenght: " + mapReduced.length + " with elements: " + PrimitiveArray.toString(mapReduced));
-//        General.showDebug("Found map of lenght: " + mapReduced.length );
+//        General.showDetail("Found map of length: " + mapReduced.length + " with elements: " + PrimitiveArray.toString(mapReduced));
+//        General.showDebug("Found map of length: " + mapReduced.length );
         if ( mapReduced.length == 0 ) {
             General.showWarning("Found map of lenght: 0" );
             General.showWarning("Perhaps the order column was not filled with anything?");
@@ -3946,7 +3946,7 @@ public class Relation implements Serializable  {
             
     
     /** Use the given column to reconstruct the order of the tuples. The method assumes that the column contains
-     *a list of randomly ordered elements 0 through n-1 with each element occuring exactly once. The method
+     *a list of randomly ordered elements 0 through n-1 with each element occurring exactly once. The method
      *is very fast; order of N for one scan.
      *If the order is messed up this routine shouldn't fail but print the error 
      *and return null;

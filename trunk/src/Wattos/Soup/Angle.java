@@ -1,10 +1,14 @@
 package Wattos.Soup;
 
-import java.io.*;
-import java.util.*;
-import Wattos.Utils.*;
-import Wattos.Utils.Wiskunde.*;
-import Wattos.Database.*;
+import java.io.Serializable;
+import java.util.BitSet;
+
+import Wattos.Database.DBMS;
+import Wattos.Database.ForeignKeyConstrSet;
+import Wattos.Database.Relation;
+import Wattos.Database.RelationSoS;
+import Wattos.Utils.General;
+import Wattos.Utils.Wiskunde.Geometry;
 /**
  * Property of 3 atoms. Value contains the angle in degrees.
  *
@@ -57,6 +61,7 @@ public class Angle extends PropNAtom implements Serializable {
             DEFAULT_ATTRIBUTE_VALUES, DEFAULT_ATTRIBUTE_FKCS);
         addRelation( relation );
         mainRelation = relation;
+        dbms.foreignKeyConstrSet.removeForeignKeyConstrFrom(relationName, Gumbo.DEFAULT_ATTRIBUTE_ATOM_D_ID);
 
         // OTHER RELATIONS HERE
         //..

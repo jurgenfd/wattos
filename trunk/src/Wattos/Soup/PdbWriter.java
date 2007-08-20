@@ -98,11 +98,13 @@ public class PdbWriter {
        1    1 1 1  1 DG  O5'  O 74.601 52.638 36.007 0.0 C  1 DG  O5'  1 1  */     
         TagTable tT = sn.getTagTable("_Atom_site.Model_ID", true);
         if ( tT == null ) {
+            General.showError("No coordinate section found in STAR file.");
             return false;
         }
         StarDictionary sd = new StarDictionary();
         sd.readCsvFile(null);
         if ( ! sn.translateToNativeTypesByDict(sd, false)) {
+            General.showError("Failed to translateToNativeTypesByDict.");
             return false;
         }
         
@@ -164,7 +166,7 @@ public class PdbWriter {
                     sb.append( "REMARK\n" ); 
                     sb.append( "REMARK PDB v3.1 file by Wattos\n" );
                     sb.append( "REMARK\n"  );  
-                    General.showDebug("Found sb: ["+sb.toString()+"]");
+//                    General.showDebug("Found sb: ["+sb.toString()+"]");
                 } else {
                     sb.append( Strings.sprintf(atom_ter_count, "TER %7d\n"  )); 
                     atom_ter_count++;
@@ -228,7 +230,7 @@ public class PdbWriter {
             p.add(thisType_symbol);
             sb.append(  Format.sprintf( "  %-2s\n", p));            
         }
-        General.showDebug("Writing " + atom_count + " atoms to PDB file: " + outputFileName);
+//        General.showDebug("Writing " + atom_count + " atoms to PDB file: " + outputFileName);
         InOut.writeTextToFile(new File(outputFileName), sb.toString(), true, false);
         return true;
     }

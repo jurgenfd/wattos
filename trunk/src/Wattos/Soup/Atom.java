@@ -25,6 +25,7 @@ import Wattos.Database.SQLSelect;
 import Wattos.Database.Indices.Index;
 import Wattos.Database.Indices.IndexHashedIntToMany;
 import Wattos.Soup.Comparator.ComparatorAtom;
+import Wattos.Soup.Comparator.ComparatorAtomPerModelMolResAtom;
 import Wattos.Soup.Comparator.ComparatorAuthorAtomWithoutEntry;
 import Wattos.Star.DataBlock;
 import Wattos.Star.SaveFrame;
@@ -99,6 +100,7 @@ public class Atom extends GumboItem implements Serializable {
     public int[]       entryId;          
     /** the index of the first model is zero*/ 
     public int[][]     modelSiblingIds; 
+    /** For the master atom itself this should be set to it's own rid */
     public int[]       masterAtomId;
     public int[]       elementId;      // non fkcs
     public float[]     occupancy;     
@@ -639,8 +641,8 @@ public class Atom extends GumboItem implements Serializable {
      *
      */    
     public boolean calcBond(BitSet resInMaster, float tolerance) {
-        General.showOutput("Starting calcBond");
-        boolean printProgress = true;
+//        General.showOutput("Starting calcBond");
+//        boolean printProgress = true;
         boolean status = true;
         boolean isValid;
         if ( resInMaster.cardinality() == 0 ) {
@@ -650,7 +652,7 @@ public class Atom extends GumboItem implements Serializable {
         
         BitSet bondRidSet = gumbo.bond.getBondListForResRidSet(resInMaster);
         if ( bondRidSet.cardinality()==0) {
-            General.showDebug("No bonds found for given residues before doing calcBond");
+//            General.showDebug("No bonds found for given residues before doing calcBond");
         } else {
 //            General.showDebug("Removing all bonds for given residues before doing calcBond");
             gumbo.bond.mainRelation.removeRows(bondRidSet, false, false);
@@ -858,11 +860,11 @@ public class Atom extends GumboItem implements Serializable {
                     }
                 }
             }                
-            if ( printProgress ) {
-                General.showOutput( "\nDone. Checked number of potential pairs: " + countAtomsChecked);
-            }
+//            if ( printProgress ) {
+//                General.showOutput( "\nDone. Checked number of potential pairs: " + countAtomsChecked);
+//            }
             
-            General.showOutput("Found number of new bond candidates: " + gumbo.bond.selected.cardinality());
+//            General.showOutput("Found number of new bond candidates: " + gumbo.bond.selected.cardinality());
             //General.showOutput( gumbo.bond.toString(gumbo.bond.selected) );
             IndexHashedIntToMany onAtomA = (IndexHashedIntToMany) gumbo.bond.mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, Index.INDEX_TYPE_HASHED);
             IndexHashedIntToMany onAtomB = (IndexHashedIntToMany) gumbo.bond.mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, Index.INDEX_TYPE_HASHED);            
@@ -941,7 +943,7 @@ public class Atom extends GumboItem implements Serializable {
         return result;
     }
 
-    /** Using the sibling list get the atom rids of model related siblings. Make sure
+    /** Using the sibling list to get the atom rids of model related siblings. Make sure
      *the sibling list is set. Make sure the model number is within range. No checks done
      *by this routine.
      */
@@ -955,6 +957,14 @@ public class Atom extends GumboItem implements Serializable {
             result.setQuick(i,newRid);
         }
         return result;
+    }
+    
+    /** Using the sibling list to get the atom rid of master model.
+     * Normally this should be inlined for speed but the method is
+     * here to remind us.
+     * */
+    public int getMasterAtomRid(int atomRid) {
+        return masterAtomId[atomRid];
     }
     
     /**
@@ -1937,10 +1947,27 @@ public class Atom extends GumboItem implements Serializable {
         return toString( todo, false );
     }    
     
-    /** Return the entry, model, mol, res, and atom ids as a string.*/
+    /** Return the entry, model, mol, res, and atom ids as a string.
+     * Returns null on error.*/
     public String toString( BitSet todo, boolean showAuthorInfo ) {
+        if ( todo.cardinality() == 0 ) {
+            return Defs.EMPTY_STRING;
+        }
+        // Order the atoms on models, mols, residues, and atoms.
+        // Set the order column to nulls so the map later on will only contain the atoms needed.
+        mainRelation.setValueByColumn(Relation.DEFAULT_ATTRIBUTE_ORDER_ID, Defs.NULL_INT);
+        Comparator atomComparator = new ComparatorAtomPerModelMolResAtom();        
+        if ( ! orderPerModelMolResAtom(todo, atomComparator, 0)) {
+            return null;
+        }
+        int[] map = mainRelation.getRowOrderMap(-1); // -1 for default ordering.
+        if ( map == null )  {
+            General.showError("Failed to get order map");
+            
+        }
         StringBuffer sb = new StringBuffer();
-        for (int rid=todo.nextSetBit(0);rid>=0;rid=todo.nextSetBit(rid+1)) {
+        for (int i=0;i<map.length;i++) {
+            int rid = map[i];
             sb.append(toString( rid, showAuthorInfo ));
             sb.append(General.eol);
         }
@@ -2089,7 +2116,7 @@ public class Atom extends GumboItem implements Serializable {
         
         // filter out the atoms from non standard residues.
         BitSet nomAtomsStandardResidues = getStandardResidueAtoms(nomAtoms);
-	int nomAtomsCountStandardResidues = nomAtomsStandardResidues.cardinality();
+        int nomAtomsCountStandardResidues = nomAtomsStandardResidues.cardinality();
         int nomAtomsCountNonStandardResidues = nomAtomsCount - nomAtomsCountStandardResidues;
         if ( nomAtomsCountNonStandardResidues > 0 ) {
             General.showWarning("Skipping number of atoms in non-standard residues: " + nomAtomsCountNonStandardResidues);            
@@ -2122,7 +2149,7 @@ public class Atom extends GumboItem implements Serializable {
 
         /** Check to see if nom atoms are in old entry but perhaps just a bit
          *off on the coordinate. Those off by the coordinate will still not be added.
-         *This requires an expensive flaky lookup and that's why the prefiltering above is
+         *This requires an expensive flaky lookup and that's why the pre-filtering above is
          *done.
          */
         BitSet nomAtomsPresent2 = new BitSet();
@@ -2307,7 +2334,7 @@ public class Atom extends GumboItem implements Serializable {
     }
     
     /** Does a simple search by index and then by scan inside the residue.
-     * Return int null in case for error.
+     * Return int null in case for error or -1 for not found.
      */
     public int getRidByAtomNameAndResRid(String atomName, int resRid) {
         IndexHashedIntToMany indexAtomOnRes = (IndexHashedIntToMany) mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_SET_RES[ RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_HASHED);
@@ -2315,7 +2342,7 @@ public class Atom extends GumboItem implements Serializable {
         if ( rAtoms == null ) {
             General.showError( "Failed to get list of atoms for residue: " + 
                     gumbo.res.toString(resRid));
-            return Defs.NULL_INT;
+            return -1;
         }
         // now scan
         int rAtomsCount = rAtoms.size();
@@ -2601,7 +2628,7 @@ the atom name."""
         BitSet resRidCysSet = SQLSelect.selectBitSet(dbms, gumbo.res.mainRelation, Relation.DEFAULT_ATTRIBUTE_NAME, 
                 SQLSelect.OPERATION_TYPE_EQUALS, "CYS", false);
         resRidCysSet.and(resInMaster);
-        General.showDebug("Found number of cys in model: " + resRidCysSet.cardinality());
+//        General.showDebug("Found number of cys in model: " + resRidCysSet.cardinality());
         if ( resRidCysSet.cardinality() == 0 ) {
             return Biochemistry.THIOL_STATE_NOT_PRESENT;
         }
@@ -2662,18 +2689,18 @@ the atom name."""
             }
             if (!( thisResHasDisulfide || thisResHasOtherBound )) {
                 hasFree = true;
-                General.showDebug("Found free thiol on          : " + gumbo.res.toString(resRidCys));
+//                General.showDebug("Found free thiol on          : " + gumbo.res.toString(resRidCys));
             } else if ( thisResHasDisulfide ) {
-                General.showDebug("Found disulfide thiol on     : " + gumbo.res.toString(resRidCys));
+//                General.showDebug("Found disulfide thiol on     : " + gumbo.res.toString(resRidCys));
             } else {
-                General.showDebug("Found other bound thiol on   : " + gumbo.res.toString(resRidCys));
+//                General.showDebug("Found other bound thiol on   : " + gumbo.res.toString(resRidCys));
             }
         }
         
         
-        General.showDebug("hasFree          : " + hasFree);
-        General.showDebug("hasDisulfide     : " + hasDisulfide);
-        General.showDebug("hasOtherBound    : " + hasOtherBound);
+//        General.showDebug("hasFree          : " + hasFree);
+//        General.showDebug("hasDisulfide     : " + hasDisulfide);
+//        General.showDebug("hasOtherBound    : " + hasOtherBound);
         
         if ( hasFree ) {
             if ( hasDisulfide ) {
@@ -2771,5 +2798,64 @@ the atom name."""
 //        }
 //        return false;
 //    }    
+
+    /** Order is lost */
+    public BitSet getMasterRidSet(BitSet know) {
+        BitSet result = new BitSet();
+        for (int r=know.nextSetBit(0);r>=0;r=know.nextSetBit(r+1)) {
+            result.set(masterAtomId[r]);
+        }
+        return result;
+    }
+    /** Starting at 1 for model 1
+     * This method is just a reminder for how to do it; inlined usually.
+     * */
+    public int getModelIdForAtomRid(int atomRid) {
+        return gumbo.model.number[ modelId[atomRid] ];
+    }
+
+    /** Starting at 1 for model 1
+     * This method is just a reminder for how to do it; inlined usually.
+     * returns -1 for error.
+     * */
+    public int getAtomRidFromMasterRidAndModelNumber(int atomRidMaster,
+            int modelNumber) {
+        int[] list = modelSiblingIds[atomRidMaster];
+        if ( list == null ) {
+            General.showCodeBug("failed to get modelSiblingIds for atom:");
+            General.showCodeBug(toString(atomRidMaster));
+            return -1;
+        }        
+        return list[modelNumber-1];
+    }
+
+    /** Remove selected atoms and re-sync over models */
+    public boolean removeAtoms() {
+        BitSet toBeRemoved = (BitSet) selected.clone();
+        General.showOutput("Removing number of atoms: " + toBeRemoved.cardinality());
+
+        if ( ! mainRelation.removeRowsCascading(toBeRemoved,false)) {
+            General.showCodeBug("Failed to removeRowsCascading at removeAtoms");
+            return false;            
+        }
+        if ( ! gumbo.entry.syncModels(gumbo.entry.getEntryId())) {
+            General.showCodeBug("Failed to syncModels after removeAtoms");
+            return false;
+        }
+        return true;
+    }
+    
+    /** Selects atoms; algorithm can be speeded up much by only checking 1 model. */
+    public boolean selectAtomsByNameRegExp(String nameRegExp) {
+        selected.clear();
+        for (int rid=used.nextSetBit(0);rid>=0;rid=used.nextSetBit(rid+1)) {
+            if ( nameList[rid].matches(nameRegExp) ) {
+                selected.set(rid);
+            }
+        }
+        
+        General.showOutput("Selected number of atoms: " + selected.cardinality());
+        return true;
+    }    
 }
  

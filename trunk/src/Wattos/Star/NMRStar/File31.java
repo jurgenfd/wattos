@@ -3783,11 +3783,11 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
             counterEntityAssembly++;
         }
         if ( tTAssemblyPDBX_nonpoly_scheme.sizeRows == 0 ) {
-            General.showDebug("Removing empty tT: " + ((TagTable)sFAssembly.get(2)).toSTAR());
+//            General.showDebug("Removing empty tT: " + ((TagTable)sFAssembly.get(2)).toSTAR());
             sFAssembly.remove(2);
         }
         
-        General.showDebug("Done with sFAssembly");
+//        General.showDebug("Done with sFAssembly");
         if ( molecularSystemDescriptionToWrite ) {
             db.add( sFAssembly );
         }
@@ -3887,7 +3887,7 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
                 db.add( sFEntity );
             }
         }
-        General.showDebug("Done with one or more sFEntity");
+//        General.showDebug("Done with one or more sFEntity");
         
         // NON-STANDARD RESIDUES
         ArrayList non_standard_residues_to_write_list = new ArrayList(non_standard_residues_to_write.keySet());
@@ -3908,7 +3908,7 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
             
             db.add( sFNonStandardResidue );            
         }
-        General.showDebug("Done with zero or more sFNonStandardResidue");
+//        General.showDebug("Done with zero or more sFNonStandardResidue");
         
         // XXX writing DISTANCE CONSTRAINTS
         dcList.selected.and( dcList.used ); // Just to make sure.
@@ -3920,7 +3920,7 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
         }
         int dcListCountTotal = dcSetDistinctList.cardinality();
         if ( dcListCountTotal < 1) {
-            General.showDebug("No dcSetDistinctList");
+//            General.showDebug("No dcSetDistinctList");
         } else {                    
             General.showDebug("Will write number of dc lists: " + dcListCountTotal);
             int dcListCount = 1;
@@ -4285,7 +4285,7 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
         }
         int cdihListCountTotal = cdihSetDistinctList.cardinality();
         if ( cdihListCountTotal < 1) {
-            General.showDebug("No cdihSetDistinctList");
+//            General.showDebug("No cdihSetDistinctList");
         } else {                    
             General.showDebug("Will write number of sc (CDIH) lists: " + cdihListCountTotal);
             int cdihListCount = 1;
@@ -4474,16 +4474,6 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         // XXX writing simple (RDC) CONSTRAINTS
         rdcList.selected.and( rdcList.used ); // Just to make sure.
         BitSet rdcSetDistinctList = SQLSelect.getDistinct(dbms,rdc.mainRelation,
@@ -4494,7 +4484,7 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
         }
         int rdcListCountTotal = rdcSetDistinctList.cardinality();
         if ( rdcListCountTotal < 1) {
-            General.showDebug("No rdcSetDistinctList");
+//            General.showDebug("No rdcSetDistinctList");
         } else {                    
             General.showDebug("Will write number of sc (RDC) lists: " + rdcListCountTotal);
             int rdcListCount = 1;
@@ -4683,9 +4673,9 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
             General.showDebug("No coordinates selected so none to write.");
         } else {
             int atomCount   = atom.selected.cardinality();
-            int modelCount  = model.selected.cardinality();
+//            int modelCount = model.selected.cardinality();
 //            General.showDebug("Number of coordinates (atoms)                               in selection: " + atomCount);
-            General.showDebug("Number of coordinates (averaged/rounded over models)        in selection: " + atomCount/modelCount);
+//            General.showDebug("Number of coordinates (averaged/rounded over models)        in selection: " + atomCount/modelCount);
 //            General.showDebug("Number of coordinates (averaged/rounded over models/mols)   in selection: " + atomCount/(modelCount*molCount));
             if ( atomCount > 0 ) {
                 // Order the atoms for output to STAR based on the ordering previously

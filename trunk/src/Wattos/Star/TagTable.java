@@ -160,9 +160,9 @@ public class TagTable extends Relation {
             return true;
         }
         
-        if ( orderColumnIdx != 0 ) {
-            General.showWarning("Order column not found at zero-ed position but at: " + orderColumnIdx);
-        }
+//        if ( orderColumnIdx != 0 ) {
+//            General.showWarning("Order column not found at zero-ed position but at: " + orderColumnIdx);
+//        }
         if ( sizeRows == 0 ) {
             General.showWarning("Attempted to render empty TagTable (no rows)");
             return true;
@@ -546,7 +546,7 @@ public class TagTable extends Relation {
                     }
                     String columnDataTypeString = (String) info.get( StarDictionary.POSITION_WATTOS_DATATYPE );
                     if ( CIFCoord.dataTypeTranslationExceptions.contains(label)) {
-                        General.showDebug("Skipping special case of incompatible data types for: " + label);
+//                        General.showDebug("Skipping special case of incompatible data types for: " + label);
                         continue;
                     }
                     // Reuse variable for new data type

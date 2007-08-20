@@ -82,10 +82,6 @@ AROMATIC_C_AND_H_ON_PHE_AND_TYR            9
        0 TRP HB2  HB3  CB  CA CG     .    .    .    .    .    .  .                                                                                                      
        0 TYR HB2  HB3  CB  CA CG     .    .    .    .    .    .  .   
        
-       0 A   H2'  H2'' C2'  C3'   C1' .    .    .    .    .    .  .   # There should be no H2'' for a RNA                                                                                               
-       0 C   H2'  H2'' C2'  C3'   C1' .    .    .    .    .    .  .                                                                                                 
-       0 G   H2'  H2'' C2'  C3'   C1' .    .    .    .    .    .  .                                                                                                 
-       0 U   H2'  H2'' C2'  C3'   C1' .    .    .    .    .    .  .                                                                                                 
        0 DA  H2'  H2'' C2'  C3'   C1' .    .    .    .    .    .  .                                                                                                 
        0 DC  H2'  H2'' C2'  C3'   C1' .    .    .    .    .    .  .                                                                                                 
        0 DG  H2'  H2'' C2'  C3'   C1' .    .    .    .    .    .  .                                                                                                 

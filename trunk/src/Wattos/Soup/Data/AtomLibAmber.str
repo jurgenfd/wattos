@@ -470,13 +470,12 @@ Corrected atom names to IUPAC and resorted.
   VAL      HG23               HC             0.0791    
   VAL      N                  N             -0.4157    
   VAL      O                  O             -0.5679    
-  DA	   P                  P              0
 
        DA     HO5'   HO    0
        DA     HO3'   HO    0
        DA     P      P     0
-       DA     OP1    O     0
-       DA     OP2    O     0
+       DA     OP1    CT    0
+       DA     OP2    CT     0
        DA     C3'    CT    0
        DA     O2'    OH    0
        DA     O3'    OH    0
@@ -510,8 +509,267 @@ Corrected atom names to IUPAC and resorted.
        DA     H1     H5    0
        DA     H7     H5    0
        DA     H3     H5    0
-  
-   stop_
+
+       DG     HO5'   HO    0
+       DG     HO3'   HO    0
+       DG     P      P     0
+       DG     OP1    CT    0
+       DG     OP2    CT     0
+       DG     C3'    CT    0
+       DG     O2'    OH    0
+       DG     O3'    OH    0
+       DG     O5'    OH    0
+       DG     C5'    CT    0
+       DG     C4'    CT    0
+       DG     O4'    OH    0
+       DG     C1'    CT    0
+       DG     C2'    CT    0
+       DG     H5'    H1    0
+       DG     H5''   H1    0
+       DG     H4'    H1    0
+       DG     H3'    H1    0
+       DG     H2'    H1    0
+       DG     H2''   H1    0
+       DG     H1'    H1    0
+       DG     N9     NA    0
+       DG     C8     CR    0
+       DG     N7     NA    0
+       DG     C5     CR    0
+       DG     C6     CR    0
+       DG     N2     N     0
+       DG     O6     O2    0
+       DG     N1     NA    0
+       DG     C2     CR    0
+       DG     N3     NA    0
+       DG     C4     CR    0
+       DG     H8     H5    0 # ATTACHED TO NITROGEN
+       DG     H21    H     0
+       DG     H22    H     0
+       DG     H1     H5    0
+       DG     H7     H5    0
+       DG     H3     H5    0
+
+       DC     HO5'   HO    0
+       DC     HO3'   HO    0
+       DC     P      P     0
+       DC     OP1    CT    0
+       DC     OP2    CT     0
+       DC     C3'    CT    0
+       DC     O2'    OH    0
+       DC     O3'    OH    0
+       DC     O5'    OH    0
+       DC     C5'    CT    0
+       DC     C4'    CT    0
+       DC     O4'    OH    0
+       DC     C1'    CT    0
+       DC     C2'    CT    0
+       DC     H5'    H1    0
+       DC     H5''   H1    0
+       DC     H4'    H1    0
+       DC     H3'    H1    0
+       DC     H2'    H1    0
+       DC     H2''   H1    0
+       DC     H1'    H1    0       
+       DC     C2     CR    0
+       DC     C4     CR    0
+       DC     C5     CR    0
+       DC     C6     CR    0
+       DC     H3     H5    0
+       DC     H5     H5    0
+       DC     H6     H5    0
+       DC     H41    H     0
+       DC     H42    H     0
+       DC     N1     NA    0
+       DC     N3     NA    0
+       DC     N4     N     0
+       DC     O2     O2    0
+
+       DT     HO5'   HO    0
+       DT     HO3'   HO    0
+       DT     P      P     0
+       DT     OP1    CT    0
+       DT     OP2    CT     0
+       DT     C3'    CT    0
+       DT     O2'    OH    0
+       DT     O3'    OH    0
+       DT     O5'    OH    0
+       DT     C5'    CT    0
+       DT     C4'    CT    0
+       DT     O4'    OH    0
+       DT     C1'    CT    0
+       DT     C2'    CT    0
+       DT     H5'    H1    0
+       DT     H5''   H1    0
+       DT     H4'    H1    0
+       DT     H3'    H1    0
+       DT     H2'    H1    0
+       DT     H2''   H1    0
+       DT     H1'    H1    0       
+       DT     C2     CR    0
+       DT     C4     CR    0
+       DT     C5     CR    0
+       DT     C6     CR    0
+       DT     H3     H5    0
+       DT     C7     CT    0
+       DT     H71    HC    0
+       DT     H72    HC    0
+       DT     H73    HC    0
+       DT     H6     H5    0
+       DT     N1     NA    0
+       DT     N3     NA    0
+       DT     O2     O2    0
+       DT     O4     O2    0
+       
+
+       
+       A     HO5'   HO    0
+       A     HO3'   HO    0
+       A     P      P     0
+       A     OP1    CT    0
+       A     OP2    CT     0
+       A     C3'    CT    0
+       A     O2'    OH    0
+       A     O3'    OH    0
+       A     O5'    OH    0
+       A     C5'    CT    0
+       A     C4'    CT    0
+       A     O4'    OH    0
+       A     C1'    CT    0
+       A     C2'    CT    0
+       A     H5'    H1    0
+       A     H5''   H1    0
+       A     H4'    H1    0
+       A     H3'    H1    0
+       A     H2'    H1    0
+       A     HO2'   HO    0
+       A     H1'    H1    0
+       A     N9     NA    0
+       A     C8     CR    0
+       A     N7     NA    0
+       A     C5     CR    0
+       A     C6     CR    0
+       A     N6     N     0
+       A     N1     NA    0
+       A     C2     CR    0
+       A     N3     NA    0
+       A     C4     CR    0
+       A     H8     H5    0 # ATTACHED TO NITROGEN
+       A     H61    H     0
+       A     H62    H     0
+       A     H2     H4    0 # ATTACHED TO CARBON
+       A     H1     H5    0
+       A     H7     H5    0
+       A     H3     H5    0
+       
+       G     HO5'   HO    0
+       G     HO3'   HO    0
+       G     P      P     0
+       G     OP1    CT    0
+       G     OP2    CT     0
+       G     C3'    CT    0
+       G     O2'    OH    0
+       G     O3'    OH    0
+       G     O5'    OH    0
+       G     C5'    CT    0
+       G     C4'    CT    0
+       G     O4'    OH    0
+       G     C1'    CT    0
+       G     C2'    CT    0
+       G     H5'    H1    0
+       G     H5''   H1    0
+       G     H4'    H1    0
+       G     H3'    H1    0
+       G     H2'    H1    0
+       G     HO2'   HO    0
+       G     H1'    H1    0
+       G     N9     NA    0
+       G     C8     CR    0
+       G     N7     NA    0
+       G     C5     CR    0
+       G     C6     CR    0
+       G     N2     N     0
+       G     O6     O2    0
+       G     N1     NA    0
+       G     C2     CR    0
+       G     N3     NA    0
+       G     C4     CR    0
+       G     H8     H5    0 # ATTACHED TO NITROGEN
+       G     H21    H     0
+       G     H22    H     0
+       G     H1     H5    0
+       G     H7     H5    0
+       G     H3     H5    0
+       
+       C     HO5'   HO    0
+       C     HO3'   HO    0
+       C     P      P     0
+       C     OP1    CT    0
+       C     OP2    CT     0
+       C     C3'    CT    0
+       C     O2'    OH    0
+       C     O3'    OH    0
+       C     O5'    OH    0
+       C     C5'    CT    0
+       C     C4'    CT    0
+       C     O4'    OH    0
+       C     C1'    CT    0
+       C     C2'    CT    0
+       C     H5'    H1    0
+       C     H5''   H1    0
+       C     H4'    H1    0
+       C     H3'    H1    0
+       C     H2'    H1    0
+       C     HO2'   HO    0
+       C     H1'    H1    0       
+       C     C2     CR    0
+       C     C4     CR    0
+       C     C5     CR    0
+       C     C6     CR    0
+       C     H3     H5    0
+       C     H5     H5    0
+       C     H6     H5    0
+       C     H41    H     0
+       C     H42    H     0
+       C     N1     NA    0
+       C     N3     NA    0
+       C     N4     N     0
+       C     O2     O2    0
+       
+       U     HO5'   HO    0
+       U     HO3'   HO    0
+       U     P      P     0
+       U     OP1    CT    0
+       U     OP2    CT     0
+       U     C3'    CT    0
+       U     O2'    OH    0
+       U     O3'    OH    0
+       U     O5'    OH    0
+       U     C5'    CT    0
+       U     C4'    CT    0
+       U     O4'    OH    0
+       U     C1'    CT    0
+       U     C2'    CT    0
+       U     H5'    H1    0
+       U     H5''   H1    0
+       U     H4'    H1    0
+       U     H3'    H1    0
+       U     H2'    H1    0
+       U     HO2'   HO    0
+       U     H1'    H1    0       
+       U     C2     CR    0
+       U     C4     CR    0
+       U     C5     CR    0
+       U     C6     CR    0
+       U     H3     H5    0
+       U     H5     H5    0
+       U     H6     H5    0
+       U     N1     NA    0
+       U     N3     NA    0
+       U     O2     O2    0
+       U     O4     O2    0
+       
+       
+       stop_
 
 save_
 

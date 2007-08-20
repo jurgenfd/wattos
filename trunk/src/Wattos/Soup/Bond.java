@@ -84,7 +84,8 @@ public class Bond extends PropNAtom implements Serializable {
             DEFAULT_ATTRIBUTE_VALUES, DEFAULT_ATTRIBUTE_FKCS);
         addRelation( relation );
         mainRelation = relation;
-
+        dbms.foreignKeyConstrSet.removeForeignKeyConstrFrom(relationName, Gumbo.DEFAULT_ATTRIBUTE_ATOM_C_ID);
+        dbms.foreignKeyConstrSet.removeForeignKeyConstrFrom(relationName, Gumbo.DEFAULT_ATTRIBUTE_ATOM_D_ID);
         // OTHER RELATIONS HERE
         //..
         
@@ -101,7 +102,7 @@ public class Bond extends PropNAtom implements Serializable {
     }
     
     /** Assumes only one residue in soup which is the case for a soup from the
-     * topologylib.
+     * topology lib.
      * @param resName
      * @param atomName1
      * @param atomName2
@@ -157,9 +158,12 @@ public class Bond extends PropNAtom implements Serializable {
         return true;
     }
 
-    /** Simply uses both sides of the bond to see if it matches */
+    /** Simply uses both sides of the bond to see if it matches. May be called
+     * by a non master atom.
+     * */
     public BitSet getBondListForAtomRid(int atomRid) {
-        Integer atomRidInt = new Integer(atomRid);
+        int masterAtomRid = gumbo.atom.masterAtomId[ atomRid ];
+        Integer atomRidInt = new Integer(masterAtomRid);
         BitSet bondRidListA = SQLSelect.selectBitSet(dbms, mainRelation, 
                 Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, SQLSelect.OPERATION_TYPE_EQUALS, 
                 atomRidInt, false);                

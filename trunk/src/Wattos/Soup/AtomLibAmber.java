@@ -28,6 +28,7 @@ public class AtomLibAmber implements Serializable {
         
     private static final long serialVersionUID = -1207795172754062330L;    
 
+    /** Unknow type */
     public static final int DEFAULT_ATOM_TYPE_UNKNOWN_ID         = 0;
     /** Examples from AtomLibAmber is SER      OG                 OH            -0.6546 */
     public static final int DEFAULT_ATOM_TYPE_NONLINEAR_ID       = 1;
@@ -77,10 +78,10 @@ public class AtomLibAmber implements Serializable {
         "OW",
         "OH",
         "OS",
-        "P" ,   
         "S" ,
         "SH"};
     public static final String[] atomTypeStringListTetrahedral = new String[] {
+        "P" , // Originally a nonlinear.   
         "CT",
         "N3",
         "NT"};   

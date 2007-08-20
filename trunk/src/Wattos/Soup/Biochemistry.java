@@ -51,14 +51,17 @@ public class Biochemistry {
     /** The default character for an unknown residue name */
     public static char DEFAULT_RESIDUE_NAME_1CHAR = 'X';
 
-    /** Atom names that are are the last N-terminal / 5' terminal atom */
+    /** Atom names that are are the last N-terminal / 5' terminal atom;
+     * don't include atoms like "H1","H2", "H3",   because they also occur
+     * as non-terminal in nucleic acids.
+     * */
     public static final String[] N_TERMINAL_ATOM_NAME_LIST = new String[] {
-        "H1","H2", "H3",  "H",  "HN", "H'", "H''", "HO'", "HXT", "HO5'", "P"        
+        "H",  "HN", "H'", "H''", "HO'", "HXT", "HO5'", "P", "OP1", "OP2"        
     };
 
     /** Atom names that are are the last C-terminal / 3' terminal atom */
     public static final String[] C_TERMINAL_ATOM_NAME_LIST = new String[] {
-        "HXT", "HO3'"    
+        "HXT", "HO3'", "O"   
     };
     public static HashMap N_TERMINAL_ATOM_NAME_MAP = null;
     public static HashMap C_TERMINAL_ATOM_NAME_MAP = null;

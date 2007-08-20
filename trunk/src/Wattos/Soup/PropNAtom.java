@@ -1,13 +1,19 @@
 package Wattos.Soup;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.BitSet;
 
-import com.braju.format.*;              // printf equivalent
-import Wattos.CloneWars.*;
-import Wattos.Utils.*;
-import Wattos.Database.*;
-import cern.colt.list.*;
+import Wattos.CloneWars.WattosItem;
+import Wattos.Database.DBMS;
+import Wattos.Database.Defs;
+import Wattos.Database.RelationSet;
+import Wattos.Database.RelationSoS;
+import Wattos.Utils.General;
+import Wattos.Utils.PrimitiveArray;
+import cern.colt.list.IntArrayList;
+
+import com.braju.format.Format;
+import com.braju.format.Parameters;
 /**
  *Property of one to N atoms together. E.g. 2 atoms for a bond property see the
  *Bond class. Just set the other atom rids to Defs.NULL_INT. Current implementation
@@ -15,7 +21,8 @@ import cern.colt.list.*;
  *The property can span residues and molecules AND models and entries. To span
  *models you have to use the xxxxList parameters. They are of the dimension of the
  *number of models at the time of creation. If a model is removed then these parameters
- *are not automaticaly resized so watch out!
+ *are not automatically resized so watch out!
+ *Only the first two atoms are actually included in the fkcs.
  *
  * @author Jurgen F. Doreleijers
  * @version 1
@@ -98,8 +105,8 @@ public class PropNAtom extends WattosItem implements Serializable {
         DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[RELATION_ID_COLUMN_NAME],  Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[RELATION_ID_MAIN_RELATION_NAME]});
         DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID,                           Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[RELATION_ID_MAIN_RELATION_NAME]});
         DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID,                           Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[RELATION_ID_MAIN_RELATION_NAME]});
-//        DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_ATOM_C_ID,                           Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[RELATION_ID_MAIN_RELATION_NAME]});
-//        DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_ATOM_D_ID,                           Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[RELATION_ID_MAIN_RELATION_NAME]});
+        DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_ATOM_C_ID,                           Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[RELATION_ID_MAIN_RELATION_NAME]});
+        DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_ATOM_D_ID,                           Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[RELATION_ID_MAIN_RELATION_NAME]});
         return true;
     }            
 
