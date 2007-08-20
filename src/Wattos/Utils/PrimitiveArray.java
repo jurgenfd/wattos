@@ -6,18 +6,36 @@
 
 package Wattos.Utils;
 
-import Wattos.Utils.Wiskunde.*;
-import java.io.*;
-import java.util.*;
-import java.security.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import com.braju.format.*;              // printf equivalent
-import cern.colt.list.*;
-import cern.colt.map.*;
 import Wattos.Database.Defs;
-import Wattos.Soup.Constraint.*;
-import Wattos.Utils.Comparators.*;
-import java.util.regex.*;
+import Wattos.Soup.Constraint.DistConstrList;
+import Wattos.Utils.Comparators.ComparatorIntArray;
+import Wattos.Utils.Wiskunde.Logic;
+import cern.colt.list.BooleanArrayList;
+import cern.colt.list.FloatArrayList;
+import cern.colt.list.IntArrayList;
+import cern.colt.map.OpenIntIntHashMap;
+
+import com.braju.format.Format;
+import com.braju.format.Parameters;
 
 /**
  * Many methods for fast handling of primitive arrays such as: int[]. Parsing/unparsing
@@ -2555,5 +2573,18 @@ ERROR: Atom rids previous  are: [161,176]
             }
         }
         return result;
+    }
+
+    public static void truncateElementsSet(BitSet set,
+            int max) {
+        int c=0;
+        for (int i=set.nextSetBit(0);i>=0;i=set.nextSetBit(i+1)) {
+            if ( set.get(i) ) {
+                if ( c > max ) {
+                    set.clear(i);
+                }
+                c++;
+            }
+        }
     }
 }

@@ -3468,7 +3468,7 @@ OADEA  329.210
 #===== Atom names
 #....|||||.....|||||.....|||||.....|||||.....|||||.....|||||.....|||||
  P    C3'  O3'  OP1  OP2  O5'  C5'  C4'  O4'  C1'  C2'  N9   C8   N7
- C5   C6   N6   N1   C2   N3   C4   O2'  H5'' H5'  H4'  H3'  H2'' HO2
+ C5   C6   N6   N1   C2   N3   C4   O2'  H5'' H5'  H4'  H3'  H2'  HO2'
  H1'  H8   H61  H62  H2 
  P    C3'  O3'  OP1  OP2  O5'  C5'  C4'  O4'  C1'  C2'  N9   C8   N7
  C5   C6   N6   N1   C2   N3   C4   O2' 2H5' 3H5'  H4'  H3'  H2'' HO2
@@ -3666,7 +3666,7 @@ OURAU  320.190
 #===== Atom names
 #....|||||.....|||||.....|||||.....|||||.....|||||.....|||||.....|||||
  P    C3'  O3'  OP1  OP2  O5'  C5'  C4'  O4'  C1'  C2'  N1   C6   C5
- C4   O4   N3   C2   O2   O2'  H5'' H5'  H4'  H3'  H2'' HO2  H1'  H3 
+ C4   O4   N3   C2   O2   O2'  H5'' H5'  H4'  H3'  H2'  HO2' H1'  H3 
  H5   H6 
  P    C3'  O3'  OP1  OP2  O5'  C5'  C4'  O4'  C1'  C2'  N1   C6   C5
  C4   O4   N3   C2   O2   O2' 2H5' 3H5'  H4'  H3'  H2'' HO2  H1'  H3 
@@ -3848,8 +3848,8 @@ OGUAG  345.210
 #===== Atom names
 #....|||||.....|||||.....|||||.....|||||.....|||||.....|||||.....|||||
  P    C3'  O3'  OP1  OP2  O5'  C5'  C4'  O4'  C1'  C2'  N9   C8   N7  
- C5   C6   O6   N1   C2   N2   N3   C4   O2'  H5'' H5'  H4'  H3'  H2'
-'HO2  H1'  H8   H1   H21  H22 
+ C5   C6   O6   N1   C2   N2   N3   C4   O2'  H5'' H5'  H4'  H3'  H2' 
+ HO2' H1'  H8   H1   H21  H22 
  P    C3'  O3'  OP1  OP2  O5'  C5'  C4'  O4'  C1'  C2'  N9   C8   N7  
  C5   C6   O6   N1   C2   N2   N3   C4   O2' 2H5' 3H5'  H4'  H3'  H2'
 'HO2  H1'  H8   H1  1H2  2H2 
@@ -4051,7 +4051,7 @@ OCYTC  289.180
 #===== Atom names
 #....|||||.....|||||.....|||||.....|||||.....|||||.....|||||.....|||||
  P    C3'  O3'  OP1  OP2  O5'  C5'  C4'  O4'  C1'  C2'  N1   C6   C5  
- C4   N4   N3   C2   O2   O2'  H5'' H5'  H4'  H3'  H2'' HO2  H1'  H41
+ C4   N4   N3   C2   O2   O2'  H5'' H5'  H4'  H3'  H2'  HO2' H1'  H41
  H42  H5   H6  
  P    C3'  O3'  OP1  OP2  O5'  C5'  C4'  O4'  C1'  C2'  N1   C6   C5  
  C4   N4   N3   C2   O2   O2' 2H5' 3H5'  H4'  H3'  H2'' HO2  H1' 1H4 

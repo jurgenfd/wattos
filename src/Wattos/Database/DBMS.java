@@ -6,11 +6,25 @@
 
 package Wattos.Database;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
 import Wattos.CloneWars.UserInterface;
-import java.io.*;
-import java.util.*;
-import Wattos.Graph.*;
-import Wattos.Utils.*;
+import Wattos.Graph.BreathFirstSearchVertexObject;
+import Wattos.Graph.DirectedGraph;
+import Wattos.Graph.Vertex;
+import Wattos.Utils.General;
+import Wattos.Utils.InOut;
+import Wattos.Utils.Objects;
+import Wattos.Utils.StringArrayList;
 
 /**
  * Contains a collection of tables which can be viewed as a graph where the
@@ -143,14 +157,12 @@ public class DBMS implements Serializable {
     public boolean removeRowsCascading(String relationName, BitSet rowList) {
         rowList = (BitSet) rowList.clone(); // Make sure the input doesn't get overwritten.
         
-        if ( General.verbosity <= General.verbosityDebug ) {
-            if ( ! foreignKeyConstrSet.checkConsistencySet(false, true) ) {
-                General.showError("DBMS is NOT consistent before removeRowsCascading.");
-                General.showError(toString(true));
-                return false;
-            } else {
-                //General.showDebug("DBMS is consistent before removeRowsCascading.");
-            }
+        if ( ! foreignKeyConstrSet.checkConsistencySet(false, true) ) {
+            General.showError("DBMS is NOT consistent before removeRowsCascading.");
+            General.showError(toString(true));
+            return false;
+        } else {
+            //General.showDebug("DBMS is consistent before removeRowsCascading.");
         }
         
         if ( ! containsRelation(relationName)) {
@@ -184,11 +196,11 @@ public class DBMS implements Serializable {
             General.showError("should have been first in bfs but instead found: " + SbfsObjectList.myVertex.vertexObject);
             return false;
         }
-        //General.showDebug("Rows to delete in "+relationName+" are numbered: " + rowList.cardinality());
-        //General.showDebug("rows to delete in "+relationName+" are: " + PrimitiveArray.toString( rowListCopy));
+//        General.showDebug("Rows to delete in "+relationName+" are numbered: " + rowList.cardinality());
+//        General.showDebug("rows to delete in "+relationName+" are: " + PrimitiveArray.toString( rowListCopy));
         affectedRowMap.put( s , rowList);
-        //General.showDebug("rowList      : " + rowList);
-        //General.showDebug("rowListCopy  : " + rowListCopy);
+//        General.showDebug("rowList      : " + rowList);
+//        General.showDebug("rowListCopy  : " + rowListCopy);
         if ( ! s.removeRows(rowList, true, true) ) {
             General.showError("failed in removeRowsCascading/dbms to delete rows in relation: " + relationName);
             return false;
@@ -198,11 +210,11 @@ public class DBMS implements Serializable {
          *stop the loop when the first vertex with distance infinite has been found.
          */
         for (int u=1;u<vertexCount;u++) {
-            //General.showDebug("Doing UVertex : " + u);
+//            General.showDebug("Doing UVertex : " + u);
             BreathFirstSearchVertexObject UbfsObjectList = (BreathFirstSearchVertexObject) bfsObjectList.get(u);
             
             if ( UbfsObjectList.distance == BreathFirstSearchVertexObject.VERTEX_DISTANCE_INFINITE ) {
-                //General.showDebug("this vertex is not connected so we stop: " + u);
+//                General.showDebug("this vertex is not connected so we stop: " + u);
                 // No more vertices to do.
                 break;
             }
@@ -223,7 +235,7 @@ public class DBMS implements Serializable {
                 return false;
             }
             String parentRelationName = (String) parentVertex.vertexObject;
-            //General.showDebug("U relation: " + URelationName + " has parent relation: " + parentRelationName);
+//            General.showDebug("U relation: " + URelationName + " has parent relation: " + parentRelationName);
             
             Relation parentRelation = getRelation( parentRelationName );
             if ( parentRelation == null ) {
@@ -235,24 +247,33 @@ public class DBMS implements Serializable {
                 General.showError("affectedRowsParent null for parentVertex: " + parentVertex);
                 return false;
             }
-            //General.showDebug("affectedRowsParent numbered: " + affectedRowsParent.cardinality());
+//            General.showDebug("affectedRowsParent numbered: " + affectedRowsParent.cardinality());
             // Get the columnLabel in U that points to the parent
-            String UcolumnLabel = foreignKeyConstrSet.getFromColumnLabelFromRelationToRelation(URelationName, parentRelationName);
-            URelation.removeIndices(); // Just to be sure; this was put in for debuggin purposes but will remain until further notice.
-            BitSet UaffectedRows = SQLSelect.selectBitSet(this, URelation, UcolumnLabel,  SQLSelect.OPERATION_TYPE_EQUALS,
-                    affectedRowsParent, false );
-            if ( UaffectedRows == null ) {
-                General.showError("URelation.selectBitSet failed for UcolumnLabel: " + UcolumnLabel);
-                return false;
+//            TODO: debug code here 
+            StringArrayList UcolumnLabelList = foreignKeyConstrSet.getFromColumnLabelListFromRelationToRelation(URelationName, parentRelationName);
+//            General.showDebug("Found fkcs total: " + UcolumnLabelList.toString());
+            URelation.removeIndices(); 
+            BitSet UaffectedRows = new BitSet();
+            for (int i=0;i<UcolumnLabelList.size();i++) {
+                String UcolumnLabel = UcolumnLabelList.getString(i);
+                //  the next method creates the indices again.
+                BitSet UaffectedRowsSingle = SQLSelect.selectBitSet(this, URelation, UcolumnLabel,  SQLSelect.OPERATION_TYPE_EQUALS,
+                        affectedRowsParent, false );
+                if ( UaffectedRowsSingle == null ) {
+                    General.showError("URelation.selectBitSet failed for UcolumnLabel: " + UcolumnLabel);
+                    return false;
+                } 
+                URelation.removeIndices();
+//                General.showDebug("found number of rows on label number: " + i + " == " + UaffectedRowsSingle.cardinality());
+                UaffectedRows.or( UaffectedRowsSingle );
             }
-            //General.showDebug("rows to delete in "+URelationName+" are numbered: " + UaffectedRows.cardinality());
-            //General.showDebug("rows to delete in "+URelationName+" are: " + PrimitiveArray.toString( UaffectedRows));
+//            General.showDebug("rows to delete in "+URelationName+" are numbered: " + UaffectedRows.cardinality());
+//            General.showDebug("rows to delete in "+URelationName+" are: " + PrimitiveArray.toString( UaffectedRows));
             if ( ! URelation.removeRows( UaffectedRows, false, true ) ) {
                 General.showError("URelation.removeRows failed for URelation: " + URelation);
                 return false;
-            //} else {
-            //    General.showDebug( "DEBUG: Done with removeRows for URelation: " + URelation.name);
-            }
+            }            
+//            General.showDebug( "DEBUG: Done with removeRows for URelation: " + URelation.name);
             affectedRowMap.put( URelation, UaffectedRows);
         }
         if ( ! foreignKeyConstrSet.checkConsistencySet(false, true) ) {
@@ -469,7 +490,7 @@ public class DBMS implements Serializable {
             Relation relation = (Relation) tables.get(label);
             // show all but fkcs because they will be shown together below
             // show rows if needed but don't limit to selected rows.
-            sb.append( relation.toString(true, true, false, true, showRows, false) );
+            sb.append( relation.toString(true, true, false, false, showRows, false) );
             sb.append( General.eol );
         }
         sb.append( "Foreign Key Constraints:" + General.eol);

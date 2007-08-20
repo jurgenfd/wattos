@@ -273,7 +273,9 @@ public class Entry extends GumboItem implements Serializable {
     }    
     
     
-    /** Does action after each read of a molecular system */
+    /** Does action after each read of a molecular system. 
+     * Note that the atom type is only set for the master atoms.
+     */
     private boolean postProcessAfterReading() {
         BitSet atomsInMasterModel = getAtomsInMasterModel();
         if ( atomsInMasterModel == null ) {
@@ -290,11 +292,15 @@ public class Entry extends GumboItem implements Serializable {
         if ( atomLibAmber != null ) {
             // Set atom types from Amber lib.
             for (int atomRid=atomsInMasterModel.nextSetBit(0);atomRid>=0;atomRid=atomsInMasterModel.nextSetBit(atomRid+1)) {
-                int resRid = gumbo.atom.resId[atomRid]; 
-                gumbo.atom.type[atomRid] = 
-                    atomLibAmber.getAtomTypeId(
+                int resRid = gumbo.atom.resId[atomRid];
+                int typeId = atomLibAmber.getAtomTypeId(
                         gumbo.res.nameList[resRid], 
                         gumbo.atom.nameList[atomRid]);
+//                int modelCount = gumbo.atom.modelSiblingIds[atomRid].length;
+                gumbo.atom.type[ atomRid ] = typeId;
+//                for (int m=0;m<modelCount;m++) {
+//                    gumbo.atom.type[ gumbo.atom.modelSiblingIds[atomRid][m] ] = typeId;
+//                }
             }
         } else {
             General.showDebug("Skipping to assign amber atom types in postProcessAfterReading");
@@ -834,8 +840,8 @@ public class Entry extends GumboItem implements Serializable {
         return modelsInEntry;
     }
     
-    /** Generates a list for each atom in the first model with itself and siblings in parrallel models.
-     *Then it sets the synced attribute for this entry. The attribute is described in the Gumbo class.
+    /** Generates a list for each atom in the first model with itself and siblings in parallel models.
+     *Then it sets the sync-ed attribute for this entry. The attribute is described in the Gumbo class.
      *It will print an error message for the first couple of  (10) atoms missing AND it will delete atoms for
      *which atoms are not represented in all models.
      *Empty models, mols, residues (those without atoms) will NOT be removed at this stage.
@@ -845,7 +851,7 @@ public class Entry extends GumboItem implements Serializable {
         int showedMessageCountMax = 10;
         int atomRIDFoundInt;
         
-        General.showDebug("Starting syncModels");
+//        General.showDebug("Starting syncModels");
         if ( ! mainRelation.used.get( entryRID ) ) {
             General.showError("Failed to do syncModels. Entry rid isn't in use for rid: " + entryRID);
             return false;
@@ -1002,7 +1008,7 @@ public class Entry extends GumboItem implements Serializable {
                 General.showError("Failed iterative call to syncmodels");
                 return false;
             }
-        } else { // only the iteration that has no atoms to delete will set the synced records.
+        } else { // only the iteration that has no atoms to delete will set the sync-ed records.
             if ( ! setModelsSynced( entryRID, true, atomFirstRID ) ) {
                 General.showError("Failed to set the entry to have synced models");
                 return false;

@@ -6,10 +6,13 @@
 
 package Wattos.Database;
 
-import java.util.*;
-import java.io.*;
-import Wattos.Utils.*;
-import Wattos.Database.Indices.*;
+import java.io.Serializable;
+import java.util.BitSet;
+
+import Wattos.Database.Indices.Index;
+import Wattos.Database.Indices.IndexSortedInt;
+import Wattos.Database.Indices.IndexSortedString;
+import Wattos.Utils.General;
 
 /**
  * Implements an object to enforce a foreign key reference with associated behavior as
@@ -171,7 +174,7 @@ public class ForeignKeyConstr implements Serializable {
     /** Checks for each row that the target records exist and is in use.
      *If any errors need to be reported they will be reported as warnings because
      *the reason this check is executed is to check for possible inconsistencies.
-     *Returns null on error and a bitset with all false values for no errors.
+     *Returns null on error and a BitSet with all false values for no errors.
      *Inconsistent rows are identified by a true value in the result.
      */
     public BitSet getInconsistentRows( boolean showChecks, boolean showErrors ) {

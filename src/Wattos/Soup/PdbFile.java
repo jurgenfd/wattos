@@ -6,12 +6,23 @@
 
 package Wattos.Soup;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.HashMap;
 
-import Wattos.Utils.*;
-import Wattos.Database.*;
+import Wattos.Database.DBMS;
+import Wattos.Database.Defs;
+import Wattos.Database.Relation;
+import Wattos.Database.RelationSet;
+import Wattos.Utils.CharArray;
+import Wattos.Utils.General;
+import Wattos.Utils.Strings;
 
  
 
@@ -363,7 +374,7 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
     public static void translateAtomNameFromPdb( char[] buf, int startIdx ) {
         char digit = buf[startIdx];
         // Check if it's a digit.
-        if ( Character.isDigit( digit ) || digit == '\'' ) {
+        if ( Character.isDigit( digit ) || digit == '\'' || digit == '\"' ) {
             // Is there room?
             if ( buf[startIdx+3] == ' ' ) {
                 // swap digit with space.
@@ -383,8 +394,9 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
      input should not contain whitespace.
      */
     public static String translateAtomNameFromPdb( String name ) {
-        if ( Character.isDigit( name.charAt(0))) { 
-            return name.substring(1,name.length()) + name.charAt(0);
+        char ch = name.charAt(0);
+        if ( Character.isDigit( ch ) || (ch=='\'') || (ch=='\"')) { 
+            return name.substring(1,name.length()) + ch;
         }
         return name;        
     }    

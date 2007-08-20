@@ -266,7 +266,7 @@ public class CIFCoord {
             General.showError("Failed to automatically convert to native types as defined in the star dictionary. Check input and try again please.");
             return false;
         }
-        General.showDebug("Automatically converted to native types as defined in the star dictionary.");                        
+//        General.showDebug("Automatically converted to native types as defined in the star dictionary.");                        
 
         /** 
             _struct_asym.id 

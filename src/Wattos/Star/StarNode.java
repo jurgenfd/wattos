@@ -6,12 +6,22 @@
 
 package Wattos.Star;
 
-import java.util.*;
-import java.io.*;
-import java.util.zip.*;
-import Wattos.Utils.*;
-import Wattos.Database.*;
-import Wattos.Star.NMRStar.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.zip.GZIPOutputStream;
+
+import Wattos.Database.Relation;
+import Wattos.Star.NMRStar.StarDictionary;
+import Wattos.Utils.General;
+import Wattos.Utils.StringArrayList;
 
 /**
  * This class is a frame holder for data block, saveframe and tagtable.
@@ -545,7 +555,7 @@ public class StarNode {
 //                " with column: " +columnName);
         ArrayList tTList = getTagTableList(StarGeneral.WILDCARD,saveframeNodeCategoryName,StarGeneral.WILDCARD,columnName);
         if ( tTList == null ) {
-            General.showDebug("Failed to find list of tag tables (in saveFrame: "+ getCategory() + ") for column name:" + columnName );
+//            General.showDebug("Failed to find list of tag tables (in saveFrame: "+ getCategory() + ") for column name:" + columnName );
             return null;
         }
         if ( tTList.size() == 0 ) {

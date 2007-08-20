@@ -6,15 +6,33 @@
 
 package Wattos.CloneWars;
 
-import java.lang.reflect.*; 
-import java.net.*; 
-import java.io.*; 
-import java.util.*; 
-import Wattos.Utils.*;
-import Wattos.Database.*;
-import Wattos.Soup.*; 
-import Wattos.Soup.Constraint.*; 
+import java.io.BufferedReader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.BitSet;
+import java.util.Date;
+import java.util.Stack;
+
+import Wattos.Database.DBMS;
+import Wattos.Database.Relation;
+import Wattos.Database.RelationSet;
+import Wattos.Soup.Atom;
+import Wattos.Soup.AtomMap;
+import Wattos.Soup.Entry;
+import Wattos.Soup.Gumbo;
+import Wattos.Soup.Model;
+import Wattos.Soup.Molecule;
+import Wattos.Soup.Residue;
+import Wattos.Soup.Constraint.AssignStereo;
+import Wattos.Soup.Constraint.Completeness;
+import Wattos.Soup.Constraint.Surplus;
 import Wattos.Star.STARFilter;
+import Wattos.Utils.General;
+import Wattos.Utils.InOut;
+import Wattos.Utils.PrimitiveArray;
+import Wattos.Utils.Strings;
 
 /**
  *The UI's center for the commands it can execute.
@@ -185,13 +203,22 @@ public class CommandHub implements Serializable {
     }
          
     /** Nulls all objects in the ui */
-    public boolean ShowSoupSTAR() {                        
+    public boolean ShowSoupSTAR() {
+        // TODO: debug
+        General.showOutput("There will be several WARNINGS issued for setValue: given value is not of String like column but is of type: java.lang.Boolean TODO:");
         String result = dbms.toSTAR();
         if ( result == null ) {
             General.showError("Failed to render the dbms in STAR.");
             return false;
         }
         General.showOutput( result );
+//        General.showOutput( dbms.toString(true) );
+        return true;        
+    }
+
+    /** Nulls all objects in the ui */
+    public boolean ShowSoup() {
+        General.showOutput( dbms.toString(true) );
         return true;        
     }
 
@@ -1103,6 +1130,39 @@ public class CommandHub implements Serializable {
         General.showOutput( "Doing AddMissingAtoms with arguments: " + PrimitiveArray.toString( methodArgs ) );
         if ( ! entry.addMissingAtoms()) {
             General.showError("Failed to entry.addMissingAtoms");
+            return false;
+        }
+        return true;
+    }
+    
+    /** @see Atom#removeAtoms
+     */
+    public boolean RemoveAtoms() {
+        Object[] methodArgs = {                 
+        };
+        General.showOutput( "Doing RemoveAtoms with arguments: " + PrimitiveArray.toString( methodArgs ) );
+        if ( ! atom.removeAtoms()) {
+            General.showError("Failed to atom.removeAtoms");
+            return false;
+        }
+        return true;
+    }
+    /** @see Atom#selectAtomsByNameRegExp
+     */
+    public boolean SelectAtomsByNameRegExp() {
+        int maxTries = 0;
+        String regExp = null;
+        String prompt = "Enter atom name regular expression pattern. (H.* for example): ";
+        while ( regExp == null && maxTries < UserInterface.DEFAULT_MAXIMUM_NUMBER_OF_TRIES_ON_INPUT ) {
+            regExp = Strings.getInputString(UserInterface.in, prompt);
+            maxTries++;
+        }           
+        
+        Object[] methodArgs = {     regExp            
+        };
+        General.showOutput( "Doing SelectAtomsByNameRegExp with arguments: " + PrimitiveArray.toString( methodArgs ) );
+        if ( ! atom.selectAtomsByNameRegExp(regExp)) {
+            General.showError("Failed to atom.selectAtomsByNameRegExp");
             return false;
         }
         return true;

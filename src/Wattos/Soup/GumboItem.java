@@ -6,15 +6,25 @@
 
 package Wattos.Soup;
 
-import java.io.*;
-import java.util.*;
-import Wattos.Soup.Constraint.*;
-import Wattos.Utils.*;
-import Wattos.Utils.Wiskunde.*;
-import Wattos.Database.*;
-import Wattos.Database.Indices.*;
-import Wattos.CloneWars.*;
-import cern.colt.list.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.HashMap;
+
+import Wattos.CloneWars.UserInterface;
+import Wattos.CloneWars.WattosItem;
+import Wattos.Database.DBMS;
+import Wattos.Database.Defs;
+import Wattos.Database.RelationSet;
+import Wattos.Database.RelationSoS;
+import Wattos.Database.Indices.Index;
+import Wattos.Database.Indices.IndexSortedInt;
+import Wattos.Soup.Constraint.DistConstrList;
+import Wattos.Utils.General;
+import Wattos.Utils.PrimitiveArray;
+import Wattos.Utils.Wiskunde.Geometry3D;
+import cern.colt.list.IntArrayList;
 
 /**
  *
@@ -253,6 +263,25 @@ public class GumboItem extends WattosItem implements Serializable {
             return Defs.NULL_FLOAT;
         }
         return (float) Math.sqrt( (x_a-x_b)*(x_a-x_b) + (y_a-y_b)*(y_a-y_b) + (z_a-z_b)*(z_a-z_b) );
+    }
+
+    /** No checks done.*/
+    public double calcDistanceFast( int a, double[] coor ) {
+        return calcDistanceFast( a, new float[] {
+                (float) coor[0],
+                (float) coor[1], 
+                (float) coor[2]});
+    }
+    
+    /** No checks done.*/
+    public float calcDistanceFast( int a, float[] coor ) {
+        float xa = xList[a];
+        float ya = yList[a];
+        float za = zList[a];
+        float xb = coor[0];
+        float yb = coor[1];
+        float zb = coor[2];
+        return (float) Math.sqrt( (xa-xb)*(xa-xb) + (ya-yb)*(ya-yb) + (za-zb)*(za-zb) );
     }
     
     /** No checks done.*/
@@ -601,6 +630,17 @@ public class GumboItem extends WattosItem implements Serializable {
         c[1] =  ((int) (c[1]*1000))/1000f; 
         c[2] =  ((int) (c[2]*1000))/1000f; 
         return c;
+    }
+    
+    public boolean isCloseTo(double[] coor, BitSet know, float cutoff) {
+        for (int r=know.nextSetBit(0);r>=0;r=know.nextSetBit(r+1)) {
+            double d = calcDistanceFast(r, coor);
+//            General.showDebug("Found distance: "+d); 
+            if ( d < cutoff ) {
+                return true;
+            }
+        }
+        return false;
     }
     
 }

@@ -6,10 +6,18 @@
 
 package Wattos.Database;
 
-import java.util.*;
-import java.io.*;
-import com.braju.format.*;              // printf equivalent
-import Wattos.Utils.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
+import Wattos.Utils.General;
+import Wattos.Utils.StringArrayList;
+
+import com.braju.format.Format;
+import com.braju.format.Parameters;
 
 /**
  *Set of <code>ForeignKeyConstr</code>.
@@ -156,30 +164,48 @@ public class ForeignKeyConstrSet implements Serializable {
     }
 
     
-    /** Returns null if not present; Needs to iterate over the columns in the fromRelation for which there are fkcs. */
-    public ForeignKeyConstr getForeignKeyConstrFromRelationToRelation(String fromRelationName, String toRelationName) {
+    /** Returns null if not present; 
+     * Needs to iterate over the columns in the fromRelation for which there are fkcs. */
+    public ArrayList getForeignKeyConstrListFromRelationToRelation(String fromRelationName, String toRelationName) {
+        ArrayList result = new ArrayList();
         HashMap hashMapFrom = (HashMap) foreignKeyConstrMapFrom.get( fromRelationName );
         if ( hashMapFrom == null ) {
-            General.showDebug("no hashMapFrom for fromRelationName: " + fromRelationName);
+//            General.showDebug("no hashMapFrom for fromRelationName: " + fromRelationName);
             return null;
         }
         Set fromColumnLabelSet = hashMapFrom.keySet();
         for (Iterator it=fromColumnLabelSet.iterator();it.hasNext();) {
             String fromColumnLabel = (String) it.next();            
-            ForeignKeyConstr fkc = (ForeignKeyConstr) hashMapFrom.get( fromColumnLabel );            
+            ForeignKeyConstr fkc = (ForeignKeyConstr) hashMapFrom.get( fromColumnLabel );
+//            General.showDebug("Looking for fkcs from: "+ fromRelationName+" to " +toRelationName + " and for fromColumnLabel: " + fromColumnLabel+" found fkc: " +fkc);
             if ( fkc.toRelationName.equals(  toRelationName )) {
-                return fkc;
+                result.add(fkc);
+//                General.showDebug("Added fkc: " +fkc);
             }        
         }
-        General.showDebug("no fkc for toRelationName: "  + toRelationName);
-        General.showDebug("in fromRelationName       : " + fromRelationName);
-        return null;
+        if ( result.size() == 0 ) {
+//            General.showDebug("no fkc for toRelationName: "  + toRelationName);
+//            General.showDebug("in fromRelationName       : " + fromRelationName);
+            return null;
+        }
+        return result;
     }
     
-    /** Returns null if not present; Needs to iterate over the columns in the fromRelation for which there are fkcs. */
-    public String getFromColumnLabelFromRelationToRelation(String fromRelationName, String toRelationName) {
-        ForeignKeyConstr fkc = getForeignKeyConstrFromRelationToRelation(fromRelationName, toRelationName);
-        return fkc.fromColumnLabel;
+    /** Returns null if not present; 
+     * Needs to iterate over the columns in the fromRelation for which there are fkcs. */
+    public StringArrayList getFromColumnLabelListFromRelationToRelation(String fromRelationName, String toRelationName) {
+        StringArrayList result = new StringArrayList();
+        ArrayList fkcList = getForeignKeyConstrListFromRelationToRelation(fromRelationName, toRelationName);
+//        General.showDebug("Found fkcList: " + fkcList);
+        if ( fkcList == null ) {
+            return null;
+        }
+        for (int i=0;i<fkcList.size();i++) {
+            ForeignKeyConstr fkc =(ForeignKeyConstr) fkcList.get(i); 
+            result.add(fkc.fromColumnLabel);
+//            General.showDebug("Added fkc number: " + result.size());
+        }
+        return result;
     }
     
     /** checks */

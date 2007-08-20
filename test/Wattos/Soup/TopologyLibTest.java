@@ -7,10 +7,13 @@
 
 package Wattos.Soup;
 
-import junit.framework.*;
-import java.util.*;
-import java.net.*;
-import Wattos.Utils.*;
+import java.net.URL;
+import java.util.BitSet;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import Wattos.Utils.General;
 
 /**
  *
@@ -50,12 +53,13 @@ public class TopologyLibTest extends TestCase {
         BitSet bondOutliers         = topologyLib.gumbo.bond.getOutliers(         topologyLib.gumbo.bond.used,  bondSDAllowed );
         BitSet angleOutliers        = topologyLib.gumbo.angle.getOutliers(        topologyLib.gumbo.angle.used, angleSDAllowed );
  
-        String result = topologyLib.dbms.toString(true);
+//        String result = topologyLib.dbms.toString();
+        String result = topologyLib.gumbo.atom.toString(topologyLib.gumbo.atom.used);
         if ( result == null ) {
             fail("Converting topology lib to string");
             return;
         }
-        //General.showDebug("Topology lib:\n" + result);
+        General.showDebug("Topology lib:\n" + result);
         
         General.showDebug("Bond outliers by >"+bondSDAllowed+ " sigma");        
         result = topologyLib.gumbo.bond.toString(bondOutliers);
