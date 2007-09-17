@@ -13,14 +13,20 @@
     
 	<target name="init" description="init"  >
   	  <tstamp>
-  	    <format property="wattos_version" pattern="yyyyMMdd-HHmm" />
+  	    	<format property="wattos_version" pattern="yyyyMMdd-HHmm" />
   	  </tstamp>
 	  <echo message="Initiating Wattos version: ${wattos_version}"/>
+	  <mkdir dir="${build.classes.dir}"/>
       <antcall target="set_version"/>		
 	</target>
+	
 	<!-- Is done automatically by ant build -->
-	<target name="compile" description="compile">
-        <javac srcdir="${src.dir}" destdir="${build.classes.dir}"/>
+	<target name="compile" description="compile" depends="init">
+        <javac srcdir="${src.dir}" destdir="${build.classes.dir}">
+            <classpath>
+                <path path="${javac.classpath}"/>
+            </classpath>
+    	</javac>
     </target>
 	
     <target name="-init-macrodef-junit">
@@ -369,10 +375,9 @@
         <scp    todir="${webapp.web.usermachine}:${webapp.web.dir}/${webapp.lib.dir}"
                 keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}"                
             >
-            <!--
-            <fileset dir="${lib.local.dir}"  includes="*.jar"/>                     
-            -->
-            <fileset dir="${lib.local.dir}"  includes="Wattos.jar"/>                     
+            <!-- Normally all jars need copying -->
+            <fileset dir="${lib.local.dir}"  includes="*.jar"/>            
+        	<!-- <fileset dir="${lib.local.dir}"  includes="Wattos.jar"/> -->                     
         </scp>
     </target>
 
