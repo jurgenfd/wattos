@@ -23,4 +23,4 @@ csh_script_dir   = os.path.join(base_dir,'scripts')
 
 DUMP_DIR         = os.path.join(root_dir,'www','servlet_data','viavia','mr_mysql_backup')
 
-print "Read Wattos.Utils.localConstants.py version 0.2.2"
+print "Read Wattos.Utils.localConstants.py version 0.3"

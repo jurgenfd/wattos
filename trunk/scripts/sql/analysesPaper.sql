@@ -111,31 +111,31 @@ LEFT OUTER JOIN _Distance_constraint_stats_list_Query_Max M ON S.pdb_id = M.pdb_
 LEFT OUTER JOIN _Distance_constraint_stats_list_Query_rms R ON S.pdb_id = R.pdb_id)
 ORDER BY S.pdb_id;
 
-DROP view IF EXISTS overviewAllGottingen;
-CREATE VIEW OverviewAllGottingen AS
-SELECT * FROM overviewAll O
-where O.pdb_id in ( select S.pdb_id from docrFredBaddies786 S )
-ORDER BY O.pdb_id;
+--DROP view IF EXISTS overviewAllGottingen;
+--CREATE VIEW OverviewAllGottingen AS
+--SELECT * FROM overviewAll O
+--where O.pdb_id in ( select S.pdb_id from docrFredBaddies786 S )
+--ORDER BY O.pdb_id;
 
 
 -- Recorded in excel worksheet as fixed but not fixed in db.
-DROP view IF EXISTS Overview_baddies_recorded_as_fixed;
-CREATE VIEW Overview_baddies_recorded_as_fixed AS 
-SELECT *
-from overviewAll b
-where
-    b.pdb_id in     ( select pdb_id from Set14DOCRFREDBaddies )
-AND b.pdb_id not in ( select pdb_id from docrFredBaddiesNotFixed )
-order by b.pdb_id;
-
-DROP view IF EXISTS Overview_goodies_recorded_as_baddies;
-CREATE VIEW Overview_goodies_recorded_as_baddies AS 
-SELECT *
-from overviewAll b
-where
-    b.pdb_id not in ( select pdb_id from Set14DOCRFREDBaddies )
-AND b.pdb_id in ( select pdb_id from docrFredBaddiesNotFixed )
-order by b.pdb_id;
+--DROP view IF EXISTS Overview_baddies_recorded_as_fixed;
+--CREATE VIEW Overview_baddies_recorded_as_fixed AS 
+--SELECT *
+--from overviewAll b
+--where
+--    b.pdb_id in     ( select pdb_id from Set14DOCRFREDBaddies )
+--AND b.pdb_id not in ( select pdb_id from docrFredBaddiesNotFixed )
+--order by b.pdb_id;
+--
+--DROP view IF EXISTS Overview_goodies_recorded_as_baddies;
+--CREATE VIEW Overview_goodies_recorded_as_baddies AS 
+--SELECT *
+--from overviewAll b
+--where
+--    b.pdb_id not in ( select pdb_id from Set14DOCRFREDBaddies )
+--AND b.pdb_id in ( select pdb_id from docrFredBaddiesNotFixed )
+--order by b.pdb_id;
 
 ------------------------------------------------------------------------------------------------
 --Queries for analyses used in paper DOCR2.
@@ -150,21 +150,22 @@ WHERE b.mrfile_id=f.mrfile_id and (
 group by b.text_type, b.type
 order by b.text_type, b.type;
 
-SELECT count(DISTINCT f.pdb_id), b.text_type
+SELECT count(DISTINCT f.pdb_id), b.text_type,b.type
 FROM wattos2.mrblock AS b, wattos2.mrfile AS f
 WHERE b.mrfile_id=f.mrfile_id and (
 	b.type='dipolar coupling' OR
 	b.type='distance' OR
 	b.type='dihedral angle'
 )	
-group by b.text_type
-order by b.text_type;
+group by b.text_type,b.type
+order by b.text_type,b.type;
 
 -- Get the number of entries that violate Gottingen criteria 1-4
-SELECT count(*) FROM perdocrbad; --170
-SELECT count(*) FROM perfredbad; -- 91
-SELECT count(*) FROM violmaxbad; --192
-SELECT count(*) FROM violrmsbad; --138
+-- Last update on number is: Sept 13, 2007
+SELECT count(*) FROM perdocrbad; --184
+SELECT count(*) FROM perfredbad; --100
+SELECT count(*) FROM violmaxbad; --209
+SELECT count(*) FROM violrmsbad; --151
 
 
 -- Get the counts of the unions of these 4 sets.
