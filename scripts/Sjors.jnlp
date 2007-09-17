@@ -2,12 +2,12 @@
 <!-- Java Network Launching Protocol file for starting Wattos over internet. -->
 
 <jnlp spec="0.2 1.0"
-      codebase="http://www.bmrb.wisc.edu/wattos/lib"
+      codebase="http://wattos.sourceforge.net/lib"
       href="../scripts/Sjors.jnlp">
    <information> 
       <title>Sjors</title> 
-      <vendor>jurgen@bmrb.wisc.edu</vendor>
-      <homepage href="http://www.bmrb.wisc.edu/wattos"/>
+      <vendor>jurgen@gmail.com</vendor>
+      <homepage href="http://wattos.sourceforge.net"/>
       <description>Restraints parser; STAR Java Organize RestraintS</description>
       <icon href="bmrb_logo_brown_fg_cream_bg.gif"/>
    </information> 

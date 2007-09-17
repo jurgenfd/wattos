@@ -2,9 +2,10 @@
 Author: Jurgen F. Doreleijers, BMRB, Jan 2007
 """
 # Standard
+from Wattos.Utils.localConstants import urlDB
 import urllib
 # BMRB specific
-from localConstants import *
+#from localConstants import *
 
 def getEntryListFromCsvFile(urlLocation):
   result = []
@@ -33,7 +34,7 @@ def getBmrbNmrGridEntries():
   for dataLine in dataLines:
     if dataLine:
         # b is for bogus/unused
-        (b1,b2,pdbCode,b3,b4) = dataLine.split()
+        (b1,b2,pdbCode,b3,b4) = dataLine.split() #@UnusedVariable
         result.append( pdbCode )     
   return result
  
@@ -49,7 +50,7 @@ def getBmrbNmrGridEntriesDOCRfREDDone():
   for dataLine in dataLines:
     if dataLine:
         # b is for bogus/unused
-        (b1,b2,stage,pdbCode,b3) = dataLine.split()
+        (b1,b2,stage,pdbCode,b3) = dataLine.split() #@UnusedVariable
         if stage=="4-filtered-FRED":
             if pdbCode not in result:
                 result.append( pdbCode )     

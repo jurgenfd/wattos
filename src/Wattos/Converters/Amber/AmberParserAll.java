@@ -5,7 +5,6 @@ import Wattos.Utils.*;
 import Wattos.Converters.Amber.Utils;
 import Wattos.Converters.Common.*;
 
-import java.util.jar.Attributes;
 import java.util.*;
 import java.io.*;
 
@@ -530,7 +529,7 @@ public class AmberParserAll implements AmberParserAllConstants {
 
   static public void ReInit(java.io.InputStream stream) {
     jj_input_stream.ReInit(stream, 1, 1);
-    token_source.ReInit(jj_input_stream);
+    AmberParserAllTokenManager.ReInit(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
@@ -555,7 +554,7 @@ public class AmberParserAll implements AmberParserAllConstants {
 
   static public void ReInit(java.io.Reader stream) {
     jj_input_stream.ReInit(stream, 1, 1);
-    token_source.ReInit(jj_input_stream);
+    AmberParserAllTokenManager.ReInit(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
@@ -588,7 +587,7 @@ public class AmberParserAll implements AmberParserAllConstants {
   static final private Token jj_consume_token(int kind) throws ParseException {
     Token oldToken;
     if ((oldToken = token).next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
+    else token = token.next = AmberParserAllTokenManager.getNextToken();
     jj_ntk = -1;
     if (token.kind == kind) {
       jj_gen++;
@@ -601,7 +600,7 @@ public class AmberParserAll implements AmberParserAllConstants {
 
   static final public Token getNextToken() {
     if (token.next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
+    else token = token.next = AmberParserAllTokenManager.getNextToken();
     jj_ntk = -1;
     jj_gen++;
     return token;
@@ -611,14 +610,14 @@ public class AmberParserAll implements AmberParserAllConstants {
     Token t = token;
     for (int i = 0; i < index; i++) {
       if (t.next != null) t = t.next;
-      else t = t.next = token_source.getNextToken();
+      else t = t.next = AmberParserAllTokenManager.getNextToken();
     }
     return t;
   }
 
   static final private int jj_ntk() {
     if ((jj_nt=token.next) == null)
-      return (jj_ntk = (token.next=token_source.getNextToken()).kind);
+      return (jj_ntk = (token.next=AmberParserAllTokenManager.getNextToken()).kind);
     else
       return (jj_ntk = jj_nt.kind);
   }

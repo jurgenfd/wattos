@@ -4,7 +4,7 @@ from Wattos.Utils.localConstants import tmpDir
 from STAR.File import File
 import os
 import string
-
+  
 #pdbList = PDBEntryLists.getBmrbNmrGridEntries()[0:2]
 pdbList = PDBEntryLists.getBmrbNmrGridEntries()
 print "Read pdb entries from NMR Restraints Grid:", len( pdbList )

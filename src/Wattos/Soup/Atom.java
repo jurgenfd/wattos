@@ -2575,7 +2575,7 @@ public class Atom extends GumboItem implements Serializable {
      * """Atom names uniformly begin with their
 element symbol. In PDB format (Appendix B), heavy atom names follow the traditional
 PDB justification rules. Any 4-character names for atoms with 1-character element
-symbols have been compressed. Hydrogen atoms names all begin with “H” and are not
+symbols have been compressed. Hydrogen atoms names all begin with H and are not
 subject to the justification rule. Therefore the PDB element column or mmCIF
 type_symbol data item should be used to determine the element type, rather than using
 the atom name."""
