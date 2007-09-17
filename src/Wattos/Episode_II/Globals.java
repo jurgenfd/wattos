@@ -16,8 +16,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import Wattos.Utils.General;
+import Wattos.Utils.InOut;
 
 import com.braju.format.Format;
 import com.braju.format.Parameters;
@@ -94,45 +96,29 @@ public class Globals {
         /** Use the local mr files. */
         m.put("act_locally_mr", Boolean.valueOf( true )); 
  
-//        /** Set version id
-//         * don't use this in future         */
-//        m.put("version_id", "2006-10-20" );
-
-//        m.put("max_time_to_wait", new Integer(20) );
-
-        /** Maximum number of entries to do before ending
-         * and writing the pickle and web page overview again.
-         * Restart the process to do any remaining entries.
-         * Don't overlap processes!!!
-         */
-//        m.put("max_entries_togo", new Integer(20) );
-
-        /** Project name also determines where files will be looked for and were
-         * they are put. Enables switching between testing and the real stuff.
-         * Probably not very safe/clean as test version is available on-line as well if
-         * name is known.
-         */
-//        m.put("html_project_name", "Episode_II" );
-
-        
-//        if( ((Boolean) m.get( "testing" )).booleanValue() ) {
-//            m.put("html_project_name", "mr_analysis_test_show" );
-//        }
-
 
         /** Initializing some variables
-         *  Use unix notation as a standard for directories
-         */
+         *  Use unix notation as a standard for directories        */
         // Set the root
         String root         = "";
 
         /** These are set because on windows we need to go through drive letters */
 //        String bmrb_root        = fs+"bmrb";
         String share_root       = fs+"share";
+        Properties sp = InOut.getEnvVars();
+        if ( sp == null ) {
+            General.showDebug("Failed to get system environment settings; failing ensurePresenceUserDefs.");
+// TODO:           return;
+        }
+
+        String wattosRootDirStr = sp.getProperty( "WATTOSROOT" );
+        General.showOutput("WATTOSROOT: " + wattosRootDirStr);
+        
         //String dbfs_root        = fs+"mnt"+fs+"mrgrid";
+//        String dbfs_root        = fs+"big"+fs+"jurgen"+fs+"DB"+fs+"mrgrid";
         String dbfs_root        = fs+"big"+fs+"jurgen"+fs+"DB"+fs+"mrgrid";
 //        String localTestingPlatform = "C:\\jurgen\\tmp_unb_";
-        String localTestingPlatform = "/Users/bmrb/tmp_unb_";
+        String localTestingPlatform = "/Users/jd/workspace/Wattos/tmp_unb_";
         //String pdbmirror_root   = fs+"pdbmirror2"; // different from "pdbmirr".
         String pdbmirror_root   = fs+"dumpzone"+fs+"pdb";
         
@@ -144,11 +130,7 @@ public class Globals {
             dbfs_root       = "M:"+fs+"jurgen"+fs+"DB"+fs+"mrgrid";  //big/jurgen/DB/mrgrid on 'tang'
             pdbmirror_root  = "P:"+fs+"pdb";  //dumpzone/pdb on 'clownfish'
         } else if ( osName.startsWith("Mac OS") ) {
-//            root            = "I:";    //rootdir on 'malvi' 
-//          bmrb_root       = "K:";  //bmrb on 'Medusa'
-//          share_root      = "S:";    //share on 'Medusa'
-//          dbfs_root       = "M:"+fs+"jurgen"+fs+"DB"+fs+"mrgrid";  //big/jurgen/DB/mrgrid on 'tang'
-//          pdbmirror_root  = "P:"+fs+"pdb";  //dumpzone/pdb on 'clownfish'
+            ; // default settings.
         } else if ( osName.equals("Linux") || osName.equals("SunOS")) {
             ; // default settings.
         } else {
