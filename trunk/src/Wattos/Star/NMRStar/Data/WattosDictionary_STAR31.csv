@@ -307,6 +307,7 @@ NOE_completeness,_NOE_compl_shel.Details,STRINGNR,,NOE_completeness_statistics,_
 NOE_completeness,_NOE_compl_shel.Compl_shell,FLOAT,%.1f,NOE_completeness_statistics,_NOE_completeness_shell.Completeness_shell_pct,,,,X
 NOE_completeness,_NOE_compl_shel.Compl_cumul,FLOAT,%.1f,NOE_completeness_statistics,_NOE_completeness_shell.Completeness_cumulative_pct,,,,X
 distance_constraint_statistics,_Distance_constraint_stats_list.Sf_category    ,STRINGNR,,distance_constraint_statistics,_Distance_constraint_stats_list.Sf_category    ,,,,X
+distance_constraint_statistics,_Distance_constraint_stats_list.Restraint_list_ID  ,INTEGER,,distance_constraint_statistics,_Distance_constraint_stats_list.Constraint_list_ID        ,,,,X
 distance_constraint_statistics,_Distance_constraint_stats_list.Restraint_count          ,INTEGER,,distance_constraint_statistics,_Distance_constraint_stats_list.Constraint_count          ,,,,X
 distance_constraint_statistics,_Distance_constraint_stats_list.Viol_count           ,INTEGER,,distance_constraint_statistics,_Distance_constraint_stats_list.Viol_count           ,,,,X
 distance_constraint_statistics,_Distance_constraint_stats_list.Viol_total            ,FLOAT,%.3f,distance_constraint_statistics,_Distance_constraint_stats_list.Viol_total            ,,,,X

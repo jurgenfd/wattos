@@ -2384,7 +2384,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         tT.setValue(rowIdx, dcl.tagNameDCStats_Max_violation_model_number      , max_violation_model_number);
         tT.setValue(rowIdx, dcl.tagNameDCStats_Above_cutoff_violation_count    , countMakingCutoff);
         tT.setValue(rowIdx, dcl.tagNameDCStats_Above_cutoff_violation_per_model, above_cutoff_violation_per_model);
-        tT.setValue(rowIdx, dcl.tagNameDCStats_Entry_ID                        , 1);
+//        tT.setValue(rowIdx, dcl.tagNameDCStats_Entry_ID                        , 1);
         tT.setValue(rowIdx, dcl.tagNameDCStats_Distance_constraint_stats_ID    , listNumber);
         
         // FOR BOTH MEMBER        

@@ -53,21 +53,21 @@ View,,,,ShowDCClass,,"Lists the number of restraints in classes such as intra-re
 Options,,,,SetPathNames,,Set the directory names of certain resources,,X
 Options,,,,SetProp,,Define/reset Wattos internal properties,,verbosity
 Options,,,,ListProp,,List Wattos internal properties,,verbosity
-Prop,,,,DefPropRes,,Define properties of selected residues like 'previouslySelected',"Molmol uses these definitions for things like: selected, visible, all, movable. Internally they are represented by a single bit per entity; very cheap.",DefPropRes 'helix' 'num >= 47 & num <= 56'
+Prop,,,,DefPropRes,,Define properties of selected residues like 'previouslySelected',"Molmol uses these definitions for things like: selected, visible, all, movable. Internally they are represented by a single bit per entity; very cheap.",x
 Prop,,,,DefPropDist,,Define properties of selected distances like maxUpperBoundViolation,,X
 Attr,,,,ListAttrAtom,,Lists properties of selected atoms like isPseudo,,X
 Calc,,,,CalcBond,,Assigns bonds,,X
 Calc,,,,AddMissingAtoms,,Builds in any missing atoms.,,X
 Calc,,,,CalcDihe,,Calculates regular dihedral angles,,X
 Calc,,,,CalcDist,,Calculates pairs of atoms that are separated by short distances,,X
-Calc,,,,CalcCoPlanarBasesSet,,Prints sets of coplanar bases,,
+Calc,,,,CalcCoPlanarBasesSet,,Prints sets of coplanar bases,,x
 Calc,,,,CalcHydrogenBond,,Assigns hydrogen bonds,,X
 Calc,Check,,,CheckSurplus,,Checks for surplus in the distance constraints,,X
 Calc,Check,,,CheckAtomNomenclature,,Checks and corrects atom nomenclature.,,X
 Calc,Check,,,CheckDist,,Calculates distances ,,X
 Calc,Check,,,CalcDistConstraintViolation,,Calculates distance restraint violations ,,X
 Calc,Check,,,CheckClassification,,"Shows the classification like intra, sequential, etc.",,X
-Calc,Check,,,CheckDihe,,Calculates dihedral angle violations ,,X
+Calc,Check,,,CalcDihConstraintViolation,,Calculates dihedral angle violations ,,X
 Calc,Check,,,CheckContact,,Checks for atoms that are too close together,,X
 Calc,Check,,,CheckDipo,,Calculates residual dipolar coupling violations ,,X
 Calc,Check,,,CheckCompleteness,,Calculates the NOE completeness and writes several sets ,,X

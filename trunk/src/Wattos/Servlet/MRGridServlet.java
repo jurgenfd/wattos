@@ -48,7 +48,7 @@ public class MRGridServlet extends HttpServlet {
     Globals g=null; 
        
     /** DB connection for the Episode_II package.*/
-    SQL_Episode_II sql_epiII=null; 
+    SQL_Episode_II sql_epiII=null;  
     
     /** This string signals that there is not a selection on the specific attribute.
      * Right now chosen such that it doesn't show up at all in the selection
@@ -429,7 +429,7 @@ public class MRGridServlet extends HttpServlet {
                 
         File mrDir = new File(g.getValueString("mr_dir"));
         String chars2And3 = pdb_id.substring(1,3);        
-        File mrFile = new File(new File(mrDir,chars2And3), pdb_id+".mr.Z");
+        File mrFile = new File(new File(mrDir,chars2And3), pdb_id+".mr.gz");
         if ( ! mrFile.exists() ) {
             showActualError(resp,"No MR file found for pdb_id: " + pdb_id);
             return false;
@@ -467,7 +467,7 @@ public class MRGridServlet extends HttpServlet {
                 
         File pdbDir = new File(g.getValueString("pdb_dir"));
         String chars2And3 = pdb_id.substring(1,3);        
-        File pdbFile = new File(new File(pdbDir,chars2And3), "pdb"+pdb_id+".ent.Z");
+        File pdbFile = new File(new File(pdbDir,chars2And3), "pdb"+pdb_id+".ent.gz");
         if ( ! pdbFile.exists() ) {
             showActualError(resp,"No PDB file found for pdb_id: " + pdb_id);
             return false;

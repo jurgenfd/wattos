@@ -20,7 +20,7 @@ public class InOutTest extends TestCase {
 	}
      
     public void testReadTextFromUrl() {
-        String baseInputName = "1brv";  // use only 1buf as example and remove other .Zs as they're big
+        String baseInputName = "1brv";  // use only 1buf as example and remove other .gz s as they're big
         File input = new File(inputDir, baseInputName+".pdb.gz");
         String text = InOut.readTextFromUrl( InOut.getUrlFileFromName(input.toString()));
         assertEquals(true, text!=null);

@@ -89,8 +89,8 @@ public class DistConstrList extends ConstrItem implements Serializable {
     public StarDictionary starDict;
     
     public String tagNameDCStats_Sf_category;
-    public String tagNameDCStatsL_Entry_ID;
-    public String tagNameDCStatsL_Distance_constraint_stats_ID;
+//    public String tagNameDCStatsL_Entry_ID;
+//    public String tagNameDCStatsL_Distance_constraint_stats_ID;
     public String tagNameDCStats_Restraint_list_ID;
     public String tagNameDCStats_Restraint_count;
     public String tagNameDCStats_Viol_count;
@@ -120,7 +120,7 @@ public class DistConstrList extends ConstrItem implements Serializable {
     public String tagNameDCStats_Max_violation_model_number;
     public String tagNameDCStats_Above_cutoff_violation_count;
     public String tagNameDCStats_Above_cutoff_violation_per_model;
-    public String tagNameDCStats_Entry_ID;
+//    public String tagNameDCStats_Entry_ID;
     public String tagNameDCStats_Distance_constraint_stats_ID;
     public String tagNameDCPer_resAtom_entity_ID;
     public String tagNameDCPer_resAtom_comp_index_ID;
@@ -130,8 +130,8 @@ public class DistConstrList extends ConstrItem implements Serializable {
     public String tagNameDCPer_resMax_violation_model_number;
     public String tagNameDCPer_resAbove_cutoff_violation_count;
     public String tagNameDCPer_resAbove_cutoff_violation_per_model;
-    public String tagNameDCPer_resEntry_ID;
-    public String tagNameDCPer_resDistance_constraint_stats_ID;
+//    public String tagNameDCPer_resEntry_ID;
+//    public String tagNameDCPer_resDistance_constraint_stats_ID;
     
     public static String explanation = null;
     
@@ -739,7 +739,7 @@ public class DistConstrList extends ConstrItem implements Serializable {
         //int rowIdx = tT.getNewRowId(); // do no error handeling.
         int rowIdx = 0;
         tT.setValue(rowIdx, Relation.DEFAULT_ATTRIBUTE_ORDER_ID , 0);
-        tT.setValue(rowIdx, tagNameDCStatsL_Distance_constraint_stats_ID,listNumber);
+//        tT.setValue(rowIdx, tagNameDCStatsL_Distance_constraint_stats_ID,listNumber);
         tT.setValue(rowIdx, tagNameDCStats_Restraint_list_ID            ,listNumber);
         tT.setValue(rowIdx, tagNameDCStats_Restraint_count              ,count);
         tT.setValue(rowIdx, tagNameDCStats_Viol_count                   ,violCount[currentDCListId]);
@@ -777,8 +777,8 @@ public class DistConstrList extends ConstrItem implements Serializable {
         try {
             starDict = dbms.ui.wattosLib.starDictionary;
             tagNameDCStats_Sf_category                      = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_list.Sf_category                 ");
-            tagNameDCStatsL_Entry_ID                        = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_list.Entry_ID                    ");
-            tagNameDCStatsL_Distance_constraint_stats_ID    = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_list.Distance_constraint_stats_ID");
+//            tagNameDCStatsL_Entry_ID                        = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_list.Entry_ID                    ");
+//            tagNameDCStatsL_Distance_constraint_stats_ID    = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_list.Distance_constraint_stats_ID");
             tagNameDCStats_Restraint_list_ID                = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_list.Restraint_list_ID           ");
             tagNameDCStats_Restraint_count                  = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_list.Restraint_count             ");
             tagNameDCStats_Viol_count                       = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_list.Viol_count                  ");
@@ -808,7 +808,7 @@ public class DistConstrList extends ConstrItem implements Serializable {
             tagNameDCStats_Max_violation_model_number       = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats.Max_violation_model_number       ");
             tagNameDCStats_Above_cutoff_violation_count     = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats.Above_cutoff_violation_count     ");
             tagNameDCStats_Above_cutoff_violation_per_model = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats.Above_cutoff_violation_per_model ");
-            tagNameDCStats_Entry_ID                         = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats.Entry_ID                         ");
+//            tagNameDCStats_Entry_ID                         = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats.Entry_ID                         ");
             tagNameDCStats_Distance_constraint_stats_ID     = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats.Distance_constraint_stats_ID     ");
             tagNameDCPer_resAtom_entity_ID                       = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_per_res.Atom_entity_ID                  ");
             tagNameDCPer_resAtom_comp_index_ID                   = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_per_res.Atom_comp_index_ID              ");
@@ -818,8 +818,8 @@ public class DistConstrList extends ConstrItem implements Serializable {
             tagNameDCPer_resMax_violation_model_number           = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_per_res.Max_violation_model_number      ");
             tagNameDCPer_resAbove_cutoff_violation_count         = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_per_res.Above_cutoff_violation_count    ");
             tagNameDCPer_resAbove_cutoff_violation_per_model     = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_per_res.Above_cutoff_violation_per_model");
-            tagNameDCPer_resEntry_ID                             = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_per_res.Entry_ID                        ");
-            tagNameDCPer_resDistance_constraint_stats_ID         = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_per_res.Distance_constraint_stats_ID    ");
+//            tagNameDCPer_resEntry_ID                             = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_per_res.Entry_ID                        ");
+//            tagNameDCPer_resDistance_constraint_stats_ID         = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_per_res.Distance_constraint_stats_ID    ");
             
         } catch ( Exception e ) {
             General.showError("Failed to get all the tag names from dictionary compare code with dictionary");
@@ -828,8 +828,8 @@ public class DistConstrList extends ConstrItem implements Serializable {
         }
         if (
                 tagNameDCStats_Sf_category  == null ||
-                tagNameDCStatsL_Entry_ID  == null ||
-                tagNameDCStatsL_Distance_constraint_stats_ID  == null ||
+//                tagNameDCStatsL_Entry_ID  == null ||
+//                tagNameDCStatsL_Distance_constraint_stats_ID  == null ||
                 tagNameDCStats_Restraint_list_ID  == null ||
                 tagNameDCStats_Restraint_count  == null ||
                 tagNameDCStats_Viol_count  == null ||
@@ -859,7 +859,7 @@ public class DistConstrList extends ConstrItem implements Serializable {
                 tagNameDCStats_Max_violation_model_number  == null ||
                 tagNameDCStats_Above_cutoff_violation_count  == null ||
                 tagNameDCStats_Above_cutoff_violation_per_model  == null ||
-                tagNameDCStats_Entry_ID  == null ||
+//                tagNameDCStats_Entry_ID  == null ||
                 tagNameDCStats_Distance_constraint_stats_ID  == null ||
                 tagNameDCPer_resAtom_entity_ID == null ||
                 tagNameDCPer_resAtom_comp_index_ID == null ||
@@ -868,9 +868,9 @@ public class DistConstrList extends ConstrItem implements Serializable {
                 tagNameDCPer_resMax_violation == null ||
                 tagNameDCPer_resMax_violation_model_number == null ||
                 tagNameDCPer_resAbove_cutoff_violation_count == null ||
-                tagNameDCPer_resAbove_cutoff_violation_per_model == null ||
-                tagNameDCPer_resEntry_ID == null ||
-                tagNameDCPer_resDistance_constraint_stats_ID == null
+                tagNameDCPer_resAbove_cutoff_violation_per_model == null 
+//                tagNameDCPer_resEntry_ID == null ||
+//                tagNameDCPer_resDistance_constraint_stats_ID == null
                 ) {
             General.showError("Failed to get all the tag names from dictionary, compare code with dictionary.");
             return false;
@@ -902,12 +902,12 @@ public class DistConstrList extends ConstrItem implements Serializable {
             tT.getNewRowId(); // Sets first row bit in used to true.
             String cat = "distance_constraint_statistics";
             namesAndValues.put( tagNameDCStats_Sf_category, cat);
-            namesAndValues.put( tagNameDCStatsL_Entry_ID, new Integer(1));
-            namesAndValues.put( tagNameDCStatsL_Distance_constraint_stats_ID, new Integer(1));
+//            namesAndValues.put( tagNameDCStatsL_Entry_ID, new Integer(1));
+//            namesAndValues.put( tagNameDCStatsL_Distance_constraint_stats_ID, new Integer(1));
             
             starDict.putFromDict( namesAndTypes, order, tagNameDCStats_Sf_category                          );
-            starDict.putFromDict( namesAndTypes, order, tagNameDCStatsL_Entry_ID                            );
-            starDict.putFromDict( namesAndTypes, order, tagNameDCStatsL_Distance_constraint_stats_ID        );
+//            starDict.putFromDict( namesAndTypes, order, tagNameDCStatsL_Entry_ID                            );
+//            starDict.putFromDict( namesAndTypes, order, tagNameDCStatsL_Distance_constraint_stats_ID        );
             starDict.putFromDict( namesAndTypes, order, tagNameDCStats_Restraint_list_ID                    );
             starDict.putFromDict( namesAndTypes, order, tagNameDCStats_Restraint_count                      );
             starDict.putFromDict( namesAndTypes, order, tagNameDCStats_Viol_count                           );
@@ -942,8 +942,8 @@ public class DistConstrList extends ConstrItem implements Serializable {
             starDict.putFromDict( namesAndTypes, order, tagNameDCPer_resMax_violation_model_number      );
             starDict.putFromDict( namesAndTypes, order, tagNameDCPer_resAbove_cutoff_violation_count    );
             starDict.putFromDict( namesAndTypes, order, tagNameDCPer_resAbove_cutoff_violation_per_model);
-            starDict.putFromDict( namesAndTypes, order, tagNameDCPer_resEntry_ID                        );
-            starDict.putFromDict( namesAndTypes, order, tagNameDCPer_resDistance_constraint_stats_ID    );
+//            starDict.putFromDict( namesAndTypes, order, tagNameDCPer_resEntry_ID                        );
+//            starDict.putFromDict( namesAndTypes, order, tagNameDCPer_resDistance_constraint_stats_ID    );
             
             if ( ! tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, null)) {
                 General.showError("Failed to tT.insertColumnSet");
@@ -979,7 +979,7 @@ public class DistConstrList extends ConstrItem implements Serializable {
             starDict.putFromDict( namesAndTypes, order, tagNameDCStats_Max_violation_model_number           );
             starDict.putFromDict( namesAndTypes, order, tagNameDCStats_Above_cutoff_violation_count         );
             starDict.putFromDict( namesAndTypes, order, tagNameDCStats_Above_cutoff_violation_per_model     );
-            starDict.putFromDict( namesAndTypes, order, tagNameDCStats_Entry_ID                             );
+//            starDict.putFromDict( namesAndTypes, order, tagNameDCStats_Entry_ID                             );
             starDict.putFromDict( namesAndTypes, order, tagNameDCStats_Distance_constraint_stats_ID         );
             
             if ( ! tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, null)) {
@@ -1135,8 +1135,8 @@ public class DistConstrList extends ConstrItem implements Serializable {
             tT.setValue(rid, tagNameDCPer_resMax_violation_model_number,             max_violation_model_number);
             tT.setValue(rid, tagNameDCPer_resAbove_cutoff_violation_count,           countMakingCutoff);
             tT.setValue(rid, tagNameDCPer_resAbove_cutoff_violation_per_model,       above_cutoff_violation_per_model);
-            tT.setValue(rid, tagNameDCPer_resEntry_ID,                               1);
-            tT.setValue(rid, tagNameDCPer_resDistance_constraint_stats_ID,           listNumber);        
+//            tT.setValue(rid, tagNameDCPer_resEntry_ID,                               1);
+//            tT.setValue(rid, tagNameDCPer_resDistance_constraint_stats_ID,           listNumber);        
         }
         return true;
     }

@@ -2354,7 +2354,7 @@ public class File31 {
                                 res2AtomMap = (HashMap) atomFirstRID.get( molNumb, resNumb );                            
                                 // When there are nulls for molNumb and/or resNumb the map returned will also be null
                                 if ( res2AtomMap == null ) {
-                                    General.showWarning( "Coulnd't find residue with number: " + resNumb + " in a molecule with number: " + molNumb + " when looking for atom with name: " + atomName);
+                                    General.showWarning( "While reading DCs: Coulnd't find residue with number: " + resNumb + " in a molecule with number: " + molNumb + " when looking for atom with name: " + atomName);
                                     atomFoundForAllInDC = false;
                                     starDCAtomRid++;
                                     continue;
@@ -2367,7 +2367,7 @@ public class File31 {
                                     // Get the residue name from any atom in the residue
                                     Set atomSet = res2AtomMap.keySet();
                                     if ( (atomSet == null ) || atomSet.isEmpty()) {
-                                        General.showDetail( "Coulnd't find atom (empty residue) in the residue with number: " + resNumb + " in a molecule with number: " + molNumb + " for atom with name: "  + atomName );
+                                        General.showDetail( "While reading DCs: Coulnd't find atom (empty residue) in the residue with number: " + resNumb + " in a molecule with number: " + molNumb + " for atom with name: "  + atomName );
                                         atomFound = false;
                                     } else {
                                         Object[] tmpje = atomSet.toArray();
@@ -2376,7 +2376,7 @@ public class File31 {
     //                                    General.showDebug("Using residue name for pseudo atom lookup: " + resName);
                                         ArrayList list = (ArrayList) ui.wattosLib.pseudoLib.toAtoms.get( resName, atomName );
                                         if ( (list == null) || list.size() < 1 ) {
-                                            General.showDetail( "Coulnd't find atom (assumed a pseudo but apparently not) in residue: " + resNumb + " in mol: " + molNumb + " for atom: "  + atomName);
+                                            General.showDetail( "While reading DCs: While reading DCs: Coulnd't find atom (assumed a pseudo but apparently not) in residue: " + resNumb + " in mol: " + molNumb + " for atom: "  + atomName);
                                             atomFound = false;
                                         } else {
                                             equiAtomList = list;
@@ -2654,7 +2654,7 @@ public class File31 {
                         HashMap res2AtomMap = (HashMap) atomFirstRID.get( molNumb, resNumb );                            
                         // When there are nulls for molNumb and/or resNumb the map returned will also be null
                         if ( res2AtomMap == null ) {
-                            General.showWarning( "Coulnd't find residue with number: " + resNumb + " in a molecule with number: " + molNumb + " when looking for atom with name: " + atomName);
+                            General.showWarning( "While reading SCs: Coulnd't find residue with number: " + resNumb + " in a molecule with number: " + molNumb + " when looking for atom with name: " + atomName);
                             atomFoundForAllInSC = false;
                             break; // loop over atoms
                         }
@@ -2662,7 +2662,7 @@ public class File31 {
                         atomRID = (Integer) res2AtomMap.get( atomName );
 //                        General.showDebug("Looking for atom in res2AtomMap: " + Strings.toString(res2AtomMap));
                         if ( atomRID == null ) {
-                            General.showWarning("Did not find atom in res2AtomMap" );
+                            General.showWarning("While reading SCs: Did not find atom in res2AtomMap" );
                             atomFoundForAllInSC = false;
                             break; // loop over atoms
                         }
@@ -2856,7 +2856,7 @@ public class File31 {
                     HashMap res2AtomMap = (HashMap) atomFirstRID.get( molNumb, resNumb );                            
                     // When there are nulls for molNumb and/or resNumb the map returned will also be null
                     if ( res2AtomMap == null ) {
-                        General.showWarning( "Coulnd't find residue with number: " + resNumb + " in a molecule with number: " + molNumb + " when looking for atom with name: " + atomName);
+                        General.showWarning( "While reading SCs2: Coulnd't find residue with number: " + resNumb + " in a molecule with number: " + molNumb + " when looking for atom with name: " + atomName);
                         atomFoundForAllInSC = false;
                         break; // loop over atoms
                     }
@@ -2864,7 +2864,7 @@ public class File31 {
                     atomRID = (Integer) res2AtomMap.get( atomName );
 //                        General.showDebug("Looking for atom in res2AtomMap: " + Strings.toString(res2AtomMap));
                     if ( atomRID == null ) {
-                        General.showWarning("Did not find atom in res2AtomMap" );
+                        General.showWarning("While reading SCs2: Did not find atom in res2AtomMap" );
                         atomFoundForAllInSC = false;
                         break; // loop over atoms
                     }
@@ -3984,7 +3984,7 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
                 // Write them in a sorted fashion
                 int[] map = dc.mainRelation.getRowOrderMap(Relation.DEFAULT_ATTRIBUTE_ORDER_ID  ); // Includes just the dcs in this list
                 if ( (map != null) && (map.length != dcCountTotal )) {
-                    General.showError("Trying to get an order map but failed to give back the correct number of elements: " + dcCountTotal + " instead found: " + map.length );
+                    General.showWarning("Trying to get an order map but failed to give back the correct number of elements: " + dcCountTotal + " instead found: " + map.length );
                     map = null;
                 }
                 if ( map == null ) {

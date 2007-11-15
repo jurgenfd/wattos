@@ -61,7 +61,7 @@ public class Globals {
         Parameters p = new Parameters(); // for printf
         Object key;
         String value;
-        int size_print_max = 50;
+        int size_print_max = 100;
         
         List keys = new ArrayList(Arrays.asList( m.keySet().toArray() ));
         Collections.sort(keys);
@@ -112,13 +112,12 @@ public class Globals {
         }
 
         String wattosRootDirStr = sp.getProperty( "WATTOSROOT" );
-        General.showOutput("WATTOSROOT: " + wattosRootDirStr);
+//        General.showOutput("WATTOSROOT: " + wattosRootDirStr);
         
         //String dbfs_root        = fs+"mnt"+fs+"mrgrid";
-//        String dbfs_root        = fs+"big"+fs+"jurgen"+fs+"DB"+fs+"mrgrid";
         String dbfs_root        = fs+"big"+fs+"jurgen"+fs+"DB"+fs+"mrgrid";
 //        String localTestingPlatform = "C:\\jurgen\\tmp_unb_";
-        String localTestingPlatform = "/Users/jd/workspace/Wattos/tmp_unb_";
+        String localTestingPlatform = "/Users/jd/wattosTestingPlatform";
         //String pdbmirror_root   = fs+"pdbmirror2"; // different from "pdbmirr".
         String pdbmirror_root   = fs+"dumpzone"+fs+"pdb";
         
@@ -143,19 +142,24 @@ public class Globals {
             return;
         }
         if ( ((Boolean) m.get( "act_locally_db" )).booleanValue() ) { 
-            dbfs_root =  localTestingPlatform + fs+"DB"+fs+"mrgrid";
+            dbfs_root =  fs+"Users"+fs+"jd"+fs+"CloneWars"+fs+"DB"+fs+"mrgrid";
         }
         m.put( "dbfs_root", dbfs_root);
 
         // Favorite editor on Unix or Windows systems
         String jar_file_name = share_root+fs+"linux"+fs+"src"+fs+"jedit"+fs+"4.1"+fs+"jedit.jar";
+        String java_binary_file_name = "java";
         if( ( (Boolean) m.get( "act_locally" )).booleanValue() ) {
 //            jar_file_name = "\"C:\\Program Files\\jEdit4.3pre9\\jedit.jar\"";
-            jar_file_name = "/Users/bmrb/Desktop/jEdit.app/Contents/Resources/Java/jedit.jar";
+//            jar_file_name = "/Users/bmrb/Desktop/jEdit.app/Contents/Resources/Java/jedit.jar";
+            jar_file_name = "/Applications/jEdit.app/Contents/Resources/Java/jedit.jar";
+//            java_binary_file_name = "/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home/bin/java";
         }
-        m.put("editor", "java -Xmx96m -Xms24m -jar "+jar_file_name+" -noserver " );
+        // Note that the -noserver is not needed but watch out not to have any other Jedit applications/views open.
+        String editorProgram = java_binary_file_name+" -Xmx96m -Xms24m -jar " + jar_file_name ;//+ " -noserver";
+        m.put("editor", editorProgram );
 
-
+ 
         // Dir as base in which all info and scripts like this one resides
 //        m.put("base_dir", share_root+fs+"jurgen"+fs+"BMRB"+fs+"MRAnalysis" );
         // Dir to publish results to (not including the html pages)
@@ -183,9 +187,9 @@ public class Globals {
         }            
 
         if( ( (Boolean) m.get( "act_locally_mr" )).booleanValue() ) {
-            m.put("mr_dir",               localTestingPlatform + fs + "pdb\\pdb\\data\\structures\\divided\\nmr_restraints");
-            m.put("mr_anno_dir",          localTestingPlatform + fs + "Wattos\\mr_anno_progress");
-            m.put("mr_anno_progress_dir", localTestingPlatform + fs + "Wattos\\mr_anno_progress");
+            m.put("mr_dir",               localTestingPlatform + fs + "pdb"+fs+"data"+fs+"structures"+fs+"divided"+fs+"nmr_restraints");
+            m.put("mr_anno_dir",          localTestingPlatform + fs + "Wattos"+fs+"mr_anno_progress");
+            m.put("mr_anno_progress_dir", localTestingPlatform + fs + "Wattos"+fs+"mr_anno_progress");
         }
         
         // Directory with data file 
@@ -347,7 +351,7 @@ public class Globals {
     /** Call whenever db user name changes */
     public boolean setDbUserNameDerivedVariables() {
         String db_username = getValueString("db_username");
-        // Directory with database like filesystem.
+        // Directory with database like file system.
         String dbfs_root = getValueString("dbfs_root");
         m.put("dbfs_dir", dbfs_root+fs+"bfiles"+fs+db_username);
         m.put("db_name",  db_username); // not actually used in this case.
