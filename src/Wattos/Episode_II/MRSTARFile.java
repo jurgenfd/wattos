@@ -178,7 +178,7 @@ public class MRSTARFile {
  
         //FROM WATTOS API
         buf = sn.toSTAR();
-        General.showDebug("Parsed: "+sn.toSTAR());
+//        General.showDebug("Parsed: "+sn.toSTAR());
         BufferedReader br = new BufferedReader(new StringReader(buf));
         try {
             StarParser.ReInit(br); //not needed unless called again.

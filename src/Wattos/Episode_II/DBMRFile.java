@@ -272,7 +272,7 @@ public class DBMRFile {
             return false;
         }
         boolean status;
-        General.showOutput("Reading file from dir: " + dir);
+//        General.showOutput("Reading file from dir: " + dir);
         String fileNameExtension = InOut.getFilenameExtension(file);
         if ( InOut.fileNameExtensionCanBeText(fileNameExtension)) {
             General.showOutput("Reading file: " + file.getPath() + " as a textual file.");
@@ -820,7 +820,7 @@ public class DBMRFile {
             File.separator +
             chars2And3 +
             File.separator +
-            pdb_id + ".mr.Z";
+            pdb_id + ".mr.gz";
         String text = InOut.readTextFromUrl( InOut.getUrlFileFromName(file_org_nameZ));        
         if ( text == null ) {
             General.showError("in DBMRFile.checkDiff failed to uncompress file: " + file_org_nameZ);            

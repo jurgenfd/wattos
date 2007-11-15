@@ -15,7 +15,11 @@ import com.braju.format.*;              // printf equivalent
 import Wattos.Utils.*;
 
 /**
- *Main program for annotating MR files for PDB entries
+ *Main program for annotating MR files for PDB entries.
+ *Tips for JEdit usage:
+ *  - If you get messages like:
+ *  STDERR>2:42:05 PM [error] KeyEventTranslator: Invalid key stroke: 
+ *  Redefine the keyboard shortcut to something like ESC.
  *
  * @author  Jurgen F. Doreleijers
  * @version 0.1 
@@ -300,7 +304,7 @@ public class MRAnnotate {
         // Copy the file from the archive
         if ( archive_id.equals("m") ) {
             String chars2And3 = pdb_entry_id.substring(1,3);
-            String filename_org = g.getValueString(  "mr_dir" )+fs+chars2And3+fs+pdb_entry_id+".mr.Z";
+            String filename_org = g.getValueString(  "mr_dir" )+fs+chars2And3+fs+pdb_entry_id+".mr.gz";
 //          status = FileCopy.copy( new File(filename_org), mrf.file, true, true);
             status = InOut.gunzipFile( new File(filename_org), mrf.file);
             if ( ! status ) {
@@ -570,15 +574,7 @@ public class MRAnnotate {
     public static ArrayList getEntriesFromMRFiles( String dir, boolean warnEmpty ) {
 
         ArrayList entries = new ArrayList();
-        
-//        File rdir = new File( dir );
-//        String[] mr_files = rdir.list( new FilenameFilter() {
-//            public boolean accept(File d, String name) { 
-//                return name.endsWith( ".mr" ) ||
-//                       name.endsWith( ".mr.Z" ); 
-//            }
-//        });
-        
+                
         ArrayList fileList = InOut.getFilesRecursive(new File(dir));        
         if (fileList ==  null) {
             General.showWarning("Found NO files in directory: " + dir);
@@ -589,19 +585,19 @@ public class MRAnnotate {
             File f = (File) fileList.get(i);
             String s = f.toString();
             if ( s.endsWith( ".mr" ) ||
-                 s.endsWith( ".mr.Z" )) {
+                 s.endsWith( ".mr.gz" )) {
                 mr_files.add(f); 
             }
         }
         if (warnEmpty && mr_files.size() ==  0) {
-            General.showWarning("Found NO entries on file in directory: " + dir);
+            General.showWarning("Found files but no NO entries on file in directory: " + dir);
             return entries;
         }
         
         // Check if the code conforms
         for (int i=0; i<mr_files.size(); i++) {
             File f = (File) mr_files.get(i);
-            String fname = f.getName(); // e.g. 1brv.mr.Z
+            String fname = f.getName(); // e.g. 1brv.mr.gz
             String entry_code = fname.substring(0,4);
             // Check whether that's reasonable by matching against reg.exp.
             if ( Wattos.Utils.Strings.is_pdb_code( entry_code ) ) {

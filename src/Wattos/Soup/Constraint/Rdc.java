@@ -151,7 +151,7 @@ public class Rdc extends SimpleConstr implements Serializable {
             }
             map = mainRelation.getRowOrderMap(Relation.DEFAULT_ATTRIBUTE_ORDER_ID  ); // Includes just the scs in this list
             if ( (map != null) && (map.length != scCountTotal )) {
-                General.showError("Trying to get an order map but failed to give back the correct number of elements: " + scCountTotal + " instead found: " + map.length );
+                General.showWarning("Trying to get an order map but failed to give back the correct number of elements: " + scCountTotal + " instead found: " + map.length );
                 map = null;
             }
             if ( map == null ) {

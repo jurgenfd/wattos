@@ -84,7 +84,10 @@ public class InOut {
         String osName = System.getProperty("os.name" );
         if( osName.startsWith( "Windows" )) {
             isOSWindows = true;
-        } else if ( osName.startsWith("Linux") || osName.startsWith("SunOS")) {
+        } else if ( osName.startsWith("Linux") 
+        		|| osName.startsWith("SunOS")
+        		|| osName.startsWith("Mac OS")
+        		) {
             isOSWindows = false;
         } else {
             /**
@@ -1369,7 +1372,7 @@ public static class RegExpFilenameFilter implements FilenameFilter {
                 //p = r.exec( "command.com /c set" ); # Nobody is using old 98 anymore right?
                 p = r.exec( "cmd.exe /c set" );
             } else if ( osName.equals("Linux") || osName.equals("SunOS")
-            		|| osName.startsWith("Mac")) {
+            		|| osName.startsWith("Mac OS")) {
                 p = r.exec( "env" );
             } else {
                 General.showOutput("Any Operating System that is not:");

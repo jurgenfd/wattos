@@ -49,7 +49,7 @@ public class WattosProp extends Properties {
         String rootDir = null; // directories will always be ended by a slash.
         if ( osName.startsWith("Windows") ) {
             rootDir             = "C:" + fs; 
-        } else if ( osName.equals("Linux") || osName.equals("SunOS") || osName.equals("Mac OS") ) {
+        } else if ( osName.equals("Linux") || osName.equals("SunOS") || osName.startsWith("Mac OS") ) {
             rootDir             = fs; 
         } else {
             General.showOutput("Any Operating System that is not:");
@@ -68,7 +68,7 @@ public class WattosProp extends Properties {
         String osName       = System.getProperty("os.name" );        
         if ( osName.startsWith("Windows") ) {
             return "C:\\cygwin\\bin";
-        } else if ( osName.equals("Linux") || osName.equals("SunOS")) {
+        } else if ( osName.equals("Linux") || osName.equals("SunOS")|| osName.startsWith("Mac OS")) {
             return "/bin";            
         } else {
             General.showOutput("Any Operating System that is not:");
