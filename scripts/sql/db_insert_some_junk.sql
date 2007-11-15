@@ -1,13 +1,6 @@
-INSERT INTO entry (
-entry_id,
-bmrb_id,
-pdb_id
-) VALUES ( 
-1, 
-2,
-'1brv'
-);
+INSERT INTO entry ( entry_id, pdb_id ) VALUES ( 2, '1brv' );
 
+INSERT INTO entry (entry_id, pdb_id) VALUES ( 1009, '1brv');
 
 
 INSERT INTO mrfile (

@@ -17,7 +17,6 @@ gnujaxp.jar				No idea.
 itext-1.4.jar			Required by jfreechart
 jakarta-regexp.jar		Regular expressions from before Java 1.4.
 jcommon-1.0.0.jar		Required by jfreechart
-jdbc20x.jar				Java DB connectivity
 jfreechart-1.0.1.jar	Plotting tool
 mysql-connector-java-3.0.16-ga-bin.jar	Mysql connector (obsolete?)
 mysql-connector-java-5.0.3-bin.jar		Mysql connector (use this one when in doubt)
