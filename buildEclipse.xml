@@ -123,7 +123,7 @@
         <echo message="Running in: ${test_data.local.dir}"/>
         <echo message="Output to : ${tmp.local.dir}"/>
         
-        <for list="AddMissingAtoms.wcf" param="fn">
+        <for list="ReadEntryNMRSTAR.wcf" param="fn">
             <sequential>
             <echo message="Executing macro: ${macros.local.dir}/@{fn}"/>
             <java   jvm="${platform.java}"
@@ -298,10 +298,25 @@
     </target>        
     <target name="home-cp" depends="init">
         <scp    todir="${home.web.usermachine}:${home.web.dir}"
-                keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}"                
+                keyfile="${home.web.keyfile}" 
+        	knownhosts="${home.web.knownhosts}" 
+        	passphrase="${home.web.passphrase}"  
+        	verbose="true"
             >
             <fileset dir="${home.local.dir}" />        
         </scp>
+    </target>        
+    <target name="release-zip" depends="init">
+        <ftp 
+        	password="${release.web.passphrase}"
+    	    server="${release.web.machine}" 
+        	userid="${release.web.user}"
+        	remotedir="${release.web.dir}"
+        	verbose="true"        	>
+        	<fileset dir="${home.local.dir}" id="">
+			    <include name="wattos**.zip"/>
+			</fileset>
+        </ftp>    
     </target>        
     <target name="home-doc-cp" depends="init" 
         description="takes forever (2:20) so perhaps send a tar and untar locally so that only 1 scp is needed">
