@@ -15,7 +15,9 @@ ReadEntryMmCIF
 1ai0_rem_small.cif.gz
 
 WriteEntryNMRSTAR
-C:/Documents and Settings/jurgen.WHELK.000/workspace/Wattos/tmp_dir/1ai0_rem_small.str.gz
+/Users/jd/workspace/Wattos/tmp_dir/1ai0_rem_small.str.gz
+
+#C:/Documents and Settings/jurgen.WHELK.000/workspace/Wattos/tmp_dir/1ai0_rem_small.str.gz
 
 Quit
 

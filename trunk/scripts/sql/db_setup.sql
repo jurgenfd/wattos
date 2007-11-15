@@ -1,9 +1,10 @@
 -- STEP BY STEP PROCEDURE FOR SETTING UP NEW DB
 
 -- set root password
---mysql -u root password '\!Ecj'ETC   # no escapes for any char but the first.
+--mysql -u root password '\!Ecj'ETC  
 
 -- Notes:
+    --  # no escapes for any char but the first.
     -- no backslash escape '\' needed when using double quotes in windows.
 
 -- create it
@@ -20,7 +21,8 @@ CREATE USER 'wattos2'@'zebrafish.bmrb.wisc.edu' ;
 CREATE USER 'repl'@'whelk.bmrb.wisc.edu'        ;
 
 
-SET PASSWORD FOR 'wattos2'@'localhost'               = PASSWORD('4I4KMS');SET PASSWORD FOR 'wattos2'@'localhost.localdomain'   = PASSWORD('4I4KMS');
+SET PASSWORD FOR 'wattos2'@'localhost'               = PASSWORD('4I4KMS');
+SET PASSWORD FOR 'wattos2'@'localhost.localdomain'   = PASSWORD('4I4KMS');
 SET PASSWORD FOR 'wattos2'@'tang.bmrb.wisc.edu'      = PASSWORD('4I4KMS');
 SET PASSWORD FOR 'wattos2'@'whelk.bmrb.wisc.edu'     = PASSWORD('4I4KMS');
 SET PASSWORD FOR 'wattos2'@'anthozoan.bmrb.wisc.edu' = PASSWORD('4I4KMS');

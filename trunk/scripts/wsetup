@@ -16,7 +16,7 @@ setenv WATTOSMEM        512m
 # Installation directories.
 setenv WATTOSSRCDIR     $WATTOSROOT/src
 setenv WATTOSCLASSDIR   $WATTOSROOT/build/web/WEB-INF/classes
-setenv WATTOSCLASSDIR   ${WATTOSCLASSDIR}:/build/test/classes
+setenv WATTOSCLASSDIR   ${WATTOSCLASSDIR}:$WATTOSROOT//build/test/classes
 setenv WATTOSJARSDIR    $WATTOSROOT/lib
 setenv WATTOSDOCDIR     $WATTOSROOT/doc
 setenv WATTOSDATADIR    $WATTOSROOT/data
@@ -38,46 +38,33 @@ alias filter 'java Wattos.Star.STARFilter $*'
 # Filter or just reformat a star file
 alias mrannotator 'java Wattos.Episode_II.MRAnnotate'
 
-# Wattos classes
+# Wattos own classes
 setenv CLASSPATH ${WATTOSJARSDIR}/Wattos.jar
+
+# hostname shows "Sjors.local" 
 # lower case hostname on cygwin and upper case on windows. 
-set wattoshost = (`hostname|gawk '{print tolower($0)}'`)
-if ( $wattoshost == 'whelk' ) then 
+set wattoshost = (`hostname|gawk -F'[.]' '{print tolower($1)}'`)
+#if ( $wattoshost == 'whelk' ) then 
+if ( $wattoshost == 'sjors' ) then 
     setenv CLASSPATH ${WATTOSCLASSDIR}    
 endif    
-#if ( $wattoshost == 'tang.bmrb.wisc.edu' ) then 
-#    setenv CLASSPATH ${WATTOSCLASSDIR}    
-#endif    
 
-# Non standard Ant lib.
+
+# For a description of the jar files see the README.txt in the lib dir.
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/ant-contrib.jar
-# IntIntHashMap, primitive arrays, statistics etc.:
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/colt.jar
-# Comma separated value files
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/CSVutils.jar
-# for regular expressions
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/jakarta-regexp.jar
-# for javacc classes
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/JavaCC.jar
-# Classes used by JDBC
-setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/jdbc20x.jar
-# JFLEX if you want to rebuild the STAR lexer.
+#setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/jdbc20x.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/JFlex.jar
-# Classes used by mysql
-setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/mysql-connector-java-3.0.16-ga-bin.jar
-# Printf stuff
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/printf_hb15.jar
-# Classes used by servlets
-#setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/servlet.jar
-# STARLIB J
+setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/mysql-connector-java-5.0.3-bin.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/starlibj_with_source.jar
-# SWING
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/swing-layout-1.0.jar
-# JFREECHART for creating charts
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/jfreechart-1.0.1.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/jcommon-1.0.0.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/gnujaxp.jar
-# ITEXT for converting charts to pdf files
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/itext-1.4.jar
 
 echo "Initialized Wattos with Java classpath:" $CLASSPATH

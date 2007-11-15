@@ -11,8 +11,8 @@ writeSessionOnExit
 false
 ListProp
 
-ReadEntryPDB
-http://www.bmrb.wisc.edu/servlet_data/pdb/pdb1brv.ent
+#ReadEntryPDB
+#http://www.bmrb.wisc.edu/servlet_data/pdb/pdb1brv.ent
 
 #Input file
 #Read molecular system and coordinates (y suggested)
@@ -21,16 +21,38 @@ http://www.bmrb.wisc.edu/servlet_data/pdb/pdb1brv.ent
 #Match restraints to soup by author atom and residue names etc. (n suggested; only previous or this can and must be set)
 #Remove unlinked restraints (y suggested)
 ReadEntryNMRSTAR
-1brv_DOCR_small.str.gz
-n
+1ai0_rest_sjorsv2.str.gz
+y
+y
 y
 n
 y
-n
 
+AddMissingAtoms
+
+CheckAtomNomenclature
+y
+
+
+# Distance tolerance above which to delete (2.0 suggested)
+# Maximum number of violations to remove. Largest violations will be removed (3 suggested)
+# Enter file name base (with path) for output of removed constraints
+FilterHighDistanceViol
+0.5
+3
+../../tmp_dir/1ai0_DOCR_small_dc_high_viol.str
+
+CalcDistConstraintViolation
+0.01
+../../tmp_dir/1ai0_DOCR_small_dc_viol.str
+
+
+CalcDihConstraintViolation
+5.0
+../../tmp_dir/1ai0_DOCR_small_dih_viol.str
 
 WriteEntryNMRSTAR
-tmp_dir/1brv_DOCR_wattos.str
+../../tmp_dir/1ai0_rest_chris_wattos.str.gz
 
 Quit
 
