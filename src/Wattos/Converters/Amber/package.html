@@ -1,231 +1,68 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:v="urn:schemas-microsoft-com:vml"
-xmlns:o="urn:schemas-microsoft-com:office:office"
-xmlns:w="urn:schemas-microsoft-com:office:word"
-xmlns="http://www.w3.org/TR/REC-html40">
-
+<html >
 <head>
-<meta http-equiv=Content-Type content="text/html; charset=us-ascii">
-<meta name=ProgId content=Word.Document>
-<meta name=Generator content="Microsoft Word 9">
-<meta name=Originator content="Microsoft Word 9">
-<link rel=File-List href="./package_files/filelist.xml">
 <title>The AMBER converter</title>
-<!--[if gte mso 9]><xml>
- <o:DocumentProperties>
-  <o:Author>j</o:Author>
-  <o:LastAuthor>jurgen</o:LastAuthor>
-  <o:Revision>10</o:Revision>
-  <o:TotalTime>30</o:TotalTime>
-  <o:Created>2004-11-10T17:43:00Z</o:Created>
-  <o:LastSaved>2007-05-31T20:00:00Z</o:LastSaved>
-  <o:Pages>2</o:Pages>
-  <o:Words>522</o:Words>
-  <o:Characters>2980</o:Characters>
-  <o:Company>bmrb</o:Company>
-  <o:Lines>24</o:Lines>
-  <o:Paragraphs>5</o:Paragraphs>
-  <o:CharactersWithSpaces>3659</o:CharactersWithSpaces>
-  <o:Version>9.3821</o:Version>
- </o:DocumentProperties>
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <w:WordDocument>
-  <w:Zoom>BestFit</w:Zoom>
-  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
- </w:WordDocument>
-</xml><![endif]-->
-<style>
-<!--
- /* Style Definitions */
-p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0in;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;
-	text-underline:single;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;
-	text-underline:single;}
-p
-	{margin-right:0in;
-	mso-margin-top-alt:auto;
-	mso-margin-bottom-alt:auto;
-	margin-left:0in;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:"Times New Roman";}
-pre
-	{margin:0in;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
-	font-size:10.0pt;
-	font-family:"Courier New";
-	mso-fareast-font-family:"Times New Roman";}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;
-	mso-header-margin:.5in;
-	mso-footer-margin:.5in;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
- /* List Definitions */
-@list l0
-	{mso-list-id:211888789;
-	mso-list-template-ids:-1643095172;}
-@list l0:level1
-	{mso-level-number-format:bullet;
-	mso-level-text:\F0B7;
-	mso-level-tab-stop:.5in;
-	mso-level-number-position:left;
-	text-indent:-.25in;
-	mso-ansi-font-size:10.0pt;
-	font-family:Symbol;}
-@list l1
-	{mso-list-id:1114859379;
-	mso-list-type:hybrid;
-	mso-list-template-ids:-562691002 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
-@list l1:level1
-	{mso-level-number-format:bullet;
-	mso-level-text:\F0B7;
-	mso-level-tab-stop:.5in;
-	mso-level-number-position:left;
-	text-indent:-.25in;
-	font-family:Symbol;}
-ol
-	{margin-bottom:0in;}
-ul
-	{margin-bottom:0in;}
--->
-</style>
-<!--[if gte mso 9]><xml>
- <o:shapedefaults v:ext="edit" spidmax="1026"/>
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <o:shapelayout v:ext="edit">
-  <o:idmap v:ext="edit" data="1"/>
- </o:shapelayout></xml><![endif]-->
 </head>
-
-<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
-
-<div class=Section1>
-
-<p class=MsoNormal>Parser for Amber formatted restraint files.</p>
-
-<p><a name="_top"></a><b style='mso-bidi-font-weight:normal'>Content</b>:</p>
-
-<p style='margin-left:.5in;text-indent:-.25in;mso-list:l1 level1 lfo2;
-tab-stops:list .5in'><![if !supportLists]><span class=MsoHyperlink><span
-style='font-family:Symbol;text-decoration:none;text-underline:none'>&middot;<span
-style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]><a href="#_top">Content</a><span
-class=MsoHyperlink><o:p></o:p></span></p>
-
-<p style='margin-left:.5in;text-indent:-.25in;mso-list:l1 level1 lfo2;
-tab-stops:list .5in'><![if !supportLists]><span class=MsoHyperlink><span
-style='font-family:Symbol;text-decoration:none;text-underline:none'>&middot;<span
-style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]><a href="#General">General</a><span
-class=MsoHyperlink><o:p></o:p></span></p>
-
-<p style='margin-left:.5in;text-indent:-.25in;mso-list:l1 level1 lfo2;
-tab-stops:list .5in'><![if !supportLists]><span style='font-family:Symbol'>&middot;<span
-style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span><![endif]>Examples <a href="#distances">distances</a></p>
-
-<p style='margin-left:.5in;text-indent:-.25in;mso-list:l1 level1 lfo2;
-tab-stops:list .5in'><![if !supportLists]><span style='font-family:Symbol'>&middot;<span
-style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span><![endif]>Examples <a href="#dihedrals">dihedrals</a></p>
-
-<p style='margin-left:.5in;text-indent:-.25in;mso-list:l1 level1 lfo2;
-tab-stops:list .5in'><![if !supportLists]><span style='font-family:Symbol'>&middot;<span
-style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span><![endif]>Examples <a href="#RDCs">dipolar coupling</a></p>
-
-<p style='margin-left:.5in;text-indent:-.25in;mso-list:l1 level1 lfo2;
-tab-stops:list .5in'><![if !supportLists]><span class=MsoHyperlink><span
-style='font-family:Symbol;text-decoration:none;text-underline:none'>&middot;<span
-style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]><a href="#todo">To-do</a><span
-class=MsoHyperlink><o:p></o:p></span></p>
-
-<p><a name=General><b style='mso-bidi-font-weight:normal'>General<o:p></o:p></b></a></p>
-
-<span style='mso-bookmark:General'></span>
-
-<p>The only source files here that were created by humans are the java
+<body>
+<div>
+<br/>Parser for Amber formatted restraint files.
+<br/><b >Content</b>:
+<p> 
+Content
+<p>       
+General
+<p>       
+Examples distances
+<p>       
+Examples dihedrals
+<p>       
+Examples dipolar coupling
+<p>       
+To-do
+<br/><b >General</b>
+<br/>The only source files here that were created by humans are the java
 sourcefiles: StarOut.java and Utils.java and the JavaCC grammar file
 AmberParser.jj.All other files are (re-)generated using JavaCC Parser
-Generator. </p>
-
-<p><b style='mso-bidi-font-weight:normal'>Examples of input are for (ambi) <a
-name=distances>distances</a>: <o:p></o:p></b></p>
-
-<pre>&nbsp;</pre><pre># PDB entry: <b style='mso-bidi-font-weight:normal'>1dgq</b> </pre><pre>#<span style="mso-spacerun: yes">&nbsp; </span>162 PHE<span style="mso-spacerun: yes">&nbsp; </span>HD<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>161 GLU<span style="mso-spacerun: yes">&nbsp; </span>HB2<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>3.50<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </span>(#<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>6040:20<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>Manualy assigned)</pre><pre> &amp;rst</pre><pre><span style="mso-spacerun: yes">&nbsp; </span>ixpk= 6040, iat=<span style="mso-spacerun: yes">&nbsp; </span>-1,2552, r1= 0.00, r2= 1.80, r3= 3.93, r4= 4.68,</pre><pre>&nbsp;</pre><pre><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>rk2=20.0, rk3=20.0, ir6=1,</pre><pre> igr1=2571,2579,</pre><pre> &amp;end</pre><pre><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp; </span></pre><pre># PDB entry: <b
-style='mso-bidi-font-weight:normal'>1bau</b></pre><pre># distance constraint number<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>1</pre><pre> &amp;rst<span style="mso-spacerun: yes">&nbsp; </span>iat =<span style="mso-spacerun: yes">&nbsp; </span>1,<span style="mso-spacerun: yes">&nbsp; </span>1, iresid = 1, atnam(1)='H2''1',atnam(2)='H8',</pre><pre><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>r1 = 1.000, r2 = 2.000, r3 = 4.000, r4 = 5.000,</pre><pre><span style="mso-spacerun: yes">&nbsp; </span><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>rk2 =30.001, rk3 =30.001, &amp;end# PDB entry: xxxx<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></pre><pre>&nbsp;</pre><pre># PDB entry: <b
-style='mso-bidi-font-weight:normal'>1ozo</b><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></pre><pre>#<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>31 GLY<span style="mso-spacerun: yes">&nbsp; </span>HN<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>32 GLU<span style="mso-spacerun: yes">&nbsp; </span>HN<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>6.00<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </span>(#<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp; </span>10:10<span style="mso-spacerun: yes">&nbsp; </span>Preassigned<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </span>2.66, 2.75 A)</pre><pre> &amp;rst</pre><pre><span style="mso-spacerun: yes">&nbsp; </span>ixpk= 10, nxpk= 10, iat= 449, 456, r1= 1.30, r2= 1.80, r3= 6.00, r4= 6.50, </pre><pre><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>rk2=40.0, rk3=40.0, ir6=1, ialtd=0,</pre><pre> &amp;end</pre><pre><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></pre><pre># PDB entry: <b
-style='mso-bidi-font-weight:normal'>1tf3</b><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></pre><pre>#<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </span>1 MET<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>HA<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 MET<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>QB<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </span>3.00<span style="mso-spacerun: yes">&nbsp; </span>(# noech.upl:3.00)</pre><pre> &amp;rst iat=<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>4,<span style="mso-spacerun: yes">&nbsp; </span>-1, r1= 1.30, r2= 1.80, r3= 3.33, r4= 3.83,</pre><pre>&nbsp;</pre><pre><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>rk2=20.0, rk3=20.0, ir6=1,</pre><pre> igr1=<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,</pre><pre> igr2=<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>6,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>7,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>&amp;end</pre><pre>#<br
-style='mso-special-character:line-break'>
-<![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
-<![endif]></pre><pre># PDB entry: <b style='mso-bidi-font-weight:normal'>1buf (Note the extra -1 elements in iat; they're ignored)</b><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></pre><pre># H-bond distance C1-G12, rk2, rk3 = 50% of kdist (10) = 5</pre><pre> &amp;rst iat=17,365,-1,-1,iresid=0,r1=0,r2=2.81,r3=3.01,r4=3.31,</pre><pre><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>rk2=5,rk3=5,&amp;end</pre><pre>&nbsp;</pre><pre># PDB entry: <b
-style='mso-bidi-font-weight:normal'>2hou (Note the restraint termination token changed.)</b><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></pre><pre>&amp;rst<o:p></o:p></pre><pre><span style="mso-spacerun: yes">&nbsp; </span>ixpk= 0, nxpk= 0, iat=<span style="mso-spacerun: yes">&nbsp; </span>19, 796, r1= 1.30, r2= 1.80, r3= 2.00, r4= 2.50, <o:p></o:p></pre><pre><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>rk2=0.0, rk3=50.0, ir6=1, ialtd=0,<o:p></o:p></pre><pre> /<o:p></o:p></pre><pre><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></pre><pre>Ignoring the r1, r2, and ir6 values throughout these examples. </pre>
-
-<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b
-style='mso-bidi-font-weight:normal'>&nbsp;<o:p></o:p></b></p>
-
-<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b
-style='mso-bidi-font-weight:normal'>Examples of input are for <a
-name=dihedrals>dihedrals</a>: <o:p></o:p></b></p>
-
-<pre>&nbsp;</pre><pre># PDB entry: <b style='mso-bidi-font-weight:normal'>1dgq</b></pre><pre>&nbsp;</pre><pre># 3039 atoms read from pdb file ../102398/lfa1.apdb.</pre><pre># 157 LYS PSI:<span style="mso-spacerun: yes">&nbsp; </span>(157 LYS N)-(157 LYS CA)-(157 LYS C)-(158 PRO N)<span style="mso-spacerun: yes">&nbsp; </span>80.0 200.0</pre><pre> &amp;rst<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp; </span>iat =<span style="mso-spacerun: yes">&nbsp; </span>2490,<span style="mso-spacerun: yes">&nbsp; </span>2492,<span style="mso-spacerun: yes">&nbsp; </span>2510,<span style="mso-spacerun: yes">&nbsp; </span>2512,</pre><pre><span
-style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="mso-spacerun: yes">&nbsp; </span>r1 =<span style="mso-spacerun: yes">&nbsp; </span>70.0, r2 =<span style="mso-spacerun: yes">&nbsp; </span>80.0, r3 = 200.0, r4 = 210.0,</pre><pre><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>rk2 =<span style="mso-spacerun: yes">&nbsp; </span>50.0, rk3 =<span style="mso-spacerun: yes">&nbsp; </span>50.0,<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&amp;end</pre><pre>&nbsp;</pre><pre># PDB entry: <b
-style='mso-bidi-font-weight:normal'>1bau</b></pre><pre># torsion angle constraint number<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>1</pre><pre> &amp;rst<span style="mso-spacerun: yes">&nbsp; </span>iat =<span style="mso-spacerun: yes">&nbsp; </span>1,<span style="mso-spacerun: yes">&nbsp; </span>1,<span style="mso-spacerun: yes">&nbsp; </span>1,<span style="mso-spacerun: yes">&nbsp; </span>1, iresid = 1,</pre><pre><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>atnam(1)='C4'' ',atnam(2)='C3'' ',atnam(3)='C2'' ',atnam(4)='C1'' ',</pre><pre><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>r1 =<span style="mso-spacerun: yes">&nbsp; </span>24.0, r2 = 34.0, r3 = 40.0, r4 = 50.0,</pre><pre><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>rk2 =30.001, rk3 =30.001, &amp;end</pre><pre>&nbsp;</pre>
-
-<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><b
-style='mso-bidi-font-weight:normal'>Examples of all input known on
-11/05/2004for <a name=RDCs>RDCs</a>: <o:p></o:p></b></p>
-
-<pre>&nbsp;</pre><pre># PDB entry: <b style='mso-bidi-font-weight:normal'>1kr8</b></pre><pre># 2 C C1'<span style="mso-spacerun: yes">&nbsp; </span>2 C H1'</pre><pre>id(1)=42,<span style="mso-spacerun: yes">&nbsp; </span>jd(1)=43,<span style="mso-spacerun: yes">&nbsp; </span>dobs(1)=0.5,</pre><pre>&nbsp;</pre><pre># PDB entry: <b
-style='mso-bidi-font-weight:normal'>1pqt</b></pre><pre># lower, upper and error JFD assumes in:</pre><pre># note that the comma is missing after the value of dobsu!</pre><pre>id(1)=42,<span style="mso-spacerun: yes">&nbsp; </span>jd(1)=43,<span style="mso-spacerun: yes">&nbsp; </span>dobsl(1)=-0.3, dobsu(1)=1.3<span style="mso-spacerun: yes">&nbsp; </span>dij(1)=1.09508,</pre>
-
-<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>&nbsp;</p>
-
-<p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><a
-name=todo><b style='mso-bidi-font-weight:normal'>To-do</b></a><b
-style='mso-bidi-font-weight:normal'>:<o:p></o:p></b></p>
-
-<ul type=disc>
- <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
-     mso-list:l0 level1 lfo5;tab-stops:list .5in'>Ignored r1, r2, and ir6
-     values for distances. </li>
- <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
-     mso-list:l0 level1 lfo5;tab-stops:list .5in'>Ignored the tags grnam1(1)
-     etc. because they don't occur (as of 11/4/2004) in MR files. </li>
- <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
-     mso-list:l0 level1 lfo5;tab-stops:list .5in'>Some values seem to have to
-     be remembered going from 1 restraint to the next. E.g. entry 1dgq only has
-     a force constant (20) defined within the first restraint. </li>
- <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
-     mso-list:l0 level1 lfo5;tab-stops:list .5in'>Ignored tags r1 and r4 which
-     are switching distances for dihedral angle restraints important for the
-     shape of the restraint potential. </li>
- <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
-     mso-list:l0 level1 lfo5;tab-stops:list .5in'>For RDCs the dij tag (for the
-     internuclear vector size) is ignored. </li>
+Generator. 
+<br/><b >Examples of input are for (ambi) distances: </b>
+<pre> </pre><pre># PDB entry: <b >1dgq</b> </pre><pre>#  162 PHE  HD        161 GLU  HB2           3.50    (#   6040:20   Manualy assigned)</pre><pre> &amp;rst</pre><pre>  ixpk= 6040, iat=  -1,2552, r1= 0.00, r2= 1.80, r3= 3.93, r4= 4.68,</pre><pre> </pre><pre>      rk2=20.0, rk3=20.0, ir6=1,</pre><pre> igr1=2571,2579,</pre><pre> &amp;end</pre><pre>     </pre><pre># PDB entry: <b
+>1bau</b></pre><pre># distance constraint number   1</pre><pre> &amp;rst  iat =  1,  1, iresid = 1, atnam(1)='H2''1',atnam(2)='H8',</pre><pre>       r1 = 1.000, r2 = 2.000, r3 = 4.000, r4 = 5.000,</pre><pre>       rk2 =30.001, rk3 =30.001, &amp;end# PDB entry: xxxx       </pre><pre> </pre><pre># PDB entry: <b
+>1ozo</b>       </pre><pre>#   31 GLY  HN           32 GLU  HN          6.00    (#     10:10  Preassigned    2.66, 2.75 A)</pre><pre> &amp;rst</pre><pre>  ixpk= 10, nxpk= 10, iat= 449, 456, r1= 1.30, r2= 1.80, r3= 6.00, r4= 6.50, </pre><pre>      rk2=40.0, rk3=40.0, ir6=1, ialtd=0,</pre><pre> &amp;end</pre><pre>       </pre><pre># PDB entry: <b
+>1tf3</b>       </pre><pre>#    1 MET   HA      1 MET   QB    3.00  (# noech.upl:3.00)</pre><pre> &amp;rst iat=   4,  -1, r1= 1.30, r2= 1.80, r3= 3.33, r4= 3.83,</pre><pre> </pre><pre>      rk2=20.0, rk3=20.0, ir6=1,</pre><pre> igr1=   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,</pre><pre> igr2=   6,   7,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   &amp;end</pre><pre>#<br
+>
+<br >
+</pre><pre># PDB entry: <b >1buf (Note the extra -1 elements in iat; they're ignored)</b>       </pre><pre># H-bond distance C1-G12, rk2, rk3 = 50% of kdist (10) = 5</pre><pre> &amp;rst iat=17,365,-1,-1,iresid=0,r1=0,r2=2.81,r3=3.01,r4=3.31,</pre><pre>                                rk2=5,rk3=5,&amp;end</pre><pre> </pre><pre># PDB entry: <b
+>2hou (Note the restraint termination token changed.)</b>       </pre><pre>&amp;rst</pre><pre>  ixpk= 0, nxpk= 0, iat=  19, 796, r1= 1.30, r2= 1.80, r3= 2.00, r4= 2.50, </pre><pre>      rk2=0.0, rk3=50.0, ir6=1, ialtd=0,</pre><pre> /</pre><pre> </pre><pre>Ignoring the r1, r2, and ir6 values throughout these examples. </pre>
+<p ><b
+> </b>
+<p ><b
+>Examples of input are for dihedrals: </b>
+<pre> </pre><pre># PDB entry: <b >1dgq</b></pre><pre> </pre><pre># 3039 atoms read from pdb file ../102398/lfa1.apdb.</pre><pre># 157 LYS PSI:  (157 LYS N)-(157 LYS CA)-(157 LYS C)-(158 PRO N)  80.0 200.0</pre><pre> &amp;rst     iat =  2490,  2492,  2510,  2512,</pre><pre>          r1 =  70.0, r2 =  80.0, r3 = 200.0, r4 = 210.0,</pre><pre>          rk2 =  50.0, rk3 =  50.0,                             &amp;end</pre><pre> </pre><pre># PDB entry: <b
+>1bau</b></pre><pre># torsion angle constraint number   1</pre><pre> &amp;rst  iat =  1,  1,  1,  1, iresid = 1,</pre>
+<pre>       atnam(1)='C4'' ',atnam(2)='C3'' ',atnam(3)='C2'' ',atnam(4)='C1'' ',</pre>
+<pre>       r1 =  24.0, r2 = 34.0, r3 =</pre>
+<pre>       rk2 =30.001, rk3 =30.001, &amp;end 40.0, r4 = 50.0,</pre>
+<p ><b
+>Examples of all input known on
+11/05/2004for RDCs: </b>
+<pre> </pre><pre># PDB entry: <b >1kr8</b></pre><pre># 2 C C1'  2 C H1'</pre><pre>id(1)=42,  jd(1)=43,  dobs(1)=0.5,</pre><pre> </pre><pre># PDB entry: <b
+>1pqt</b></pre><pre># lower, upper and error JFD assumes in:</pre><pre># note that the comma is missing after the value of dobsu!</pre><pre>id(1)=42,  jd(1)=43,  dobsl(1)=-0.3, dobsu(1)=1.3  dij(1)=1.09508,</pre>
+<p > 
+<p ><b >To-do</b><b
+>:</b>
+<ul>
+<li>Ignored r1, r2, and ir6
+values for distances. </li>
+<li>Ignored the tags grnam1(1)
+etc. because they don't occur (as of 11/4/2004) in MR files. </li>
+<li>Some values seem to have to
+be remembered going from 1 restraint to the next. E.g. entry 1dgq only has
+a force constant (20) defined within the first restraint. </li>
+<li>Ignored tags r1 and r4 which
+are switching distances for dihedral angle restraints important for the
+shape of the restraint potential. </li>
+<li>For RDCs the dij tag (for the
+internuclear vector size) is ignored. </li>
 </ul>
-
 </div>
-
 </body>
-
 </html>
