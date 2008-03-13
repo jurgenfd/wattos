@@ -465,16 +465,18 @@ public class StarOutAll{
                     return;
                 }
             }
-            
-            // Store info on both atoms
-            for (int j = 0; j < atom_count; j++) {                
-                AtomNode atom = (AtomNode) ((ArrayList) treeNode.atoms.get(j)).get(0);
-                for (int k = 0; k < AtomNode.variable_names_atom.length; k++) {                
-                    String value = NmrStar.getPossibleValue( atom.info.getValue(AtomNode.variable_names_atom[k]) );
-                    looprownode_constraint.addElement(new DataValueNode( value ));
+
+            if ( star_version != NmrStar.STAR_VERSION_3_1 ) {
+                // Store info on both atoms
+                for (int j = 0; j < atom_count; j++) {                
+                    AtomNode atom = (AtomNode) ((ArrayList) treeNode.atoms.get(j)).get(0);
+                    for (int k = 0; k < AtomNode.variable_names_atom.length; k++) {                
+                        String value = NmrStar.getPossibleValue( atom.info.getValue(AtomNode.variable_names_atom[k]) );
+                        looprownode_constraint.addElement(new DataValueNode( value ));
+                    }
                 }
             }
-
+            
             switch ( star_version ) {
                 case NmrStar.STAR_VERSION_2_1_1: {
                     looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "value" ) ));
@@ -494,19 +496,20 @@ public class StarOutAll{
                     looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "value" ) ));
                     looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "lower" ) ));
                     looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "upper" ) ));
-//                    looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "error" ) ));
+
                     looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY )); // error
                     looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY )); // Source_experiment_ID
+
                     looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY )); // resonances
                     looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY ));
-//                    // Store info on both atoms
-//                    for (int j = 0; j < atom_count; j++) {                
-//                        AtomNode atom = (AtomNode) ((ArrayList) treeNode.atoms.get(j)).get(0);
-//                        for (int k = 0; k < AtomNode.variable_names_atom.length; k++) {                
-//                            String value = NmrStar.getPossibleValue( atom.info.getValue(AtomNode.variable_names_atom[k]) );
-//                            looprownode_constraint.addElement(new DataValueNode( value ));
-//                        }
-//                    }
+                    // Store info on both atoms
+                    for (int j = 0; j < atom_count; j++) {                
+                        AtomNode atom = (AtomNode) ((ArrayList) treeNode.atoms.get(j)).get(0);
+                        for (int k = 0; k < AtomNode.variable_names_atom.length; k++) {                
+                            String value = NmrStar.getPossibleValue( atom.info.getValue(AtomNode.variable_names_atom[k]) );
+                            looprownode_constraint.addElement(new DataValueNode( value ));
+                        }
+                    }
 //                    looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY )); // tailies
 //                    looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY )); 
                     break;
