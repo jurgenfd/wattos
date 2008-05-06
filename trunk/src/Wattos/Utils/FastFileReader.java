@@ -78,7 +78,7 @@ public class FastFileReader
 
     public boolean myReader2(URL url) {
                
-        boolean status = preprocess(url); // Somethings are better done in specialized class.
+        boolean status = preprocess(url); // Some things are better done in specialized class.
         if ( ! status ) {
             General.showError("Failed to do preprocessing.");
             return false;            

@@ -386,9 +386,10 @@ public class DistConstrList extends ConstrItem implements Serializable {
         return true;
     }
     
-    /** */
-    public boolean toXplor(BitSet todo, String fn, String atomNomenclature,
-            boolean sortRestraints) {
+    /**
+     * @param format TODO */
+    public boolean toXplorOrSo(BitSet todo, String fn, String atomNomenclature,
+            boolean sortRestraints, String format) {
         dc = constr.dc; // get a ref now because it was hard before.
         int fileCount = 0;
         for (int listRID = todo.nextSetBit(0); listRID >= 0; listRID=todo.nextSetBit(listRID+1)) {
@@ -403,7 +404,7 @@ public class DistConstrList extends ConstrItem implements Serializable {
                 General.showError("Failed to get ridsDC for toXplor.");
                 return false;
             }
-            boolean status = dc.toXplor( ridsDC, fn, fileCount, atomNomenclature, sortRestraints );
+            boolean status = dc.toXplorOrSo( ridsDC, fn, fileCount, atomNomenclature, sortRestraints, format );
             if ( ! status ) {
                 General.showError("Failed dc.toXplor");
                 General.showError("Not writing any more dcLists");

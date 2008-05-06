@@ -223,8 +223,9 @@ public class SimpleConstrList extends ConstrItem implements Serializable {
     }
     
     
-    /** */
-    public boolean toXplor(int entryRID, String fn, String atomNomenclature, boolean sortRestraints) {
+    /**
+     * @param format TODO */
+    public boolean toXplorOrSo(int entryRID, String fn, String atomNomenclature, boolean sortRestraints, String format) {
         int fileCount = 0;
         BitSet todo = SQLSelect.selectBitSet(dbms, mainRelation, 
                 Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[RelationSet.RELATION_ID_COLUMN_NAME], 
@@ -232,7 +233,7 @@ public class SimpleConstrList extends ConstrItem implements Serializable {
         SimpleConstr sc = constr.getSimpleConstrByAttributeSet(ATTRIBUTE_SET_SUB_CLASS); 
         for (int listRID = todo.nextSetBit(0); listRID >= 0; listRID=todo.nextSetBit(listRID+1)) {
             fileCount++;
-            boolean status = sc.toXplor( listRID, fn, fileCount, atomNomenclature, sortRestraints );
+            boolean status = sc.toXplorOrSo( listRID, fn, fileCount, atomNomenclature, sortRestraints, format );
             if ( ! status ) {
                 General.showError("Failed sc.toXplor");
                 General.showError("Not writing any more scLists");

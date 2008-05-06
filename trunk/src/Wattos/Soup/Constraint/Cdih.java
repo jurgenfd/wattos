@@ -58,7 +58,7 @@ public class Cdih extends SimpleConstr implements Serializable {
 //        General.showDebug("now in Cdih.init()");
         super.init(dbms);        
 //        General.showDebug("back in Cdih.init()");
-        name =                Constr.DEFAULT_ATTRIBUTE_SET_CDIH[RELATION_ID_SET_NAME];
+        name = Constr.DEFAULT_ATTRIBUTE_SET_CDIH[RELATION_ID_SET_NAME];
         // MAIN RELATION in addition to the ones in SimpleConstr item.        
         DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_SET_CDIH_LIST[ RelationSet.RELATION_ID_COLUMN_NAME ],  new Integer(DATA_TYPE_INT));
         DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_SET_CDIH_LIST[ RelationSet.RELATION_ID_COLUMN_NAME ] );
@@ -142,11 +142,11 @@ public class Cdih extends SimpleConstr implements Serializable {
         }        
         BitSet scListRids = getSCListSetFromSCSet(todo);
         if ( scListRids == null ) {
-            General.showError("Failed getCDIHListSetFromCDIHSet");
+            General.showError("Failed getSCListSetFromSCSet for CDIH");
             return false;
         }        
         if ( scListRids.cardinality() == 0 ) {
-            General.showWarning("Got empty set from getCDIHListSetFromCDIHSet.");
+            General.showWarning("Got empty set from getSCListSetFromSCSet for CDIH.");
             return true;
         }        
         for ( int currentCDIHListId=scListRids.nextSetBit(0);currentCDIHListId>=0;currentCDIHListId=scListRids.nextSetBit(currentCDIHListId+1)) {
@@ -166,8 +166,8 @@ public class Cdih extends SimpleConstr implements Serializable {
          3rd range around target
          4th exponent
          */
-    public boolean toXplor(BitSet scSet, String fn, 
-            int fileCount, String atomNomenclature, boolean sortRestraints) {
+    public boolean toXplorOrSo(BitSet scSet, String fn, 
+            int fileCount, String atomNomenclature, boolean sortRestraints, String format) {
         int scCountTotal = scSet.cardinality();
 //        General.showDebug( "Total number of  constraints todo: " + scCountTotal );        
         if ( scCountTotal == 0 ) {
@@ -278,8 +278,8 @@ public class Cdih extends SimpleConstr implements Serializable {
 
             sbRst.append(" 1.0 "); // This number comes from xplor-nih 2.15/eginput/gb1_rcDih/dihed_g_all.tbl
             float[] xplorDistSet = toXplorSet( 
-            		lowBound[currentSCId],
-            		uppBound[currentSCId]
+            		(float) (lowBound[currentSCId]*Geometry.CF),
+            		(float) (uppBound[currentSCId]*Geometry.CF)
             		);
             if ( xplorDistSet == null ) {
             	General.showError("Failed to convert to xplor for restraint: " +
@@ -324,7 +324,7 @@ public class Cdih extends SimpleConstr implements Serializable {
             General.showError("Failed to getModelValuesFromViol for toSTAR");
             return false;
         }
-        float av = (float) Geometry.averageAngles(PrimitiveArray.toDoubleArray(valueList));        
+        double av = Geometry.averageAngles(PrimitiveArray.toDoubleArray(valueList));  
         double[] minMaxDistDouble = Geometry.getMinMaxAngle(PrimitiveArray.toDoubleArray(valueList));
         float[] minMaxDist = PrimitiveArray.toFloatArray(minMaxDistDouble);
         float[] violList = getModelViolationsFromViol(currentCDIHId);
@@ -348,24 +348,47 @@ public class Cdih extends SimpleConstr implements Serializable {
         if ( maxViol < Geometry.ANGLE_EPSILON  ) { // really helps to focus the eye.
             maxViol = Defs.NULL_FLOAT;
         }
+        
+        float maxViolDeg = Defs.NULL_FLOAT;
+        if ( ! Defs.isNull(maxViol )) {
+            maxViolDeg = (float) (maxViol * Geometry.CF);
+        }
+        if ( ! Defs.isNull(maxViolDeg) && (maxViolDeg > 180.0f) ) {
+            General.showCodeBug("Dihedral angle violation is over half a turn.");
+            General.showCodeBug("Believe it or not but I've seen it happen in some python code;-)");
+            General.showCodeBug(toString(currentCDIHId));
+            return false;
+        }
+        
+        float lowDeg = (float) Geometry.to_180(lowBound[ currentCDIHId ]           *Geometry.CF);
+        float uppDeg = (float) Geometry.to_180(uppBound[ currentCDIHId ]           *Geometry.CF);
+        float avDeg  = (float) Geometry.to_180(av           *Geometry.CF);
+        float minDeg = (float) Geometry.to_180(minMaxDist[0]*Geometry.CF);
+        float maxDeg = (float) Geometry.to_180(minMaxDist[1]*Geometry.CF);
+
         tT.setValue(rowIdx, Relation.DEFAULT_ATTRIBUTE_ORDER_ID , cdihCount);
         tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Restraint_ID          , cdihCount+1);
         tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Torsion_angle_name    , nameList[ currentCDIHId]);
 
-        tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Angle_lower_bound_val , lowBound[ currentCDIHId ]);
-        tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Angle_upper_bound_val , uppBound[ currentCDIHId ]);
-        tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Angle_average         , av);
-        tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Angle_minimum         , minMaxDist[0]);
-        tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Angle_maximum         , minMaxDist[1]);
-        tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Max_violation         , maxViol);
+        
+        tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Angle_lower_bound_val , lowDeg);
+        tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Angle_upper_bound_val , uppDeg);
+        tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Angle_average         , avDeg);
+        tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Angle_minimum         , minDeg);
+        tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Angle_maximum         , maxDeg);
+        
+        tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Max_violation         , maxViolDeg);
         tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Max_violation_model_number      , max_violation_model_number);
         tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Above_cutoff_violation_count    , countMakingCutoff);
         tT.setValue(rowIdx, cdihList.tagNameTA_constraint_stats_Above_cutoff_violation_per_model, above_cutoff_violation_per_model);
         
         // I'm not going to repeat 4*4 tags here so we'll go by order            
-        int c = tT.getColumnIdx(cdihList.tagNameTA_constraint_stats_Comp_index_ID_1);
-        BitSet atomRidSet = getAtomRidSet(currentCDIHId);
-        for (int atomRid=atomRidSet.nextSetBit(0);atomRid>=0;atomRid=atomRidSet.nextSetBit(atomRid+1) ) {
+//        int c = tT.getColumnIdx(cdihList.tagNameTA_constraint_stats_Comp_index_ID_1);
+        int c = tT.getColumnIdx(cdihList.tagNameTA_constraint_stats_Entity_assembly_ID_1);
+                                         
+        IntArrayList atomRidList = getAtomRidList(currentCDIHId);
+        for (int i=0;i<atomRidList.size();i++) {
+            int atomRid = atomRidList.getQuick(i);
             String atomName = gumbo.atom.nameList[atomRid];            
             int resRid = gumbo.atom.resId[atomRid];
             int molRid = gumbo.atom.molId[atomRid];
@@ -382,7 +405,25 @@ public class Cdih extends SimpleConstr implements Serializable {
         return true;
     }
 
-
+    /** Push this method up to SimpleConstr.java */
+    public IntArrayList getAtomRidList (int rid) {
+        IndexSortedInt indexMainAtom = (IndexSortedInt) simpleConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_SET_CDIH[ RelationSet.RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_SORTED);
+        if ( indexMainAtom == null ) {
+            General.showCodeBug("Failed to get indexMainAtom index.");
+            return null;
+        }
+        IntArrayList scAtoms = (IntArrayList) indexMainAtom.getRidList(  new Integer(rid),
+                Index.LIST_TYPE_INT_ARRAY_LIST, null);
+        if ( scAtoms.size() != 4 ) {
+            General.showError("Expected 4 atoms in dihedral");
+            return null;
+        }
+        IntArrayList result = new IntArrayList(4);
+        for (int i=0;i<4;i++ ) {
+            result.add( atomIdAtom[scAtoms.getQuick(i)]);
+        }
+        return result;
+    }
     /** Calculate the averaged value for the given constraint in all
      *given models.
      *Presumes the model sibling atoms are ok if initialized.

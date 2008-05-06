@@ -9,7 +9,7 @@
     <property file="wattos.properties"/>
 
     <!-- Added for for functionality. Requires a ant-contrib.jar in classpath. -->
-    <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+    <taskdef resource="net/sf/antcontrib/antlib.xml" />
     
 	<target name="init" description="init"  >
   	  <tstamp>
@@ -115,15 +115,23 @@
         <for list="WriteSQLDump.wcf" param="fn">  
         <for list="AddMissingAtoms.wcf" param="fn">
         <for list="WriteEntryPDB.wcf" param="fn">
+        <for list="CheckAssignment.wcf" param="fn">       
         <for list="CheckAtomNomenclature.wcf" param="fn">       
+        <for list="CalcDistConstrViolation.wcf" param="fn">       
+        <for list="CalcDihConstrViolation.wcf" param="fn">       
+        <for list="ReadEntryMmCIF.wcf" param="fn">
+        <for list="WriteEntryXplor.wcf" param="fn">
+        
         <for list="CalcDistConstrViolation.wcf,CalcDistance.wcf,CheckAssignment.wcf,CheckCompleteness.wcf,CheckSurplus.wcf,FilterSTAR.wcf,GetCoplanarBases.wcf,GetHydrogenBonds.wcf,ReadEntryPDB.wcf,QuitBeforeBegun.wcf,SetAtomNomenclatureToIUPAC.wcf,ShowClassification.wcf,Sleep.wcf,WriteEntryXplor.wcf" param="fn">        
             <replace file="${tmp.local.dir}/@{fn}.log" token="ERROR" value="ERROR" summary="true"/>
     -->                
     <target name="macro_tests" depends="init" description="" >        
         <echo message="Running in: ${test_data.local.dir}"/>
         <echo message="Output to : ${tmp.local.dir}"/>
+    	<!-- <echo message="classpath: ${build.classes.dir.real}:${javac.classpath}:${j2ee.platform.classpath}"/>
+    -->                
         
-        <for list="ReadEntryNMRSTAR.wcf" param="fn">
+        <for list="CalcDihConstrViolation.wcf" param="fn">       
             <sequential>
             <echo message="Executing macro: ${macros.local.dir}/@{fn}"/>
             <java   jvm="${platform.java}"

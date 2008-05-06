@@ -13,8 +13,8 @@ entry_information,_Entry.Details            ,STRING,,entry_information,_Entry.De
 entry_main,_Assembly.Sf_category,STRING,,assembly,_Assembly.Sf_category,,,,X
 entry_main,name,STRING,,assembly,_Assembly.Name       ,,,,X
 entry_main,_Assembly.Number_of_components,INTEGER,,assembly,_Assembly.Number_of_components,,,,X
-entry_main,_Assembly.Organic_ligands     ,INTEGER,,assembly,_Assembly.Organic_ligands     ,,,,X
-entry_main,_Assembly.Metal_ions          ,INTEGER,,assembly,_Assembly.Metal_ions          ,,,,X
+entry_main,_Assembly.Organic_ligands     ,STRINGNR,,assembly,_Assembly.Organic_ligands     ,,,,X
+entry_main,_Assembly.Metal_ions          ,STRINGNR,,assembly,_Assembly.Metal_ions          ,,,,X
 entry_main,_Assembly.Paramagnetic        ,STRING,,assembly,_Assembly.Paramagnetic        ,,,,X
 entry_main,_Assembly.Thiol_state         ,STRING,,assembly,_Assembly.Thiol_state         ,,,,X
 entry_main,_Assembly.Molecular_mass      ,FLOAT,%.2f,assembly,_Assembly.Molecular_mass      ,,,,X
@@ -60,8 +60,8 @@ atom_main,_Atom_site.Conformer_family_coord_set_ID,INTEGER,,conformer_family_coo
 atom_main,_Atom_site.Model_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Model_ID,_atom_site.pdbx_PDB_model_num,not mandatory?,,X
 atom_main,_Atom_site.Assembly_atom_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Assembly_atom_ID,,,,X
 atom_main,_Atom_site.ID,INTEGER,,conformer_family_coord_set,_Atom_site.ID,_atom_site.id,,,X
-atom_main,_Atom_site.Label_entity_assembly_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Label_entity_assembly_ID,_atom_site.label_asym_id,,,X
-atom_main,_Atom_site.Label_asym_ID,STRINGNR,,conformer_family_coord_set,_Atom_site.Label_asym_ID,,,,X
+atom_main,_Atom_site.Label_entity_assembly_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Label_entity_assembly_ID,,,,X
+atom_main,_Atom_site.Label_asym_ID,STRINGNR,,conformer_family_coord_set,_Atom_site.Label_asym_ID,_atom_site.label_asym_id,,,X
 atom_main,_Atom_site.Label_entity_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Label_entity_ID,_atom_site.label_entity_id,,,X
 atom_main,_Atom_site.Label_comp_index_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Label_comp_index_ID,_atom_site.label_seq_id,,,X
 atom_main,_Atom_site.Label_seq_ID,STRINGNR,,conformer_family_coord_set,_Atom_site.Label_seq_ID,,,,X
@@ -75,7 +75,8 @@ atom_main,element_id,STRINGNR,,conformer_family_coord_set,_Atom_site.Type_symbol
 atom_main,coor_x,FLOAT,%.3f,conformer_family_coord_set,_Atom_site.Cartn_x,_atom_site.Cartn_x,,,X
 atom_main,coor_y,FLOAT,%.3f,conformer_family_coord_set,_Atom_site.Cartn_y,_atom_site.Cartn_y,,,X
 atom_main,coor_z,FLOAT,%.3f,conformer_family_coord_set,_Atom_site.Cartn_z,_atom_site.Cartn_z,,,X
-atom_main,b_factor,FLOAT,%.1f,conformer_family_coord_set,_Atom_site.Occupancy,_atom_site.B_iso_or_equiv,,,X
+atom_main,b_factor,FLOAT,%.1f,conformer_family_coord_set,_Atom_site.Uncertainty ,_atom_site.B_iso_or_equiv,,,X
+atom_main,occupancy,FLOAT,%.2f,conformer_family_coord_set,_Atom_site.Occupancy,_atom_site.occupancy,,,X
 atom_main,_Atom_site.Details,STRINGNR,,conformer_family_coord_set,_Atom_site.Details,,,,X
 unknown,_Distance_constraint_list.Sf_category,STRINGNR,,distance_constraints,_Distance_constraint_list.Sf_category,,,,X
 unknown,_Distance_constraint_list.Constraint_type,STRINGNR,,distance_constraints,_Distance_constraint_list.Constraint_type,,,,X
@@ -345,16 +346,17 @@ distance_constraint_statistics,_Distance_constraint_stats_per_res.Max_violation,
 distance_constraint_statistics,_Distance_constraint_stats_per_res.Max_violation_model_number,INTEGER,,distance_constraint_statistics,_Distance_constraint_stats_per_res.Max_violation_model_number,,,,X
 distance_constraint_statistics,_Distance_constraint_stats_per_res.Above_cutoff_violation_count,INTEGER,,distance_constraint_statistics,_Distance_constraint_stats_per_res.Over_cutoff_viol_count,,,,X
 distance_constraint_statistics,_Distance_constraint_stats_per_res.Above_cutoff_violation_per_model,STRINGNR,,distance_constraint_statistics,_Distance_constraint_stats_per_res.Over_cutoff_viol_per_model,,,,X
-torsion_angle_constraint_statistics,_TA_constraint_stats_list.Sf_category                 ,STRINGNR,,torsion_angle_constraint_statistics,_Distance_constraint_stats_list.Sf_category    ,,,,X
-torsion_angle_constraint_statistics,_TA_constraint_stats_list.Constraint_count            ,INTEGER,,torsion_angle_constraint_statistics,_Distance_constraint_stats_list.Constraint_count          ,,,,X
-torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_count                  ,INTEGER,,torsion_angle_constraint_statistics,_Distance_constraint_stats_list.Viol_count           ,,,,X
-torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_total                  ,FLOAT,%.2f,torsion_angle_constraint_statistics,_Distance_constraint_stats_list.Viol_total            ,,,,X
-torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_max                    ,FLOAT,%.2f,torsion_angle_constraint_statistics,_Distance_constraint_stats_list.Viol_max              ,,,,X
-torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_rms                    ,FLOAT,%.2f,torsion_angle_constraint_statistics,_Distance_constraint_stats_list.Viol_rms              ,,,,X
-torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_average_all_restraints ,FLOAT,%.2f,torsion_angle_constraint_statistics,_Distance_constraint_stats_list.Viol_average_all_restraints              ,,,,X
-torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_average_violations_only,FLOAT,%.2f,torsion_angle_constraint_statistics,_Distance_constraint_stats_list.Viol_average_violations_only           ,,,,X
-torsion_angle_constraint_statistics,_TA_constraint_stats_list.Cutoff_violation_report     ,FLOAT,%.2f,torsion_angle_constraint_statistics,_Distance_constraint_stats_list.Cutoff_violation_report         ,,,,X
-torsion_angle_constraint_statistics,_TA_constraint_stats_list.Details                     ,STRINGNR,,torsion_angle_constraint_statistics,_Distance_constraint_stats_list.Details,,,,X
+torsion_angle_constraint_statistics,_TA_constraint_stats_list.Sf_category                 ,STRINGNR,,torsion_angle_constraint_statistics,_TA_constraint_stats_list.Sf_category    ,,,,X
+torsion_angle_constraint_statistics,_TA_constraint_stats_list.Restraint_list_ID  ,INTEGER,,torsion_angle_constraint_statistics,_TA_constraint_stats_list.Constraint_list_ID        ,,,,X
+torsion_angle_constraint_statistics,_TA_constraint_stats_list.Constraint_count            ,INTEGER,,torsion_angle_constraint_statistics,_TA_constraint_stats_list.Constraint_count          ,,,,X
+torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_count                  ,INTEGER,,torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_count           ,,,,X
+torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_total                  ,FLOAT,%.2f,torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_total            ,,,,X
+torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_max                    ,FLOAT,%.2f,torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_max              ,,,,X
+torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_rms                    ,FLOAT,%.2f,torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_rms              ,,,,X
+torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_average_all_restraints ,FLOAT,%.2f,torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_average_all_restraints              ,,,,X
+torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_average_violations_only,FLOAT,%.2f,torsion_angle_constraint_statistics,_TA_constraint_stats_list.Viol_average_violations_only           ,,,,X
+torsion_angle_constraint_statistics,_TA_constraint_stats_list.Cutoff_violation_report     ,FLOAT,%.2f,torsion_angle_constraint_statistics,_TA_constraint_stats_list.Cutoff_violation_report         ,,,,X
+torsion_angle_constraint_statistics,_TA_constraint_stats_list.Details                     ,STRINGNR,,torsion_angle_constraint_statistics,_TA_constraint_stats_list.Details,,,,X
 torsion_angle_constraint_statistics,_TA_constraint_stats.Restraint_ID,INTEGER,,torsion_angle_constraint_statistics,_TA_constraint_stats.Restraint_ID,,,,X
 torsion_angle_constraint_statistics,_TA_constraint_stats.Torsion_angle_name,STRINGNR,,torsion_angle_constraint_statistics,_TA_constraint_stats.Torsion_angle_name,,,,X
 torsion_angle_constraint_statistics,_TA_constraint_stats.Entity_assembly_ID_1,INTEGER,,torsion_angle_constraint_statistics,_TA_constraint_stats.Entity_assembly_ID_1,,,,X
@@ -379,6 +381,6 @@ torsion_angle_constraint_statistics,_TA_constraint_stats.Angle_average,FLOAT,%.2
 torsion_angle_constraint_statistics,_TA_constraint_stats.Angle_minimum,FLOAT,%.2f,torsion_angle_constraint_statistics,_TA_constraint_stats.Angle_minimum,,,,X
 torsion_angle_constraint_statistics,_TA_constraint_stats.Angle_maximum,FLOAT,%.2f,torsion_angle_constraint_statistics,_TA_constraint_stats.Angle_maximum,,,,X
 torsion_angle_constraint_statistics,_TA_constraint_stats.Max_violation,FLOAT,%.2f,torsion_angle_constraint_statistics,_TA_constraint_stats.Max_violation,,,,X
-torsion_angle_constraint_statistics,_TA_constraint_stats.Max_violation_model_number,FLOAT,%.2f,torsion_angle_constraint_statistics,_TA_constraint_stats.Max_violation_model_number,,,,X
+torsion_angle_constraint_statistics,_TA_constraint_stats.Max_violation_model_number,INTEGER,,torsion_angle_constraint_statistics,_TA_constraint_stats.Max_violation_model_number,,,,X
 torsion_angle_constraint_statistics,_TA_constraint_stats.Above_cutoff_violation_count,INTEGER,,torsion_angle_constraint_statistics,_TA_constraint_stats.Over_cutoff_violation_count,,,,X
 torsion_angle_constraint_statistics,_TA_constraint_stats.Above_cutoff_violation_per_model,STRINGNR,,torsion_angle_constraint_statistics,_TA_constraint_stats.Over_cutoff_violation_per_model,,,,X

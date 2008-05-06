@@ -23,7 +23,7 @@ public class STARFilterTest extends TestCase {
     
     String fs = File.separator;
     String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
-    File inputDir       = new File( wattosRoot,"Data"+fs+"test_data" );
+    File inputDir       = new File( wattosRoot,"data"+fs+"test_data" );
     File outputDir      = new File( wattosRoot,"tmp_dir" );
     
     public STARFilterTest(String testName) {

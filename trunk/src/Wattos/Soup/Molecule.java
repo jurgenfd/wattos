@@ -396,14 +396,22 @@ public class Molecule extends GumboItem implements Serializable {
         String result = "   " + "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".substring(beginIndex-1, beginIndex);
         return result;
     }
+    
     /** Will write xplor-nih python code for that defines enough detail to create a psf file
      * from it with the routine psfGen.seqToPSF
      * Note that since xplor-nih doesn't run on Windows, it doesn't make sense to use 
      * Windows end of lines.
+     * @param format See AtomMap TODO:
      */
-    public boolean toXplor(BitSet todo, String fn ) {
+    public boolean toXplorOrSor(BitSet todo, String fn, String format ) {
         int fileCount = 0;
 //        Relation resMain    = res.mainRelation;
+//        boolean isXplor = format.startsWith("XPLOR");
+//        boolean isDyana = format.startsWith("DYANA");
+//        if ( ! isXplor || isDyana ) {
+//            General.showCodeBug("Failed to determine format to Xplor or Dyana from string: " + format);
+//            return false;
+//        }
 
         for (int rid = todo.nextSetBit(0); rid >= 0; rid=todo.nextSetBit(rid+1)) {
             fileCount++;

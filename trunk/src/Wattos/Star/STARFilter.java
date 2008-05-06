@@ -128,10 +128,10 @@ public class STARFilter {
         // Parse input 
         sfr = new StarFileReader(new DBMS());     //to a roam in a new dbms   
         URL url = InOut.getUrlFileFromName(args[0]);
-        long start = System.currentTimeMillis();        
+//        long start = System.currentTimeMillis();        
         StarNode sn = sfr.parse(url);
-        long taken = System.currentTimeMillis() - start;
-        General.showDebug("Parse took   : " + taken + "(" + (taken/1000.0) + " sec)" );                
+//        long taken = System.currentTimeMillis() - start;
+//        General.showDebug("Parse took   : " + taken + "(" + (taken/1000.0) + " sec)" );                
         if ( sn == null ) {
             General.showError("Failed to parse input file.");
             return false;            
@@ -141,23 +141,23 @@ public class STARFilter {
         
         // STARFilter
         if ( ! skipFiltering ) {
-            start = System.currentTimeMillis();        
+//            start = System.currentTimeMillis();        
             if ( ! filter(dbRules)) {
                 General.showError("Failed to filter.");
                 return false;
             }
-            taken = System.currentTimeMillis() - start;
-            General.showDebug("Filter took  : " + taken + "(" + (taken/1000.0) + " sec)" );                
+//            taken = System.currentTimeMillis() - start;
+//            General.showDebug("Filter took  : " + taken + "(" + (taken/1000.0) + " sec)" );                
         }
         
         // Unparse filtered results.
-        start = System.currentTimeMillis();                
+//        start = System.currentTimeMillis();                
         if ( ! db.toSTAR(args[1])) {
             General.showError("Failed to unparse to outputfile.");
             return false;                        
         }
-        taken = System.currentTimeMillis() - start;
-        General.showDebug("Unparse took : " + taken + "(" + (taken/1000.0) + " sec)" );        
+//        taken = System.currentTimeMillis() - start;
+//        General.showDebug("Unparse took : " + taken + "(" + (taken/1000.0) + " sec)" );        
         
         return true;
     }

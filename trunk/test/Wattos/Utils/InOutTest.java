@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 public class InOutTest extends TestCase {
 
     String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
-    File inputDir       = new File( wattosRoot,"Data"+File.separator+"test_data" );
+    File inputDir       = new File( wattosRoot,"data"+File.separator+"test_data" );
 
     public void testAddFileNumberBeforeExtension() { 
 		General.setVerbosityToDebug();

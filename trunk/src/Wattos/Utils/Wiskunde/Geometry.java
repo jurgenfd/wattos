@@ -15,13 +15,13 @@ import com.braju.format.*;              // printf equivalent
  * @author  jurgen
  */
 public class Geometry {
-    /** Make the axes explicitely
+    /** Make the axes explicitly
      */
     public static final int X_AXIS_ID = 0;
     public static final int Y_AXIS_ID = 1;
     public static final int Z_AXIS_ID = 2;    
     /** How many dimensions do we have here on earth for objects (besides time and relativity)
-     * This value might be overriden by specializing classes.
+     * This value might be overridden by specializing classes.
      */
     public static final int DIM = 3;
     /** Conversion factor from rad to degrees. Use the fact that the acos of 0 is
@@ -29,9 +29,15 @@ public class Geometry {
      *radians gives the value in degrees.
      */
     public static final double CF = 90d/Math.acos(0);
+    /** float equivalent of CF
+     */
+    public static final float fCF = (float) (90d/Math.acos(0));
     /** Inverse of CF.
      */
     public static final double CFI = Math.acos(0)/90.0d;
+    /** float equivalent of CFI
+     */
+    public static final float fCFI = (float) (Math.acos(0)/90.0d);
     
     public static final double PI = Math.PI;
     public static final double TWO_PI = 2.0*Math.PI;
@@ -243,14 +249,14 @@ public class Geometry {
         return toMinusPIPlusPIRange(s-t);
     }
         
-    /** Algortihm used first rotates the angles back by lowerbound so that all
+    /** Algorithm used first rotates the angles back by lowerbound so that all
      * reference the lowerbound at zero. Makes for easy detection of 'in range'
      * when the angles also expressed in 0-2pi range.
     */
     public static double violationAngles( double lowerBound, double upperBound, double value) {
-        General.showDebug("     lowerBoundOrg: " + Math.toDegrees(lowerBound));
-        General.showDebug("     upperBoundOrg: " + Math.toDegrees(upperBound));
-        General.showDebug("     value        : " + Math.toDegrees(value));
+//        General.showDebug("     lowerBoundOrg: " + Math.toDegrees(lowerBound));
+//        General.showDebug("     upperBoundOrg: " + Math.toDegrees(upperBound));
+//        General.showDebug("     value        : " + Math.toDegrees(value));
         upperBound -= lowerBound;
         value      -= lowerBound;
         upperBound = to_0_2pi(upperBound);
@@ -288,10 +294,13 @@ public class Geometry {
         return result;
     }
 
-    /** Returns the largest range that contains all input */
+    /** Returns the largest range that contains all input;
+     * TODO: has this routine been fully debugged?
+     *  */
     public static double[] getMinMaxAngle(double[] ds) {
         
-        if ( ds.length < 1 ) {            
+        if ( ds.length < 1 ) {   
+            General.showError("In getMinMaxAngle got empty input");
             return null;
         }
         double[] result = new double[2];
@@ -311,7 +320,7 @@ public class Geometry {
                 result[1] = ds[i];
             }
         }
-        return null;
+        return result;
     }
 
     /** Get the vector from a to b */

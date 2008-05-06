@@ -214,7 +214,7 @@ public class AtomMap implements Serializable {
             String resName) {
         String atomNameStrXplor = atomName;
 
-        if ( !atomNomenclature.equals(AtomMap.NOMENCLATURE_ID_IUPAC)) {             
+        if ( ! atomNomenclature.equals(AtomMap.NOMENCLATURE_ID_IUPAC)) {             
             atomNameStrXplor = (String) fromIUPAC.get(
                     atomNomenclature, resName, atomName );
             if ( atomNameStrXplor == null ) {
@@ -234,5 +234,10 @@ public class AtomMap implements Serializable {
             }
         }
         return atomNameStrXplor;
+    }
+    
+    public String atomNameToIupac( String atomNomenclature, String atomName, 
+            String resName) {
+        return (String) toIUPAC.get(atomNomenclature, resName, atomName );
     }
 }

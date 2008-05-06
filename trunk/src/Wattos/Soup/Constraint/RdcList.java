@@ -165,7 +165,7 @@ public class RdcList extends SimpleConstrList implements Serializable {
                 return false;
             }
             boolean sortRestraints=true;
-            boolean status = constr.rdc.toXplor( ridsRDC, fn, fileCount, atomNomenclature, sortRestraints );
+            boolean status = constr.rdc.toXplorOrSo( ridsRDC, fn, fileCount, atomNomenclature, sortRestraints, null );
             if ( ! status ) {
                 General.showError("Failed rdc.toXplor");
                 General.showError("Not writing any more rdcLists");

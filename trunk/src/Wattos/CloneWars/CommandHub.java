@@ -576,16 +576,18 @@ public class CommandHub implements Serializable {
         Boolean matchRestraints2Soup        = new Boolean(   Strings.getInputBoolean(  UserInterface.in, "Match restraints to soup by regular NMR-STAR scheme. (true suggested)"));
         Boolean matchRestraints2SoupByAuthorDetails = new Boolean(   Strings.getInputBoolean(  UserInterface.in, "Match restraints to soup by author atom and residue names etc. (false suggested)"));       
         Boolean removeUnlinkedRestraints    = new Boolean(   Strings.getInputBoolean(  UserInterface.in, "Remove unlinked restraints (true suggested)"));
+        Boolean syncModels                  = new Boolean(   Strings.getInputBoolean(  UserInterface.in, "Sync over models; removing inconsistent atoms (true suggested)"));
 
         Object[] methodArgs = { url, StarVersion, doEntry, doRestraints, 
-            matchRestraints2Soup, removeUnlinkedRestraints };
+            matchRestraints2Soup, removeUnlinkedRestraints, syncModels };
         General.showOutput( "Doing ReadEntryNMRSTAR with arguments: " + PrimitiveArray.toString( methodArgs ) );
         return entry.readNmrStarFormattedFile(url,null,ui,
                 doEntry.booleanValue(),
                 doRestraints.booleanValue(),
                 matchRestraints2Soup.booleanValue(),
                 matchRestraints2SoupByAuthorDetails.booleanValue(),
-                removeUnlinkedRestraints.booleanValue()
+                removeUnlinkedRestraints.booleanValue(),
+                syncModels.booleanValue()
                 );        
     }        
 
@@ -601,9 +603,10 @@ public class CommandHub implements Serializable {
             url = InOut.getUrlFile(UserInterface.in, prompt);
             maxTries++;
         }
-        Object[] methodArgs = { url };
+        Boolean syncModels                  = new Boolean(   Strings.getInputBoolean(  UserInterface.in, "Sync over models; removing inconsistent atoms (true suggested)"));
+        Object[] methodArgs = { url, syncModels };
         General.showOutput( "Doing ReadEntryMMCIF with arguments: " + PrimitiveArray.toString( methodArgs ) );
-        return entry.readmmCIFFormattedFile(url,ui);
+        return entry.readmmCIFFormattedFile(url,ui,syncModels.booleanValue());
     }        
 
     /** Reads, optionally filters and writes STAR formatted file.
@@ -663,7 +666,7 @@ public class CommandHub implements Serializable {
                 );
     }        
 
-    /** Writes the restraint lists to xplor format. TODO
+    /** Writes the restraint lists to xplor format.
      */
     public boolean WriteEntryXplor() {
         String location = null;
@@ -681,10 +684,10 @@ public class CommandHub implements Serializable {
         }           
         Boolean sortRestraints = new Boolean(   Strings.getInputBoolean(  UserInterface.in, "Sort restraints (false suggested)"));
         
-        Object[] methodArgs = { location, atomNomenclature,sortRestraints };
+        Object[] methodArgs = { location, atomNomenclature, sortRestraints };
         General.showOutput( "Doing WriteEntryXplor with arguments: " + PrimitiveArray.toString( methodArgs ) );
-        return entry.writeXplorFormattedFileSet(location, ui, atomNomenclature,
-                sortRestraints.booleanValue());
+        return entry.writeXplorOrSoFormattedFileSet(location, ui, atomNomenclature,
+                sortRestraints.booleanValue(), null);
     }         
     
     /** Sets an internal wattos property.     */

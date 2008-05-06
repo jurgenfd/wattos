@@ -35,8 +35,8 @@ public class AssignStereo {
     
     public ComparatorTripletByRestraints comparatorTripletByRestraints = new ComparatorTripletByRestraints();
 
-    public String tagNameListEntryID;
-    public String tagNameListId;
+//    public String tagNameListEntryID;
+//    public String tagNameListId;
     public String tagNameSFCategory;
     public String tagNameTriplet_count;
     public String tagNameSwap_count;
@@ -53,8 +53,8 @@ public class AssignStereo {
     public String tagNameCriterium_deassign_multiple_model_violation;
     public String tagNameCriterium_deassign_multiple_model_percentage;
     public String tagNameExplanation;
-    public String tagNameEntryID;
-    public String tagNameId;   
+//    public String tagNameEntryID;
+//    public String tagNameId;   
     public String tagNameLabel_pseudo_ID;
     public String tagNameLabel_comp_index_ID;
     public String tagNameLabel_comp_ID;
@@ -499,8 +499,8 @@ public class AssignStereo {
     public boolean initConvenienceVariablesStar() {
         // Please note that the following names are not hard-coded as star names.       
         try {
-            tagNameListEntryID                              = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.ListEntry_ID"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
-            tagNameListId                                   = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.ListID"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
+//            tagNameListEntryID                              = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.ListEntry_ID"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
+//            tagNameListId                                   = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.ListID"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
 
             tagNameSFCategory                               = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.Sf_category"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameTriplet_count                            = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.Triplet_count"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
@@ -519,8 +519,8 @@ public class AssignStereo {
             tagNameCriterium_deassign_multiple_model_percentage    = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.Criterium_deassign_multiple_model_percentage"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameExplanation                              = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.Explanation"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             
-            tagNameEntryID                                  = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.Entry_ID"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
-            tagNameId                                       = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.ID"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
+//            tagNameEntryID                                  = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.Entry_ID"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
+//            tagNameId                                       = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.ID"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameLabel_pseudo_ID                          = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.Label_pseudo_ID"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameLabel_comp_index_ID                      = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.Label_comp_index_ID"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameLabel_comp_ID                            = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.Label_comp_ID"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
@@ -540,57 +540,14 @@ public class AssignStereo {
             tagNameViolation_multi_model_criterium_count    = (String) ((ArrayList)starDict.toStar2D.get( "stereo_assignments","_Stereo_assignments.Violation_multi_model_criterium_count"                        )).get(StarDictionary.POSITION_STAR_TAG_NAME);
         } catch ( Exception e ) {
             General.showThrowable(e);
-            General.showError("Failed to get all the tag names from dictionary compare code with dictionary");
+            General.showError("Failed to get all the tag names from dictionary compare code with dictionary -A-");
             return false;
         }
-        if (
-                
-            tagNameListEntryID                              == null ||
-            tagNameListId                                   == null ||                
-            tagNameSFCategory==null ||
-            tagNameTriplet_count==null ||
-            tagNameSwap_count==null ||
-            tagNameSwap_percentage==null ||
-            tagNameDeassign_count==null ||
-            tagNameDeassign_percentage==null ||
-            tagNameModel_count==null ||
-            tagNameTotal_energy_low_states==null ||
-            tagNameTotal_energy_high_states==null ||
-            tagNameCriterium_absolute_energy_difference==null||
-            tagNameCriterium_relative_energy_difference==null||
-            tagNameCriterium_percentage_models_favoring==null||
-            tagNameCriterium_deassign_single_model_violation==null||
-            tagNameCriterium_deassign_multiple_model_violation==null||
-            tagNameCriterium_deassign_multiple_model_percentage==null||
-            tagNameExplanation==null ||
-                
-            tagNameEntryID== null||
-            tagNameId== null||
-            tagNameLabel_pseudo_ID==null ||
-            tagNameLabel_comp_index_ID==null ||
-            tagNameLabel_comp_ID==null ||
-            tagNameLabel_entity_ID==null ||
-            tagNameAssignment_ID==null ||
-            tagNameSwapped==null ||
-            tagNamePercentage_models_favoring==null ||
-            tagNamePercentage_energy_difference==null ||
-            tagNameEnergy_difference==null ||
-            tagNameEnergy_high_state==null ||
-            tagNameEnergy_low_state==null ||
-            tagNameRestraint_count==null ||
-            tagNameRestraint_ambi_count==null ||                  
-            tagNameDeassigned==null ||
-            tagNameMaximum_violation==null ||
-            tagNameViolation_single_model_criterium_count==null ||
-            tagNameViolation_multi_model_criterium_count==null ) {
-            General.showError("Failed to get all the tag names from dictionary, compare code with dictionary.");
-            return false;
-        }
-        /** debug */
+        
         if ( false ) {
             String[] tagNames = {
-            tagNameListEntryID,
-            tagNameListId,
+//            tagNameListEntryID,
+//            tagNameListId,
             tagNameSFCategory,
             tagNameTriplet_count,
             tagNameSwap_count,
@@ -607,8 +564,8 @@ public class AssignStereo {
             tagNameCriterium_deassign_multiple_model_violation,
             tagNameCriterium_deassign_multiple_model_percentage,
             tagNameExplanation,
-            tagNameEntryID,
-            tagNameId,
+//            tagNameEntryID,
+//            tagNameId,
             tagNameLabel_pseudo_ID,
             tagNameLabel_comp_index_ID,
             tagNameLabel_comp_ID,
@@ -629,8 +586,50 @@ public class AssignStereo {
             };
             General.showDebug("Tagnames:\n"+Strings.toString(tagNames,true));
         }
-        
-        
+
+        if (
+                
+//            tagNameListEntryID                              == null ||
+//            tagNameListId                                   == null ||                
+            tagNameSFCategory==null ||
+            tagNameTriplet_count==null ||
+            tagNameSwap_count==null ||
+            tagNameSwap_percentage==null ||
+            tagNameDeassign_count==null ||
+            tagNameDeassign_percentage==null ||
+            tagNameModel_count==null ||
+            tagNameTotal_energy_low_states==null ||
+            tagNameTotal_energy_high_states==null ||
+            tagNameCriterium_absolute_energy_difference==null||
+            tagNameCriterium_relative_energy_difference==null||
+            tagNameCriterium_percentage_models_favoring==null||
+            tagNameCriterium_deassign_single_model_violation==null||
+            tagNameCriterium_deassign_multiple_model_violation==null||
+            tagNameCriterium_deassign_multiple_model_percentage==null||
+            tagNameExplanation==null ||
+                
+//            tagNameEntryID== null||
+//            tagNameId== null||
+            tagNameLabel_pseudo_ID==null ||
+            tagNameLabel_comp_index_ID==null ||
+            tagNameLabel_comp_ID==null ||
+            tagNameLabel_entity_ID==null ||
+            tagNameAssignment_ID==null ||
+            tagNameSwapped==null ||
+            tagNamePercentage_models_favoring==null ||
+            tagNamePercentage_energy_difference==null ||
+            tagNameEnergy_difference==null ||
+            tagNameEnergy_high_state==null ||
+            tagNameEnergy_low_state==null ||
+            tagNameRestraint_count==null ||
+            tagNameRestraint_ambi_count==null ||                  
+            tagNameDeassigned==null ||
+            tagNameMaximum_violation==null ||
+            tagNameViolation_single_model_criterium_count==null ||
+            tagNameViolation_multi_model_criterium_count==null ) {
+            General.showError("Failed to get all the tag names from dictionary, compare code with dictionary. -B-");
+            return false;
+        }        
         return true;
     }
     
@@ -655,8 +654,8 @@ public class AssignStereo {
             tT.isFree               = true;
             tT.getNewRowId(); // Sets first row bit in used to true.
             namesAndTypes.put( tagNameSFCategory,               new Integer(Relation.DATA_TYPE_STRING));
-            namesAndTypes.put( tagNameListEntryID,              new Integer(Relation.DATA_TYPE_INT));
-            namesAndTypes.put( tagNameListId,                   new Integer(Relation.DATA_TYPE_INT));
+//            namesAndTypes.put( tagNameListEntryID,              new Integer(Relation.DATA_TYPE_INT));
+//            namesAndTypes.put( tagNameListId,                   new Integer(Relation.DATA_TYPE_INT));
             namesAndTypes.put( tagNameTriplet_count,            new Integer(Relation.DATA_TYPE_INT));
             namesAndTypes.put( tagNameSwap_count,               new Integer(Relation.DATA_TYPE_INT));
             namesAndTypes.put( tagNameSwap_percentage,          new Integer(Relation.DATA_TYPE_FLOAT));
@@ -674,8 +673,8 @@ public class AssignStereo {
             namesAndTypes.put( tagNameExplanation,              new Integer(Relation.DATA_TYPE_STRING));
 
             order.add(tagNameSFCategory);                 
-            order.add(tagNameListEntryID);                 
-            order.add(tagNameListId);                 
+//            order.add(tagNameListEntryID);                 
+//            order.add(tagNameListId);                 
             order.add(tagNameTriplet_count);                 
             order.add(tagNameSwap_count);                 
             order.add(tagNameSwap_percentage);                 
@@ -692,8 +691,8 @@ public class AssignStereo {
             order.add(tagNameCriterium_deassign_multiple_model_percentage);                 
             order.add(tagNameExplanation);                 
             namesAndValues.put( tagNameSFCategory,         "stereo_assignments");
-            namesAndValues.put( tagNameListEntryID,         new Integer(1));
-            namesAndValues.put( tagNameListId,         new Integer(1));
+//            namesAndValues.put( tagNameListEntryID,         new Integer(1));
+//            namesAndValues.put( tagNameListId,         new Integer(1));
             // Append columns after order id column.
             if ( ! tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, null)) {
                 General.showError("Failed to tT.insertColumnSet");
@@ -724,8 +723,8 @@ public class AssignStereo {
             namesAndTypes.put( tagNameMaximum_violation,                        new Integer(Relation.DATA_TYPE_FLOAT));
             namesAndTypes.put( tagNameViolation_single_model_criterium_count,   new Integer(Relation.DATA_TYPE_INT));
             namesAndTypes.put( tagNameViolation_multi_model_criterium_count,    new Integer(Relation.DATA_TYPE_INT));
-            namesAndTypes.put( tagNameEntryID,                                  new Integer(Relation.DATA_TYPE_INT));
-            namesAndTypes.put( tagNameId,                                       new Integer(Relation.DATA_TYPE_INT));
+//            namesAndTypes.put( tagNameEntryID,                                  new Integer(Relation.DATA_TYPE_INT));
+//            namesAndTypes.put( tagNameId,                                       new Integer(Relation.DATA_TYPE_INT));
             order.add( tagNameLabel_entity_ID);
             order.add( tagNameLabel_comp_index_ID);
             order.add( tagNameLabel_comp_ID);
@@ -743,11 +742,11 @@ public class AssignStereo {
             order.add( tagNameMaximum_violation);
             order.add( tagNameViolation_single_model_criterium_count);
             order.add( tagNameViolation_multi_model_criterium_count);
-            order.add( tagNameEntryID);
-            order.add( tagNameId);
+//            order.add( tagNameEntryID);
+//            order.add( tagNameId);
             
-            namesAndValues.put( tagNameEntryID,         new Integer(1));
-            namesAndValues.put( tagNameId,              new Integer(1));
+//            namesAndValues.put( tagNameEntryID,         new Integer(1));
+//            namesAndValues.put( tagNameId,              new Integer(1));
             
             if ( ! tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, null)) {
                 General.showError("Failed to tT.insertColumnSet");

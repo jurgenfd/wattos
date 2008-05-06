@@ -32,6 +32,7 @@ public class Strings {
     private static DoubleToString doubleToString = new DoubleToString();
     /** No need to specify it more than once. */
     public static final String EMPTY_STRING = "";
+    public static final int MAX_PROMPTS = 20;
     public static Pattern p_whitespace;
     public static Pattern p_parseDouble;
     public static Matcher m_parseDouble;
@@ -1129,7 +1130,7 @@ public class Strings {
         }
         //General.showOutput("Now in: getInputString( String prompt, ArrayList allowed_strings )");
         // Prevent an infinite loop
-        int max_prompts = 9; 
+        int max_prompts = MAX_PROMPTS; 
         int prompt_id = 0;
         
         // The following should not be one of the allowed strings
@@ -1164,7 +1165,7 @@ public class Strings {
             prompt = "";
         }
         // Prevent an infinite loop
-        int max_prompts = 99; 
+        int max_prompts = MAX_PROMPTS; 
         int prompt_id = 0;
         // The following should not be one of the allowed strings
         String reply="bogus";
@@ -1282,7 +1283,7 @@ public class Strings {
             prompt = "";
         }
         // Prevent an infinite loop
-        int max_prompts = 99; 
+        int max_prompts = MAX_PROMPTS; 
         int prompt_id = 0;
         
         int result = 999;
@@ -1313,7 +1314,7 @@ public class Strings {
             prompt = "";
         }
         // Prevent an infinite loop
-        int max_prompts = 99; 
+        int max_prompts = MAX_PROMPTS; 
         int prompt_id = 0;
         
         float result = 999;

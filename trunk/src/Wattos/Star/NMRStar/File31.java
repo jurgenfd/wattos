@@ -26,6 +26,7 @@ import Wattos.Database.SQLSelect;
 import Wattos.Database.Indices.Index;
 import Wattos.Database.Indices.IndexSortedInt;
 import Wattos.Soup.Atom;
+import Wattos.Soup.AtomMap;
 import Wattos.Soup.Biochemistry;
 import Wattos.Soup.Chemistry;
 import Wattos.Soup.Entry;
@@ -55,6 +56,8 @@ import Wattos.Utils.HashOfHashesOfHashes;
 import Wattos.Utils.InOut;
 import Wattos.Utils.PrimitiveArray;
 import Wattos.Utils.StringIntMap;
+import Wattos.Utils.Strings;
+import Wattos.Utils.Wiskunde.Geometry;
 import cern.colt.list.IntArrayList;
 import cern.colt.list.ObjectArrayList;
 /**
@@ -164,7 +167,8 @@ public class File31 {
     public String tagNameAtomModelId;      
     public String tagNameAtomId;           
     public String tagNameAtomMolId1;       
-    public String tagNameAtomMolId2;       
+    public String tagNameAtomMolId2; 
+    public String tagNameAtomAsym_ID; 
     public String tagNameAtomResId;        
     public String tagNameAtomResName;      
     public String tagNameAtomName;         
@@ -177,8 +181,8 @@ public class File31 {
     public String tagNameAtomCoorY;        
     public String tagNameAtomCoorZ;         
     public String tagNameAtomBFactor; 
+    public String tagNameAtomOccupancy; 
     public String tagNameAtomAssembly_atom_ID; 
-    public String tagNameAtomAsym_ID   ; 
     public String tagNameAtomSeq_ID    ; 
     public String tagNameAtomDetails         ;   
     
@@ -696,6 +700,7 @@ public class File31 {
             tagNameAtomCoorY                  = (String) ((ArrayList)starDict.toStar2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_COOR_Y                                      )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameAtomCoorZ                  = (String) ((ArrayList)starDict.toStar2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_COOR_Z                                      )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameAtomBFactor                = (String) ((ArrayList)starDict.toStar2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_BFACTOR                                    )).get(StarDictionary.POSITION_STAR_TAG_NAME);
+            tagNameAtomOccupancy              = (String) ((ArrayList)starDict.toStar2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY                                  )).get(StarDictionary.POSITION_STAR_TAG_NAME);
 
             tagNameAtomAssembly_atom_ID       = (String) ((ArrayList)starDict.toStar2D.get( "atom_main",       "_Atom_site.Assembly_atom_ID"                                    )).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameAtomAsym_ID                = (String) ((ArrayList)starDict.toStar2D.get( "atom_main",       "_Atom_site.Label_asym_ID"                                   )).get(StarDictionary.POSITION_STAR_TAG_NAME);
@@ -1575,17 +1580,18 @@ public class File31 {
      * Convert the data in the file to components in the gumbo etc. 
      * Will list max of one conversion error per column in db.
      * Deselects all other entries in DBMS until now.
-     * If atoms in restraint data can not be linked to atoms in coordinate list they will be marked in:
+     * If atoms in restraint data can not be linked to atoms in coordinate list they will be marked in e.g.
      * dc.hasUnLinkedAtom.
      * @return true for success.
      * @param matchRestraints2SoupByAuthorDetails Normally atoms are linked by the regular NMR-STAR tags. The info defined in the
      * author details will be used to link atoms when this parameter is set.
      * @param matchRestraints2SoupByDefaultDetails Try to link the atoms in restraints to the molecules in the soup.
      * @param url 
-     * @param doEntry Absorp the molecular system description and the coordinates into Wattos.
-     * @param doRestraints Absorp the restraints.
+     * @param doEntry Absorb the molecular system description and the coordinates into Wattos.
+     * @param doRestraints Absorb the restraints.
      * @param removeUnlinkedRestraints After possibly matching the atoms in the restraints to the soup remove any that
      * have unmatched atoms.
+     * @param syncModels Remove any unsynced atoms. Ie atoms that are not present in all models.
      */    
     public boolean toWattos(
             URL url, 
@@ -1593,7 +1599,8 @@ public class File31 {
             boolean doRestraints, 
             boolean matchRestraints2SoupByDefaultDetails, 
             boolean matchRestraints2SoupByAuthorDetails, 
-            boolean removeUnlinkedRestraints) {  
+            boolean removeUnlinkedRestraints,
+            boolean syncModels ) {
 
         // Use a temporary dbms so the data doesn't clobber the regular one.
         DBMS dbmsTemp = new DBMS();
@@ -1676,7 +1683,7 @@ public class File31 {
                     return false;
                 }
                 // Last model's number
-                // this wouldn't work with gaps in relation but since the data is read consequetively from
+                // this wouldn't work with gaps in relation but since the data is read consecutively from
                 // the star file it always works.
                 modelCountMax = tTCoor.getValueInt(tTCoor.sizeRows-1, tagNameAtomModelId); 
             }
@@ -1882,8 +1889,6 @@ public class File31 {
                     tTAssemblyRID++;
                 }            
             }
-//            General.showDebug("Done so far");
-//            if (true) return false;
             //XXX mark of ATOMS 
             /**    _Atom_site.Model_ID
                    _Atom_site.ID
@@ -1958,7 +1963,8 @@ public class File31 {
                         Gumbo.DEFAULT_ATTRIBUTE_COOR_X,        
                         Gumbo.DEFAULT_ATTRIBUTE_COOR_Y,        
                         Gumbo.DEFAULT_ATTRIBUTE_COOR_Z,        
-                        Gumbo.DEFAULT_ATTRIBUTE_BFACTOR      
+                        Gumbo.DEFAULT_ATTRIBUTE_BFACTOR,    
+                        Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY     
                 };
                 for ( int n=0;n<equivalents.length;n++) {
                     String columnName = (String) ((ArrayList)starDict.toStar2D.get( "atom_main", equivalents[n])).get(StarDictionary.POSITION_STAR_TAG_NAME);
@@ -2040,15 +2046,21 @@ public class File31 {
             }
 
             // Sync the atoms over the models in the entry. Note that this will remove unsynced atoms.
-            if ( (! entry.modelsSynced.get( currentEntryId  )) && 
-                 (! entry.syncModels( currentEntryId ))) {
-                General.showError("Failed to sync models after reading in the coordinates. Deleting the whole entry again.");
-                if ( ! entry.mainRelation.removeRowsCascading( currentEntryId, true ) ) {
-                    General.showError("Failed to deleting the whole entry.");
+            if ( syncModels ) {
+                if ( (! entry.modelsSynced.get( currentEntryId  )) && 
+                     (! entry.syncModels( currentEntryId ))) {
+                    General.showError("Failed to sync models after reading in the coordinates. Deleting the whole entry again.");
+                    if ( ! entry.mainRelation.removeRowsCascading( currentEntryId, true ) ) {
+                        General.showError("Failed to deleting the whole entry.");
+                    }
+                    return false;
                 }
-                return false;
+            } else {
+                General.showWarning("Disabled syncing over models.");
+                General.showWarning("This might lead to inconsistencies in Wattos internal data model.");
+                General.showWarning("Needs testing for sure.");
+                General.showWarning("The code will definitely not work when reading in restraints on top of partily missing atoms.");
             }
-
             // Select all newly added atoms; code added later.
             BitSet orgAtoms = SQLSelect.selectBitSet(dbms, atom.mainRelation, 
                     Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME], 
@@ -2082,16 +2094,20 @@ public class File31 {
         // Data for matching by regular tags.
         HashOfHashesOfHashes atomFirstRID = null;
         int[] molID2RID = null;
-        if ( matchRestraints2SoupByDefaultDetails ) {
-            /**The map has the following keys in order: mol number, res number, atom name which results
-             *in an Integer representing the atom rid of the first model.         */
+        if ( matchRestraints2SoupByDefaultDetails || matchRestraints2SoupByAuthorDetails ) {
+            /**The map has the following keys in order: mol number, res number, atom name which ar
+             *key to an Integer representing the atom rid of the first model.         */
             atomFirstRID = (HashOfHashesOfHashes) entry.atomsHash[currentEntryId];
+            if ( atomFirstRID == null ) {
+                General.showError("Failed to get map of atoms");
+                return false;
+            }
             currentModelId = entry.getMasterModelId(currentEntryId);
             if ( currentModelId < 0 ) {
                 General.showError("Failed to get master model rid for entry rid: " + currentEntryId);
                 return false;
             }
-            //General.showDebug("atom map is: " + atomFirstRID);
+//            General.showDebug("atom map is: " + atomFirstRID);
             molID2RID = model.createMapMolId2Rid( currentModelId ); 
             //General.showDebug("mol id 2 rid map is: " + PrimitiveArray.toString(molID2RID));
         }
@@ -2366,7 +2382,7 @@ public class File31 {
     //                                General.showDebug("Did not find atom in res2AtomMap; hopefully a pseudo" );
                                     // Get the residue name from any atom in the residue
                                     Set atomSet = res2AtomMap.keySet();
-                                    if ( (atomSet == null ) || atomSet.isEmpty()) {
+                                    if ( atomSet == null || atomSet.isEmpty()) {
                                         General.showDetail( "While reading DCs: Coulnd't find atom (empty residue) in the residue with number: " + resNumb + " in a molecule with number: " + molNumb + " for atom with name: "  + atomName );
                                         atomFound = false;
                                     } else {
@@ -2374,8 +2390,8 @@ public class File31 {
                                         int ridAnyAtomInSameRes = ((Integer) res2AtomMap.get( tmpje[0] )).intValue(); // too expensive of course.
                                         String resName = res.nameList[ atom.resId[ ridAnyAtomInSameRes ]];
     //                                    General.showDebug("Using residue name for pseudo atom lookup: " + resName);
-                                        ArrayList list = (ArrayList) ui.wattosLib.pseudoLib.toAtoms.get( resName, atomName );
-                                        if ( (list == null) || list.size() < 1 ) {
+                                        ArrayList list = (ArrayList) ui.wattosLib.pseudoLib.toAtoms.get( resName, atomName ); // Query with key of presumed pseudo atom.
+                                        if ( list == null || list.size() < 1 ) {
                                             General.showDetail( "While reading DCs: While reading DCs: Coulnd't find atom (assumed a pseudo but apparently not) in residue: " + resNumb + " in mol: " + molNumb + " for atom: "  + atomName);
                                             atomFound = false;
                                         } else {
@@ -2388,17 +2404,97 @@ public class File31 {
                                     starDCAtomRid++;
                                     continue;
                                 }
-                            } // end of if block testing on matchRestraints2Soup
+//                                TODO: finish FC replacement code here.
+                            } else if ( matchRestraints2SoupByAuthorDetails ) {
+                                // Convenience variables.
+                                String  atomNameAuthor    = varDCAuthatomID[                     starDCAtomRid ];
+                                General.showDebug("working on: atomName: [" + atomNameAuthor +"]");
+                                int offsetSequence = 171 - 13 - 1; // only valid for 1brv; mmCIF starts at ASN 1 and VAL is 14; in restraints VAL is 171 TODO: fix code
+//                                int     molId       = varDCEntityassemblyID[           starDCAtomRid ];
+                                int     molId       = 1; // valid for 1brv
+                                int     molRID      = molID2RID[ molId ];
+                                Integer molNumb     = new Integer(mol.number[ molRID ]);
+//                                Integer resNumb     = new Integer(varDCCompindexID[    starDCAtomRid ] - offsetSequence);
+                                String resNumbAuthStr = varDCAuthseqID[    starDCAtomRid ];
+                                int resNumbAuthInt = Defs.NULL_INT;
+                                try {
+                                    resNumbAuthInt = Integer.parseInt( resNumbAuthStr );
+                                } catch (Exception e) {
+                                    General.showThrowable(e);
+                                    General.showError("Failed to convert author residue number to an int: [" + resNumbAuthStr +"]");
+                                    starDCAtomRid++;
+                                    continue;
+                                }                                
+                                Integer resNumb     = new Integer(resNumbAuthInt - offsetSequence);
+//                                General.showDebug("molNumb: [" + molNumb + "]");
+//                                General.showDebug("resNumb: [" + resNumb + "]");
+                                res2AtomMap = (HashMap) atomFirstRID.get( molNumb, resNumb );                            
+                                // When there are nulls for molNumb and/or resNumb the map returned will also be null
+                                if ( res2AtomMap == null ) {
+                                    General.showWarning( "While reading DCs: Coulnd't find residue with number: " + resNumb + "" +
+                                    		" in a molecule with number: " + molNumb);
+                                    atomFoundForAllInDC = false;
+                                    starDCAtomRid++;
+                                    continue;
+                                }
+                                String resName = null;
+                                Set atomSet = res2AtomMap.keySet();
+                                Object[] tmpje = null;
+                                int ridAnyAtomInSameRes = Defs.NULL_INT;
+                                if ( atomSet == null || atomSet.isEmpty()) {
+                                    General.showDetail( "While reading DCs: Coulnd't find any atom (empty residue) in the residue with number: " + 
+                                            resNumb + " in a molecule with number: " + molNumb );
+                                    atomFound = false;
+                                } else {
+                                    tmpje = atomSet.toArray();
+                                    ridAnyAtomInSameRes = ((Integer) res2AtomMap.get( tmpje[0] )).intValue(); // too expensive of course.
+                                    //                                    General.showDebug("Using residue name for pseudo atom lookup: " + resName);
+                                    resName = res.nameList[ atom.resId[ ridAnyAtomInSameRes ]];
+                                }           
+                                String atomNameAuthorTranslated = atomNameAuthor;
+                                if ( atomFound ) {
+                                    // Note that the res name of the main model is used to derive the mapped name.
+                                    atomNameAuthorTranslated = ui.wattosLib.atomMap.atomNameToIupac( AtomMap.NOMENCLATURE_ID_DISCOVER, // FIXME:
+                                            atomNameAuthor, resName );
+                                    if ( atomNameAuthorTranslated == null ) {
+                                        atomNameAuthorTranslated = atomNameAuthor;
+                                    }
+                                }
+                                equiAtomList.clear();
+                                equiAtomList.add( atomNameAuthorTranslated );
+                                General.showDebug("Looking for translated atom: ["+atomNameAuthorTranslated+
+                                        "] in res2AtomMap: " + Strings.toString(res2AtomMap));
+                                atomRID = (Integer) res2AtomMap.get( atomNameAuthorTranslated );
+                                if ( atomRID == null ) {
+                                    General.showDebug("Did not find atom in res2AtomMap; hopefully a pseudo" );
+                                    // Get the residue name from any atom in the residue
+                                    if ( atomFound ) {
+                                        ArrayList list = (ArrayList) ui.wattosLib.pseudoLib.toAtoms.get( resName, atomNameAuthorTranslated ); // Query with key of presumed pseudo atom.
+                                        if ( list == null || list.size() < 1 ) {
+                                            General.showDetail( "While reading DCs: While reading DCs: Coulnd't find atom (assumed a pseudo but apparently not) in residue: " + resNumb + " in mol: " + molNumb + " for atom: "  + atomName);
+                                            atomFound = false;
+                                        } else {
+                                            equiAtomList = list;
+                                        }                                    
+                                    }
+                                }
+                                if ( ! atomFound ) {
+                                    atomFoundForAllInDC = false;
+                                    starDCAtomRid++;
+                                    continue;
+                                }
+                                
+                            }
                             
                             
                             // At this point we know the name(s) of the atom(s) to point to; let's find their rid(s).
 //                            General.showDebug("Found atoms (for pseudo atom): " + equiAtomList);
                             for (int at_no=0; at_no < equiAtomList.size(); at_no++ ) {
                                 int atomRIDint = Defs.NULL_INT;
-                                if ( matchRestraints2SoupByDefaultDetails ) {
+                                if ( matchRestraints2SoupByDefaultDetails || matchRestraints2SoupByAuthorDetails ) {
                                     String atomNameLocal = (String) equiAtomList.get(at_no);
                                     atomRID = (Integer) res2AtomMap.get( atomNameLocal );
-                                    if ( atomRID == null || Defs.isNull( atomRID.intValue()) || (atomRID.intValue() < 0 )) {
+                                    if ( atomRID == null || Defs.isNull( atomRID.intValue()) || atomRID.intValue() < 0 ) {
                                         General.showDetail( "Coulnd't find atom (rid for atom name that is normally present) in the residue for atom which is part of a pseudo atom.");
                                         General.showDetail( "For atom record: " + tTAtom.toStringRow(starDCAtomRid));
                                         atomFound = false;
@@ -2586,8 +2682,8 @@ public class File31 {
                     
                     //General.showDebug( "Getting info from star dist rid: " + starCDIHDistRId);
                     sc.target[      currentSCId ] = Defs.NULL_FLOAT;
-                    sc.uppBound[    currentSCId ] = varCDIH_Angle_upper_bound_val[    starSCMainId ];
-                    sc.lowBound[    currentSCId ] = varCDIH_Angle_lower_bound_val[    starSCMainId ];
+                    sc.uppBound[    currentSCId ] = varCDIH_Angle_upper_bound_val[    starSCMainId ]*Geometry.fCFI; 
+                    sc.lowBound[    currentSCId ] = varCDIH_Angle_lower_bound_val[    starSCMainId ]*Geometry.fCFI;
 //                          Now do the hard part in looking up the atom ids.
 //                          Tie the atoms in the restraints to the atoms in the soup or leave them unlinked.
                     Object[][] varAtomXLol = new Object[][] { // needs to match order in e.g. LOC_ENTITY_ASSEMBLY_ID
@@ -2932,11 +3028,9 @@ public class File31 {
     } // end of block for presence of sc.
         
         
-        if ( matchRestraints2SoupByAuthorDetails ) {
-            // TODO but currently done by FC.
-        }
         return true;
-    }    
+    } // end toWattos    
+    
     
     /**
      * remove any $ if present and replace _ by space
@@ -3004,8 +3098,8 @@ public class File31 {
             namesAndTypes.put( tagNameEntrySFCategory,              new Integer(Relation.DATA_TYPE_STRING));
             namesAndTypes.put( tagNameEntryName,                    new Integer(Relation.DATA_TYPE_STRING));
             namesAndTypes.put( tagNameAssemblyNumber_of_components,        new Integer(Relation.DATA_TYPE_INT));
-            namesAndTypes.put( tagNameAssemblyOrganic_ligands,             new Integer(Relation.DATA_TYPE_INT));
-            namesAndTypes.put( tagNameAssemblyMetal_ions,                  new Integer(Relation.DATA_TYPE_INT));
+            namesAndTypes.put( tagNameAssemblyOrganic_ligands,             new Integer(Relation.DATA_TYPE_STRING));
+            namesAndTypes.put( tagNameAssemblyMetal_ions,                  new Integer(Relation.DATA_TYPE_STRING));
             namesAndTypes.put( tagNameAssemblyParamagnetic,                new Integer(Relation.DATA_TYPE_STRING));
             namesAndTypes.put( tagNameAssemblyThiol_state,                 new Integer(Relation.DATA_TYPE_STRING));
             namesAndTypes.put( tagNameAssemblyMolecular_mass,              new Integer(Relation.DATA_TYPE_FLOAT));            
@@ -3374,6 +3468,7 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
             namesAndTypes.put( tagNameAtomCoorY,          new Integer(Relation.DATA_TYPE_FLOAT));
             namesAndTypes.put( tagNameAtomCoorZ,          new Integer(Relation.DATA_TYPE_FLOAT));
             namesAndTypes.put( tagNameAtomBFactor,        new Integer(Relation.DATA_TYPE_FLOAT));
+            namesAndTypes.put( tagNameAtomOccupancy,      new Integer(Relation.DATA_TYPE_FLOAT));
             order.add(tagNameAtomModelId   );                 
             order.add(tagNameAtomId        );                 
             order.add(tagNameAtomMolId1    );                 
@@ -3388,7 +3483,8 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
             order.add(tagNameAtomCoorX     );                 
             order.add(tagNameAtomCoorY     );                 
             order.add(tagNameAtomCoorZ     );                 
-            order.add(tagNameAtomBFactor   );    // called occupancy now.              
+            order.add(tagNameAtomBFactor   );           
+            order.add(tagNameAtomOccupancy   );           
 //            order.add(tagNameAtomSFId_2    );    // changed order for NMR-STAR v3.1  
             tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, foreignKeyConstrSet);
             sF.add( tT );
@@ -3694,13 +3790,17 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
         BitSet atomSet = mol.getAtoms(molSet);
 //        General.showDebug("Looking at number of residues: " + allResSet.cardinality());
 //        General.showDebug("Looking at number of atoms   : " + atomSet.cardinality());
-        int thiolState = atom.getThiolState(atomSet,allResSet);
-//        General.showDebug("Found THIOL_STATE: " + Biochemistry.thiolStateEnumerationAsInStar[thiolState]);
-        if ( thiolState < 0 ) {
-            General.showCodeBug("Let's mention it's unknown and don't crash");
-            thiolState = Biochemistry.THIOL_STATE_UNKNOWN;
+        int thiolState = Biochemistry.THIOL_STATE_UNKNOWN;        
+        if ( entry.getModelsSynced(entryRID) ) {
+            thiolState = atom.getThiolState(atomSet,allResSet);
+    //        General.showDebug("Found THIOL_STATE: " + Biochemistry.thiolStateEnumerationAsInStar[thiolState]);
+            if ( thiolState < 0 ) {
+                General.showCodeBug("Let's mention it's unknown and don't crash");
+                thiolState = Biochemistry.THIOL_STATE_UNKNOWN;
+            }
+        } else {
+            General.showWarning("Not deducing thiol state of molecule since it was not synced");
         }
-        
         TagTable tTAssemblyIntro = (TagTable) sFAssembly.get(0);
         tTAssemblyIntro.setValue(0, tagNameAssemblyNumber_of_components,    molSet.cardinality());
         tTAssemblyIntro.setValue(0, tagNameAssemblyOrganic_ligands,         res.getOrganic_ligands(allResSet));
@@ -3740,7 +3840,8 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
             tTAssemblyEntity.setValue( entityRID, tagNameMolId,             new Integer(counterEntityAssembly));
             tTAssemblyEntity.setValue( entityRID, tagNameMolAssEntityId,    entityNumber);
             tTAssemblyEntity.setValue( entityRID, tagNameMolAssEntityLabel, molLabel);
-            tTAssemblyEntity.setValue( entityRID, tagNameEntity_assemblyAsym_ID, mol.asymId[entityRID]);
+//            tTAssemblyEntity.setValue( entityRID, tagNameEntity_assemblyAsym_ID, mol.asymId[entityRID]); # was a bug? entityRID should be molRID?
+            tTAssemblyEntity.setValue( entityRID, tagNameEntity_assemblyAsym_ID, mol.asymId[molRID]);
             counterEntityAssembly++;
         }
         // Set all ids for assembly to 1 after rows are claimed.
@@ -4732,7 +4833,8 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
                 /** Insert new columns required */
                 if ( !(
 //                    tTCoor.insertColumn(tagNameAtomSFId_2,      Relation.DATA_TYPE_STRINGNR, null) &
-                    tTCoor.insertColumn(tagNameAtomModelId,     Relation.DATA_TYPE_INT, null) &
+                        tTCoor.insertColumn(tagNameAtomModelId,     Relation.DATA_TYPE_INT, null) &
+                        tTCoor.insertColumn(tagNameAtomAsym_ID,     Relation.DATA_TYPE_STRINGNR, null) &
 //                    tTCoor.insertColumn(tagNameAtomId,          Relation.DATA_TYPE_INT, null)&  // already done by regular number
                     tTCoor.insertColumn(tagNameAtomMolId1,      Relation.DATA_TYPE_INT, null)&
                     tTCoor.insertColumn(tagNameAtomMolId2,      Relation.DATA_TYPE_INT, null)&
@@ -4754,7 +4856,7 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
                     General.showError("Failed to copy model numbers for all columns at once.");
                     return null;
                 }                        
-                if ( ! setEntityNumbers(tTCoor,molNumber2EntityNumberMap) ) {
+                if ( ! setEntityNumber(tTCoor,molNumber2EntityNumberMap) ) {
                     General.showError("Failed to set values for entity and molecule columns at once.");
                     return null;
                 }                        
@@ -4781,7 +4883,8 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
                     tTCoor.renameColumn(Gumbo.DEFAULT_ATTRIBUTE_COOR_X,         tagNameAtomCoorX      )&
                     tTCoor.renameColumn(Gumbo.DEFAULT_ATTRIBUTE_COOR_Y,         tagNameAtomCoorY      )&
                     tTCoor.renameColumn(Gumbo.DEFAULT_ATTRIBUTE_COOR_Z,         tagNameAtomCoorZ      )&
-                    tTCoor.renameColumn(Gumbo.DEFAULT_ATTRIBUTE_BFACTOR,        tagNameAtomBFactor    )
+                    tTCoor.renameColumn(Gumbo.DEFAULT_ATTRIBUTE_BFACTOR,        tagNameAtomBFactor    )&
+                    tTCoor.renameColumn(Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY,      tagNameAtomOccupancy    )
                     )) {
                     General.showError("Failed to rename all columns at once.");
                     return null;
@@ -4790,8 +4893,8 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
 
                 /** Remove a bunch of columns.  */
                 if ( !(
-                    (tTCoor.removeColumn( Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID ) != null)&&
-                    (tTCoor.removeColumn( Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY ) != null)
+                    (tTCoor.removeColumn( Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID ) != null)
+//                    (tTCoor.removeColumn( Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY ) != null)
                     )) {
                     General.showError("Failed to remove all columns at once.");
                     return null;
@@ -4805,6 +4908,7 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
                 columnListToKeep.add(tagNameAtomId          );
                 columnListToKeep.add(tagNameAtomMolId1      );
                 columnListToKeep.add(tagNameAtomMolId2      );
+                columnListToKeep.add(tagNameAtomAsym_ID     ); // new
                 columnListToKeep.add(tagNameAtomResId       );
                 columnListToKeep.add(tagNameAtomResName     );
                 columnListToKeep.add(tagNameAtomName        );
@@ -4817,6 +4921,7 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
                 columnListToKeep.add(tagNameAtomCoorY       );
                 columnListToKeep.add(tagNameAtomCoorZ       );
                 columnListToKeep.add(tagNameAtomBFactor     );
+                columnListToKeep.add(tagNameAtomOccupancy     );
 //                General.showDebug("Keeping columns ["+columnListToKeep.size()+"[: " + Strings.toString( columnListToKeep));
 
                 if ( ! tTCoor.removeColumnsExcept( columnListToKeep )) {
@@ -4957,22 +5062,24 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
         return true;
     }
     
-    /**
+    /** 
      */     
-    public boolean setEntityNumbers(TagTable tTCoor, HashMap molNumber2EntityNumberMap) {
+    public boolean setEntityNumber(TagTable tTCoor, HashMap molNumber2EntityNumberMap) {
                 
         int[] molNumber   = mol.number;
         int[] molId       = tTCoor.getColumnInt( Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[ RelationSet.RELATION_ID_COLUMN_NAME] );
         int[] molNumNew   = tTCoor.getColumnInt( tagNameAtomMolId1 );
         int[] entityNumNew= tTCoor.getColumnInt( tagNameAtomMolId2 );        
+        String[] asymId   = tTCoor.getColumnString( tagNameAtomAsym_ID );        
         if ( (molNumber==null) ||(molNumNew==null) ||(entityNumNew==null)) {            
             General.showWarning("Failed to get required columns in setEntityNumbers");
             return false;
         }
-        
+        // Entity numbers
         int prevMolId       = -1;
         int prevMolNum      = -1;
         int prevEntityNumNew= -1;
+        String prevAsymId   = Defs.EMPTY_STRING;
         int molRID;
         try {
             // Because they're sorted by mol and entity; this would actually be a prime
@@ -4985,15 +5092,17 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
                     prevMolNum          = molNumber[ molRID ];
                     // Get new entity num even though it might be the same as before.
                     prevEntityNumNew    = ((Integer)molNumber2EntityNumberMap.get( new Integer( prevMolNum))).intValue(); // expensive.
+                    prevAsymId          = mol.asymId[molRID];
                 }
-                molNumNew[ r ] = prevMolNum; // quite fast.
+                molNumNew[ r ] = prevMolNum; // quite fast. 
                 entityNumNew[r]= prevEntityNumNew;
+                asymId[r]      = prevAsymId;
             }
         } catch ( Exception e ) {
             General.showThrowable(e);
             General.showCodeBug("Failed to set molecule and entity numbers. Most likely a cast error after hashmap access right?");
             return false;
-        }
+        }        
         return true;
     }
     
@@ -5243,7 +5352,7 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
     /** Adds the .Entry_ID and .ID tags to the first tt (tag table) in each sf
      * (save frame)
      * and .Entry_ID and .XXXX_ID tags to any further tts in each sf.
-     * Keeps track of the ids of some sf categoried instances as they appear in
+     * Keeps track of the ids of some sf category instances as they appear in
      * sequential order.
      * The only exceptions are for:
      *          _Entry.Sf_category  entry_information 

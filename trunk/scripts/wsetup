@@ -41,12 +41,14 @@ alias mrannotator 'java Wattos.Episode_II.MRAnnotate'
 # Wattos own classes
 setenv CLASSPATH ${WATTOSJARSDIR}/Wattos.jar
 
-# hostname shows "Sjors.local" 
-# lower case hostname on cygwin and upper case on windows. 
+# hostname shows Stella.local or stella.cmbi.umcn.nl 
+# lower case hostname on cygwin and upper case on windows.
+# disabled this more advanced way as gawk is not always present on Mac.
 set wattoshost = (`hostname|gawk -F'[.]' '{print tolower($1)}'`)
-#if ( $wattoshost == 'whelk' ) then 
-if ( $wattoshost == 'sjors' ) then 
-    setenv CLASSPATH ${WATTOSCLASSDIR}    
+#set wattoshost = (`hostname`)
+if ( $wattoshost == 'stella' ) then 
+    setenv CLASSPATH ${WATTOSCLASSDIR}
+    echo "DEBUG: Wattos wsetup found to be on development machine"    
 endif    
 
 
@@ -67,5 +69,5 @@ setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/jcommon-1.0.0.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/gnujaxp.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/itext-1.4.jar
 
-echo "Initialized Wattos with Java classpath:" $CLASSPATH
+#echo "Initialized Wattos with Java classpath:" $CLASSPATH
 

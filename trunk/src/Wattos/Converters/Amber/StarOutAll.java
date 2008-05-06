@@ -639,7 +639,7 @@ public class StarOutAll{
         File amber_pdb_dirFile = new File(amber_pdb_dir);
         if ( ! amber_pdb_dirFile.exists() ) {
             String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
-            File inputDir       = new File( wattosRoot,"Data"+File.separator+"test_data" );
+            File inputDir       = new File( wattosRoot,"data"+File.separator+"test_data" );
             if ( inputDir.exists() ) {
                 amber_pdb_dir = inputDir.toString();
             }

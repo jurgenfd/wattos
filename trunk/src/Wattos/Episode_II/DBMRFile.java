@@ -959,13 +959,11 @@ public class DBMRFile {
         if ( file == null ) {
             General.showError("unknown file name from DBMRFile)");
             return null;
-//            if ( Defs.isNull(mrb_new.mrblock_id )) {
-//                mrb_new.fileName = "star.str";
-//            } else {
-//                mrb_new.fileName = mrb_new.mrblock_id + ".str";
-//            }
+        }
+        if (Defs.isNull(mrb_new.mrblock_id)) {
+            mrb_new.fileName = "star.str";
         } else {
-            mrb_new.fileName = file.getName();            
+            mrb_new.fileName = pdb_id + ".str";
         }
         
         DBMRFile mrf_new = new DBMRFile();

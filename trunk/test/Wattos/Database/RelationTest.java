@@ -27,7 +27,7 @@ public class RelationTest extends TestCase {
     
     static {
         wattosRoot   = InOut.getEnvVar("WATTOSROOT");
-        inputDir       = new File( wattosRoot,"Data"+File.separator+"test_data" );
+        inputDir       = new File( wattosRoot,"data"+File.separator+"test_data" );
         outputDir      = new File( wattosRoot,"tmp_dir" );                
     }
     

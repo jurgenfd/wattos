@@ -117,7 +117,8 @@ public class PdbWriter {
         float[] Cartn_x                     = tT.getColumnFloat(    "_Atom_site.Cartn_x");
         float[] Cartn_y                     = tT.getColumnFloat(    "_Atom_site.Cartn_y");
         float[] Cartn_z                     = tT.getColumnFloat(    "_Atom_site.Cartn_z");
-        float[] PDB_extracted_Bfactor_col   = tT.getColumnFloat(    "_Atom_site.Occupancy");
+        float[] PDB_extracted_Bfactor_col   = tT.getColumnFloat(    "_Atom_site.Uncertainty");
+        float[] occupancy                   = tT.getColumnFloat(    "_Atom_site.Occupancy");
 
         if (    Model_ID == null ||
                 Label_entity_assembly_ID == null ||
@@ -128,7 +129,9 @@ public class PdbWriter {
                 Cartn_x == null ||
                 Cartn_y == null ||
                 Cartn_z == null ||
-                PDB_extracted_Bfactor_col == null ) {
+                PDB_extracted_Bfactor_col == null ||
+                occupancy == null 
+                ) {
             General.showError("Not all columns in atom loop found");
             return false;
         }

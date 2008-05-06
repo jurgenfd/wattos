@@ -1475,10 +1475,17 @@ public class DistConstr extends ConstrItem implements Serializable {
     /** The supported output formats for xplor include Aria's:
 ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 53 and name HE1 )) 3.600 1.700 1.700 peak 6 weight 0.10000E+01 volume 0.14383E-02 ppm1 4.578 ppm2 9.604 CV 1 
   OR { 6} (( segid "SLP " and resid 83 and name HB )) (( segid "SH3 " and resid 53 and name HE1 ))
+     * @param format TODO
      */
-    public boolean toXplor(BitSet dcSet, String fn, int fileCount, String atomNomenclature,
-            boolean sortRestraints ) {
+    public boolean toXplorOrSo(BitSet dcSet, String fn, int fileCount, String atomNomenclature,
+            boolean sortRestraints, String format ) {
 
+        boolean isXplor = format.startsWith("XPLOR");
+        boolean isDyana = format.startsWith("DYANA");
+        if ( ! isXplor || isDyana ) {
+            General.showCodeBug("Failed to determine format to Xplor or Dyana from string: " + format);
+            return false;
+        }
         int currentDCId;
         int dcCount = 0;                
 

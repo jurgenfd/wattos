@@ -56,7 +56,7 @@ public class StarGeneral {
     public int tagnamesIdentSize       = loopIdentSize + 3;
     public boolean showStopTag         = true;
 
-    /** StarParser to be used only once; silly */
+    /** StarParser to be used only once; silly. Initialized in constructor of this class*/
     public static EDU.bmrb.starlibj.StarParser sp = null;
     
     static private final Matcher     m_starting_semicolon;    

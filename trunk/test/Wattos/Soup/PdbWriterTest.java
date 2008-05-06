@@ -45,7 +45,7 @@ public class PdbWriterTest extends TestCase {
         //PdbFile pdbFile = new PdbFile(dbms);
         long time = System.currentTimeMillis();
         String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
-        File inputDir       = new File( wattosRoot,"Data"+File.separator+"test_data" );
+        File inputDir       = new File( wattosRoot,"data"+File.separator+"test_data" );
 //        File tmpDir         = new File( System.getProperty("java.io.tmpdir"));        
         String urlName = inputDir + File.separator + fileNameBase + ".pdb.gz";
         URL url = InOut.getUrlFileFromName( urlName );

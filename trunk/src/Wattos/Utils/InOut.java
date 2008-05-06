@@ -1182,7 +1182,7 @@ public static class RegExpFilenameFilter implements FilenameFilter {
                 // a name is needed.
                 // FileCopy can take care of this.
                 if ( out.exists() ) {
-                    General.showDebug("Found out to exist: " + out);
+//                    General.showDebug("Found out to exist: " + out);
                     if ( out.isFile() ) {
                         General.showError("Can't copy directory to a file." );
                         return false;
@@ -1216,7 +1216,7 @@ public static class RegExpFilenameFilter implements FilenameFilter {
                 }
             }
             
-            General.showDebug("NOW HERE" );
+//            General.showDebug("NOW HERE" );
             /** Recap: the output is a file or an existing directory*/            
             if ( in.isDirectory() ) {     
                 if( out.isFile() ) {
