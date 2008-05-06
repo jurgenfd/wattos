@@ -363,7 +363,10 @@ public class SimpleConstr extends ConstrItem implements Serializable {
         return false;
     }
 
-    /** Returns an (empty) set of dc list rids for the given dc set.
+    /** Returns an (empty) set of sc list rids for the given sc set.
+     * So given a set of sc rids it returns the list rids of the sc that the sc
+     * are part of..
+     * In case of an error it will return an empty BitSet.
      */
     public BitSet getSCListSetFromSCSet( BitSet todo ) {
         BitSet result = new BitSet();
@@ -373,24 +376,23 @@ public class SimpleConstr extends ConstrItem implements Serializable {
             General.showWarning("No simple constraints selected in getSCListSetFromSCSet.");
             return result;
         }
-        
-        BitSet scMainListRids = SQLSelect.getDistinct(
-                dbms,
-                mainRelation,
-                ATTRIBUTE_SET_SUB_CLASS[ RelationSet.RELATION_ID_COLUMN_NAME ],
-                (BitSet)todo.clone());
-        if ( scMainListRids == null ) {
-            General.showWarning("Failed to get a list of simple constraint lists.");
-            return result;
-        }
-        if ( scMainListRids.cardinality() == 0 ) {
-            General.showWarning("No distance constraint lists selected in getSCListSetFromSCSet.");
-            return result;
-        }
-        for ( int rid=scMainListRids.nextSetBit(0);rid>=0;rid=scMainListRids.nextSetBit(rid+1)) {
+        // The below was a bug.
+//        BitSet scMainListRids = SQLSelect.getDistinct(
+//                dbms,
+//                mainRelation,
+//                ATTRIBUTE_SET_SUB_CLASS[ RelationSet.RELATION_ID_COLUMN_NAME ], // TODO: Is this wrong? it should be the physical row order.
+//                (BitSet)todo.clone());
+//        if ( scMainListRids == null ) {
+//            General.showWarning("Failed to get a list of simple constraint lists.");
+//            return result;
+//        }
+//        if ( scMainListRids.cardinality() == 0 ) {
+//            General.showWarning("No distance constraint lists selected in getSCListSetFromSCSet.");
+//            return result;
+//        }
+        for ( int rid=todo.nextSetBit(0);rid>=0;rid=todo.nextSetBit(rid+1)) {
             result.set(scListIdMain[rid]);
         }
-//        General.showDebug("Found scMainListRids: " + PrimitiveArray.toString(scMainListRids));
 //        General.showDebug("Found result        : " + PrimitiveArray.toString(result));
          
         return result;
@@ -457,8 +459,8 @@ public class SimpleConstr extends ConstrItem implements Serializable {
         return toString(tmpSet, showViolations, showTheos);
     }
     
-    public boolean toXplor(BitSet scSet, String fn, 
-            int fileCount, String atomNomenclature, boolean sortRestraints) {
+    public boolean toXplorOrSo(BitSet scSet, String fn, 
+            int fileCount, String atomNomenclature, boolean sortRestraints, String format) {
         General.showCodeBug("Method toXplor in SC should have been overrided");
         return false;
     }
@@ -466,9 +468,10 @@ public class SimpleConstr extends ConstrItem implements Serializable {
     /** The supported output formats for xplor include Aria's:
 ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 53 and name HE1 )) 3.600 1.700 1.700 peak 6 weight 0.10000E+01 volume 0.14383E-02 ppm1 4.578 ppm2 9.604 CV 1 
   OR { 6} (( segid "SLP " and resid 83 and name HB )) (( segid "SH3 " and resid 53 and name HE1 ))
+     * @param format TODO
      */
-    public boolean toXplor(int listRID, String fn, int fileCount, 
-            String atomNomenclature, boolean sortRestraints) {
+    public boolean toXplorOrSo(int listRID, String fn, int fileCount, 
+            String atomNomenclature, boolean sortRestraints, String format) {
         BitSet scSet = SQLSelect.selectBitSet(dbms, 
                 mainRelation, 
                 ATTRIBUTE_SET_SUB_CLASS_LIST[RelationSet.RELATION_ID_COLUMN_NAME],
@@ -480,7 +483,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             return false;
         }
         
-        if ( ! toXplor( scSet,fn,fileCount,atomNomenclature,sortRestraints )) {
+        if ( ! toXplorOrSo( scSet,fn,fileCount,atomNomenclature,sortRestraints, format )) {
             General.showError("Failed to do toXplor.");
             return false;            
         }
@@ -816,6 +819,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         
         FloatIntPair fip = new FloatIntPair();
         fip.f = Defs.NULL_FLOAT;
+        fip.i = Defs.NULL_INT;
         
         if ( ! Defs.isNull(violUppMax[rid])) {
             fip.f = violUppMax[rid];
@@ -881,7 +885,8 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         return result;
     }
-    
+
+
     public BitSet getAtomRidSet( BitSet scRidSet ) {
         IndexSortedInt isi = (IndexSortedInt) simpleConstrAtom.getIndex(
                 ATTRIBUTE_SET_SUB_CLASS[ RelationSet.RELATION_ID_COLUMN_NAME],
@@ -905,6 +910,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         bs.set(scRid);
         return getAtomRidSet( bs );
     }
+    
     
     /** Calculate the SC violations for a given cut off.
      */

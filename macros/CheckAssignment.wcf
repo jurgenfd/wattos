@@ -8,7 +8,7 @@ false
 
 SetProp
 verbosity
-3
+9
 
 SetProp
 writeSessionOnExit
@@ -17,17 +17,19 @@ false
 ListProp
 
 #Input file
-#Read molecular system and coordinates (y suggested)
-#Read restraints (y suggested)
-#Match restraints to soup by regular STAR tags. (y suggested)
-#Match restraints to soup by author atom and residue names etc. (n suggested; only previous or this can and must be set)
-#Remove unlinked restraints (y suggested)
+#Read molecular system and coordinates (true suggested)
+#Read restraints (true suggested)
+#Match restraints to soup by regular STAR tags. (true suggested)
+#Match restraints to soup by author atom and residue names etc. (false suggested; only previous or this can and must be set)
+#Remove unlinked restraints (true suggested)
+#Sync over models; removing inconsistent atoms (true suggested)
 ReadEntryNMRSTAR
-1hue_DOCR.str.gz
+1brv_DOCR.str.gz
 y
 y
 y
 n
+y
 y
 
 
@@ -38,7 +40,7 @@ CheckAssignment
 1.0
 0.5
 50.0
-tmp_dir/1hue_DOCR_assi_sum.str
+tmp_dir/1brv_DOCR_assi_sum.str
 
 CheckSurplus
 5.0
@@ -46,13 +48,13 @@ y
 n
 1
 1
-tmp_dir/1hue_DOCR
+tmp_dir/1brv_DOCR
 n
 n
 y
 
 WriteEntryNMRSTAR
-tmp_dir/1hue_assigned.str
+tmp_dir/1brv_assigned.str
 
 Quit
 

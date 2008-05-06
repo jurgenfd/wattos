@@ -82,8 +82,7 @@ public class MRInterloop {
             }
         }
         
-        while ( ! Strings.is_pdb_code(pdb_entry_id) ) 
-        {
+        while ( ! Strings.is_pdb_code(pdb_entry_id) ) {
             pdb_entry_id = Strings.getInputString( in,
             "Give entry code (e.g.: 1brv) to do first (or . for first): " );                
  
@@ -499,6 +498,9 @@ public class MRInterloop {
         files.add( new String[] {"FRED","check",        "violation",            "distance",  "Wattos",      "$X_viol.str"} );
         files.add( new String[] {"FRED","check",        "completeness",         "distance",  "Wattos",      "$X_compl.str"} );
                 
+        // Added for third generation DOCR/FRED; DOCR1000
+        files.add( new String[] {"DOCR","sequence",     "n/a",                  "n/a",      "XPLOR/CNS",   "$X_DOCR_$N.py"} );
+        files.add( new String[] {"FRED","sequence",     "n/a",                  "n/a",      "XPLOR/CNS",   "$X_FRED_$N.py"} );
         
         if ( ! sql_epiII.deleteFilesDOCRFRED( pdb_entry_id )) {
             General.showError("Failed to remove any old files for this entry in DOCR/FRED");
@@ -520,8 +522,8 @@ public class MRInterloop {
             ArrayList expandedSet = new ArrayList();
             fn = fn.replaceAll("\\$X", pdb_entry_id);
             fn = fn.replaceAll("\\$N", "[0-9]+"); // turn it into a regular expression
-            File f             = new File( fn );
-            String fileName = InOut.getFilenameBase(f);
+//            File f             = new File( fn );
+//            String fileName = InOut.getFilenameBase(f);
             
             // Look for the expanded set.
             InOut.RegExpFilenameFilter ff = new InOut.RegExpFilenameFilter(fn);
@@ -568,7 +570,7 @@ public class MRInterloop {
                     subtype,
                     format                    
                 });
-                mrb.fileName = fileName;
+                mrb.fileName = filename;
                 
                 /** Extract the number of restraints and any other existing countable items.
                  * See method: MRSTARFile.getItemCount().
@@ -826,9 +828,9 @@ public class MRInterloop {
         
         int star_version = NmrStar.STAR_VERSION_INVALID;
         while ( star_version == NmrStar.STAR_VERSION_INVALID ) {            
-            star_version = Strings.getInputInt(in, "Give NMR-STAR version id: 2.1.1(0) or 3.0(1)");
-            if ( ( star_version < 0 ) || (star_version > 1 )) {
-                General.showWarning("star version should be 0 or 1 but given: " + star_version );
+            star_version = Strings.getInputInt(in, "Give NMR-STAR version id: 2.1.1(0), 3.0(1), 3.1(2)");
+            if ( ( star_version < 0 ) || (star_version > 2 )) {
+                General.showWarning("star version should be in range [0,2] but given: " + star_version );
                 star_version = NmrStar.STAR_VERSION_INVALID;
             }
         }
@@ -944,8 +946,7 @@ public class MRInterloop {
     public static void main (String[] args) 
     {
         General.showOutput("MRInterloop, version 2.3");
-//        General.setVerbosityToDebug();
-//        General.verbosity = General.verbosityOutput;
+        General.setVerbosityToDebug();
         
         // Change some of the standard settings defined in the Globals class
         Globals g = new Globals();

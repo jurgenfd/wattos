@@ -1091,6 +1091,7 @@ public class MRGridServlet extends HttpServlet {
             if ( mrb.isTextBlock() ) {
                 out.println(mrb.toString());  
             } else {
+                out.println("Looking at file: " + mrb.fileName );
                 out.println("The data in this block can't be rendered as text, please save and open with appropriate program.");
             }
             out.println("</PRE>" );   

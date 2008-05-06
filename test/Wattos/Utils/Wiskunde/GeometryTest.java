@@ -6,7 +6,7 @@ import Wattos.Utils.General;
 public class GeometryTest extends TestCase {
 
     /** Like to think in degrees */
-    public void testAverageAngles() {
+    public void ttttestAverageAngles() {
       General.setVerbosityToDebug();
         double[] testValues = new double[] { 178, -178 };
         double[] testValuesRad = new double[testValues.length];
@@ -22,7 +22,7 @@ public class GeometryTest extends TestCase {
     }
     
     /** Like to think in degrees */
-    public void testDifferenceAngles() {
+    public void ttttestDifferenceAngles() {
         double[][] testValues = new double[][] {
                 {    5,  15,   10},
                 {  345,   5,   20},

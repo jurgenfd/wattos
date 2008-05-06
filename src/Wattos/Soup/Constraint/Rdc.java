@@ -133,8 +133,8 @@ public class Rdc extends SimpleConstr implements Serializable {
          3rd range around target
          4th exponent
          */
-    public boolean toXplor(BitSet scSet, String fn, 
-            int fileCount, String atomNomenclature, boolean sortRestraints) {
+    public boolean toXplorOrSo(BitSet scSet, String fn, 
+            int fileCount, String atomNomenclature, boolean sortRestraints, String format) {
         int scCountTotal = scSet.cardinality();
 //        General.showDebug( "Total number of  constraints todo: " + scCountTotal );        
         if ( scCountTotal == 0 ) {

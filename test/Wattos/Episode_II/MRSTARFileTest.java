@@ -45,11 +45,11 @@ public class MRSTARFileTest extends TestCase {
      *"ERROR: please check the input. An error was recorded."
      * AS PART OF THE TESTING PROCEDURE
      */
-    public void testInit() {
+    public void tttestInit() {
         String fs = File.separator;
 
         String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
-        File inputDir       = new File( wattosRoot,"Data"+fs+"test_data" );
+        File inputDir       = new File( wattosRoot,"data"+fs+"test_data" );
         File outputDir      = new File( wattosRoot,"tmp_dir" );
         General.showDebug("inputDir: " + inputDir);
         
@@ -161,9 +161,9 @@ public class MRSTARFileTest extends TestCase {
 //                {0,2},      // 1iv6 dipolar
         };
         
-        int startTestIdx = 0;   // test to start with;    
+        int startTestIdx = 12;   // test to start with;    
         int countTest = 1;      // tests todo;   
-        boolean doAllTests = true;
+        boolean doAllTests = false;
         if ( doAllTests ) {
             startTestIdx = 0;
             countTest = statusExp.length;
@@ -190,7 +190,7 @@ public class MRSTARFileTest extends TestCase {
         }
     }
         
-    public void tttestInit2() {
+    public void testInit2() {
         // Do more post processing using Wattos API to STAR files because it's
         // easier to extend. Takes a back and forth trip but that's ok.
         //TO WATTOS API
@@ -220,7 +220,7 @@ public class MRSTARFileTest extends TestCase {
     }        
 
     
-    public void ttestEnterStandardIDs() {
+    public void tttestEnterStandardIDs() {
         General.setVerbosityToDebug();
         String buf = "data_test "+
         

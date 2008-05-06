@@ -5,7 +5,7 @@ interactiveSession
 false
 SetProp
 verbosity
-9
+3
 SetProp
 writeSessionOnExit
 false
@@ -20,12 +20,14 @@ true
 #Match restraints to soup by regular STAR tags. (y suggested)
 #Match restraints to soup by author atom and residue names etc. (n suggested; only previous or this can and must be set)
 #Remove unlinked restraints (y suggested)
+#Sync over models; removing inconsistent atoms (true suggested)
 ReadEntryNMRSTAR
-2hgh_v31_small.str
+/Users/jd/ccpn_tmp/data/recoord/1brv/1brv_restr.new.str
 y
 y
 y
 n
+y
 y
 
 
@@ -38,8 +40,8 @@ y
 #tmp_dir/1brv_DOCR_small_dc_high_viol.str
 
 CalcDihConstraintViolation
-5.0
-tmp_dir/1brv_DOCR_small_dih_viol.str
+1.0
+tmp_dir/1brv_DOCR_dih_viol.str
 
 
 Quit

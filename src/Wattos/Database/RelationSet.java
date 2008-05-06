@@ -237,8 +237,8 @@ public class RelationSet implements Serializable {
         StarParser myParser = new StarParser( inStream );
         /** Read all at once; might benefit from QDParsing 
         
-        myParser.StarFileNodeParse(myParser);
-        StarFileNode sfnInput = (StarFileNode) myParser.popResult();
+        myParser.StarFileNodeParse(Wattos.Star.StarGeneral.sp);
+        StarFileNode sfnInput = (StarFileNode) Wattos.Star.StarGeneral.sp.popResult();
         SaveFrameNode sfn = getFirstSaveFrameByCategory( snInput, saveFrameCategoryName );
         name = sfn.getLabel();         
     }

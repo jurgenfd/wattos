@@ -207,17 +207,13 @@ public class BMRBHomologyUpdate {
         try {
             inStream =  new FileInputStream( input_star_file_name );
         
-            if ( myParser == null ) {
-                myParser = new StarParser( inStream );
-            } else {
-                StarParser.ReInit( inStream );
-            }
+            StarParser.ReInit( inStream );
             General.showDebug("Parsing input star file: " + input_star_file_name);
-            StarParser.StarFileNodeParse(myParser);        
+            StarParser.StarFileNodeParse(Wattos.Star.StarGeneral.sp);        
             inStream.close();
             //General.showDebug("Parsing done");
             
-            StarFileNode sfnInput = (StarFileNode) myParser.popResult();
+            StarFileNode sfnInput = (StarFileNode) Wattos.Star.StarGeneral.sp.popResult();
 
             // Returns a arraylist of orf or a valid empty table.
             Table sequence_table = NMRSTAREntry.getSequenceHomologyData( sfnInput, 

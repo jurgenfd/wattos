@@ -28,7 +28,8 @@ import Wattos.Utils.Wiskunde.Statistics;
 
 
 /**A list of distance restraints. Contains method to write the violation STAR
- *statistics.
+ *statistics. Angles will be shown in range <-180,180] such as phi and psi.
+ *
  * @author Jurgen F. Doreleijers
  * @version 1
  */
@@ -41,9 +42,9 @@ public class CdihList extends SimpleConstrList implements Serializable {
     public Cdih cdih = null;
 
     public String tagNameTA_constraint_stats_list_Sf_category;                 
-    public String tagNameTA_constraint_stats_list_Entry_ID;                    
-    public String tagNameTA_constraint_stats_list_ID;                          
-    public String tagNameTA_constraint_stats_list_Constraint_file_ID;          
+//    public String tagNameTA_constraint_stats_list_Entry_ID;                    
+//    public String tagNameTA_constraint_stats_list_ID;                          
+//    public String tagNameTA_constraint_stats_list_Constraint_file_ID;          
     public String tagNameTA_constraint_stats_list_Constraint_count;            
     public String tagNameTA_constraint_stats_list_Viol_count;                  
     public String tagNameTA_constraint_stats_list_Viol_total;                  
@@ -80,8 +81,8 @@ public class CdihList extends SimpleConstrList implements Serializable {
     public String tagNameTA_constraint_stats_Max_violation_model_number;
     public String tagNameTA_constraint_stats_Above_cutoff_violation_count;
     public String tagNameTA_constraint_stats_Above_cutoff_violation_per_model;
-    public String tagNameTA_constraint_stats_Entry_ID;
-    public String tagNameTA_constraint_stats_TA_constraint_stats_list_ID;
+//    public String tagNameTA_constraint_stats_Entry_ID;
+//    public String tagNameTA_constraint_stats_TA_constraint_stats_list_ID;
 
     public static String explanation = null;
     
@@ -263,7 +264,7 @@ public class CdihList extends SimpleConstrList implements Serializable {
                 return false;
             }
             boolean sortRestraints=true;
-            boolean status = constr.cdih.toXplor( ridsCDIH, fn, fileCount, atomNomenclature, sortRestraints );
+            boolean status = constr.cdih.toXplorOrSo( ridsCDIH, fn, fileCount, atomNomenclature, sortRestraints, null );
             if ( ! status ) {
                 General.showError("Failed cdih.toXplor");
                 General.showError("Not writing any more cdihLists");
@@ -325,13 +326,15 @@ public class CdihList extends SimpleConstrList implements Serializable {
      * Calculates the violation for given list and only consider restraints
      *given in the todoCDIH set.
      *If the cutoff is Defs.NULL then it will be assumed to be 5 degrees. It sets list
-     *properties too.
+     *properties too. Note that the value is given in degrees whereas internally
+     *Wattos calculates in radians.
      */
     public boolean calcViolation(BitSet todoCDIH, int currentCDIHListId, float cutoffValue ) {
         cdih = constr.cdih; // get a ref now because it was hard before.
         if ( Defs.isNull(cutoffValue)) {
             cutoffValue = 5;
         }
+        cutoffValue *= Geometry.CFI; // stored in radians. only at time of write out translated to degrees.
 
         BitSet selectedModels = gumbo.model.selected;        
         BitSet todoCDIHFiltered = getCDIHRidsInListAndTodo(currentCDIHListId,todoCDIH);
@@ -349,9 +352,9 @@ public class CdihList extends SimpleConstrList implements Serializable {
 
         General.showDebug("Calculating violations for cdihs numbering: "   + count +
                 " in models numbering: "                      + selectedModelsCount);
-        General.showDebug("cdihs   : " + PrimitiveArray.toString( todoCDIHFiltered));
+//        General.showDebug("cdihs   : " + PrimitiveArray.toString( todoCDIHFiltered));
         int[] selectedModelArray = PrimitiveArray.toIntArray( selectedModels ); // for efficiency.
-        General.showDebug("Models: " + PrimitiveArray.toString( selectedModelArray ));
+//        General.showDebug("Models: " + PrimitiveArray.toString( selectedModelArray ));
 
         if ( count == 0 ) {
             General.showWarning("No constraints selected in CdihList.calcViolation.");
@@ -403,7 +406,7 @@ public class CdihList extends SimpleConstrList implements Serializable {
                 boolean isLowViol = isViol[0];
                 boolean isUppViol = isViol[1];
 
-                General.showDebug("**** Found value, viol, upp, low: " + value + ", " + viol + ", " + upp + ", " + low);
+//                General.showDebug("**** Found value, viol, upp, low: " + value + ", " + viol + ", " + upp + ", " + low);
                 currentCDIHViolId = cdih.simpleConstrViol.getNextReservedRow(currentCDIHViolId);
                 // Check if the relation grew in size because not all relations can be adaquately estimated.
                 if ( currentCDIHViolId == Relation.DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW ) {
@@ -421,7 +424,7 @@ public class CdihList extends SimpleConstrList implements Serializable {
                 cdih.scMainIdViol[ currentCDIHViolId ] = currentCDIHId;
                 cdih.scListIdViol[ currentCDIHViolId ] = cdih.scMainIdViol[    currentCDIHId ];
                 cdih.entryIdViol[  currentCDIHViolId ] = cdih.entryIdMain[     currentCDIHId ];
-                cdih.value[     currentCDIHViolId ] = value;
+                cdih.value[        currentCDIHViolId ] = value;
                 cdih.violation[    currentCDIHViolId ] = viol;
 
                 if ( viol > 0 ) {
@@ -455,7 +458,8 @@ public class CdihList extends SimpleConstrList implements Serializable {
         violAvViol [ currentCDIHListId ] = sum/violationCount;
         cutoff[      currentCDIHListId ] = cutoffValue;
 
-        General.showDebug("Calculated values for number of constraints: " + cdihCount + " in number of models: " + selectedModelArray.length);
+//      General.showDebug("Calculated values for number of constraints: " + cdihCount + " in number of models: " + selectedModelArray.length);
+        General.showOutput("Max violation in any model: " + violMax    [ currentCDIHListId ]);
         return true;
     }
     
@@ -532,23 +536,30 @@ public class CdihList extends SimpleConstrList implements Serializable {
 
         // INTRO
         TagTable tT = (TagTable) sF.get(0);
-        //int rowIdx = tT.getNewRowId(); // do no error handeling.
+        //int rowIdx = tT.getNewRowId(); // do no error handling.
         int rowIdx = 0;
+        float violTotalDeg  = (float) (violTotal[currentCDIHListId]*Geometry.CF);
+        float violMaxDeg    = (float) (violMax[currentCDIHListId]*Geometry.CF);
+        float violRmsDeg    = (float) (violRms[currentCDIHListId]*Geometry.CF);
+        float violAllDeg    = (float) (violAll[currentCDIHListId]*Geometry.CF);
+        float violAvViolDeg = (float) (violAvViol[currentCDIHListId]*Geometry.CF);
+        float cutoffDeg     = (float) (cutoff[currentCDIHListId]*Geometry.CF);
+
         tT.setValue(rowIdx, Relation.DEFAULT_ATTRIBUTE_ORDER_ID , 0);
-        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_ID                          ,listNumber);
-        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Constraint_file_ID          ,"1");
+//        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_ID                          ,listNumber);
+//        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Constraint_file_ID          ,"1");
         tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Constraint_count            ,count);
         tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Viol_count                  ,violCount[currentCDIHListId]);
-        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Viol_total                  ,violTotal[currentCDIHListId]);
-        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Viol_max                    ,violMax[currentCDIHListId]);
-        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Viol_rms                    ,violRms[currentCDIHListId]);
-        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Viol_average_all_restraints ,violAll[currentCDIHListId]);
-        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Viol_average_violations_only,violAvViol[currentCDIHListId]);
-        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Cutoff_violation_report     ,cutoff[currentCDIHListId]);
+        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Viol_total                  ,violTotalDeg);
+        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Viol_max                    ,violMaxDeg);
+        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Viol_rms                    ,violRmsDeg);
+        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Viol_average_all_restraints ,violAllDeg);
+        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Viol_average_violations_only,violAvViolDeg);
+        tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Cutoff_violation_report     ,cutoffDeg);
         tT.setValue(rowIdx, tagNameTA_constraint_stats_list_Details                     ,explanation);
 
         // LISTING
-        tT = (TagTable) sF.get(2);
+        tT = (TagTable) sF.get(1);
         int cdihCount = 0;
         for (currentCDIHId = todoList.nextSetBit(0);currentCDIHId>=0;currentCDIHId = todoList.nextSetBit(currentCDIHId+1)) {
             if ( ! cdih.toSTAR( tT, currentCDIHId, currentCDIHListId, cdihCount, listNumber )) {
@@ -583,12 +594,12 @@ public class CdihList extends SimpleConstrList implements Serializable {
             tT.getNewRowId(); // Sets first row bit in used to true.
             String cat = sF.title;
             namesAndValues.put( tagNameTA_constraint_stats_list_Sf_category, cat);
-            namesAndValues.put( tagNameTA_constraint_stats_list_Constraint_file_ID          , new Integer(1));
+//            namesAndValues.put( tagNameTA_constraint_stats_list_Constraint_file_ID          , new Integer(1));
 
             starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_list_Sf_category                  );
-            starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_list_Entry_ID                     );
-            starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_list_ID                           );
-            starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_list_Constraint_file_ID           );
+//            starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_list_Entry_ID                     );
+//            starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_list_ID                           );
+//            starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_list_Constraint_file_ID           );
             starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_list_Constraint_count             );
             starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_list_Viol_count                   );
             starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_list_Viol_total                   );
@@ -642,8 +653,8 @@ public class CdihList extends SimpleConstrList implements Serializable {
             starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_Max_violation_model_number      );
             starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_Above_cutoff_violation_count    );
             starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_Above_cutoff_violation_per_model);
-            starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_Entry_ID                        );
-            starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_TA_constraint_stats_list_ID     );
+//            starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_Entry_ID                        );
+//            starDict.putFromDict( namesAndTypes, order, tagNameTA_constraint_stats_TA_constraint_stats_list_ID     );
 
             if ( ! tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, null)) {
                 General.showError("Failed to tT.insertColumnSet");
@@ -663,48 +674,48 @@ public class CdihList extends SimpleConstrList implements Serializable {
         // Please note that the following names are not hard-coded as star names.
         try {
             starDict = dbms.ui.wattosLib.starDictionary;
-            tagNameTA_constraint_stats_list_Sf_category                  = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats_list.Sf_category                 ");
-            tagNameTA_constraint_stats_list_Entry_ID                     = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats_list.Entry_ID                    ");
-            tagNameTA_constraint_stats_list_ID                           = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats_list.ID                          ");
-            tagNameTA_constraint_stats_list_Constraint_file_ID           = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats_list.Constraint_file_ID          ");
-            tagNameTA_constraint_stats_list_Constraint_count             = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats_list.Constraint_count            ");
-            tagNameTA_constraint_stats_list_Viol_count                   = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats_list.Viol_count                  ");
-            tagNameTA_constraint_stats_list_Viol_total                   = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats_list.Viol_total                  ");
-            tagNameTA_constraint_stats_list_Viol_max                     = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats_list.Viol_max                    ");
-            tagNameTA_constraint_stats_list_Viol_rms                     = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats_list.Viol_rms                    ");
-            tagNameTA_constraint_stats_list_Viol_average_all_restraints  = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats_list.Viol_average_all_restraints ");
-            tagNameTA_constraint_stats_list_Viol_average_violations_only = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats_list.Viol_average_violations_only");
-            tagNameTA_constraint_stats_list_Cutoff_violation_report      = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats_list.Cutoff_violation_report     ");
-            tagNameTA_constraint_stats_list_Details                      = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats_list.Details                     ");
-            tagNameTA_constraint_stats_Restraint_ID                      = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Restraint_ID                     ");
-            tagNameTA_constraint_stats_Torsion_angle_name                = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Torsion_angle_name               ");
-            tagNameTA_constraint_stats_Entity_assembly_ID_1              = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Entity_assembly_ID_1             ");
-            tagNameTA_constraint_stats_Comp_index_ID_1                   = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Comp_index_ID_1                  ");
-            tagNameTA_constraint_stats_Comp_ID_1                         = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Comp_ID_1                        ");
-            tagNameTA_constraint_stats_Atom_ID_1                         = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Atom_ID_1                        ");
-            tagNameTA_constraint_stats_Entity_assembly_ID_2              = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Entity_assembly_ID_2             ");
-            tagNameTA_constraint_stats_Comp_index_ID_2                   = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Comp_index_ID_2                  ");
-            tagNameTA_constraint_stats_Comp_ID_2                         = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Comp_ID_2                        ");
-            tagNameTA_constraint_stats_Atom_ID_2                         = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Atom_ID_2                        ");
-            tagNameTA_constraint_stats_Entity_assembly_ID_3              = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Entity_assembly_ID_3             ");
-            tagNameTA_constraint_stats_Comp_index_ID_3                   = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Comp_index_ID_3                  ");
-            tagNameTA_constraint_stats_Comp_ID_3                         = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Comp_ID_3                        ");
-            tagNameTA_constraint_stats_Atom_ID_3                         = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Atom_ID_3                        ");
-            tagNameTA_constraint_stats_Entity_assembly_ID_4              = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Entity_assembly_ID_4             ");
-            tagNameTA_constraint_stats_Comp_index_ID_4                   = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Comp_index_ID_4                  ");
-            tagNameTA_constraint_stats_Comp_ID_4                         = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Comp_ID_4                        ");
-            tagNameTA_constraint_stats_Atom_ID_4                         = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Atom_ID_4                        ");
-            tagNameTA_constraint_stats_Angle_lower_bound_val             = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Angle_lower_bound_val            ");
-            tagNameTA_constraint_stats_Angle_upper_bound_val             = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Angle_upper_bound_val            ");
-            tagNameTA_constraint_stats_Angle_average                     = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Angle_average                    ");
-            tagNameTA_constraint_stats_Angle_minimum                     = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Angle_minimum                    ");
-            tagNameTA_constraint_stats_Angle_maximum                     = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Angle_maximum                    ");
-            tagNameTA_constraint_stats_Max_violation                     = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Max_violation                    ");
-            tagNameTA_constraint_stats_Max_violation_model_number        = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Max_violation_model_number       ");
-            tagNameTA_constraint_stats_Above_cutoff_violation_count      = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Above_cutoff_violation_count     ");
-            tagNameTA_constraint_stats_Above_cutoff_violation_per_model  = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Above_cutoff_violation_per_model ");
-            tagNameTA_constraint_stats_Entry_ID                          = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.Entry_ID                         ");
-            tagNameTA_constraint_stats_TA_constraint_stats_list_ID       = starDict.getTagName( "distance_constraint_statistics","_TA_constraint_stats.TA_constraint_stats_list_ID      ");            
+            tagNameTA_constraint_stats_list_Sf_category                  = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats_list.Sf_category                 ");
+//            tagNameTA_constraint_stats_list_Entry_ID                     = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats_list.Entry_ID                    ");
+//            tagNameTA_constraint_stats_list_ID                           = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats_list.ID                          ");
+//            tagNameTA_constraint_stats_list_Constraint_file_ID           = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats_list.Constraint_file_ID          ");
+            tagNameTA_constraint_stats_list_Constraint_count             = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats_list.Constraint_count            ");
+            tagNameTA_constraint_stats_list_Viol_count                   = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats_list.Viol_count                  ");
+            tagNameTA_constraint_stats_list_Viol_total                   = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats_list.Viol_total                  ");
+            tagNameTA_constraint_stats_list_Viol_max                     = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats_list.Viol_max                    ");
+            tagNameTA_constraint_stats_list_Viol_rms                     = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats_list.Viol_rms                    ");
+            tagNameTA_constraint_stats_list_Viol_average_all_restraints  = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats_list.Viol_average_all_restraints ");
+            tagNameTA_constraint_stats_list_Viol_average_violations_only = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats_list.Viol_average_violations_only");
+            tagNameTA_constraint_stats_list_Cutoff_violation_report      = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats_list.Cutoff_violation_report     ");
+            tagNameTA_constraint_stats_list_Details                      = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats_list.Details                     ");
+            tagNameTA_constraint_stats_Restraint_ID                      = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Restraint_ID                     ");
+            tagNameTA_constraint_stats_Torsion_angle_name                = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Torsion_angle_name               ");
+            tagNameTA_constraint_stats_Entity_assembly_ID_1              = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Entity_assembly_ID_1             ");
+            tagNameTA_constraint_stats_Comp_index_ID_1                   = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Comp_index_ID_1                  ");
+            tagNameTA_constraint_stats_Comp_ID_1                         = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Comp_ID_1                        ");
+            tagNameTA_constraint_stats_Atom_ID_1                         = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Atom_ID_1                        ");
+            tagNameTA_constraint_stats_Entity_assembly_ID_2              = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Entity_assembly_ID_2             ");
+            tagNameTA_constraint_stats_Comp_index_ID_2                   = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Comp_index_ID_2                  ");
+            tagNameTA_constraint_stats_Comp_ID_2                         = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Comp_ID_2                        ");
+            tagNameTA_constraint_stats_Atom_ID_2                         = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Atom_ID_2                        ");
+            tagNameTA_constraint_stats_Entity_assembly_ID_3              = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Entity_assembly_ID_3             ");
+            tagNameTA_constraint_stats_Comp_index_ID_3                   = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Comp_index_ID_3                  ");
+            tagNameTA_constraint_stats_Comp_ID_3                         = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Comp_ID_3                        ");
+            tagNameTA_constraint_stats_Atom_ID_3                         = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Atom_ID_3                        ");
+            tagNameTA_constraint_stats_Entity_assembly_ID_4              = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Entity_assembly_ID_4             ");
+            tagNameTA_constraint_stats_Comp_index_ID_4                   = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Comp_index_ID_4                  ");
+            tagNameTA_constraint_stats_Comp_ID_4                         = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Comp_ID_4                        ");
+            tagNameTA_constraint_stats_Atom_ID_4                         = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Atom_ID_4                        ");
+            tagNameTA_constraint_stats_Angle_lower_bound_val             = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Angle_lower_bound_val            ");
+            tagNameTA_constraint_stats_Angle_upper_bound_val             = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Angle_upper_bound_val            ");
+            tagNameTA_constraint_stats_Angle_average                     = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Angle_average                    ");
+            tagNameTA_constraint_stats_Angle_minimum                     = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Angle_minimum                    ");
+            tagNameTA_constraint_stats_Angle_maximum                     = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Angle_maximum                    ");
+            tagNameTA_constraint_stats_Max_violation                     = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Max_violation                    ");
+            tagNameTA_constraint_stats_Max_violation_model_number        = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Max_violation_model_number       ");
+            tagNameTA_constraint_stats_Above_cutoff_violation_count      = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Above_cutoff_violation_count     ");
+            tagNameTA_constraint_stats_Above_cutoff_violation_per_model  = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Above_cutoff_violation_per_model ");
+//            tagNameTA_constraint_stats_Entry_ID                          = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.Entry_ID                         ");
+//            tagNameTA_constraint_stats_TA_constraint_stats_list_ID       = starDict.getTagName( "torsion_angle_constraint_statistics","_TA_constraint_stats.TA_constraint_stats_list_ID      ");            
         } catch ( Exception e ) {
             General.showError("Failed to get all the tag names from dictionary compare code with dictionary");
             General.showThrowable(e);
@@ -712,9 +723,9 @@ public class CdihList extends SimpleConstrList implements Serializable {
         }
         if (
                 tagNameTA_constraint_stats_list_Sf_category                   == null ||
-                tagNameTA_constraint_stats_list_Entry_ID                      == null ||
-                tagNameTA_constraint_stats_list_ID                            == null ||
-                tagNameTA_constraint_stats_list_Constraint_file_ID            == null ||
+//                tagNameTA_constraint_stats_list_Entry_ID                      == null ||
+//                tagNameTA_constraint_stats_list_ID                            == null ||
+//                tagNameTA_constraint_stats_list_Constraint_file_ID            == null ||
                 tagNameTA_constraint_stats_list_Constraint_count              == null ||
                 tagNameTA_constraint_stats_list_Viol_count                    == null ||
                 tagNameTA_constraint_stats_list_Viol_total                    == null ||
@@ -750,9 +761,9 @@ public class CdihList extends SimpleConstrList implements Serializable {
                 tagNameTA_constraint_stats_Max_violation                      == null ||
                 tagNameTA_constraint_stats_Max_violation_model_number         == null ||
                 tagNameTA_constraint_stats_Above_cutoff_violation_count       == null ||
-                tagNameTA_constraint_stats_Above_cutoff_violation_per_model   == null ||
-                tagNameTA_constraint_stats_Entry_ID                           == null ||
-                tagNameTA_constraint_stats_TA_constraint_stats_list_ID        == null
+                tagNameTA_constraint_stats_Above_cutoff_violation_per_model   == null 
+//                tagNameTA_constraint_stats_Entry_ID                           == null ||
+//                tagNameTA_constraint_stats_TA_constraint_stats_list_ID        == null
                 ) {
             General.showError("Failed to get all the tag names from dictionary, compare code with dictionary.");
             return false;

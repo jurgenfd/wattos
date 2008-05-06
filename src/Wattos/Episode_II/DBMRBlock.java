@@ -115,9 +115,11 @@ public class DBMRBlock {
     
     /** The name of the file without the extension and path */
     public int dbfs_id;
-    /** The name of the file; excluding path but including extension.
+    /** The name of the file; excluding path but INCLUDING extension.
      * This will be the original filename in the beginning or e.g. 12345.str
      * where 12345 is the block id. 
+     * The extension is important to get right. Otherwise the released files
+     * will get a bad extensions from the NMR Restraints Grid.
      * */
     public String fileName;
     /** Number of restraints or other items in block.*/

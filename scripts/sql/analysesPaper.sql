@@ -298,4 +298,5 @@ FROM rcsb_id_with_mr m, rcsb_pdb_id p
 where m.rcsb_id=p.rcsb_id and
 p.pdb_id not in ( select pdb_id from DOCRFREDEntries);
 
-
+-- JUNK follows.
+SELECT * FROM `mrblock` where file_name LIKE '1brv%';

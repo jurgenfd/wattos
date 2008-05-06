@@ -37,19 +37,15 @@ public class BMRBToFasta {
     public static boolean convertEntry( FileInputStream inStream, Writer writer, boolean doAll ) {
         
         //General.showDebug("reinit star parser");
-        if ( myParser == null ) {
-            myParser = new StarParser( inStream );
-        } else {
-            StarParser.ReInit( inStream );
-        }
+        StarParser.ReInit( inStream );
         
         try {
-            StarParser.StarFileNodeParse(myParser);
+            StarParser.StarFileNodeParse(Wattos.Star.StarGeneral.sp);
         } catch ( ParseException t ) {
             General.showThrowable(t);
         }
         
-        StarFileNode sfnInput = (StarFileNode) myParser.popResult();
+        StarFileNode sfnInput = (StarFileNode) Wattos.Star.StarGeneral.sp.popResult();
         
         String accessionNumber = NMRSTAREntry.getAccessionNumber( sfnInput );
         if ( accessionNumber == null ) {

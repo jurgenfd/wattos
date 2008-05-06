@@ -52,14 +52,14 @@ public class File31Test extends TestCase {
 //    String baseInputName = "2hgh_wim_small_2007-05-25";
 //    String baseInputName = "1ai0_rem_small_out";
 //    String baseInputName = "2hgh_rem_small_out";
-    String baseInputName = "2hgh_chris_small_patched_2007-06-25";
+    String baseInputName = "2hgh_rest_chris";
 //    String baseInputName = "1brv_DOCR_small";
 //    String baseInputName = "2hgh-nmrif_small";
     
     String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
-    File inputDir       = new File( wattosRoot,"Data"+fs+"test_data" );
+    File inputDir       = new File( wattosRoot,"data"+fs+"test_data" );
     File outputDir      = new File( wattosRoot,"tmp_dir" );
-    String outputFileName = baseInputName + "_out.str";
+    String outputFileName = baseInputName + "_out.str.gz";
     File outputFile     = new File( outputDir,outputFileName );
     UserInterface ui = UserInterface.init(true);
     DBMS dbms = ui.dbms;
@@ -102,9 +102,11 @@ public class File31Test extends TestCase {
         boolean matchRestraints2Soup                = true;     // default true
         boolean matchRestraints2SoupByAuthorDetails = false;    // default false
         boolean removeUnlinkedRestraints            = true;     // default true
+        boolean syncModels                          = true;     // default true
 
         status = gumbo.entry.readNmrStarFormattedFile(url,null,ui,doEntry,
-                doRestraints,matchRestraints2Soup,matchRestraints2SoupByAuthorDetails,removeUnlinkedRestraints);
+                doRestraints,matchRestraints2Soup,matchRestraints2SoupByAuthorDetails,
+                removeUnlinkedRestraints,syncModels);
         //status = file.toWattos(url);
         taken = System.currentTimeMillis() - start;
         General.showDebug( "to Wattos took: " + taken + "(" + (taken/1000.0) + " sec)" );

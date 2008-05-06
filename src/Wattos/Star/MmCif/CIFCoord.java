@@ -104,7 +104,7 @@ public class CIFCoord {
 //    public String tagNameAtomSFId_2;       
     public String tagNameAtomModelId;      
     public String tagNameAtomId;           
-    public String tagNameAtomMolId;       
+    public String tagNameAtomAsym_ID;       
     public String tagNameAtomEntityId;       
     public String tagNameAtomResId;        
     public String tagNameAtomResName;      
@@ -118,6 +118,7 @@ public class CIFCoord {
     public String tagNameAtomCoorY;        
     public String tagNameAtomCoorZ;         
     public String tagNameAtomBFactor;      
+    public String tagNameAtomOccupancy;      
 
     /** END BLOCK */
 
@@ -200,7 +201,7 @@ public class CIFCoord {
 
             tagNameAtomModelId                = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       "_Atom_site.Model_ID"                         )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameAtomId                     = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       "_Atom_site.ID"                               )).get(StarDictionary.POSITION_CIF_TAG_NAME);
-            tagNameAtomMolId                  = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       "_Atom_site.Label_entity_assembly_ID"         )).get(StarDictionary.POSITION_CIF_TAG_NAME);
+            tagNameAtomAsym_ID                = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       "_Atom_site.Label_asym_ID"         )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameAtomEntityId               = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       "_Atom_site.Label_entity_ID"                  )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameAtomResId                  = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       "_Atom_site.Label_comp_index_ID"              )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameAtomResName                = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       "_Atom_site.Label_comp_ID"                    )).get(StarDictionary.POSITION_CIF_TAG_NAME);
@@ -214,6 +215,7 @@ public class CIFCoord {
             tagNameAtomCoorY                  = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_COOR_Y                                      )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameAtomCoorZ                  = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_COOR_Z                                      )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameAtomBFactor                = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_BFACTOR                                    )).get(StarDictionary.POSITION_CIF_TAG_NAME);
+            tagNameAtomOccupancy              = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY                                    )).get(StarDictionary.POSITION_CIF_TAG_NAME);
         } catch ( Exception e ) {
             General.showThrowable(e);
             General.showError("Failed to get all the tag names from dictionary compare code with dictionary");
@@ -237,7 +239,7 @@ public class CIFCoord {
      *If atoms in restraint data can not be linked to atoms in coordinate list they will be marked in:
      *dc.hasUnLinkedAtom.
      */    
-    public boolean toWattos(URL url) {        
+    public boolean toWattos(URL url, boolean syncModels) {        
         // Use a temporary dbms so the data doesn't clobber the regular one.
         DBMS dbmsTemp = new DBMS();
         StarFileReader sfr = new StarFileReader(dbmsTemp);        
@@ -348,7 +350,7 @@ HETATM 4797  O  O      . HOH U 5 .  ? 0.104   -1.907  -19.678 1.00 0.00 ? ? ? ? 
 HETATM 4798  H  H1     . HOH U 5 .  ? 0.336   -2.657  -19.128 1.00 0.00 ? ? ? ? ? 9  HOH ? H1   1  
 HETATM 4799  H  H2     . HOH U 5 .  ? 0.882   -1.736  -20.204 1.00 0.00 ? ? ? ? ? 9  HOH ? H2   1  
 HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? ? 10 HOH ? O    1   */ 
-        TagTable tTCoor       = db.getTagTable(tagNameAtomMolId,true);
+        TagTable tTCoor       = db.getTagTable(tagNameAtomAsym_ID,true);
                                 
         if ( tTStructAsym == null ) {
             General.showError("Failed to find assembly defs.");
@@ -391,8 +393,8 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
             General.showError("Failed to convertChainId2EntityId for: "+tagNameResNonPolMolId);
             return false;            
         }
-        if ( ! convertChainId2EntityId(tTCoor,       tagNameAtomMolId, asymId2IntMap)) {
-            General.showError("Failed to convertChainId2EntityId for: "+tagNameAtomMolId);
+        if ( ! convertChainId2EntityId(tTCoor,       tagNameAtomAsym_ID, asymId2IntMap)) {
+            General.showError("Failed to convertChainId2EntityId for: "+tagNameAtomAsym_ID);
             return false;            
         }
         
@@ -706,7 +708,8 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                 Gumbo.DEFAULT_ATTRIBUTE_COOR_X,        
                 Gumbo.DEFAULT_ATTRIBUTE_COOR_Y,        
                 Gumbo.DEFAULT_ATTRIBUTE_COOR_Z,        
-                Gumbo.DEFAULT_ATTRIBUTE_BFACTOR      
+                Gumbo.DEFAULT_ATTRIBUTE_BFACTOR,    
+                Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY      
         };
         for ( int n=0;n<equivalents.length;n++) {
             String columnName = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main", equivalents[n])).get(StarDictionary.POSITION_CIF_TAG_NAME);
@@ -739,7 +742,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
         /** Set fkcs */
         tTCoor.setValueByColumn(Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME ], new Integer(currentEntryId));                  
         int[]   atomModelIdList         = (int[])       tTCoor.getColumn( tagNameAtomModelId );
-        int[]   atomMolIdList           = (int[])       tTCoor.getColumn( tagNameAtomMolId );
+        int[]   atomMolIdList           = (int[])       tTCoor.getColumn( tagNameAtomAsym_ID );
         int[]   atomResIdList           = (int[])       tTCoor.getColumn( tagNameAtomResId );
         int[]   model_main_id           = (int[])       tTCoor.getColumn( Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RelationSet.RELATION_ID_COLUMN_NAME ]);
         int[]   mol_main_id             = (int[])       tTCoor.getColumn( Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[ RelationSet.RELATION_ID_COLUMN_NAME ] );
@@ -786,16 +789,23 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
             return false;
         }                
            
-        
         // Sync the atoms over the models in the entry. Note that this will remove unsynced atoms.
-        if ( (! entry.modelsSynced.get( currentEntryId  )) && 
-             (! entry.syncModels( currentEntryId ))) {
-            General.showError("Failed to sync models after reading in the coordinates. Deleting the whole entry again.");
-            if ( ! entry.mainRelation.removeRowsCascading( currentEntryId, true ) ) {
-                General.showError("Failed to deleting the whole entry.");
+        if ( syncModels ) {
+            if ( (! entry.modelsSynced.get( currentEntryId  )) && 
+                 (! entry.syncModels( currentEntryId ))) {
+                General.showError("Failed to sync models after reading in the coordinates. Deleting the whole entry again.");
+                if ( ! entry.mainRelation.removeRowsCascading( currentEntryId, true ) ) {
+                    General.showError("Failed to deleting the whole entry.");
+                }
+                return false;
             }
-            return false;
+        } else {
+            General.showWarning("Disabled syncing over models.");
+            General.showWarning("This might lead to inconsistencies in Wattos internal data model.");
+            General.showWarning("Needs testing for sure.");
+            General.showWarning("The code will definitely not work when reading in restraints on top of partily missing atoms.");
         }
+      
         
         // Select all newly added atoms; code added later.
         BitSet orgAtoms = SQLSelect.selectBitSet(dbms, atom.mainRelation, 

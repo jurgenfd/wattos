@@ -50,7 +50,7 @@ public class Geometry3D extends Geometry {
     }
     
     /**
-     *Calculates the torsionangle between 4 points around the 2nd and 3rd point.
+     *Calculates the torsion angle between 4 points around the 2nd and 3rd point.
      *Adapted from the routine C program GENC by JFD based on routines
      *by Chang-Shung Tung and Eugene S. Carter (T10, Los Alamos 1994).
      */

@@ -64,9 +64,9 @@ public class MRSTARFile {
     /** Keep track of the number of occurrences of each data type 
      */
     public HashMap dataOccurences                               = null;
-    /** StarParser is only allowed to invoke as a static class 
+    /** StarParser is only allowed to be invoke as a static class 
      */
-    static StarParser aParser;
+    static StarParser aParser = null;
     
     /** Map for subtypes to STAR enumerations */
     public static HashMap subTypeMap2STAR = new HashMap();
@@ -173,12 +173,13 @@ public class MRSTARFile {
         
         
         // Post processing
+        General.showDebug("Before post processing: "+sn.toSTAR());
         File31.enterStandardIDs(   sn, "parsed_" + pdb_id);
         validDictionary.sortTagNames( sn );
  
         //FROM WATTOS API
         buf = sn.toSTAR();
-//        General.showDebug("Parsed: "+sn.toSTAR());
+        General.showDebug("Parsed: "+sn.toSTAR());
         BufferedReader br = new BufferedReader(new StringReader(buf));
         try {
             StarParser.ReInit(br); //not needed unless called again.
@@ -262,9 +263,14 @@ public class MRSTARFile {
         try {
             //General.showDebug("reinit star parser");
             FileInputStream inStream = new FileInputStream(fileName);
-            StarParser.ReInit( inStream );            
-            StarParser.StarFileNodeParse( aParser );
-            star_file_node = (StarFileNode) aParser.popResult();
+            
+            if( Wattos.Star.StarGeneral.sp == null ) {
+                General.showCodeBug("Should have initiated aParser at: .");
+                return Defs.NULL_INT;
+            }
+            StarParser.ReInit( inStream );
+            StarParser.StarFileNodeParse( Wattos.Star.StarGeneral.sp );
+            star_file_node = (StarFileNode) Wattos.Star.StarGeneral.sp.popResult();
         } catch ( Throwable t) {
             General.showThrowable(t);
             return Defs.NULL_INT;

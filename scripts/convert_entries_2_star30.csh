@@ -1,6 +1,6 @@
 #!/bin/csh
 
-# This script will convert all mrfiles to star 3.0
+# This script will convert all mrfiles to star
 
 # Sets classpath for java like always
 # I do this so my software gets run every week and shows me in the cron
@@ -15,20 +15,22 @@ echo "Cron script is       : " convert_entries_2_star30.csh
 
 # List of arguments
 # 1 Load(y), dump (n) or convert(c):
-# 2 STAR version (1 for 3.0)
-# 2 Directory name in
-# 3 Directory name out
-# 4 Convert one entry(y) or consecutive entries(n)? (y/n):
-# 5 Start over? (y/n):
+# 2 STAR version (2 for 3.1)
+# 3 Directory name in
+# 4 Directory name out
+# 5 Convert one entry(y) or consecutive entries(n)? (y/n):
+# 6 Which entry (. for first)
+# 7 Do all now? (y/n): 
+# 8 Start over? (y/n):
 
-java Wattos.Episode_II.MRInterloop << EOD
+java -Xmx1g Wattos.Episode_II.MRInterloop << EOD
 c
-1
+2
 .
 .
 y
-.
-y
+2jt2
+n
 n
 EOD
 

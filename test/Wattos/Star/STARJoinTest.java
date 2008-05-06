@@ -37,7 +37,7 @@ public class STARJoinTest extends TestCase {
         String baseInputName = "1brv_DOCR_small";
         //String baseInputName = "1brv_DOCR";
         String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
-        File inputDir       = new File( wattosRoot,"Data"+fs+"test_data" );
+        File inputDir       = new File( wattosRoot,"data"+fs+"test_data" );
         File outputDir      = new File( wattosRoot,"tmp_dir" );
         File inputFile1     = new File( inputDir,baseInputName + ".str.gz" );
         File inputFile2     = new File( inputDir,baseInputName + ".str.gz" );

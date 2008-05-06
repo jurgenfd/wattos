@@ -109,7 +109,7 @@ public class StarGeneralTest extends TestCase {
         String fileName     = "1brv_DOCR_small.str.gz";
         String fileNameOut  = "1brv_DOCR_wattos.str";
         String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
-        File inputDir       = new File( wattosRoot,"Data"+File.separator+"test_data" );
+        File inputDir       = new File( wattosRoot,"data"+File.separator+"test_data" );
         String urlName      = inputDir + File.separator + fileName;        
         URL    url          = InOut.getUrlFileFromName(urlName);
         File tmpDir         = new File( System.getProperty("java.io.tmpdir"));        
@@ -237,7 +237,7 @@ public class StarGeneralTest extends TestCase {
         String fileName     = "moreQuotes.str";
         String fileNameOut  = "moreQuotes_out.str";
         String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
-        File inputDir       = new File( wattosRoot,"Data"+File.separator+"test_data" );
+        File inputDir       = new File( wattosRoot,"data"+File.separator+"test_data" );
         String urlName      = inputDir + File.separator + fileName;        
         URL    url          = InOut.getUrlFileFromName(urlName);
         File tmpDir         = new File( System.getProperty("java.io.tmpdir"));        

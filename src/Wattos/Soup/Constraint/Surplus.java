@@ -39,8 +39,8 @@ public class Surplus {
     public float[] low_theo;
 
     public String tagNameSurplusSf_category;    
-    public String tagNameSurplusEntry_ID;    
-    public String tagNameSurplusDC_surplus_ID;    
+//    public String tagNameSurplusEntry_ID;    
+//    public String tagNameSurplusDC_surplus_ID;    
     public String tagNameSurplusRedundancy_threshold_pct;    
     public String tagNameSurplusUpdate_original_restraints;
     public String tagNameSurplusOnly_filter_fixed;
@@ -1345,12 +1345,12 @@ public class Surplus {
             tT.getNewRowId(); // Sets first row bit in used to true.
             String cat = "distance_constraint_surplus";
             namesAndValues.put( tagNameSurplusSf_category, cat);
-            namesAndValues.put( tagNameSurplusEntry_ID, new Integer(1));
-            namesAndValues.put( tagNameSurplusDC_surplus_ID, new Integer(1));
+//            namesAndValues.put( tagNameSurplusEntry_ID, new Integer(1));
+//            namesAndValues.put( tagNameSurplusDC_surplus_ID, new Integer(1));
             
             starDict.putFromDict( namesAndTypes, order, tagNameSurplusSf_category                   );
-            starDict.putFromDict( namesAndTypes, order, tagNameSurplusEntry_ID                      );
-            starDict.putFromDict( namesAndTypes, order, tagNameSurplusDC_surplus_ID                 );
+//            starDict.putFromDict( namesAndTypes, order, tagNameSurplusEntry_ID                      );
+//            starDict.putFromDict( namesAndTypes, order, tagNameSurplusDC_surplus_ID                 );
             starDict.putFromDict( namesAndTypes, order, tagNameSurplusRedundancy_threshold_pct      );
             starDict.putFromDict( namesAndTypes, order, tagNameSurplusUpdate_original_restraints    );
             starDict.putFromDict( namesAndTypes, order, tagNameSurplusOnly_filter_fixed             );
@@ -1385,8 +1385,8 @@ public class Surplus {
         // Please note that the following names are not hard-coded as star names.
         try {
             tagNameSurplusSf_category                    = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.Sf_category                   ");
-            tagNameSurplusEntry_ID                       = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.Entry_ID                      ");
-            tagNameSurplusDC_surplus_ID                  = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.DC_surplus_ID                 ");
+//            tagNameSurplusEntry_ID                       = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.Entry_ID                      ");
+//            tagNameSurplusDC_surplus_ID                  = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.DC_surplus_ID                 ");
             tagNameSurplusRedundancy_threshold_pct       = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.Redundancy_threshold_pct      ");
             tagNameSurplusUpdate_original_restraints     = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.Update_original_restraints    ");
             tagNameSurplusOnly_filter_fixed              = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.Only_filter_fixed             ");
@@ -1409,8 +1409,8 @@ public class Surplus {
         }
         if (
             tagNameSurplusSf_category                    == null ||
-            tagNameSurplusEntry_ID                       == null ||
-            tagNameSurplusDC_surplus_ID                  == null ||
+//            tagNameSurplusEntry_ID                       == null ||
+//            tagNameSurplusDC_surplus_ID                  == null ||
             tagNameSurplusRedundancy_threshold_pct       == null ||
             tagNameSurplusUpdate_original_restraints     == null ||
             tagNameSurplusOnly_filter_fixed              == null ||
@@ -1433,8 +1433,8 @@ public class Surplus {
         if ( false ) {
             String[] tagNames = {
                 tagNameSurplusSf_category,                   
-                tagNameSurplusEntry_ID,                      
-                tagNameSurplusDC_surplus_ID,                 
+//                tagNameSurplusEntry_ID,                      
+//                tagNameSurplusDC_surplus_ID,                 
                 tagNameSurplusRedundancy_threshold_pct,      
                 tagNameSurplusUpdate_original_restraints,    
                 tagNameSurplusOnly_filter_fixed,             

@@ -266,7 +266,7 @@ public class Entry extends GumboItem implements Serializable {
             }
             return false;
         }        
-        if ( ! postProcessAfterReading() ) {
+        if ( ! postProcessAfterReading(true) ) {
             return false;            
         }
         return status;
@@ -275,8 +275,9 @@ public class Entry extends GumboItem implements Serializable {
     
     /** Does action after each read of a molecular system. 
      * Note that the atom type is only set for the master atoms.
+     * @param syncModels TODO
      */
-    private boolean postProcessAfterReading() {
+    private boolean postProcessAfterReading(boolean syncModels) {
         BitSet atomsInMasterModel = getAtomsInMasterModel();
         if ( atomsInMasterModel == null ) {
             General.showError("Failed to getAtomsInMasterModel");
@@ -306,7 +307,10 @@ public class Entry extends GumboItem implements Serializable {
             General.showDebug("Skipping to assign amber atom types in postProcessAfterReading");
         }
 
-        // Set atom types from Amber lib.
+        // Set atom types from Amber lib before
+        if ( ! syncModels ) {
+            return true; 
+        }
         return gumbo.atom.calcBond();
     }
 
@@ -356,7 +360,7 @@ public class Entry extends GumboItem implements Serializable {
             General.showError("atom.renameByEntry was unsuccessful.");
             return false;
         }
-        if ( ! postProcessAfterReading() ) {
+        if ( ! postProcessAfterReading(true) ) {
             return false;            
         }
         if ( status ) {
@@ -419,7 +423,7 @@ public class Entry extends GumboItem implements Serializable {
             General.showError("syncModels on selected entry was unsuccessful.");            
             status = false;
         }
-        if ( ! postProcessAfterReading() ) {
+        if ( ! postProcessAfterReading(true) ) {
             return false;            
         }
         
@@ -542,7 +546,7 @@ public class Entry extends GumboItem implements Serializable {
                 }
                 File31 file = new File31( dbms, ui );
                 General.showOutput("Reading NMR-STAR file from URL: " + url);
-                status = file.toWattos(url, true, true, true, false, removeUnlinkedRestraints); 
+                status = file.toWattos(url, true, true, true, false, removeUnlinkedRestraints,true); 
                 if ( ! status ) {
                     General.showError("Failed to convert File31 to Wattos from URL: " + url);
                     return false;
@@ -554,7 +558,7 @@ public class Entry extends GumboItem implements Serializable {
             General.showError("Failed to readNmrStarFormattedFileSet from URL: " + url);
             return false;
         }                
-        if ( ! postProcessAfterReading() ) {
+        if ( ! postProcessAfterReading(true) ) {
             return false;            
         }
         General.showOutput("Done reading STAR formatted entry.");            
@@ -566,7 +570,8 @@ public class Entry extends GumboItem implements Serializable {
     public boolean readNmrStarFormattedFile( URL url, String starVersion,             
             UserInterface ui, boolean doEntry, boolean doRestraints,
             boolean matchRestraints2Soup, boolean matchRestraints2SoupByAuthorDetails, 
-            boolean removeUnlinkedRestraints ) {         
+            boolean removeUnlinkedRestraints,
+            boolean syncModels ) {         
         boolean status = true;
         File31 file = null;
         try {
@@ -581,13 +586,14 @@ public class Entry extends GumboItem implements Serializable {
                 doRestraints, 
                 matchRestraints2Soup, 
                 matchRestraints2SoupByAuthorDetails,
-                removeUnlinkedRestraints); 
+                removeUnlinkedRestraints,
+                syncModels); 
         if ( ! status ) {
             General.showError("entry.readNmrStarFormattedFile was unsuccessful. Failed to read nmrstar formatted file");
         } else {
             General.showOutput("Done reading STAR formatted entry.");            
         }
-        if ( ! postProcessAfterReading() ) {
+        if ( ! postProcessAfterReading(syncModels) ) {
             return false;            
         }
         return status; 
@@ -595,7 +601,7 @@ public class Entry extends GumboItem implements Serializable {
 
     /** The name says it all. It will be read and appended to the list of entries.
      */
-    public boolean readmmCIFFormattedFile( URL url, UserInterface ui ) {         
+    public boolean readmmCIFFormattedFile( URL url, UserInterface ui, boolean syncModels ) {         
         boolean status = true;
         CIFCoord file = null;
         try {
@@ -604,11 +610,11 @@ public class Entry extends GumboItem implements Serializable {
             General.showCodeBug( e.getMessage() );
             return false;
         }                
-        status = file.toWattos(url); 
+        status = file.toWattos(url,syncModels); 
         if ( ! status ) {
             General.showError("entry.readmmCIFFormattedFile was unsuccessful. Failed to read nmrstar formatted file");
         }
-        if ( ! postProcessAfterReading() ) {
+        if ( ! postProcessAfterReading(syncModels) ) {
             return false;            
         }
         General.showOutput("Done readmmCIFFormattedFile.");            
@@ -674,15 +680,15 @@ public class Entry extends GumboItem implements Serializable {
         }
         General.showOutput("Done writing STAR formatted entry/entries.");            
         return true;
-    }    
+    }   
 
-    /** Write one or more files depending on selection and current possibilites.
+    /** Write one or more files depending on selection and current possibilities.
      */
     public boolean writeXplorFormattedConstraints( String fn, int entryRID,
             UserInterface ui, String atomNomenclature,boolean sortRestraints ) {         
         BitSet ridsDCListInEntry = SQLSelect.selectBitSet(dbms, ui.constr.dcList.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[RelationSet.RELATION_ID_COLUMN_NAME], 
             SQLSelect.OPERATION_TYPE_EQUALS, new Integer( entryRID ), false);
-        if ( ! ui.constr.dcList.toXplor(ridsDCListInEntry, fn, atomNomenclature,sortRestraints)) {
+        if ( ! ui.constr.dcList.toXplorOrSo(ridsDCListInEntry, fn, atomNomenclature,sortRestraints, AtomMap.NOMENCLATURE_ID_XPLOR)) {
             General.showError("Failed to write distance restraints; skipping other restraints.");
             return false;
         }
@@ -691,13 +697,14 @@ public class Entry extends GumboItem implements Serializable {
                 ui.constr.rdcList               
         };
         for ( int i=0;i<simpleConstraintLoL.length;i++) {
-            if ( ! simpleConstraintLoL[i].toXplor(entryRID, fn, atomNomenclature,sortRestraints)) {
+            if ( ! simpleConstraintLoL[i].toXplorOrSo(entryRID, fn, atomNomenclature,sortRestraints, null)) {
                 General.showError("Failed to write distance restraints; skipping other restraints.");
                 return false;
             }
         }
         return true;
     }
+    
     
     public int getFirstModelInEntry(int entryRID) {
         BitSet ridsModelInEntry = getModelsInEntry(entryRID);
@@ -718,10 +725,12 @@ public class Entry extends GumboItem implements Serializable {
         }        
         return firstModelRid;
     }
-    /** Write one or more files depending on selection and current possibilites.
+    
+    /** Write one or more files depending on selection and current possibilities.
+     * @param format TODO
      */
-    public boolean writeXplorFormattedSequenceList( String fn, int entryRID,
-            UserInterface ui  ) {
+    public boolean writeXplorOrSoFormattedSequenceList( String fn, int entryRID,
+            UserInterface ui, String format  ) {
         int firstModelRid = getFirstModelInEntry(entryRID);
         if ( firstModelRid < 0 ) {
             General.showError("Failed to find first model in entry");
@@ -733,13 +742,15 @@ public class Entry extends GumboItem implements Serializable {
                 SQLSelect.OPERATION_TYPE_EQUALS, 
                 new Integer( firstModelRid ), 
                 false);
-        return gumbo.mol.toXplor(ridsMolInModel, fn);        
+        return gumbo.mol.toXplorOrSor(ridsMolInModel, fn, format);        
     }
     
+    
     /** The name says it all. It will be written to one or more files depending on selection.
+     * @param format TODO
      */
-    public boolean writeXplorFormattedFileSet( String fn, 
-            UserInterface ui, String atomNomenclature, boolean sortRestraints ) {         
+    public boolean writeXplorOrSoFormattedFileSet( String fn, 
+            UserInterface ui, String atomNomenclature, boolean sortRestraints, String format ) {         
         
         // Find the selected entries making sure that unused selected entries aren't included.
         selected.and( used ); // paranoia, all selected should be in use but you never know...
@@ -761,7 +772,7 @@ public class Entry extends GumboItem implements Serializable {
                 outputFileName = InOut.addFileNumberBeforeExtension( fn, fileCount, true, 3 );
 //                General.showDebug("outputFileName in writeXplorFormattedFileSet: " + outputFileName);
             }            
-            boolean status = writeXplorFormattedSequenceList( outputFileName,entryRID, ui );
+            boolean status = writeXplorOrSoFormattedSequenceList( outputFileName,entryRID, ui, format );
             if ( ! status ) {
                 General.showError("Failed entry.writeXplorFormattedSequenceList.");
                 General.showError("Not writing any more entries");
@@ -842,7 +853,7 @@ public class Entry extends GumboItem implements Serializable {
     
     /** Generates a list for each atom in the first model with itself and siblings in parallel models.
      *Then it sets the sync-ed attribute for this entry. The attribute is described in the Gumbo class.
-     *It will print an error message for the first couple of  (10) atoms missing AND it will delete atoms for
+     *It will print an error message for the first couple of (10) atoms missing AND it will delete atoms for
      *which atoms are not represented in all models.
      *Empty models, mols, residues (those without atoms) will NOT be removed at this stage.
      *Also fills the ridAtomInMaster array.
@@ -1046,6 +1057,16 @@ public class Entry extends GumboItem implements Serializable {
         modelsSynced.set( entryRID, value );
         atomsHash[entryRID] = atomFirstRID;
         return true;
+    }
+            
+    /** Convenience wrapper also nice to indicate/document it's importance.
+     *Return whether or not the entry's models are synced.
+     */
+    public boolean getModelsSynced( int entryRID ) {
+        if ( ! used.get( entryRID ) ) {
+            return false;
+        }
+        return modelsSynced.get( entryRID );
     }
             
     /**     */

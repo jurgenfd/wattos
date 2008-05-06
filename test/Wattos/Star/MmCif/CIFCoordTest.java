@@ -57,7 +57,7 @@ In remediated mmCIF: 21 asyms (chains)
 //    String pdb_id = "2hgh";
     String baseInputName = pdb_id + "_rem_small";    
     String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
-    File inputDir       = new File( wattosRoot,"Data"+fs+"test_data" );
+    File inputDir       = new File( wattosRoot,"data"+fs+"test_data" );
     File outputDir      = new File( wattosRoot,"tmp_dir" );
     String outputFileName = baseInputName + "_out.str";
     File outputFile     = new File( outputDir,outputFileName );
@@ -97,7 +97,8 @@ In remediated mmCIF: 21 asyms (chains)
             fail("specify a valid name for input");
         }
         start = System.currentTimeMillis();
-        status = gumbo.entry.readmmCIFFormattedFile(url,ui);
+        boolean syncModels = true; 
+        status = gumbo.entry.readmmCIFFormattedFile(url,ui,syncModels);
         taken = System.currentTimeMillis() - start;
         General.showDebug( "to Wattos took: " + taken + "(" + (taken/1000.0) + " sec)" );
         if ( ! status ) {

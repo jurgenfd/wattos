@@ -36,12 +36,12 @@ public class AtomTest extends TestCase {
     
     public AtomTest(String testName) {
         super(testName);
-        General.verbosity = General.verbosityNothing;
-        //General.verbosity = General.verbosityDebug;
+//        General.verbosity = General.verbosityNothing;
+        General.verbosity = General.verbosityDebug;
         ui = UserInterface.init(true);
         init();
         String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
-        inputDir = new File( wattosRoot,"Data"+File.separator+"test_data" );
+        inputDir = new File( wattosRoot,"data"+File.separator+"test_data" );
     }
 
     public static Test suite() {
@@ -83,7 +83,7 @@ public class AtomTest extends TestCase {
     public void testCalcDistance() {
         
         General.verbosity = General.verbosityNothing;
-//        General.verbosity = General.verbosityDebug;
+        General.verbosity = General.verbosityDebug;
         
         float cutoffBonds   = 0.1F;
         int[] minModels             = new int[]     { 1,                    10,                   2 };
@@ -105,6 +105,7 @@ public class AtomTest extends TestCase {
         for (int it=0;it<testCount;it++) {
             int testId = testList[it];
             String fn = fnList[testId];
+            General.showDebug("Reading file: "+ fn);
             if ( ! read(fn)) {
                 fail("read pdb file: " + fn);
             }   

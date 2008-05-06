@@ -111,7 +111,7 @@ public class Globals {
 // TODO:           return;
         }
 
-        String wattosRootDirStr = sp.getProperty( "WATTOSROOT" );
+//        String wattosRootDirStr = sp.getProperty( "WATTOSROOT" );
 //        General.showOutput("WATTOSROOT: " + wattosRootDirStr);
         
         //String dbfs_root        = fs+"mnt"+fs+"mrgrid";
@@ -187,13 +187,14 @@ public class Globals {
         }            
 
         if( ( (Boolean) m.get( "act_locally_mr" )).booleanValue() ) {
-            m.put("mr_dir",               localTestingPlatform + fs + "pdb"+fs+"data"+fs+"structures"+fs+"divided"+fs+"nmr_restraints");
-            m.put("mr_anno_dir",          localTestingPlatform + fs + "Wattos"+fs+"mr_anno_progress");
-            m.put("mr_anno_progress_dir", localTestingPlatform + fs + "Wattos"+fs+"mr_anno_progress");
+            m.put("mr_dir",               localTestingPlatform + fs + "pdb"     +fs+"data"+fs+"structures"+fs+"divided"+fs+"nmr_restraints");
+            m.put("mr_anno_dir",          localTestingPlatform + fs + "Wattos"  +fs+"mr_anno_dir");
+            m.put("mr_anno_progress_dir", localTestingPlatform + fs + "Wattos"  +fs+"mr_anno_progress");
+            m.put("amber_pdb_dir",        localTestingPlatform + fs + "external"+fs+"amber_pdb" );
         }
         
         // Directory with data file 
-//        m.put("data_dir", share_root+fs+"jurgen"+fs+"BMRB"+fs+"Wattos"+fs+"Episode_II"+fs+"Data");
+//        m.put("data_dir", share_root+fs+"jurgen"+fs+"BMRB"+fs+"Wattos"+fs+"Episode_II"+fs+"data");
 
         /** Base url for mr_analysis server
          *  should be base for both html and servlet locations
@@ -222,7 +223,8 @@ public class Globals {
         m.put("servlet_top_url",                    "WebModule");
         if ( getValueBoolean("act_locally" ) ) {
 //            m.put("servlet_root_url",               "http://whelk.bmrb.wisc.edu:8080");
-            m.put("servlet_root_url",               "http://localhost:8080");
+//            m.put("servlet_root_url",               "http://localhost:8080");
+            m.put("servlet_root_url",               "http://localhost");
         } else {
             m.put("servlet_root_url",               "http://restraintsgrid.bmrb.wisc.edu:8080");
         }

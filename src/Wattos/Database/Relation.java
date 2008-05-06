@@ -2441,7 +2441,7 @@ public class Relation implements Serializable  {
         int columnIdx = getColumnIdx( label );
         if ( columnIdx == -1 ) {
             General.showError("requested to remove column for label: [" + label + 
-                "] but label doesn't exist in column labels (a).");
+                "] but label doesn't exist in column label list: " + Strings.toString(columnOrder));
             return null;
         }
         columnOrder.remove( columnIdx );

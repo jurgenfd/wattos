@@ -104,8 +104,8 @@ public class Completeness {
     BitSet PSet = new BitSet();
     
     public String tagNameNOE_compl_listSf_category;
-    public String tagNameNOE_compl_listEntry_ID;
-    public String tagNameNOE_compl_listCompl_list_ID;
+//    public String tagNameNOE_compl_listEntry_ID;
+//    public String tagNameNOE_compl_listCompl_list_ID;
     public String tagNameNOE_compl_listRestraint_count;
     public String tagNameNOE_compl_listModel_count;
     public String tagNameNOE_compl_listResidue_count;
@@ -136,8 +136,8 @@ public class Completeness {
     public String tagNameNOE_compl_clasCompl_cumul;
     public String tagNameNOE_compl_clasStand_deviat;
     public String tagNameNOE_compl_clasDetails;
-    public String tagNameNOE_compl_clasEntry_ID;
-    public String tagNameNOE_compl_clasCompl_list_ID;
+//    public String tagNameNOE_compl_clasEntry_ID;
+//    public String tagNameNOE_compl_clasCompl_list_ID;
     public String tagNameNOE_compl_resEntity_ID;
     public String tagNameNOE_compl_resComp_index_ID;
     public String tagNameNOE_compl_resComp_ID;
@@ -148,8 +148,8 @@ public class Completeness {
     public String tagNameNOE_compl_resCompl_cumul;
     public String tagNameNOE_compl_resStand_deviat;
     public String tagNameNOE_compl_resDetails;
-    public String tagNameNOE_compl_resEntry_ID;
-    public String tagNameNOE_compl_resCompl_list_ID;
+//    public String tagNameNOE_compl_resEntry_ID;
+//    public String tagNameNOE_compl_resCompl_list_ID;
     public String tagNameNOE_compl_shellShell_start;
     public String tagNameNOE_compl_shellShell_end;
     public String tagNameNOE_compl_shellExpected_NOEs;
@@ -168,8 +168,8 @@ public class Completeness {
     public String tagNameNOE_compl_shellDetails;
     public String tagNameNOE_compl_shellCompl_shell;
     public String tagNameNOE_compl_shellCompl_cumul;
-    public String tagNameNOE_compl_shellEntry_ID;
-    public String tagNameNOE_compl_shellCompl_list_ID;
+//    public String tagNameNOE_compl_shellEntry_ID;
+//    public String tagNameNOE_compl_shellCompl_list_ID;
     
     public StarDictionary starDict;
     /** Note that the string is given in Unix flavor */
@@ -2343,8 +2343,8 @@ public class Completeness {
         // Please note that the following names are not hard-coded as star names.
         try {
             tagNameNOE_compl_listSf_category        = starDict.getTagName( "NOE_completeness","_NOE_compl_list.Sf_category    ");
-            tagNameNOE_compl_listEntry_ID           = starDict.getTagName( "NOE_completeness","_NOE_compl_list.Entry_ID       ");
-            tagNameNOE_compl_listCompl_list_ID      = starDict.getTagName( "NOE_completeness","_NOE_compl_list.Compl_list_ID  ");
+//            tagNameNOE_compl_listEntry_ID           = starDict.getTagName( "NOE_completeness","_NOE_compl_list.Entry_ID       ");
+//            tagNameNOE_compl_listCompl_list_ID      = starDict.getTagName( "NOE_completeness","_NOE_compl_list.Compl_list_ID  ");
             tagNameNOE_compl_listRestraint_count    = starDict.getTagName( "NOE_completeness","_NOE_compl_list.Restraint_count");
             tagNameNOE_compl_listModel_count        = starDict.getTagName( "NOE_completeness","_NOE_compl_list.Model_count    ");
             tagNameNOE_compl_listResidue_count      = starDict.getTagName( "NOE_completeness","_NOE_compl_list.Residue_count  ");
@@ -2375,8 +2375,8 @@ public class Completeness {
             tagNameNOE_compl_clasCompl_cumul        = starDict.getTagName( "NOE_completeness","_NOE_compl_clas.Compl_cumul    ");
             tagNameNOE_compl_clasStand_deviat       = starDict.getTagName( "NOE_completeness","_NOE_compl_clas.Stand_deviat   ");
             tagNameNOE_compl_clasDetails            = starDict.getTagName( "NOE_completeness","_NOE_compl_clas.Details        ");
-            tagNameNOE_compl_clasEntry_ID           = starDict.getTagName( "NOE_completeness","_NOE_compl_clas.Entry_ID       ");
-            tagNameNOE_compl_clasCompl_list_ID      = starDict.getTagName( "NOE_completeness","_NOE_compl_clas.Compl_list_ID  ");
+//            tagNameNOE_compl_clasEntry_ID           = starDict.getTagName( "NOE_completeness","_NOE_compl_clas.Entry_ID       ");
+//            tagNameNOE_compl_clasCompl_list_ID      = starDict.getTagName( "NOE_completeness","_NOE_compl_clas.Compl_list_ID  ");
             tagNameNOE_compl_resEntity_ID           = starDict.getTagName( "NOE_completeness","_NOE_compl_res.Entity_ID       ");
             tagNameNOE_compl_resComp_index_ID       = starDict.getTagName( "NOE_completeness","_NOE_compl_res.Comp_index_ID   ");
             tagNameNOE_compl_resComp_ID             = starDict.getTagName( "NOE_completeness","_NOE_compl_res.Comp_ID         ");
@@ -2387,8 +2387,8 @@ public class Completeness {
             tagNameNOE_compl_resCompl_cumul         = starDict.getTagName( "NOE_completeness","_NOE_compl_res.Compl_cumul     ");
             tagNameNOE_compl_resStand_deviat        = starDict.getTagName( "NOE_completeness","_NOE_compl_res.Stand_deviat    ");
             tagNameNOE_compl_resDetails             = starDict.getTagName( "NOE_completeness","_NOE_compl_res.Details         ");
-            tagNameNOE_compl_resEntry_ID            = starDict.getTagName( "NOE_completeness","_NOE_compl_res.Entry_ID        ");
-            tagNameNOE_compl_resCompl_list_ID       = starDict.getTagName( "NOE_completeness","_NOE_compl_res.Compl_list_ID   ");
+//            tagNameNOE_compl_resEntry_ID            = starDict.getTagName( "NOE_completeness","_NOE_compl_res.Entry_ID        ");
+//            tagNameNOE_compl_resCompl_list_ID       = starDict.getTagName( "NOE_completeness","_NOE_compl_res.Compl_list_ID   ");
             tagNameNOE_compl_shellShell_start       = starDict.getTagName( "NOE_completeness","_NOE_compl_shel.Shell_start    ");
             tagNameNOE_compl_shellShell_end         = starDict.getTagName( "NOE_completeness","_NOE_compl_shel.Shell_end      ");
             tagNameNOE_compl_shellExpected_NOEs     = starDict.getTagName( "NOE_completeness","_NOE_compl_shel.Rst_expec_count");
@@ -2407,8 +2407,8 @@ public class Completeness {
             tagNameNOE_compl_shellDetails           = starDict.getTagName( "NOE_completeness","_NOE_compl_shel.Details ");
             tagNameNOE_compl_shellCompl_shell       = starDict.getTagName( "NOE_completeness","_NOE_compl_shel.Compl_shell    ");
             tagNameNOE_compl_shellCompl_cumul       = starDict.getTagName( "NOE_completeness","_NOE_compl_shel.Compl_cumul    ");
-            tagNameNOE_compl_shellEntry_ID          = starDict.getTagName( "NOE_completeness","_NOE_compl_shel.Entry_ID       ");
-            tagNameNOE_compl_shellCompl_list_ID     = starDict.getTagName( "NOE_completeness","_NOE_compl_shel.Compl_list_ID  ");
+//            tagNameNOE_compl_shellEntry_ID          = starDict.getTagName( "NOE_completeness","_NOE_compl_shel.Entry_ID       ");
+//            tagNameNOE_compl_shellCompl_list_ID     = starDict.getTagName( "NOE_completeness","_NOE_compl_shel.Compl_list_ID  ");
             
         } catch ( Exception e ) {
             General.showThrowable(e);
@@ -2417,8 +2417,8 @@ public class Completeness {
         }
         if (
                 tagNameNOE_compl_listSf_category == null ||
-                tagNameNOE_compl_listEntry_ID == null ||
-                tagNameNOE_compl_listCompl_list_ID == null ||
+//                tagNameNOE_compl_listEntry_ID == null ||
+//                tagNameNOE_compl_listCompl_list_ID == null ||
                 tagNameNOE_compl_listRestraint_count == null ||
                 tagNameNOE_compl_listModel_count == null ||
                 tagNameNOE_compl_listResidue_count == null ||
@@ -2449,8 +2449,8 @@ public class Completeness {
                 tagNameNOE_compl_clasCompl_cumul == null ||
                 tagNameNOE_compl_clasStand_deviat == null ||
                 tagNameNOE_compl_clasDetails == null ||
-                tagNameNOE_compl_clasEntry_ID == null ||
-                tagNameNOE_compl_clasCompl_list_ID == null ||
+//                tagNameNOE_compl_clasEntry_ID == null ||
+//                tagNameNOE_compl_clasCompl_list_ID == null ||
                 tagNameNOE_compl_resEntity_ID == null ||
                 tagNameNOE_compl_resComp_index_ID == null ||
                 tagNameNOE_compl_resComp_ID == null ||
@@ -2461,8 +2461,8 @@ public class Completeness {
                 tagNameNOE_compl_resCompl_cumul == null ||
                 tagNameNOE_compl_resStand_deviat == null ||
                 tagNameNOE_compl_resDetails == null ||
-                tagNameNOE_compl_resEntry_ID == null ||
-                tagNameNOE_compl_resCompl_list_ID == null ||
+//                tagNameNOE_compl_resEntry_ID == null ||
+//                tagNameNOE_compl_resCompl_list_ID == null ||
                 tagNameNOE_compl_shellShell_start == null ||
                 tagNameNOE_compl_shellShell_end == null ||
                 tagNameNOE_compl_shellExpected_NOEs == null ||
@@ -2481,9 +2481,9 @@ public class Completeness {
                 tagNameNOE_compl_shellDetails        == null ||
                 tagNameNOE_compl_shellObs_NOEs_total == null ||
                 tagNameNOE_compl_shellCompl_shell == null ||
-                tagNameNOE_compl_shellCompl_cumul == null ||
-                tagNameNOE_compl_shellEntry_ID == null ||
-                tagNameNOE_compl_shellCompl_list_ID == null
+                tagNameNOE_compl_shellCompl_cumul == null 
+//                tagNameNOE_compl_shellEntry_ID == null ||
+//                tagNameNOE_compl_shellCompl_list_ID == null
                 ) {
             General.showError("Failed to get all the tag names from dictionary, compare code with dictionary.");
             return false;
@@ -2523,12 +2523,12 @@ public class Completeness {
             tT.getNewRowId(); // Sets first row bit in used to true.
             String cat = "NOE_completeness_statistics";
             namesAndValues.put( tagNameNOE_compl_listSf_category, cat);
-            namesAndValues.put( tagNameNOE_compl_listEntry_ID, new Integer(1));
-            namesAndValues.put( tagNameNOE_compl_listCompl_list_ID, new Integer(1));
+//            namesAndValues.put( tagNameNOE_compl_listEntry_ID, new Integer(1));
+//            namesAndValues.put( tagNameNOE_compl_listCompl_list_ID, new Integer(1));
             
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listSf_category     );
-            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listEntry_ID        );
-            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listCompl_list_ID   );
+//            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listEntry_ID        );
+//            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listCompl_list_ID   );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listModel_count     );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listResidue_count   );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listTot_atom_count  );
@@ -2568,8 +2568,8 @@ public class Completeness {
             namesAndValues          = new HashMap();
             tT                      = new TagTable("NOE_compl_clas", dbms);
             tT.isFree = false;
-            namesAndValues.put( tagNameNOE_compl_clasEntry_ID, new Integer(1));
-            namesAndValues.put( tagNameNOE_compl_clasCompl_list_ID, new Integer(1));
+//            namesAndValues.put( tagNameNOE_compl_clasEntry_ID, new Integer(1));
+//            namesAndValues.put( tagNameNOE_compl_clasCompl_list_ID, new Integer(1));
             
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasType            );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasRst_obser_count );
@@ -2578,8 +2578,8 @@ public class Completeness {
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasCompl_cumul     );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasStand_deviat    );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasDetails         );
-            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasEntry_ID        );
-            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasCompl_list_ID   );
+//            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasEntry_ID        );
+//            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasCompl_list_ID   );
             
             if ( ! tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, null)) {
                 General.showError("Failed to tT.insertColumnSet");
@@ -2596,8 +2596,8 @@ public class Completeness {
             namesAndValues          = new HashMap();
             tT                      = new TagTable("NOE_compl_shell", dbms);
             tT.isFree = false;
-            namesAndValues.put( tagNameNOE_compl_shellEntry_ID, new Integer(1));
-            namesAndValues.put( tagNameNOE_compl_shellCompl_list_ID, new Integer(1));
+//            namesAndValues.put( tagNameNOE_compl_shellEntry_ID, new Integer(1));
+//            namesAndValues.put( tagNameNOE_compl_shellCompl_list_ID, new Integer(1));
             
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellDetails        );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellShell_start    );
@@ -2617,8 +2617,8 @@ public class Completeness {
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellObs_NOEs_shl_o );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellCompl_shell    );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellCompl_cumul    );
-            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellEntry_ID       );
-            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellCompl_list_ID  );
+//            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellEntry_ID       );
+//            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellCompl_list_ID  );
             
             if ( ! tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, null)) {
                 General.showError("Failed to tT.insertColumnSet");
@@ -2632,8 +2632,8 @@ public class Completeness {
             namesAndValues          = new HashMap();
             tT                      = new TagTable("NOE_compl_res", dbms);
             tT.isFree = false;
-            namesAndValues.put( tagNameNOE_compl_resEntry_ID, new Integer(1));
-            namesAndValues.put( tagNameNOE_compl_resCompl_list_ID, new Integer(1));
+//            namesAndValues.put( tagNameNOE_compl_resEntry_ID, new Integer(1));
+//            namesAndValues.put( tagNameNOE_compl_resCompl_list_ID, new Integer(1));
             
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resEntity_ID        );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resComp_index_ID    );
@@ -2645,8 +2645,8 @@ public class Completeness {
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resCompl_cumul      );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resStand_deviat     );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resDetails          );
-            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resEntry_ID         );
-            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resCompl_list_ID    );
+//            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resEntry_ID         );
+//            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resCompl_list_ID    );
             
             if ( ! tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, null)) {
                 General.showError("Failed to tT.insertColumnSet");

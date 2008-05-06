@@ -11,13 +11,13 @@ writeSessionOnExit
 false
 ListProp
 
+# Extra argument is for syncing.
 ReadEntryMmCIF
-1ai0_rem_small.cif.gz
+/Users/jd/wattosTestingPlatform/pdb/data/structures/divided/mmCIF/ai/1ai0.cif.gz
+y
 
 WriteEntryNMRSTAR
-/Users/jd/workspace/Wattos/tmp_dir/1ai0_rem_small.str.gz
-
-#C:/Documents and Settings/jurgen.WHELK.000/workspace/Wattos/tmp_dir/1ai0_rem_small.str.gz
+/Users/jd/workspace/Wattos/tmp_dir/1ai0_rem.str.gz
 
 Quit
 
