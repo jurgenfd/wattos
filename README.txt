@@ -9,6 +9,7 @@ Content files           Description
 						like this one present if I want to make a web module.
 buildEclipse.xml        Ant makefile.
 README.txt              This file.
+ReadmeEclipse.txt       Specifics about working with Eclipse.
 wattos.properties       Settings for Ant.
 
 Content directories     Description
