@@ -52,8 +52,8 @@ public class File31Test extends TestCase {
 //    String baseInputName = "2hgh_wim_small_2007-05-25";
 //    String baseInputName = "1ai0_rem_small_out";
 //    String baseInputName = "2hgh_rem_small_out";
-    String baseInputName = "2hgh_rest_chris";
-//    String baseInputName = "1brv_DOCR_small";
+//    String baseInputName = "2hgh_rest_chris";
+    String baseInputName = "1brv_DOCR_small";
 //    String baseInputName = "2hgh-nmrif_small";
     
     String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
