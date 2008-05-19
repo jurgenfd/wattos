@@ -3,7 +3,7 @@
 <!-- added memory setting for Java and Junit testing -->
 
 
-<project name="Wattos" default="jar" basedir="." >
+<project name="wattos" default="jar" basedir="." >
     <description>Builds, tests, and runs the project Wattos.</description>
     <echo>Starting Ant with updated build file</echo>
     <property file="wattos.properties"/>
@@ -300,8 +300,8 @@
     <target name="home-zip" depends="init">
     	<property name="home.zipfile" value="${home.zipfileprefix}${wattos_version}.zip"/>
         <zip destfile="${home.zipfile}" basedir=".."
-               includes="Wattos/build.xml Wattos/Makefile Wattos/README.txt Wattos/wattos.properties Wattos/tmp_dir Wattos/data/** Wattos/macros/** Wattos/nbproject/** Wattos/scripts/** Wattos/src/** Wattos/lib/** Wattos/web/** Wattos/test/**"
-               excludes="**/.nbattrs **/keystore **/keyinfo.txt Wattos/data/test_data/tmp_dir/* Wattos/data/test_data/tmp_dir/sql/* Wattos/tmp_dir/*"                
+               includes="wattos/build.xml wattos/Makefile wattos/README.txt wattos/wattos.properties wattos/tmp_dir wattos/data/** wattos/macros/** wattos/nbproject/** wattos/scripts/** wattos/src/** wattos/lib/** wattos/web/** wattos/test/**"
+               excludes="**/.nbattrs **/keystore **/keyinfo.txt wattos/data/test_data/tmp_dir/* wattos/data/test_data/tmp_dir/sql/* wattos/tmp_dir/*"                
           />
     </target>        
     <target name="home-cp" depends="init">
@@ -493,7 +493,7 @@ For Mac OS, the default is "cr".
 	            timeout="9600"                 
 	        >
 	        <arg    line="AmberParserAll.jj" />
-	        <jvmarg line="-classpath C:\Docume~1\JURGEN~1.000\workspace\Wattos\lib\javacc.jar" />            
+	        <jvmarg line="-classpath C:\Docume~1\JURGEN~1.000\workspace\wattos\lib\javacc.jar" />            
 	    </java>
  	 </target>
 </project>
