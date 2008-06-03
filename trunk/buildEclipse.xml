@@ -20,7 +20,7 @@
       <antcall target="set_version"/>		
 	</target>
 	
-	<!-- Is done automatically by ant build -->
+	<!-- Is done automatically by ant build but can be used externally such as on tang. -->
 	<target name="compile" description="compile" depends="init">
         <javac srcdir="${src.dir}" destdir="${build.classes.dir}">
             <classpath>
@@ -256,11 +256,15 @@
             />
         </copy>
     </target>    
-    <!-- Installation of productin site jars including Wattos -->
+    <!-- Installation of production site jars including Wattos -->
     <target name="install-jars" depends="jar">
-        <copy todir="${install.dir}/lib" verbose="true">
-            <fileset dir="lib" includes="Wattos.jar"/>
-        </copy>
+        <echo message="Installing Wattos jar(s) to production site: ${install.dir}"/>
+        <scp    todir="${install.dir}"
+            keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" 
+            verbose="true"
+            >
+            <fileset dir="${lib.local.dir}"  includes="Wattos.jar"/>                     
+        </scp>
     </target>
     <!-- Installation of production site scripts -->
     <target name="install-scripts">
@@ -347,21 +351,24 @@
         <echo message="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.resource.remote.dir}"/>
     </target>
     
-    <target name="servlet-jar-cp" depends="init,jar">
+    <target name="servlet-jar-cp" depends="init">
         <echo message="Installing Wattos jar(s) to servlet engine: ${servlet.web.usermachine}:${servlet.web.dir}/${servlet.lib.dir}"/>
-        <scp    todir="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.lib.dir}"
-                keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}"                
+    	<scp    todir="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.lib.dir}"
+            keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" 
+            verbose="true"
             >
             <fileset dir="${lib.local.dir}"  includes="Wattos.jar"/>                     
         </scp>
     </target>
 
     <target name="servlet-resources-cp" depends="init">
-        <echo message="Installing giffies and html to servlet engine"/>
+        <!-- Fails to copy the images dir funny enough. Just hangs -->
+        <echo message="Installing giffies and html to servlet engine: ${servlet.web.usermachine}:${servlet.web.dir}/${servlet.resource.remote.dir}"/>
         <scp    todir="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.resource.remote.dir}"
-                keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}"                
+                keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}"
+        	verbose="true"
             >
-            <fileset dir="${servlet.resource.local.dir}"/>                     
+            <fileset dir="${servlet.resource.local.dir}" excludes=".svn"/>                     
         </scp>
     </target>    
 
