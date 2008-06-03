@@ -136,7 +136,6 @@ public class Globals {
         Properties sp = InOut.getEnvVars();
         if ( sp == null ) {
             General.showDebug("Failed to get system environment settings; failing ensurePresenceUserDefs.");
-// TODO:           return;
         }
 
 //        String wattosRootDirStr = sp.getProperty( "WATTOSROOT" );
@@ -228,8 +227,8 @@ public class Globals {
          *  should be base for both html and servlet locations
          */
 //        m.put("base_html_dir", root+fs+"home"+fs+"jurgen"+fs+"external_html" );
-        m.put("base_html_url", "http://tang.bmrb.wisc.edu:8081" ); //TODO: change to restraintsgrid url/
-//        m.put("base_html_url", "http://restraintsgrid.bmrb.wisc.edu:8081" );
+        m.put("base_html_url", "http://tang.bmrb.wisc.edu:8080" ); //TODO: change to restraintsgrid url/
+//        m.put("base_html_url", "http://restraintsgrid.bmrb.wisc.edu:8080" );
 
         // Dir/url with html pages
 //        m.put("html_url", m.get( "base_html_url" ) + "/~jurgen/" +  m.get( "html_project_name" ) );
@@ -249,9 +248,9 @@ public class Globals {
         m.put("apache_data_url",                    "http://tang.bmrb.wisc.edu/servlet_data");
         m.put("servlet_top_dir",                    "/bmrb/htdocs/wattos"); // Exists only on servlet machine
         m.put("MRGridServlet",                      "MRGridServlet");
-        m.put("servlet_top_url",                    "WebModule");
-        m.put("servlet_root_url",                   "http://tang.bmrb.wisc.edu:8081");
-//      m.put("servlet_root_url",                   "http://restraintsgrid.bmrb.wisc.edu:8081");
+        m.put("servlet_top_url",                    "NRG"); // was WebModule for a LONG time.
+        m.put("servlet_root_url",                   "http://tang.bmrb.wisc.edu:8080");
+//      m.put("servlet_root_url",                   "http://restraintsgrid.bmrb.wisc.edu:8080");
         if ( getValueBoolean("act_locally" ) ) {
 //            m.put("servlet_root_url",               "http://whelk.bmrb.wisc.edu:8080");
 //            m.put("servlet_root_url",               "http://localhost:8080");

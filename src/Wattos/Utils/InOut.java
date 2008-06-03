@@ -1091,7 +1091,7 @@ public static class RegExpFilenameFilter implements FilenameFilter {
      * @param file_name the file to be analyzed.
      * @return the file name base. E.g.:
      * /tmp/1brv.mr.gz -> 1brv
-     * http://localhost:8084/WebModule/servlet/MRGridServlet?db_username=wattos -> MRGridServlet
+     * http://localhost:8084/NRG/servlet/MRGridServlet?db_username=wattos -> MRGridServlet
      */    
     public static String getFilenameBase( String file_name ) {        
         file_name = file_name.replaceAll("\\\\", "/"); // ain't that a trick, trying to match a single backslash
@@ -1519,7 +1519,7 @@ public static class RegExpFilenameFilter implements FilenameFilter {
                 Strings.toString( System.getProperties() ));
         }        
         if ( false ) {
-            String fn = "http://localhost:8084/WebModule/servlet/MRGridServlet?db_username=wattos";
+            String fn = "http://localhost:8084/NRG/servlet/MRGridServlet?db_username=wattos";
             //String fn = "/test/testing.txt.t";
             General.showOutput("fn: [" + fn + "]");            
             General.showOutput("fn: [" + getFilenameBase(fn) + "]");            
