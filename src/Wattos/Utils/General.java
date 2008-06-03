@@ -12,6 +12,8 @@ package Wattos.Utils;
 
 import com.braju.format.*;              // printf equivalent
 import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.jar.Attributes;
@@ -164,6 +166,13 @@ never used so don't define here.
     public static void showEnvironment( ) {
         Properties prop = System.getProperties();
         showOutput( Strings.toString( prop ));
+        try {
+            String hostname = InetAddress.getLocalHost().getHostName();
+            showOutput("Hostname is: " + hostname);
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
     /** Show a little info on memory limitations then exit.*/

@@ -16,22 +16,17 @@ false
 
 ListProp
 
-#Input file
-#ReadEntryMMCIF
-#1cjg_rem_smallest.cif.gz
-#1jj2_smallest_wattos.pdb.gz
-#C:\Documents and Settings\jurgen.WHELK.000\Desktop\2hgh_001_wi.pdb
-#y
+
 ReadEntryPDB
-M:\jurgen\DOCR_big_tmp_\wi\all\2hgh\2hgh_001_smallest.pdb
+/Users/jd/workspace/wattos/data/test_data/1hue_wi_small.pdb
 
 SelectAtomsByNameRegExp
 H.*
 
 RemoveAtoms
 
-SelectAtomsByNameRegExp
-.*
+#SelectAtomsByNameRegExp
+#.*
 
 #ShowSoup
 
@@ -44,9 +39,8 @@ y
 #M:\jurgen\DOCR_big_tmp_\wi\all\2hgh\2hgh_001_wattos.pdb
 
 WriteEntryPDB
-C:\Documents and Settings\jurgen.WHELK.000\Desktop\test.pdb
+/Users/jd/workspace/wattos/tmp_dir/1hue_small_wattos_hyd_added.pdb
 y
 
 Quit
 
-#1cjg_rem_small_addedAtoms.pdb
