@@ -131,7 +131,7 @@
     	<!-- <echo message="classpath: ${build.classes.dir.real}:${javac.classpath}:${j2ee.platform.classpath}"/>
     -->                
         
-        <for list="CalcDihConstrViolation.wcf" param="fn">       
+        <for list="AddMissingAtoms.wcf" param="fn">       
             <sequential>
             <echo message="Executing macro: ${macros.local.dir}/@{fn}"/>
             <java   jvm="${platform.java}"

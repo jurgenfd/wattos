@@ -10,6 +10,8 @@
 package Wattos.Episode_II;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -96,7 +98,33 @@ public class Globals {
         /** Use the local mr files. */
         m.put("act_locally_mr", Boolean.valueOf( true )); 
  
-
+//        String hostname = "stella.cmbi.umcn.nl"; # if connected to the web at cmbi.
+        String hostname = "Stella.local";
+        try {
+            hostname = InetAddress.getLocalHost().getHostName().toLowerCase();
+            General.showOutput("Hostname is: " + hostname);
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+//        somewhat duplicates the settings in wsetup./
+        String[] hostnameList = hostname.split("\\.");
+        if ( hostnameList.length < 1 ) {
+            General.showError("Failed to find a hostname from hostname list of: [" + hostname + "]");
+        } else {
+            hostname = hostnameList[0];
+        }
+        if ( hostname.equals("stella")) {
+            General.showDebug("Now in Wattos.Episode_II.Globals on development machine");
+        } else if ( hostname.equals("tang")) {
+            m.put("testing", Boolean.valueOf( false )); 
+            /** Use local servlet engine.  */
+            m.put("act_locally", Boolean.valueOf( false ));
+            /** Use the local database engine. */
+            m.put("act_locally_db", Boolean.valueOf( false )); 
+            /** Use the local mr files. */
+            m.put("act_locally_mr", Boolean.valueOf( false )); 
+        }
         /** Initializing some variables
          *  Use unix notation as a standard for directories        */
         // Set the root
@@ -200,12 +228,13 @@ public class Globals {
          *  should be base for both html and servlet locations
          */
 //        m.put("base_html_dir", root+fs+"home"+fs+"jurgen"+fs+"external_html" );
-        m.put("base_html_url", "http://restraintsgrid.bmrb.wisc.edu:8080" );
+        m.put("base_html_url", "http://tang.bmrb.wisc.edu:8081" ); //TODO: change to restraintsgrid url/
+//        m.put("base_html_url", "http://restraintsgrid.bmrb.wisc.edu:8081" );
 
         // Dir/url with html pages
 //        m.put("html_url", m.get( "base_html_url" ) + "/~jurgen/" +  m.get( "html_project_name" ) );
 
-        /** Layout of directory structure is as follows:
+        /** Layout of directory structure is as follows: OUT OF DATE?
          *<PRE>
          /bmrb/htdocs/wattos/                                                   {servlet_top_url}
          *  MRGridServlet                                                       {MRGridServlet}
@@ -217,16 +246,16 @@ public class Globals {
          */
                                   
         
-        m.put("apache_data_url",                    "http://restraintsgrid.bmrb.wisc.edu/servlet_data");
+        m.put("apache_data_url",                    "http://tang.bmrb.wisc.edu/servlet_data");
         m.put("servlet_top_dir",                    "/bmrb/htdocs/wattos"); // Exists only on servlet machine
         m.put("MRGridServlet",                      "MRGridServlet");
         m.put("servlet_top_url",                    "WebModule");
+        m.put("servlet_root_url",                   "http://tang.bmrb.wisc.edu:8081");
+//      m.put("servlet_root_url",                   "http://restraintsgrid.bmrb.wisc.edu:8081");
         if ( getValueBoolean("act_locally" ) ) {
 //            m.put("servlet_root_url",               "http://whelk.bmrb.wisc.edu:8080");
 //            m.put("servlet_root_url",               "http://localhost:8080");
             m.put("servlet_root_url",               "http://localhost");
-        } else {
-            m.put("servlet_root_url",               "http://restraintsgrid.bmrb.wisc.edu:8080");
         }
         m.put("servlet_mrgrid_url",                 getValueString("servlet_top_url") + "/" + getValueString("MRGridServlet"));
          
@@ -248,7 +277,8 @@ public class Globals {
         m.put("dbmatch",                            "http://www.bmrb.wisc.edu/cgi-bin/dbmatch.cgi?db=pdb&auto=yes&id=");
         m.put("bmrb_url",                           "http://www.bmrb.wisc.edu/cgi-bin/explore.cgi?bmrbId=");
         m.put("recoord_url",                        "http://www.ebi.ac.uk/msd-srv/msdlite/atlas/nmr");
-        m.put("dress_url",                          "http://www2.cmbi.ru.nl/dress/index.spy?pdbid=");
+//        m.put("dress_url",                          "http://www2.cmbi.ru.nl/dress/index.spy?pdbid=");
+        m.put("dress_url",                          "http://www.cmbi.kun.nl/dress/index.spy?site=dress&action=Home&moreflag=1&pdbid=");
         
         // Location for molgrap images
         m.put("molgrap_dir", root+fs+"pdbmirror2"+fs+"molgrap" );
@@ -273,19 +303,20 @@ public class Globals {
         m.put("db_driver",          "com.mysql.jdbc.Driver"); 
         m.put("db_conn_prefix",     "jdbc:mysql://");
 
+        // Production settings        ; see nmrrestrntsgrid project: scripts/sql/prepare_database_mysql.sql 
+        m.put("db_username",        "wattos1");// 
+        m.put("db_password",        "4I4KMS"); // was U for wattos2; S for 1.
+        m.put("db_machine",         "tang.bmrb.wisc.edu");                    
+//        m.put("db_machine",         "restraintsgrid.bmrb.wisc.edu");                    
         if ( getValueBoolean("testing" ) ) {  
             m.put("db_username",        "wattos2");
             m.put("db_password",        "4I4KMS");
             if ( getValueBoolean("act_locally_db" ) ) {
-//                m.put("db_machine",         "whelk.bmrb.wisc.edu");
                 m.put("db_machine",         "localhost");
             } else {
-                m.put("db_machine",         "restraintsgrid.bmrb.wisc.edu");                    
+                m.put("db_machine",         "tang.bmrb.wisc.edu");                    
+//                m.put("db_machine",         "restraintsgrid.bmrb.wisc.edu");                    
             }
-        } else {  // Production settings            
-            m.put("db_username",        "wattos2");// 
-            m.put("db_password",        "4I4KMU"); // was U for wattos2; S for 1.
-            m.put("db_machine",         "restraintsgrid.bmrb.wisc.edu");                    
         }
         if ( ! setDbUserNameDerivedVariables()) {
             General.showError("Failed to setDbUserNameDerivedVariables in Globals");
@@ -293,28 +324,10 @@ public class Globals {
         }
 
                 
-        // Don't forget to set the machine's display variable in the script
-        // molgrap_db.csh
-        // The dependency on the X windowing system should be easy to take out.
 // No changes required below this line
 // #############################################################################
-
-
         
-        // This name should not be changed otherwise automatic look ups from server will fail
-//        m.put("index_file", "index.html" );
-
-        // List of entries with an mr file in directory specified
-//        m.put("entry_list_all", new ArrayList());
-
-        // List of 'new' entries for which hits were found
-//        m.put("new_hits_entry_list", new ArrayList());
-//        m.put("done_entry_list", new ArrayList());
-
-//        m.put("mr_analysis", new HashMap()  );        
-                
-        /* Formatting of all pages derived from this header */
-            /** No robots please. Current page is ok to index but not the links please. */
+        /** No robots please. Current page is ok to index but not the links please. */
 
         m.put("html_header_text", 
             "<html><head>\n" +
