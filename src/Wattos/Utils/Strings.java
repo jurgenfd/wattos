@@ -996,7 +996,7 @@ public class Strings {
         try {
             reply = in.readLine();
             // DON'T close the stream even though you think you're done with
-            // it. This causes errors of unknown nature to me (jfd).
+            // it. This causes errors of unknown nature to JFD.
             //in.close();
         } catch (IOException e) {
             General.showThrowable(e);

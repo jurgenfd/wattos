@@ -32,8 +32,13 @@ public class MRInterloop {
     public static void loadLoop(Globals g, Classification classification) {
 //        boolean status;
 //        boolean testing              = g.getValueBoolean( "testing" );             
-        String  mr_anno_dir          = g.getValueString(  "mr_anno_dir" );
-
+//        /String  mr_anno_di/r          = g.getValueString(  "mr_anno_dir" );
+//        String mr_anno_dir = Strings.getInputString(
+//        "Directory with the mr files to be loaded: (e.g. .): " );
+//        String mr_anno_dir = Strings.getInputString(
+//        "Directory with the mr files to be loaded: " );
+        String mr_anno_dir = ".";
+        
         // Get the entry list in db
         ArrayList entries_ref     = getEntriesFromMRFiles( mr_anno_dir );
         
@@ -128,7 +133,7 @@ public class MRInterloop {
         // Finally actually do this set.
         for (Iterator i=entries_togo.iterator(); i.hasNext();) {            
             pdb_entry_id = i.next().toString();
-            loadEntry(pdb_entry_id, "a", g, classification);
+            loadEntry(pdb_entry_id, "a", mr_anno_dir, g, classification);
             // Don't ask stupid questions
             if ( single_annotate || (!i.hasNext())) {
                 break;
@@ -622,7 +627,7 @@ public class MRInterloop {
      * @param g Global info for example on the location of files and preferred text editor.
      * @param classification Allowed block types as read from a csv file.
      */
-    public static void loadEntry( String pdb_entry_id, String archive_id, 
+    public static void loadEntry( String pdb_entry_id, String archive_id, String dir,
         Globals g, Classification classification) {
             
         boolean status;
@@ -632,11 +637,11 @@ public class MRInterloop {
         int[] checks = {1,2,3};
         
         // Target location
-        String dir = null;
+//        String dir = n/ull;
         String fs  = File.separator;
 //        File file_new = null;
         
-        dir = g.getValueString( "mr_anno_dir" );
+//        dir = g.getValueString( "mr_anno_dir" );
 
         String filename = dir + fs + pdb_entry_id + ".mr";
         DBMRFile mrf = new DBMRFile(filename);
