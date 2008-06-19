@@ -102,7 +102,7 @@ public class Globals {
         String hostname = "Stella.local";
         try {
             hostname = InetAddress.getLocalHost().getHostName().toLowerCase();
-            General.showOutput("Hostname is: " + hostname);
+//            General.showDebug("Hostname is: " + hostname);
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

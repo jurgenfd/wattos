@@ -27,6 +27,9 @@
                 <path path="${javac.classpath}"/>
             </classpath>
     	</javac>
+		<copy todir="${build.classes.dir}">
+			<fileset dir="${src.dir}" includes="**/*.csv"/>
+		</copy>
     </target>
 	
     <target name="-init-macrodef-junit">
@@ -82,7 +85,8 @@
     	for resigning all jars. They need to be the same for WebApps such as Sjors.
     -->
     <target name="jar" depends="init" description="Build JAR.">
-        <jar destfile="${jar.name}" basedir="${build.classes.dir}"/>
+        <jar destfile="${jar.name}" basedir="${build.classes.dir}"        />
+        <!--
         <signjar    
                     alias="business" 
                     storepass="secret" 
@@ -91,6 +95,7 @@
             <fileset dir="lib" 
                     includes="Wattos.jar" />            
         </signjar>
+        -->
     </target>    
     
     <target name="jarsign" depends="init" description="Resign all jars">        

@@ -859,17 +859,18 @@ public class SQL_Episode_II extends SQL_Generic{
                     "VALUES ( "+ ret.entry_id + ", '" + pdb_id + "')";                    
                 General.showDebug("query is:\n" + query);
                 
-                int count = stmt.executeUpdate( query );  
-                if ( count != 1 ) {
-                    General.showDebug("in SQL_Episode_II.getEntryByPDBId found insertion returned ["+count+
-                        "] insertions which should have been exactly one. " +
-                        "This code used to work but fails on my development machine under Mac OSX.");
-//                    rs.close(); 
-//                    stmt.close();		// All done with that result set
-//                    rollbackTransaction();
-//                    conn.setAutoCommit(true);
-//                    return null;
-                }                                                        
+//                int count = stmt.executeUpdate( query );  
+                stmt.executeUpdate( query );  
+//                if ( count != 1 ) {
+//                    General.showDebug("in SQL_Episode_II.getEntryByPDBId found insertion returned ["+count+
+//                        "] insertions which should have been exactly one. " +
+//                        "This code used to work but fails on my development machine under Mac OSX.");
+////                    rs.close(); 
+////                    stmt.close();		// All done with that result set
+////                    rollbackTransaction();
+////                    conn.setAutoCommit(true);
+////                    return null;
+//                }                                                        
 
                 // Set the rest.
                 ret.bmrb_id  = Wattos.Utils.General.NULL_FOR_INTS;

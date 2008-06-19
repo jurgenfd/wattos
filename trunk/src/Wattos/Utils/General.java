@@ -168,7 +168,7 @@ never used so don't define here.
         showOutput( Strings.toString( prop ));
         try {
             String hostname = InetAddress.getLocalHost().getHostName();
-            showOutput("Hostname is: " + hostname);
+            showOutput("From General.showEnvironment: Hostname is: " + hostname);
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
