@@ -28,7 +28,7 @@ import java.text.DecimalFormat;
  * @author Jurgen F. Doreleijers
  * @version 0.1
  */
-public class MRGridServlet extends HttpServlet {     
+public class MRGridServlet extends HttpServlet {      
     private static final long serialVersionUID = 5504236505334962699L;
 
     /** Global       // sanity checks first
@@ -244,7 +244,7 @@ public class MRGridServlet extends HttpServlet {
                      db_username.equals("wattos1") )) {
 //                     db_username.equals("jurgen")                     
 //                     )) { 
-                General.showDebug("Will not server db_username: "+db_username);                
+                General.showDebug("Will not serve db_username: "+db_username);                
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 //                showCompleteError( resp, "The db_username given: [" + db_username + "] " + "is not valid.\n" );
                 return;
