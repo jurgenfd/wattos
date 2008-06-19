@@ -6,9 +6,9 @@
 set max_cpu_time = 72000
 
 ## NO CHANGES BELOW THIS LINE
-setenv W /share/wattos/Wattos
-setenv WATTOSROOT $W
-source $W/wsetup
+#setenv W /share/wattos/Wattos
+#setenv WATTOSROOT $W
+#source $W/wsetup
 
 limit cputime $max_cpu_time
 
@@ -28,7 +28,7 @@ java -Xmx$WATTOSMEM Wattos.Episode_II.MRConvert << EOD
 n
 n
 y
-1awx
+.
 9999
 n
 

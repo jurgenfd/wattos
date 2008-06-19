@@ -956,10 +956,10 @@ public class DBMRFile {
         mrb_new.text_type = SQL_Episode_II.BLOCK_DETAIL_PARSED;
         mrb_new.type[DBMRBlock.PROGRAM_ID] = "STAR";
         mrb_new.setStrings( mrstrfile.toString() );
-        if ( file == null ) {
-            General.showError("unknown file name from DBMRFile)");
-            return null;
-        }
+//        if ( file == null ) {
+//            General.showWarning("(This used to be an error but down-graded) File object file is null in DBMRFile.doConversion");
+////            return null;
+//        }
         if (Defs.isNull(mrb_new.mrblock_id)) {
             mrb_new.fileName = "star.str";
         } else {
