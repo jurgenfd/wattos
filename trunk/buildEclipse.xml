@@ -20,9 +20,11 @@
       <antcall target="set_version"/>		
 	</target>
 	
-	<!-- Is done automatically by ant build but can be used externally such as on tang. -->
+	<!-- Is done automatically by ant build but can be used externally such as on tang. 
+	NB the debug settings.
+	-->
 	<target name="compile" description="compile" depends="init">
-        <javac srcdir="${src.dir}" destdir="${build.classes.dir}">
+        <javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on" debuglevel="lines,vars,source">
             <classpath>
                 <path path="${javac.classpath}"/>
             </classpath>

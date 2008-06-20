@@ -172,7 +172,7 @@ never used so don't define here.
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
+        }  
     }
     
     /** Show a little info on memory limitations then exit.*/
