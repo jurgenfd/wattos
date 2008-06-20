@@ -23,15 +23,19 @@
 	<!-- Is done automatically by ant build but can be used externally such as on tang. 
 	NB the debug settings.
 	-->
-	<target name="compile" description="compile" depends="init">
+    <target name="compile" description="compile" depends="init">
         <javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on" debuglevel="lines,vars,source">
             <classpath>
                 <path path="${javac.classpath}"/>
             </classpath>
-    	</javac>
-		<copy todir="${build.classes.dir}">
-			<fileset dir="${src.dir}" includes="**/*.csv"/>
-		</copy>
+        </javac>
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${src.dir}" includes="**/*.csv"/>
+        </copy>
+    </target>
+
+    <target name="clean" description="clean class files" depends="init">
+        <delete dir="${build.classes.dir}" />
     </target>
 	
     <target name="-init-macrodef-junit">
