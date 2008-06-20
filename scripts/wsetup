@@ -68,6 +68,7 @@ setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/jfreechart-1.0.1.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/jcommon-1.0.0.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/gnujaxp.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/itext-1.4.jar
+setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/junit-3.8.1.jar
 
 #echo "Initialized Wattos with Java classpath:" $CLASSPATH
 
