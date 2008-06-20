@@ -46,7 +46,7 @@ setenv CLASSPATH ${WATTOSJARSDIR}/Wattos.jar
 # disabled this more advanced way as gawk is not always present on Mac.
 set wattoshost = (`hostname|gawk -F'[.]' '{print tolower($1)}'`)
 #set wattoshost = (`hostname`)
-if ( $wattoshost == 'stella' ) then 
+if ( $wattoshost == 'stellaxxxx' ) then 
     setenv CLASSPATH ${WATTOSCLASSDIR}
     echo "DEBUG: Wattos wsetup found to be on development machine"    
 endif    

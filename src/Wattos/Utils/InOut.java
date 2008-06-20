@@ -399,7 +399,7 @@ public class InOut {
                 line = br.readLine();
             }
             return sb.toString();
-        } catch (Exception e) {
+        } catch (Exception e) { 
             General.showCodeBug( e.getMessage() );
             General.showError("Failed to readTextFromInputStream from : " + is.toString());
             return null;
