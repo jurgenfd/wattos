@@ -24,6 +24,8 @@
 	NB the debug settings.
 	-->
     <target name="compile" description="compile" depends="init">
+    	<echo>This compile is incomplete because the resulting jar doesn't run fine on tang. USE AT YOUR OWN RISK
+    	For now we depended on automatic features in eclipse.</echo>
         <javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on" debuglevel="lines,vars,source">
             <classpath>
                 <path path="${javac.classpath}"/>
