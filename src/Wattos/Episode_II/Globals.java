@@ -210,7 +210,7 @@ public class Globals {
         if( ( (Boolean) m.get( "testing" )).booleanValue() ) {
               m.put("mr_anno_progress_dir", share_root+fs+"jurgen"+fs+"tmp_unb_"+fs+"Wattos"+fs+"mr_anno_progress");
         } else {
-              m.put("mr_anno_progress_dir", pdbmirror_root+fs+"mr_anno_progress");
+              m.put("mr_anno_progress_dir", pdbmirror_root+fs+"mr_anno_progress_nrg31");
         }            
 
         if( ( (Boolean) m.get( "act_locally_mr" )).booleanValue() ) {
