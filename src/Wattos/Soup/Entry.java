@@ -1092,6 +1092,46 @@ public class Entry extends GumboItem implements Serializable {
         assemblyNameList[   result ] = assemblyName;
         number[             result ] = mainRelation.sizeRows;
         return result;
+    }
+
+    public boolean truncateEnsembleToMaxResidues(int maxResidueCountTotal) {
+        int entryRID = getEntryId();
+        BitSet modelSet = getModelsInEntry( entryRID );
+        if ( modelSet == null ) {
+            General.showError("Failed to get even an empty set of models in truncateEnsembleToMaxResidues");
+            return false;
+        }
+        int modelCount = modelSet.cardinality();
+        BitSet resMasterModelSet = getResInMasterModel();
+        int resCountSingleModel = resMasterModelSet.cardinality();
+        int resCountTotal = resCountSingleModel * modelCount;
+        int modelCountAllowed = maxResidueCountTotal / resCountSingleModel;
+        int modelCountToRemove = Math.max( modelCount - modelCountAllowed, 0 );
+        
+        General.showOutput("Model count:                    " + modelCount);
+        General.showOutput("Residue count (single model):   " + resCountSingleModel);
+        General.showOutput("Residue count (all):            " + resCountTotal);
+        General.showOutput("Residue count allowed (all):    " + maxResidueCountTotal);
+        General.showOutput("Model count allowed:            " + modelCountAllowed);
+        General.showOutput("Model count to remove:          " + modelCountToRemove);
+        
+        if (modelCountToRemove > 0) {
+            BitSet modelSetToRemove = (BitSet) modelSet.clone();
+            for (int i = modelSetToRemove.nextSetBit(0); i >= 0; i=modelSetToRemove.nextSetBit(i+1)) {
+                int modelNumber = gumbo.model.number[i];
+                if ( modelNumber > modelCountAllowed ) {
+                    General.showDebug("Removing model number: " + modelNumber);
+                    gumbo.model.mainRelation.removeRowCascading(i, true); // Cascades and removes indices automatically.
+                }
+            }            
+            BitSet modelSetLeft = getModelsInEntry( entryRID );
+            if ( modelSetLeft == null ) {
+                General.showError("Failed to get even an empty set of models LEFT in truncateEnsembleToMaxResidues");
+                return false;
+            }
+            General.showOutput("Model count left:               " + modelSetLeft.cardinality());
+        }        
+        return true;
     }        
     
     /** OLD
