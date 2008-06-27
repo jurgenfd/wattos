@@ -3093,7 +3093,8 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
     /** Returns the distances target, lowerbound dev, upperbound dev given
      * target, low, upp. Returns null when given input can't be translated
      * e.g. all were nulls. In summary, 3 binary states in combination gives
-     * 8 possibilities detailed below.
+     * 8 possibilities detailed below. NB that a value of 0.0 for the target
+     * as in entry 1ai0 will be assumed a null.
      * <PRE>
      * t target
      * l lower bound
@@ -3120,12 +3121,15 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         float lowDev=Defs.NULL_FLOAT;
         float uppDev=Defs.NULL_FLOAT;
         int state = -1;
+        if ( tar == 0.0 ) { // For entry 1ai0
+            tar = Defs.NULL_FLOAT;
+        }
         // sanity checks first
 //        General.showDebug("tar is: " + tar);
 //        General.showDebug("low is: " + low);
 //        General.showDebug("upp is: " + upp);
         if ( !Defs.isNull(low) && !Defs.isNull(tar) && low > tar ) {
-            General.showError("Found lowerbound (" + low + ") larger than target (" + tar + ")");
+            General.showDebug("Found lowerbound (" + low + ") larger than target (" + tar + ")");
             return null;
         }
         if ( !Defs.isNull(low) && !Defs.isNull(upp) && low > upp ) {

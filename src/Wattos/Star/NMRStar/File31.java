@@ -2198,7 +2198,7 @@ public class File31 {
                 Integer logicalOperationInteger = null;
 
                 while ( starDCTreeRId < tTTree.sizeRows ) { // scan the whole tree tagtable.                    
-                    General.showDebug( "Working on dc tree rid: " + starDCTreeRId);
+//                    General.showDebug( "Working on dc tree rid: " + starDCTreeRId);
                     boolean atomFoundForAllInDC = true;
                     if ( dCNumb !=  varDCtreeConstraintsID[starDCTreeRId] ) { // start a new constraint; will be executed on first tree row.                                                
                         if ( dCNumb != (varDCtreeConstraintsID[starDCTreeRId]-1)) {
@@ -2243,8 +2243,8 @@ public class File31 {
                         return false;
                     }
                     dCNodeNumb++; // safe after test above
-                    General.showDebug( "Working on dc node number: " + dCNodeNumb);
-                    General.showDebug( "Working on dc node rid   : " + currentDCNodeId);
+//                    General.showDebug( "Working on dc node number: " + dCNodeNumb);
+//                    General.showDebug( "Working on dc node rid   : " + currentDCNodeId);
                     if ( logicalOperationString != varDCtreeLogicoperation[ starDCTreeRId ] ) { // fast equality op possible because of nr list.
                         logicalOperationString  = varDCtreeLogicoperation[ starDCTreeRId ];
                         logicalOperationInteger = (Integer) DistConstr.logicalOperationString2Int.get( logicalOperationString );
@@ -2408,7 +2408,7 @@ public class File31 {
                             } else if ( matchRestraints2SoupByAuthorDetails ) {
                                 // Convenience variables.
                                 String  atomNameAuthor    = varDCAuthatomID[                     starDCAtomRid ];
-                                General.showDebug("working on: atomName: [" + atomNameAuthor +"]");
+//                                General.showDebug("working on: atomName: [" + atomNameAuthor +"]");
                                 int offsetSequence = 171 - 13 - 1; // only valid for 1brv; mmCIF starts at ASN 1 and VAL is 14; in restraints VAL is 171 TODO: fix code
 //                                int     molId       = varDCEntityassemblyID[           starDCAtomRid ];
                                 int     molId       = 1; // valid for 1brv
