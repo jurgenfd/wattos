@@ -43,6 +43,7 @@ Edit,Distance,,,RemoveDistRed,,Removes intraresidual redundant distances,,X
 Edit,Select,,,SelectAtomsByNameRegExp,,,,X
 Edit,Remove,,,RemoveAtoms,,,,X
 Edit,Remove,,,TruncateEnsembleToMaxResidues,,,,X
+Edit,Remove,,,TruncateEnsembleToMaxModels,,,,X
 View,Plot,,,ShowPlotViolationResidue,,Shows the violation per residue plot in Gui if available.,,X
 View,Plot,,,ShowPlotCompletenessResidue,,Shows the commpleteness per residue plot in Gui if available.,,X
 View,,,,ShowEntries,,Lists the entries,,X
