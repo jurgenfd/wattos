@@ -24,8 +24,8 @@
  *
  * FILE:        $Source: /cvs_archive/cvs/Wattos/src/Wattos/Star/ContentHandler.java,v $
  * 
- * AUTHOR:      $Author: jurgen $
- * DATE:        $Date: 2006/10/12 20:43:18 $
+ * AUTHOR:      $Author$
+ * DATE:        $Date$
  * 
  * UPDATE HISTORY:
  * ---------------
@@ -40,8 +40,8 @@
  *
  * FILE:        $Source: /cvs_archive/cvs/Wattos/src/Wattos/Star/ContentHandler.java,v $
  * 
- * AUTHOR:      $Author: jurgen $
- * DATE:        $Date: 2006/10/12 20:43:18 $
+ * AUTHOR:      $Author$
+ * DATE:        $Date$
  * 
  * UPDATE HISTORY:
  * ---------------
@@ -56,8 +56,8 @@
  *
  * FILE:        $Source: /cvs_archive/cvs/Wattos/src/Wattos/Star/ContentHandler.java,v $
  * 
- * AUTHOR:      $Author: jurgen $
- * DATE:        $Date: 2006/10/12 20:43:18 $
+ * AUTHOR:      $Author$
+ * DATE:        $Date$
  * 
  * UPDATE HISTORY:
  * ---------------

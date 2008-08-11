@@ -1134,6 +1134,40 @@ public class Entry extends GumboItem implements Serializable {
         return true;
     }        
     
+    public boolean truncateEnsembleToMaxModels(int maxModelCountTotal) {
+        int entryRID = getEntryId();
+        BitSet modelSet = getModelsInEntry( entryRID );
+        if ( modelSet == null ) {
+            General.showError("Failed to get even an empty set of models in truncateEnsembleToMaxModels");
+            return false;
+        }
+        int modelCount = modelSet.cardinality();
+        int modelCountToRemove = Math.max( modelCount - maxModelCountTotal, 0 );
+        
+        General.showOutput("Model count:                    " + modelCount);
+        General.showOutput("Model count allowed:            " + maxModelCountTotal);
+        General.showOutput("Model count to remove:          " + modelCountToRemove);
+        
+        if (modelCountToRemove > 0) {
+            BitSet modelSetToRemove = (BitSet) modelSet.clone();
+            for (int i = modelSetToRemove.nextSetBit(0); i >= 0; i=modelSetToRemove.nextSetBit(i+1)) {
+                int modelNumber = gumbo.model.number[i];
+                if ( modelNumber > maxModelCountTotal ) {
+                    General.showDebug("Removing model number: " + modelNumber);
+                    gumbo.model.mainRelation.removeRowCascading(i, true); // Cascades and removes indices automatically.
+                }
+            }            
+            BitSet modelSetLeft = getModelsInEntry( entryRID );
+            if ( modelSetLeft == null ) {
+                General.showError("Failed to get even an empty set of models LEFT in truncateEnsembleToMaxModels");
+                return false;
+            }
+            General.showOutput("Model count left:               " + modelSetLeft.cardinality());
+        }        
+        return true;
+    }        
+    
+    
     /** OLD
     public boolean calculateHydrogenBonds( String dcListName, float percentagePresent,
         float minimumEnergy ) {

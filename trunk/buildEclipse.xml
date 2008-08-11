@@ -20,7 +20,7 @@
       <antcall target="set_version"/>		
 	</target>
 	
-	<!-- Is done automatically by ant build but can be used externally such as on tang. 
+	<!-- Is done automatically by ant build but can be used externally such as on ". 
 	NB the debug settings.
 	-->
     <target name="compile" description="compile" depends="init">

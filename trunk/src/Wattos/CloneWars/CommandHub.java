@@ -1188,8 +1188,6 @@ public class CommandHub implements Serializable {
         return true;
     }
     
-    /** Swaps atom nomenclature if asked.
-     */
     public boolean TruncateEnsembleToMaxResidues() {
         Integer maxResCount = Integer.valueOf( Strings.getInputInt(UserInterface.in, "Number of maximum total number of residues (7500 suggested for FC)"));
     
@@ -1200,6 +1198,20 @@ public class CommandHub implements Serializable {
     
         if ( ! entry.truncateEnsembleToMaxResidues(maxResCount.intValue())) {
             General.showError("Failed to entry.truncateEnsembleToMaxResidues");
+            return false;
+        }
+        return true;
+    }
+    public boolean TruncateEnsembleToMaxModels() {
+        Integer maxModelCount = Integer.valueOf( Strings.getInputInt(UserInterface.in, "Number of maximum number of models (1 suggested for interactive work with FC)"));
+    
+        Object[] methodArgs = { 
+        		maxModelCount
+        };
+        General.showOutput( "Doing TruncateEnsembleToMaxModels with arguments: " + PrimitiveArray.toString( methodArgs ) );
+    
+        if ( ! entry.truncateEnsembleToMaxModels(maxModelCount.intValue())) {
+            General.showError("Failed to entry.truncateEnsembleToMaxModels");
             return false;
         }
         return true;

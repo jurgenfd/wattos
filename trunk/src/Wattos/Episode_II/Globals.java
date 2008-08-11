@@ -227,8 +227,8 @@ public class Globals {
          *  should be base for both html and servlet locations
          */
 //        m.put("base_html_dir", root+fs+"home"+fs+"jurgen"+fs+"external_html" );
-        m.put("base_html_url", "http://tang.bmrb.wisc.edu" ); //TODO: change to restraintsgrid url/
-//        m.put("base_html_url", "http://restraintsgrid.bmrb.wisc.edu" );
+//        m.put("base_html_url", "http://tang.bmrb.wisc.edu" ); //TODO: change to tang url/
+        m.put("base_html_url", "http://restraintsgrid.bmrb.wisc.edu" );
 
         // Dir/url with html pages
 //        m.put("html_url", m.get( "base_html_url" ) + "/~jurgen/" +  m.get( "html_project_name" ) );
@@ -245,11 +245,11 @@ public class Globals {
          */
                                   
         
-        m.put("apache_data_url",                    "http://tang.bmrb.wisc.edu/servlet_data");
+        m.put("apache_data_url",                    "http://restraintsgrid.bmrb.wisc.edu/servlet_data");
         m.put("servlet_top_dir",                    "/bmrb/htdocs/wattos"); // Exists only on servlet machine
         m.put("MRGridServlet",                      "MRGridServlet");
         m.put("servlet_top_url",                    "NRG"); // was WebModule for a LONG time.
-        m.put("servlet_root_url",                   "http://tang.bmrb.wisc.edu");
+        m.put("servlet_root_url",                   "http://restraintsgrid.bmrb.wisc.edu");
 //      m.put("servlet_root_url",                   "http://restraintsgrid.bmrb.wisc.edu");
         if ( getValueBoolean("act_locally" ) ) {
 //            m.put("servlet_root_url",               "http://whelk.bmrb.wisc.edu");
@@ -281,7 +281,7 @@ public class Globals {
         
         // Location for molgrap images
         m.put("molgrap_dir", root+fs+"pdbmirror2"+fs+"molgrap" );
-        // Dir for temporary files (/tmp on tang is too small)
+        // Dir for temporary files (/tmp on restraintsgrid is too small)
         
         /**
         if ( osName.startsWith("Windows") ) {
@@ -305,7 +305,7 @@ public class Globals {
         // Production settings        ; see nmrrestrntsgrid project: scripts/sql/prepare_database_mysql.sql 
         m.put("db_username",        "wattos1");// 
         m.put("db_password",        "4I4KMS"); // was U for wattos2; S for 1.
-        m.put("db_machine",         "tang.bmrb.wisc.edu");                    
+        m.put("db_machine",         "restraintsgrid.bmrb.wisc.edu");                    
 //        m.put("db_machine",         "restraintsgrid.bmrb.wisc.edu");                    
         if ( getValueBoolean("testing" ) ) {  
 //            m.put("db_username",        "wattos2");
@@ -313,7 +313,7 @@ public class Globals {
             if ( getValueBoolean("act_locally_db" ) ) {
                 m.put("db_machine",         "localhost");
             } else {
-                m.put("db_machine",         "tang.bmrb.wisc.edu");                    
+                m.put("db_machine",         "restraintsgrid.bmrb.wisc.edu");                    
 //                m.put("db_machine",         "restraintsgrid.bmrb.wisc.edu");                    
             }
         }
