@@ -5,7 +5,7 @@
 
 # TODO: Change the below to the right password. Don't want to include it with distribution
 # but is required for using --master-data option
-set password = '\!'
+set password = '\!Ecj%Y&R'
 
 # Limit the cpu usage to 6 minutes.
 set max_cpu_time = 360
@@ -19,8 +19,8 @@ limit cputime $max_cpu_time
 \rm -rf $DUMP_DIR >& /dev/null
 mkdir -p $DUMP_DIR
 chmod o+w $DUMP_DIR
-mysqldump --master-data --tab=$DUMP_DIR --opt -u root -p$password wattos2
-mysqldump --master-data                       -u root -p$password wattos2 > $DUMP_DIR/dump_file.sql
+mysqldump --master-data --tab=$DUMP_DIR --opt -u root -p$password wattos1
+mysqldump --master-data                       -u root -p$password wattos1 > $DUMP_DIR/dump_file.sql
 
 chmod o-w $DUMP_DIR
 echo "dump dir: $DUMP_DIR"
