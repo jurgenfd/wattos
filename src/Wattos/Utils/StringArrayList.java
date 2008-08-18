@@ -47,7 +47,7 @@ public class StringArrayList extends ArrayList {
     public StringArrayList( Collection in ) {
         super(in);
     }
-        
+                
     public boolean read( String filename ) {
         
         // Zip previous content.        
@@ -146,6 +146,29 @@ public class StringArrayList extends ArrayList {
          */
         this.clear();
         this.addAll(s);        
+    }
+
+    /** Returns duplicates (multiple ones possibly).
+     * Rather inefficient algorithm.
+     */
+    public StringArrayList duplicates() {
+    	StringArrayList result = new StringArrayList();
+//        TreeSet s = new TreeSet( this );
+        for ( int i = this.size() -1 ; i>= 0; i-- ) {
+            String e = this.getString(i);
+            int idx = this.indexOf(e);
+            
+            if ( idx >= 0 && idx != i  ) { // matches earlier element
+            	result.add(e);
+            	General.showDebug("i="+i+" idx="+idx + " element is duplicate.");
+            } else {
+            	General.showDebug("i="+i+" idx="+idx);
+//            	s.add(e);
+            }
+        }
+        result.sort();
+        return result;
+            
     }
 
 

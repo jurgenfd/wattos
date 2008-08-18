@@ -14,6 +14,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -37,6 +38,28 @@ public class StringsTest extends TestCase {
         return suite;
     }
 
+    public void testToStringArray() {
+        Collection c = null;
+        
+        String[] expResult = null;
+        String[] result = Strings.toStringArray(c);
+        assertEquals(expResult, result);
+    }
+
+    public void testStringArrayListDuplicates() {
+    	General.setVerbosityToDebug();
+    	StringArrayList in = new StringArrayList();
+    	StringArrayList expResult = new StringArrayList();
+    	in.add("1brv");
+    	in.add("1brv");
+    	expResult.add("1brv");
+    	StringArrayList result = in.duplicates();
+    	General.showDebug("in:     " +           in.toString());
+    	General.showDebug("result: "    +    result.toString());
+    	General.showDebug("expResult: " + expResult.toString());
+        assertEquals(expResult, result);
+    }
+    
     public void testGrowToSize() {
         boolean leftAlign = false;
         boolean colContainsAQuotedValue = true;
@@ -604,13 +627,6 @@ public class StringsTest extends TestCase {
         assertEquals(expResult, result);
     }
 
-    public void testToStringArray() {
-        Collection c = null;
-        
-        String[] expResult = null;
-        String[] result = Strings.toStringArray(c);
-        assertEquals(expResult, result);
-    }
 
     public void testLongestString() {
         String[] a = null;
