@@ -325,7 +325,17 @@ public class SQL_Episode_II extends SQL_Generic{
             General.showWarning("Found NO mr files in db with detail: " +
                 detail);
         }
-        return(ids);
+        
+        StringArrayList idsStringArrayList = new StringArrayList(ids);
+        StringArrayList duplicates = idsStringArrayList.duplicates();
+        if ( duplicates.size() > 0 ) {
+	        General.showError("There are duplicates in database: " + duplicates );
+	        StringArrayList duplicatesUnique = (StringArrayList) duplicates.clone();
+	        duplicatesUnique.make_unique();
+	        General.showError("Unique list of them: " + duplicatesUnique);
+	        
+        }
+        return ids;
     }
 
     /** Get the pdb ids for mr files with certain details values and the time-
