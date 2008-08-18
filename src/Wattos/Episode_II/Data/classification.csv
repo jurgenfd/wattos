@@ -4,7 +4,7 @@ angle,n/a,n/a,MR_file_angle,-,-,Y,X,X,X,X,X,-,X,X,X,-,X,X,X,X,X,X,X,X,X,-,X,X,X,
 chemical shift,n/a,format 1,assigned_chemical_shifts,Y,-,-,X,X,X,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 chemical shift,n/a,format 2,assigned_chemical_shifts,Y,-,-,X,X,X,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 chemical shift,n/a,format 3,assigned_chemical_shifts,Y,-,-,X,X,X,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
-chemical shift,n/a,n/a,assigned_chemical_shifts,Y,-,-,X,X,X,X,X,-,X,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,-,-,-,-,-
+chemical shift,n/a,n/a,assigned_chemical_shifts,Y,-,-,X,X,X,X,X,-,X,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,X,-,-,-,-,-
 chemical shift anisotropy,n/a,n/a,chemical_shift_anisotropy,-,Y,-,X,X,X,X,X,-,X,X,X,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 chemical shift difference,n/a,n/a,chem_shift_interaction_diff,-,Y,-,X,X,X,X,X,-,X,X,X,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 comment,n/a,n/a,MR_file_comments,-,-,Y,99,99,99,99,99,-,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99
@@ -18,21 +18,22 @@ coordinate,ensemble,n/a,MR_file_coordinate_initial,-,-,Y,X,X,X,X,X,-,X,X,X,X,X,X
 coupling constant,n/a,n/a,coupling_constants,Y,-,-,X,X,X,X,X,-,X,X,-,X,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 dihedral angle,n/a,n/a,torsion_angle_constraints,Y,-,-,X,X,X,X,X,-,X,2,402,X,202,X,102,X,X,X,X,-,-,302,X,X,X,X,X,-,-,-,X,-,-,-
 dipolar coupling,n/a,n/a,dipolar_coupling_constraints,Y,-,-,X,X,X,X,X,-,X,3,403,-,X,-,103,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,-
-distance,disulfide bond,ambi,distance_constraints,Y,-,-,X,X,X,X,X,-,X,1,401,-,201,X,101,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,-,-,-
+distance,disulfide bond,ambi,distance_constraints,Y,-,-,X,X,X,X,X,-,X,1,401,-,201,X,101,-,-,-,-,-,-,-,X,-,-,-,-,-,-,-,X,-,-,-
 distance,disulfide bond,simple,distance_constraints,Y,-,-,X,X,X,X,X,-,X,1,401,X,201,X,101,X,X,X,X,X,X,301,X,X,X,X,X,-,-,-,X,-,X,-
-distance,general distance,ambi,distance_constraints,Y,-,-,X,X,X,X,X,-,X,1,401,-,201,X,101,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,-,-,-
+distance,general distance,ambi,distance_constraints,Y,-,-,X,X,X,X,X,-,X,1,401,-,201,X,101,-,-,-,-,-,-,-,X,-,-,-,-,-,-,-,X,-,-,-
 distance,general distance,simple,distance_constraints,Y,-,-,X,X,X,X,X,-,X,1,401,X,201,X,101,X,X,X,X,X,X,301,X,X,X,X,X,-,-,-,X,-,X,-
-distance,hydrogen bond,ambi,distance_constraints,Y,-,-,X,X,X,X,X,-,X,1,401,-,201,X,101,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,-,-,-
+distance,hydrogen bond,ambi,distance_constraints,Y,-,-,X,X,X,X,X,-,X,1,401,-,201,X,101,-,-,-,-,-,-,-,X,-,-,-,-,-,-,-,X,-,-,-
 distance,hydrogen bond,simple,distance_constraints,Y,-,-,X,X,X,X,X,-,X,1,401,X,201,X,101,X,X,X,X,X,X,301,X,X,X,X,X,-,-,-,X,-,X,-
-distance,NOE,ambi,distance_constraints,Y,-,-,X,X,X,X,X,-,X,1,401,-,201,X,101,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,-,-,-
+distance,NOE,ambi,distance_constraints,Y,-,-,X,X,X,X,X,-,X,1,401,-,201,X,101,-,-,-,-,-,-,-,X,-,-,-,-,-,-,-,X,-,-,-
 distance,NOE,simple,distance_constraints,Y,-,-,X,X,X,X,X,-,X,1,401,X,201,X,101,X,X,X,X,X,X,301,X,X,X,X,X,-,-,-,X,-,X,-
-distance,NOE build-up,simple,distance_constraints,Y,-,-,X,X,X,X,X,-,X,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,-,-,-
-distance,NOE not seen,ambi,distance_constraints,Y,-,-,X,X,X,X,-,-,X,1,401,-,201,X,101,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,-,-,-
+distance,NOE build-up,simple,distance_constraints,Y,-,-,X,X,X,X,X,-,X,X,-,-,-,-,-,-,-,-,-,-,-,-,X,-,-,-,-,-,-,-,X,-,-,-
+distance,NOE not seen,ambi,distance_constraints,Y,-,-,X,X,X,X,-,-,X,1,401,-,201,X,101,-,-,-,-,-,-,-,X,-,-,-,-,-,-,-,X,-,-,-
 distance,NOE not seen,simple,distance_constraints,Y,-,-,X,X,X,X,-,-,X,1,401,-,201,X,101,X,X,X,X,X,X,301,X,X,X,X,X,-,-,-,X,-,X,-
 distance,symmetry,simple,distance_constraints,Y,-,-,X,X,X,X,-,-,X,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 entry,full,n/a,MR_file_n/a,-,-,Y,-,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X
 exchange,n/a,n/a,H_exch_rates,Y,-,-,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 intervector projection angle,n/a,n/a,unknown_sf_category,-,-,-,-,-,-,-,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
+small-angle x-ray scattering,n/a,n/a,unknown_sf_category,-,-,-,-,-,-,X,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 line-broadening,n/a,n/a,MR_file_line-broadening,-,-,Y,X,X,X,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 nomenclature mapping,n/a,n/a,conformer_atom_nom_map,Y,-,-,X,X,X,X,X,-,X,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 molecular system,n/a,n/a,molecular_system,Y,-,-,X,X,X,X,X,-,X,X,X,X,X,X,X,X,X,X,X,X,X,-,X,X,X,X,X,-,-,-,-,-,-,-
