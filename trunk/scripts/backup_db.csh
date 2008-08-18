@@ -18,7 +18,6 @@ if ( ($max_days < 1) || ($max_days > 9999 ) ) then
 endif
 
 echo "Maxdays              : " $max_days
-echo "Doing incremental is : " $incremental
 echo "Maximum cpu time is  : " $max_cpu_time
 echo "PATH is              : " $PATH
 echo "CLASSPATH for java is: " $CLASSPATH

@@ -6,8 +6,8 @@ DROP view IF EXISTS PERFREDTMP;
 CREATE VIEW PERFREDTMP 
 	AS 
 SELECT F.PDB_ID, B.TEXT_TYPE, B.ITEM_COUNT
-FROM Wattos2.MRBLOCK AS B, Wattos2.MRFILE AS F
-WHERE B.MRFILE_ID=F.MRFILE_ID AND TYPE='entry' AND PROGRAM='STAR'
+FROM mrblock AS B, mrfile AS F
+WHERE B.mrfile_ID=F.mrfile_ID AND TYPE='entry' AND PROGRAM='STAR'
 ORDER BY F.PDB_ID, B.TEXT_TYPE;
   
 DROP view IF EXISTS PERFRED;
@@ -104,7 +104,7 @@ S.pdb_id,
 M.MaxOfViol_Max, 
 R.WgtAvgRms 
 FROM 
-((((Wattos2.entry S
+((((entry S
 LEFT OUTER JOIN perDocr P ON S.pdb_id = P.pdb_id)
 LEFT OUTER JOIN perFred F ON S.pdb_id = F.pdb_id)
 LEFT OUTER JOIN _Distance_constraint_stats_list_Query_Max M ON S.pdb_id = M.pdb_id)
@@ -141,7 +141,7 @@ ORDER BY S.pdb_id;
 --Queries for analyses used in paper DOCR2.
 
 SELECT count(DISTINCT f.pdb_id), b.text_type, b.type
-FROM wattos2.mrblock AS b, wattos2.mrfile AS f
+FROM mrblock AS b, mrfile AS f
 WHERE b.mrfile_id=f.mrfile_id and (
 	b.type='dipolar coupling' OR
 	b.type='distance' OR
@@ -151,7 +151,7 @@ group by b.text_type, b.type
 order by b.text_type, b.type;
 
 SELECT count(DISTINCT f.pdb_id), b.text_type,b.type
-FROM wattos2.mrblock AS b, wattos2.mrfile AS f
+FROM mrblock AS b, mrfile AS f
 WHERE b.mrfile_id=f.mrfile_id and (
 	b.type='dipolar coupling' OR
 	b.type='distance' OR
@@ -190,7 +190,7 @@ from violRmsBad v2;
 DROP VIEW IF EXISTS DOCRFREDEntries;
 CREATE VIEW DOCRFREDEntries AS
 SELECT DISTINCT pdb_id
-FROM wattos2.mrfile
+FROM mrfile
 order by pdb_id;
 
 -- Get goodies
@@ -208,7 +208,7 @@ select count(distinct pdb_id) from DOCRFREDEntries;
 select count(distinct pdb_id) from DOCRFREDGoodies;
 
 SELECT count(DISTINCT f.pdb_id), b.program
-FROM wattos2.mrblock AS b, wattos2.mrfile AS f
+FROM mrblock AS b, mrfile AS f
 WHERE b.mrfile_id=f.mrfile_id and (
 	b.type='dipolar coupling' OR
 	b.type='distance' OR
@@ -239,7 +239,7 @@ DROP VIEW IF EXISTS RDC_Entries;
 
 CREATE VIEW RDC_Entries AS
 SELECT DISTINCT f.pdb_id
-FROM wattos2.mrblock AS b, wattos2.mrfile AS f
+FROM mrblock AS b, mrfile AS f
 WHERE b.mrfile_id=f.mrfile_id and text_type='3-converted-DOCR' and type='dipolar coupling'
 order by f.pdb_id;
 	
