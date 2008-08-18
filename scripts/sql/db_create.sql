@@ -37,7 +37,7 @@ CREATE TABLE entry_id   (id INT NOT NULL); INSERT INTO entry_id     VALUES (1000
 CREATE TABLE mrfile_id  (id INT NOT NULL); INSERT INTO mrfile_id    VALUES (1000);
 CREATE TABLE mrblock_id (id INT NOT NULL); INSERT INTO mrblock_id   VALUES (1000);
 CREATE TABLE dbfs_id    (id INT NOT NULL); INSERT INTO dbfs_id      VALUES (1000);
--- ENTRY
+-- entry
 CREATE TABLE entry
 (
     entry_id                       INT              NOT NULL PRIMARY KEY,
@@ -48,7 +48,7 @@ CREATE TABLE entry
 ) TYPE = INNODB;
 CREATE INDEX entry_001 ON entry (bmrb_id);
 CREATE INDEX entry_002 ON entry (pdb_id);
--- MRFILE
+-- mrfile
 -- MySQL doesn't accept the SYSDATE default for date_modified so always present date on insert.
 -- From MySQL manual: 
 -- For storage engines other than InnoDB, MySQL Server parses the FOREIGN KEY 
@@ -68,7 +68,7 @@ CREATE INDEX mrfile_001 ON mrfile (entry_id);
 CREATE INDEX mrfile_002 ON mrfile (detail);
 CREATE INDEX mrfile_003 ON mrfile (pdb_id);
 CREATE INDEX mrfile_004 ON mrfile (date_modified);
--- MRBLOCK 
+-- mrblock 
 CREATE TABLE mrblock
 (
     mrblock_id                     INT              NOT NULL PRIMARY KEY,
@@ -116,7 +116,7 @@ CREATE TABLE temp_mrfile
     date_modified                   DATE            NOT NULL,
     FOREIGN KEY (entry_id)          REFERENCES entry (entry_id) ON DELETE CASCADE
 ) TYPE = INNODB;
--- MRBLOCK 
+-- mrblock 
 CREATE TABLE temp_mrblock
 (
     mrblock_id                     INT              NOT NULL PRIMARY KEY,
