@@ -1,7 +1,8 @@
 -- STEP BY STEP PROCEDURE FOR SETTING UP NEW DB
 
--- set root password
---mysql -u root password '\!Ecj'ETC  
+-- login with root password
+--mysql -u root -p'\!Ecj%Y&R' mysql
+-- The db isn't available anywhere but on the host itself so this posses no security problem.
 
 -- Notes:
     --  # no escapes for any char but the first.
@@ -29,15 +30,15 @@ SET PASSWORD FOR 'wattos2'@'anthozoan.bmrb.wisc.edu' = PASSWORD('4I4KMS');
 SET PASSWORD FOR 'wattos2'@'zebrafish.bmrb.wisc.edu' = PASSWORD('4I4KMU');
 SET PASSWORD FOR 'repl'@'whelk.bmrb.wisc.edu'        = PASSWORD('slavepass');
                                                     
-GRANT ALL ON wattos2.* TO 'wattos2'@'localhost';
-GRANT ALL ON wattos2.* TO 'wattos2'@'tang.bmrb.wisc.edu';
-GRANT ALL ON wattos2.* TO 'wattos2'@'halfbeak.bmrb.wisc.edu';
-GRANT ALL ON wattos2.* TO 'wattos2'@'whelk.bmrb.wisc.edu';
-GRANT ALL ON wattos2.* TO 'wattos2'@'anthozoan.bmrb.wisc.edu';
-GRANT ALL ON wattos2.* TO 'wattos2'@'zebrafish.bmrb.wisc.edu';
-GRANT ALL ON wattos2.* TO 'wattos2'@'localhost.localdomain';             
+GRANT ALL ON * TO 'wattos2'@'localhost';
+GRANT ALL ON * TO 'wattos2'@'tang.bmrb.wisc.edu';
+GRANT ALL ON * TO 'wattos2'@'halfbeak.bmrb.wisc.edu';
+GRANT ALL ON * TO 'wattos2'@'whelk.bmrb.wisc.edu';
+GRANT ALL ON * TO 'wattos2'@'anthozoan.bmrb.wisc.edu';
+GRANT ALL ON * TO 'wattos2'@'zebrafish.bmrb.wisc.edu';
+GRANT ALL ON * TO 'wattos2'@'localhost.localdomain';             
 
-update user set file_priv='Y' where user='wattos2';
+update user set file_priv='Y' where user='wattos1';
 
 GRANT REPLICATION SLAVE ON *.* TO 'repl'@'whelk.bmrb.wisc.edu'   IDENTIFIED BY 'slavepass';
 GRANT REPLICATION SLAVE ON *.* TO 'repl'@'localhost.localdomain' IDENTIFIED BY 'slavepass';

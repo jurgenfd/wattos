@@ -350,6 +350,16 @@ public class Globals {
 
         // Formatting of all pages derived from this footer
         String html_location = getValueString("servlet_html_dir");
+    	String googleAnalytics = 
+	    	"<script type=\"text/javascript\">\n"+
+	    	"var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n"+
+	    	"document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n"+
+	    	"</script>\n"+
+	    	"<script type=\"text/javascript\">\n"+
+	    	"var pageTracker = _gat._getTracker(\"UA-4422425-1\");\n"+
+	    	"pageTracker._trackPageview();\n"+
+	    	"</script>\n";
+        
         m.put("html_footer_text", 
             "<p><hr>\n" +
             "Please acknowledge these <A HREF=\"/"+html_location+"/howto.html#References\">references</A>\n" +
@@ -359,6 +369,7 @@ public class Globals {
             "for help, if required. " +
             "<!-- INSERT DATE HERE --> \n" + 
             "(<!-- INSERT DB_USERNAME HERE -->)\n" +
+            googleAnalytics+ // should be put just before the /body tag.
             "</body></html>");              
     }
     
