@@ -1,11 +1,11 @@
-#!/bin/csh -f
+#!/bin/csh
 
 # This script will back up all mrfiles that have been modified in the last x
 # days.
 
 # The number of days the modification on a mrfile might be old in order
 # to be back uped.
-set max_days = 9999
+set max_days = 22
 
 # Limit the cpu usage to 10 hours.
 set max_cpu_time = 36000

@@ -185,7 +185,7 @@ public class MRGridServlet extends HttpServlet {
      */    
     public void showHeader( HttpServletResponse resp)
         throws ServletException, java.io.IOException {
-            
+                	
         java.io.PrintWriter out = resp.getWriter();        
         String html_header_text = g.getValueString("html_header_text");
         Properties subs = new Properties();
