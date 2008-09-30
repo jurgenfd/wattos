@@ -933,9 +933,9 @@ public class PrimitiveArray {
         }        
         return Strings.toString( out.toArray() );
     }
-    
+    /** Defaults to printing no eol char after each value */
     public static String toString( int[] in ) {
-        return toString( in, true );
+        return toString( in, false );
     }
      
     public static String toString( int[] in, boolean useBrackets ) {
