@@ -1508,7 +1508,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             }
             map = mainRelation.getRowOrderMap(Relation.DEFAULT_ATTRIBUTE_ORDER_ID  ); // Includes just the dcs in this list
             if ( (map != null) && (map.length != dcCountTotal )) {
-                General.showError("Trying to get an order map but failed to give back the correct number of elements: " + dcCountTotal + " instead found: " + map.length );
+                General.showWarning("Trying to get an order map but failed to give back the correct number of elements: " + dcCountTotal + " instead found: " + map.length );
                 map = null;
             }
             if ( map == null ) {

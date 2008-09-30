@@ -4440,7 +4440,7 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
                 // Write them in a sorted fashion
                 int[] map = cdih.mainRelation.getRowOrderMap(Relation.DEFAULT_ATTRIBUTE_ORDER_ID  ); // Includes just the scs in this list
                 if ( (map != null) && (map.length != scCountTotal )) {
-                    General.showError("Trying to get an order map but failed to give back the correct number of elements: " + scCountTotal + " instead found: " + map.length );
+                    General.showWarning("Trying to get an order map but failed to give back the correct number of elements: " + scCountTotal + " instead found: " + map.length );
                     map = null;
                 }
                 if ( map == null ) {
@@ -4639,7 +4639,7 @@ _PDBX_nonpoly_scheme.Auth_seq_num   _pdbx_nonpoly_scheme.auth_seq_num
                 // Write them in a sorted fashion
                 int[] map = rdc.mainRelation.getRowOrderMap(Relation.DEFAULT_ATTRIBUTE_ORDER_ID  ); // Includes just the scs in this list
                 if ( (map != null) && (map.length != scCountTotal )) {
-                    General.showError("Trying to get an order map but failed to give back the correct number of elements: " + scCountTotal + " instead found: " + map.length );
+                    General.showWarning("Trying to get an order map but failed to give back the correct number of elements: " + scCountTotal + " instead found: " + map.length );
                     map = null;
                 }
                 if ( map == null ) {
