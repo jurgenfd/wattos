@@ -133,7 +133,7 @@ public class OSExec {
 		// / i:\\pdbmirror2\\nozip\\data\\structures\\all\\nmr_restraints\\1brv.mr");
 		// exec("\"C:\\Program Files\\Microsoft Office\\Office\\Winword.exe\"");
 		// exec("java -Xmx96m -Xms24m -jar S:\\linux\\src\\jedit\\4.0.3\\jedit.jar");
-//		String cmd = "\"C:\\Program Files\\jEdit 4.1\\jedit.exe\" inputFile";
+		// String cmd = "\"C:\\Program Files\\jEdit 4.1\\jedit.exe\" inputFile";
 		String cmd = args[0];
 		int status = exec(cmd);
 		if (status != 0) {
@@ -156,6 +156,7 @@ public class OSExec {
 		int status = 0;
 		int i = 0;
 		int iLast = cmdList.length - 1;
+		int iLastSuccess = -1;
 		for (; i <= iLast; i++) {
 			status = exec(cmdList[i]);
 			if (status != 0) {
@@ -163,17 +164,19 @@ public class OSExec {
 				General.showError("Found an error exit status: " + status);
 				break;
 			}
+			iLastSuccess = i;
 			// Continue right away after last one.
-			if ( i != iLast ) {
+			if (i != iLast) {
 				General.sleep(delayBetweenSubmittingJobs);
 			}
 		}
 		if (status != 0) {
-			General.showError("Only " + (i + 1) + " out of " + cmdList.length
+			General.showError("Only " + (iLastSuccess + 1) + " out of " + cmdList.length
 					+ " jobs were started (not all successfully finished perhaps)");
 			return 1;
 		}
-		General.showOutput("Finished " + (i + 1) + " out of the " + cmdList.length + " processes successfully.");
+		General.showOutput("Finished " + (iLastSuccess + 1) + " out of the " + cmdList.length
+				+ " processes successfully.");
 		return 0;
 	}
 }
