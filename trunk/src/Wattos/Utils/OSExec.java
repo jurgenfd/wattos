@@ -61,7 +61,7 @@ public class OSExec {
 
 		try {
 			String osName = System.getProperty("os.name");
-			General.showOutput("In OS: " + osName);
+//			General.showOutput("In OS: " + osName);
 
 			String[] cmd = new String[3];
 			if (osName.equals("Windows NT") || osName.equals("Windows 2000") || osName.equals("Windows XP")) {

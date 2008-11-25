@@ -48,7 +48,8 @@ set wattoshost = (`hostname|gawk -F'[.]' '{print tolower($1)}'`)
 #set wattoshost = (`hostname`)
 if ( $wattoshost == 'stella' ) then 
     setenv CLASSPATH ${WATTOSCLASSDIR}
-    echo "DEBUG: Wattos wsetup found to be on development machine"    
+    # Note that the following statement interfers with scp when shown.
+    # echo "DEBUG: Wattos wsetup found to be on development machine"    
 endif    
 
 
