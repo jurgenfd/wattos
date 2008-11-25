@@ -285,9 +285,11 @@
         <zip destfile="${wattos.war.file}">
             <fileset dir="${wattos.production.local.dir}" />
         </zip>
+        <echo message="toDir: ${home.web.user}@${home.web.machine}:${servlet.web.dir}"/>
+        <echo message="with port = ${home.web.port} and knownhosts=${home.web.knownhosts} passphrase=${home.web.passphrase} keyfile=${home.web.keyfile} "/>
 
-        <scp todir="${home.web.user}@${home.web.machine}:${wattos.webapp.dir}" keyfile="${home.web.keyfile}" 
-            knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" verbose="true" port="${home.web.port}">
+        <scp todir="${home.web.user}@${home.web.machine}:${servlet.web.dir}" keyfile="${home.web.keyfile}" 
+            knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" verbose="true" >
             <fileset file="${wattos.war.file}" />
         </scp>
     </target>

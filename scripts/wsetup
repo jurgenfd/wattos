@@ -15,8 +15,8 @@ setenv WATTOSMEM        512m
 
 # Installation directories.
 setenv WATTOSSRCDIR     $WATTOSROOT/src
-setenv WATTOSCLASSDIR   $WATTOSROOT/build/web/WEB-INF/classes
-setenv WATTOSCLASSDIR   ${WATTOSCLASSDIR}:$WATTOSROOT//build/test/classes
+setenv WATTOSCLASSDIR   $WATTOSROOT/build
+setenv WATTOSCLASSDIR   ${WATTOSCLASSDIR}:$WATTOSROOT//build
 setenv WATTOSJARSDIR    $WATTOSROOT/lib
 setenv WATTOSDOCDIR     $WATTOSROOT/doc
 setenv WATTOSDATADIR    $WATTOSROOT/data
