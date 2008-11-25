@@ -37,7 +37,7 @@ import Wattos.Database.*;
  *completely.
  *</UL>
  */
-public class SQL_Episode_II extends SQL_Generic{    
+public class SQL_Episode_II extends SQL_Generic{     
 
     /** The exact string used in the relational database for the file detail*/
     public static final String FILE_DETAIL_CLASSIFIED = "1-original";

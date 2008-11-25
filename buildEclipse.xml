@@ -16,7 +16,6 @@
 			<format property="wattos_version" pattern="yyyyMMdd-HHmm" />
 		</tstamp>
 		<echo message="Initiating Wattos version: ${wattos_version}" />
-		<mkdir dir="${build.classes.dir}" />
 		<antcall target="set_version" />
 	</target>
 
@@ -26,18 +25,18 @@
 	<target name="compile" description="compile" depends="init">
 		<echo>This compile is incomplete because the resulting jar doesn't run fine on tang. USE AT YOUR OWN RISK
     	For now we depended on automatic features in eclipse.</echo>
-		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on" debuglevel="lines,vars,source">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" debuglevel="lines,vars,source">
 			<classpath>
 				<path path="${javac.classpath}" />
 			</classpath>
 		</javac>
-		<copy todir="${build.classes.dir}">
+		<copy todir="${build.dir}">
 			<fileset dir="${src.dir}" includes="**/*.csv" />
 		</copy>
 	</target>
 
 	<target name="clean" description="clean class files" depends="init">
-		<delete dir="${build.classes.dir}" />
+		<delete dir="${build.dir}" />
 	</target>
 
 	<target name="-init-macrodef-junit">
@@ -45,7 +44,7 @@
 			<attribute name="includes" default="**/*Test.java" />
 			<sequential>
 				<junit showoutput="true" fork="true" maxmemory="256m" dir="tmp_dir" failureproperty="tests.failed" errorproperty="tests.failed" jvm="${platform.java}">
-					<batchtest todir="${build.test.results.dir}">
+					<batchtest todir="${build.dir}">
 						<fileset dir="${test.test.dir}" includes="@{includes}" />
 					</batchtest>
 					<classpath>
@@ -72,7 +71,7 @@
 				<java fork="true" maxmemory="256m" dir="tmp_dir" classname="@{classname}" jvm="${platform.java}">
 					<jvmarg line="${runmain.jvmargs}" />
 					<classpath>
-						<path path="${build.classes.dir.real}:${javac.classpath}:${j2ee.platform.classpath}" />
+						<path path="${build.dir}:${javac.classpath}:${j2ee.platform.classpath}" />
 					</classpath>
 					<syspropertyset>
 						<propertyref prefix="run-sys-prop." />
@@ -93,7 +92,7 @@
     	for resigning all jars. They need to be the same for WebApps such as Sjors.
     -->
 	<target name="jar" depends="init" description="Build JAR.">
-		<jar destfile="${jar.name}" basedir="${build.classes.dir}" />
+		<jar destfile="${jar.name}" basedir="${build.dir}" />
 		<!--
         <signjar    
                     alias="business" 
@@ -136,7 +135,7 @@
 	<target name="macro_tests" depends="init" description="">
 		<echo message="Running in: ${test_data.local.dir}" />
 		<echo message="Output to : ${tmp.local.dir}" />
-		<!-- <echo message="classpath: ${build.classes.dir.real}:${javac.classpath}:${j2ee.platform.classpath}"/>
+		<!-- <echo message="classpath: ${build.dir}:${javac.classpath}:${j2ee.platform.classpath}"/>
     -->
 
 		<for list="AddMissingAtoms.wcf" param="fn">
@@ -146,7 +145,7 @@
 					<!-- FAILS IN IDE <jvmarg line="-DWATTOSSCRIPT=${wattos.root}/${macros.local.dir}/@{fn}"/> -->
 					<arg line="-at -verbosity 9" />
 					<classpath>
-						<path path="${build.classes.dir.real}:${javac.classpath}:${j2ee.platform.classpath}" />
+						<path path="${build.dir}:${javac.classpath}:${j2ee.platform.classpath}" />
 					</classpath>
 				</java>
 				<loadfile property="error_list" srcFile="${tmp.local.dir}/@{fn}.log">
@@ -270,6 +269,29 @@
     SERVLET SECTION
     ======================  
     -->
+	
+    <target name="servlet-wattos-new-install" depends="init">
+        <echo message="Ensure that the tomcat and apache are already setup. As well as the production staging area." />
+
+        <copy todir="${wattos.production.local.dir}/WEB-INF/classes">
+            <fileset dir="build" />
+        </copy>
+        <!-- The Wattos code changes every now and then so it needs to be included live. Every now and then. 
+        <copy todir="${wattos.production.local.dir}/WEB-INF/classes">
+            <fileset dir="${WS}/wattos/build/web/WEB-INF/classes"/>                     
+        </copy>
+        -->        
+
+        <zip destfile="${wattos.war.file}">
+            <fileset dir="${wattos.production.local.dir}" />
+        </zip>
+
+        <scp todir="${home.web.user}@${home.web.machine}:${wattos.webapp.dir}" keyfile="${home.web.keyfile}" 
+            knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" verbose="true" port="${home.web.port}">
+            <fileset file="${wattos.war.file}" />
+        </scp>
+    </target>
+	
 	<target name="servlet-install" depends="init,jar,servlet-jar-cp,servlet-resources-cp" description="Publishes the Wattos jar. Manual restart of server still needed.">
 		<echo message="Make sure the following two remote directories are open for writing:" />
 		<echo message="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.lib.dir}" />
@@ -356,7 +378,7 @@
 			<arg line="-at" />
 			<jvmarg line="${profile.jvmarg}" />
 			<classpath>
-				<path path="${build.classes.dir.real}:${javac.classpath}:${j2ee.platform.classpath}" />
+				<path path="${build.dir}:${javac.classpath}:${j2ee.platform.classpath}" />
 			</classpath>
 		</java>
 	</target>
