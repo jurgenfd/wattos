@@ -30,7 +30,7 @@ import java.text.DecimalFormat;
  */
 public class MRGridServlet extends HttpServlet {      
     private static final long serialVersionUID = 5504236505334962699L;
-
+ 
     /** Global       // sanity checks first
         if ( !Defs.isNull(low) && !Defs.isNull(tar) && low > tar ) {
             General.showError("Found lowerbound (" + low + ") larger than target (" + tar + ")");
