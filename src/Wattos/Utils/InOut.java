@@ -376,7 +376,11 @@ public class InOut {
             return sb.toString();
         } catch (Exception e) {
             General.showCodeBug(e.getMessage());
-            General.showError("Failed to readTextFromInputStream from : " + is.toString());
+            if (is == null) {
+                General.showError("Failed to readTextFromInputStream because given InputStream is null");
+            } else {
+                General.showError("Failed to readTextFromInputStream from : " + is.toString());
+            }
             return null;
         }
     }
@@ -1082,6 +1086,10 @@ public class InOut {
     }
 
     public static String getFilenameBase(File file) {
+        if ( file == null ) {
+            General.showCodeBug("Got null File argument in getFilenameBase");
+            return null;
+        }
         String file_name = file.toString();
         return getFilenameBase(file_name);
     }
@@ -1095,6 +1103,10 @@ public class InOut {
      *         http://localhost:8084/NRG/servlet/MRGridServlet?db_username=wattos -> MRGridServlet
      */
     public static String getFilenameBase(String file_name) {
+        if ( file_name == null ) {
+            General.showCodeBug("Got null string argument in getFilenameBase");
+            return null;
+        }
         file_name = file_name.replaceAll("\\\\", "/"); // ain't that a trick, trying to match a single backslash
         // Find the last slash (platform independent) if any
         int startIdx = file_name.lastIndexOf("/");
