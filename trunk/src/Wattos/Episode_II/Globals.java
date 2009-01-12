@@ -226,8 +226,6 @@ public class Globals {
         m.put("servlet_root_url",                   "http://restraintsgrid.bmrb.wisc.edu");
         m.put("apache_data_url",                    getValueString("servlet_root_url")+ "/servlet_data");
         if ( getValueBoolean("act_locally" ) ) {
-//            m.put("servlet_root_url",               "http://whelk.bmrb.wisc.edu");
-//            m.put("servlet_root_url",               "http://localhost");
             m.put("servlet_root_url",               "http://localhost");
         }
         m.put("servlet_mrgrid_url",                 getValueString("servlet_top_url") + "/" + getValueString("MRGridServlet"));
@@ -266,27 +264,19 @@ public class Globals {
         TMPDIR = getValueString("tmp_dir");         
          */
         // A default database tablespace name is chosen on the basis of the
-        // user id in oracle
+        // user id in mysql
         // Make sure to use a different user id for each of the database to
         // run at the same time because the db name determines the space used
         // for the bfiles on the /mnt/mrgrid partition.
         
         m.put("db_port_number",     new Integer(3306));
-        m.put("db_name",            getValueString("db_username"));
         m.put("db_driver",          "com.mysql.jdbc.Driver"); 
         m.put("db_conn_prefix",     "jdbc:mysql://");
 
         // Production settings        ; see nmrrestrntsgrid project: scripts/sql/prepare_database_mysql.sql 
         m.put("db_username",        "wattos1");// 
         m.put("db_password",        "4I4KMS"); // was U for wattos2; S for 1.
-        m.put("db_machine",         getValueString("servlet_root_url"));                    
-        if ( getValueBoolean("testing" ) ) {  
-//            m.put("db_username",        "wattos2");
-//            m.put("db_password",        "4I4KMS");
-            if ( getValueBoolean("act_locally_db" ) ) {
-                m.put("db_machine",         "localhost");
-            }
-        }
+        m.put("db_machine",         "localhost");
         if ( ! setDbUserNameDerivedVariables()) {
             General.showError("Failed to setDbUserNameDerivedVariables in Globals");
             return;
@@ -349,10 +339,9 @@ public class Globals {
         // Directory with database like file system.
         String dbfs_root = getValueString("dbfs_root");
         m.put("dbfs_dir", dbfs_root+fs+"bfiles"+fs+db_username);
-        m.put("db_name",  db_username); // not actually used in this case.
         m.put("db_conn_string",     getValueString("db_conn_prefix") + getValueString("db_machine") +
                                     ":" + getValueString("db_port_number") + 
-                                    "/" + getValueString("db_name"));
+                                    "/" + getValueString("db_username"));
         return true;
     }
        
