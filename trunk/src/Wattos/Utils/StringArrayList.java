@@ -154,9 +154,9 @@ public class StringArrayList extends ArrayList {
 
 			if (idx >= 0 && idx != i) { // matches earlier element
 				result.add(e);
-				General.showDebug("i=" + i + " idx=" + idx + " element is duplicate.");
+//				General.showDebug("i=" + i + " idx=" + idx + " element is duplicate.");
 			} else {
-				General.showDebug("i=" + i + " idx=" + idx);
+//				General.showDebug("i=" + i + " idx=" + idx);
 				// s.add(e);
 			}
 		}

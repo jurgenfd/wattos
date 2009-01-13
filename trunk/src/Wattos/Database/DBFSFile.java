@@ -93,7 +93,7 @@ public class DBFSFile {
     public static IntArrayList getFiles_in_fs() {
         IntArrayList result = new IntArrayList();
         File dir = new File( g.getValueString("dbfs_dir"));
-        ArrayList files = InOut.getFilesRecursive(dir);
+        ArrayList files = InOut.getFilesRecursive(dir, false);
         if ( files == null ) {
             General.showError("Failed to InOut.getFilesRecursive from dir: " + dir);
             return null;
