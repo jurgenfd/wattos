@@ -196,8 +196,9 @@ public class InOut {
     /**
      * Returns a list of File objects with full path names of all the files (not directories) in the given dir. Will
      * call itself.
+     * @param includeDirectories TODO
      */
-    public static ArrayList getFilesRecursive(File dir) {
+    public static ArrayList getFilesRecursive(File dir, boolean includeDirectories) {
         if (!dir.isDirectory()) {
             General.showError("Given File instance isn't a directory.");
             return null;
@@ -207,7 +208,7 @@ public class InOut {
         for (int i = 0; i < list.length; i++) {
             File potFile = new File(dir, list[i]);
             if (potFile.isDirectory()) {
-                ArrayList tempList = getFilesRecursive(potFile);
+                ArrayList tempList = getFilesRecursive(potFile, includeDirectories);
                 if (tempList == null) {
                     General.showError("Failed to get files recursively from dir: " + potFile);
                     return null;
@@ -216,6 +217,10 @@ public class InOut {
             }
             if (potFile.isFile()) {
                 result.add(potFile);
+            } else if ( includeDirectories ) {
+                if ( potFile.isDirectory() ) {
+                    result.add(potFile);
+                }
             }
         }
         return result;
