@@ -267,11 +267,11 @@
         <copy todir="${wattos.production.local.dir}/WEB-INF/classes">
             <fileset dir="build" />
         </copy>
-        <!-- The Wattos code changes every now and then so it needs to be included live. Every now and then. 
+        <!-- The Wattos code changes every now and then so it needs to be included live. Every now and then.  -->  
         <copy todir="${wattos.production.local.dir}/WEB-INF/classes">
-            <fileset dir="${WS}/wattos/build/web/WEB-INF/classes"/>                     
+            <fileset dir="${WS}/wattos/build"/>                     
         </copy>
-        -->        
+           
 
         <zip destfile="${wattos.war.file}">
             <fileset dir="${wattos.production.local.dir}" />
@@ -299,27 +299,10 @@
 	</target>
 
 	<target name="servlet-resources-cp" depends="init">
-		<!-- Fails to copy the images dir funny enough. Just hangs -->
 		<echo message="Installing giffies and html to servlet engine: ${servlet.web.usermachine}:${servlet.web.dir}/${servlet.resource.remote.dir}" />
 		<scp todir="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.resource.remote.dir}" port="${home.web.port}" keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" verbose="true">
 			<fileset dir="${servlet.resource.local.dir}" excludes=".svn" />
 		</scp>
-	</target>
-
-	<target name="servlet-dependencies" depends="init">
-		<!-- 
-    	/molgrap/ du -hs molgrap
-    	20G     molgrap (Only 1/10 for nmr with restraints)
-    	/molgrap/ du -sh /dumpzone/pdb/nozip/data/structures/all/pdb
-    	28G     /dumpzone/pdb/nozip/data/structures/all/pdb    	
-    	/molgrap/ du -sh /dumpzone/pdb/nozip/data/structures/all/nmr_restraints
-    	3.0G    /dumpzone/pdb/nozip/data/structures/all/nmr_restraints
-    	/~/ du -sh /big/jurgen/DB/mrgrid/bfiles/wattos2
-    	16G     /big/jurgen/DB/mrgrid/bfiles/wattos2
-    	/~/ du -sh /big/jurgen/DB/mysql
-    	942M    /big/jurgen/DB/mysql
-    	total: 48+19+1=68 Gb.
-    	-->
 	</target>
 
 	<!-- 
