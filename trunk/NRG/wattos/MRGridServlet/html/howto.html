@@ -359,19 +359,19 @@ the NMR Restraints Grid</b></h2>
 
 
 
-	<li><a href="http://www.bmrb.wisc.edu/servlets/MRGridServlet">Top
+	<li><a href="http://restraintsgrid.bmrb.wisc.edu/NRG/MRGridServlet">Top
 	level</a></li>
 
 
 
 	<li><a
-		href="http://www.bmrb.wisc.edu/servlets/MRGridServlet?bmrb_id=4010&amp;min_items=0">Individual
+		href="http://restraintsgrid.bmrb.wisc.edu/NRG/MRGridServlet?bmrb_id=4010&amp;min_items=0">Individual
 	entry</a> (E.g. BMRB id 4010)</li>
 
 
 
 	<li><a
-		href="http://www.bmrb.wisc.edu/servlets/MRGridServlet?pdb_id=1xmw&amp;min_items=0">Individual
+		href="http://restraintsgrid.bmrb.wisc.edu/NRG/MRGridServlet?pdb_id=1xmw&amp;min_items=0">Individual
 	entry</a> (E.g. PDB id 1XMW)</li>
 
 
@@ -424,7 +424,7 @@ to the images of PDB entries</b></b></h2>
 
 	<li><a
 		href="http://www.bmrb.wisc.edu/servlet_data/molgrap/pic/xm/1xmw_xl.gif">Individual
-	entry</a> (E.g. PDB code&nbsp;1XMW) <small>NEW</small></li>
+	entry</a> (E.g. PDB code&nbsp;1XMW)</li>
 
 
 
@@ -457,67 +457,9 @@ to the images of PDB entries</b></b></h2>
 
 
 
-</b>
-<p><b>Known bugs</b>:</p>
+</b>Please check the issues list at Google Code <a href="http://code.google.com/p/nmrrestrntsgrid/issues/list">here</a>.
 
-
-<ul>
-
-
-	<li>Only about 400&nbsp;PDB/BMRB codes can be entered as comma
-	separated vaules at once. In the future, a file upload option will
-	allow uploading all PDB/BMRB codes.</li>
-
-
-</ul>
-
-
-<p><b>Improvements</b> July 2005 in the Web Interface
-<ul>
-	<li>Introduced a menu structure for showing pages of a maximum
-	number of blocks at a time instead of sending a table with many tens of
-	thousands of rows.</li>
-	<li>Simplified the interface by taking out the notion of files.
-	The concept files in the hierarchy entry, file, block still exists in
-	the database but is simply not shown.</li>
-	<li>Added descriptive files to the zip file downloads</li>
-	<li>Added documentation (this text;-)</li>
-	<li>Automatic removal of empty columns making the interface
-	cleaner</li>
-	<li>Added a column for the counts of items such as restraints</li>
-	<li>Added ~100 and 545 links to the databases <a
-		href="#NabuursS.B._NederveenA.J.">DRESS</a> and <a
-		href="#NederveenA.J._DoreleijersJ.F">RECOORD</a>, respectively for the
-	appropriate PDB entries</li>
-	<li>Added links ~1500 links to BMRB entries</li>
-	<li>Got links from back to the NMR Restraint Grid from the
-	following databases: <a href="http://www.rcsb.org/pdb/">PDB</a>,&nbsp;<a
-		href="http://www.ebi.ac.uk/thornton-srv/databases/pdbsum/">PDBsum</a>,
-	EBI's <a href="http://www.ebi.ac.uk/msd/">MSD</a>,&nbsp;<a
-		href="http://oca.ebi.ac.uk/oca-docs/oca-home.html">OCA</a>, and the
-	IMB Jena <a href="http://www.imb-jena.de/IMAGE.html">Image Library
-	of Biological Macromolecules.</a></li>
-	<li>Fixed a bug that caused multiple selections to default to the
-	first selection.</li>
-
-</ul>
-
-
-
-<p><span style="font-weight: bold;"> Todo:</span>&nbsp;</p>
-Database
-<ul>
-	<li>Write parsers for more data types to be converted to STAR.</li>
-	<li>Count the restraint items in non-STAR files for the DOCR and
-	FRED databases.</li>
-</ul>
-Web Interface
-<ul>
-	<li>Change input PDB/BMRB codes to a radio button deciding on
-	which database.</li>
-	<li>Create a JavaScript code snippet for a button that, if
-	selected, makes the front page less verbose.</li>
-</ul>
+	
 
 
 
@@ -540,18 +482,8 @@ Amber, Discover, Dyana, Emboss, and Xplor.</p>
 
 <p>Actually, the JavaCC grammar descriptions (source code) give the
 most detailed description. The grammar files can be downloaded
-from&nbsp;<a href="http://www.bmrb.wisc.edu/wattos">Wattos</a> home
+from&nbsp;<a href="http://nmr.cmbi.ru.nl/~jd/wattos/">Wattos</a> home
 page.</p>
-
-
-
-<p>For chemical shift data, Format 1 and 3 are described <a
-	href="http://www.bmrb.wisc.edu/starch/doc/formats.html"> here</a>.</p>
-
-
-
-<br>
-
 
 
 <h2><a name="References"></a> References</h2>
@@ -581,6 +513,7 @@ a collaborative project involving individuals from the: <br>
 
 	<li>BMRB (Madison, WI, USA),</li>
 
+            <li><a href="http://nmr.cmbi.ru.nl">Proteins Biophysics</a>, IMM, (Radboud University Nijmegen, the Netherlands),</li>
 
 
 	<li><a href="http://www.ccpn.ac.uk/">CCPN</a>, and</li>
@@ -710,7 +643,7 @@ from:</p>
 
 
 		<tr>
-			<td><img src="../images/proteinDynamics.png" border="0" width="150" ></td>
+			<td><a href="http://nmr.cmbi.ru.nl"><img src="../images/proteinDynamics.png" border="0" width="150" ></a></td>
 			<td><b>Proteins Biophysics</b>, IMM, Radboud University Nijmegen, the Netherlands</td>
 		</tr>
 		<tr>
