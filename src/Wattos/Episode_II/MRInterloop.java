@@ -458,54 +458,35 @@ public class MRInterloop {
         // based on the file extension: .lol.
         ArrayList files = new ArrayList();
         files.add( new String[] {"DOCR","entry",        "full",             "n/a",  "STAR","$X_project.str"} );
-        files.add( new String[] {"DOCR","entry",        "full",             "n/a",  "XML","$X_project.xml.tgz"} );
-        files.add( new String[] {"DOCR","coordinate",   "ensemble",         "n/a",  "PDB","$X_allModelsCNS.pdb"} );
-        files.add( new String[] {"DOCR","distance",     "NOE",              "ambi", "STAR","$X_distance_NOE_na_$N.str"} );
-        files.add( new String[] {"DOCR","distance",     "hydrogen bond",    "ambi", "STAR","$X_distance_HB_na_$N.str"} );
-        files.add( new String[] {"DOCR","dihedral angle","n/a",             "n/a",  "STAR","$X_dihedral_na_na_$N.str"} );
+        files.add( new String[] {"DOCR","entry",        "full",             "n/a",  "XML","$X_project.xml.tgz"} );        
+        
+        // CNS
+        files.add( new String[] {"DOCR","sequence",     "n/a",              "n/a",  "XPLOR/CNS","$X_DOCR_$N.py"} );
         files.add( new String[] {"DOCR","distance",     "NOE",              "ambi", "XPLOR/CNS","$X_distance_NOE_na_$N.tbl"} );
         files.add( new String[] {"DOCR","distance",     "hydrogen bond",    "ambi", "XPLOR/CNS","$X_distance_HB_na_$N.tbl"} );
+        files.add( new String[] {"DOCR","distance",     "general distance", "ambi", "XPLOR/CNS","$X_distance_general_distance_na_$N.tbl"} );
         files.add( new String[] {"DOCR","dihedral angle","n/a",             "n/a",  "XPLOR/CNS","$X_dihedral_na_na_$N.tbl"} );
+        files.add( new String[] {"DOCR","dipolar coupling","n/a",           "n/a",  "XPLOR/CNS","$X_dipolar_coupling_na_na_$N.tbl"} );
+
+        // CYANA
+        files.add( new String[] {"DOCR","sequence",     "n/a",              "n/a",  "DYANA/DIANA","$X_sequence.seq"} );
         files.add( new String[] {"DOCR","distance",     "NOE",              "ambi", "DYANA/DIANA","$X_distance_NOE_na_$N.upl"} );
         files.add( new String[] {"DOCR","distance",     "NOE",              "ambi", "DYANA/DIANA","$X_distance_NOE_na_$N.lol"} );
         files.add( new String[] {"DOCR","distance",     "hydrogen bond",    "ambi", "DYANA/DIANA","$X_distance_HB_na_$N.upl"} );
+        files.add( new String[] {"DOCR","distance",     "general distance", "ambi", "DYANA/DIANA","$X_distance_general_distance_na_$N.upl"} );
+        files.add( new String[] {"DOCR","distance",     "general distance", "ambi", "DYANA/DIANA","$X_distance_general_distance_na_$N.lol"} );
         files.add( new String[] {"DOCR","distance",     "hydrogen bond",    "ambi", "DYANA/DIANA","$X_distance_HB_na_$N.lol"} );
         files.add( new String[] {"DOCR","dihedral angle","n/a",             "n/a",  "DYANA/DIANA","$X_dihedral_na_na_$N.aco"} );
+        files.add( new String[] {"DOCR","dipolar coupling","n/a",           "n/a",  "DYANA/DIANA","$X_dipolar_coupling_na_na_$N.upl"} );
+
+        // FRED
         files.add( new String[] {"FRED","entry",        "full",             "n/a",  "STAR","$X_project.str"} );
         files.add( new String[] {"FRED","entry",        "full",             "n/a",  "XML","$X_project.xml.tgz"} );
-        files.add( new String[] {"FRED","distance",     "NOE",              "ambi", "STAR","$X_distance_na_na_$N.str"} );
-        files.add( new String[] {"FRED","dihedral",     "n/a",              "n/a",  "STAR","$X_dihedral_na_na_$N.str"} );
-        files.add( new String[] {"FRED","topology",     "n/a",              "n/a",  "XPLOR/CNS","$X_topology.mtf"} );
-        files.add( new String[] {"FRED","distance",     "NOE",              "ambi", "XPLOR/CNS","$X_distance_NOE_na_1.tbl"} );
-        files.add( new String[] {"FRED","distance",     "hydrogen bond",    "ambi", "XPLOR/CNS","$X_distance_HB_na_1.tbl"} );
-        files.add( new String[] {"FRED","dihedral angle","n/a",             "n/a",  "XPLOR/CNS","$X_dihedral_na_na_1.tbl"} );
-        files.add( new String[] {"FRED","sequence",     "n/a",              "n/a",  "DYANA/DIANA","$X_sequence.seq"} );
-        files.add( new String[] {"FRED","distance",     "NOE",              "ambi", "DYANA/DIANA","$X_distance_NOE_na_1.upl"} );
-        files.add( new String[] {"FRED","distance",     "NOE",              "ambi", "DYANA/DIANA","$X_distance_NOE_na_1.lol"} );
-        files.add( new String[] {"FRED","distance",     "hydrogen bond",    "ambi", "DYANA/DIANA","$X_distance_HB_na_1.upl"} );
-        files.add( new String[] {"FRED","distance",     "hydrogen bond",    "ambi", "DYANA/DIANA","$X_distance_HB_na_1.lol"} );
-        files.add( new String[] {"FRED","dihedral angle","n/a",             "n/a",  "DYANA/DIANA","$X_dihedral_na_na_1.aco"} );
-
-        // Added for second generation DOCR/FRED; DOCR1000
-        files.add( new String[] {"DOCR","distance",     "general distance",     "ambi",      "XPLOR/CNS",   "$X_distance_general_distance_na_$N.tbl"} );
-        files.add( new String[] {"FRED","distance",     "general distance",     "ambi",      "XPLOR/CNS",   "$X_distance_general_distance_na_$N.tbl"} );
-        files.add( new String[] {"DOCR","distance",     "general distance",     "ambi",      "DYANA/DIANA", "$X_distance_general_distance_na_$N.upl"} );
-        files.add( new String[] {"DOCR","distance",     "general distance",     "ambi",      "DYANA/DIANA", "$X_distance_general_distance_na_$N.lol"} );
-        files.add( new String[] {"FRED","distance",     "general distance",     "ambi",      "DYANA/DIANA", "$X_distance_general_distance_na_$N.upl"} );
-        files.add( new String[] {"FRED","distance",     "general distance",     "ambi",      "DYANA/DIANA", "$X_distance_general_distance_na_$N.lol"} );
-        files.add( new String[] {"DOCR","dipolar coupling","n/a",               "n/a",       "XPLOR/CNS",   "$X_dipolar_coupling_na_na_$N.tbl"} );
-        files.add( new String[] {"DOCR","dipolar coupling","n/a",               "n/a",       "DYANA/DIANA", "$X_dipolar_coupling_na_na_$N.upl"} );
-        files.add( new String[] {"FRED","dipolar coupling","n/a",               "n/a",       "XPLOR/CNS",   "$X_dipolar_coupling_na_na_$N.tbl"} );
-        files.add( new String[] {"FRED","dipolar coupling","n/a",               "n/a",       "DYANA/DIANA", "$X_dipolar_coupling_na_na_$N.upl"} );
-        
         files.add( new String[] {"FRED","check",        "stereo assignment",    "distance",  "Wattos",      "$X_assign.str"} );
         files.add( new String[] {"FRED","check",        "surplus",              "distance",  "Wattos",      "$X_surplus.str"} );
         files.add( new String[] {"FRED","check",        "violation",            "distance",  "Wattos",      "$X_viol.str"} );
         files.add( new String[] {"FRED","check",        "completeness",         "distance",  "Wattos",      "$X_compl.str"} );
                 
-        // Added for third generation DOCR/FRED; DOCR1000
-        files.add( new String[] {"DOCR","sequence",     "n/a",                  "n/a",      "XPLOR/CNS",   "$X_DOCR_$N.py"} );
-        files.add( new String[] {"FRED","sequence",     "n/a",                  "n/a",      "XPLOR/CNS",   "$X_FRED_$N.py"} );
         
         if ( ! sql_epiII.deleteFilesDOCRFRED( pdb_entry_id )) {
             General.showError("Failed to remove any old files for this entry in DOCR/FRED");

@@ -765,7 +765,7 @@ public class MRAnnotate {
     public static void main(String[] args) {
         // Change some of the standard settings defined in the Globals class
         General.verbosity = General.verbosityOutput;
-        General.setVerbosityToDebug();
+//        General.setVerbosityToDebug();
         Globals g = new Globals();
         g.showMap();
         // Open Episode_II database connection
