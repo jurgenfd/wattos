@@ -19,7 +19,7 @@
 		<antcall target="set_version" />
 	</target>
 
-	<!-- Is done automatically by ant build but can be used externally such as on ". 
+	<!-- Is done automatically by ant build but can be used externally. 
 	NB the debug settings.
 	-->
 	<target name="compile" description="compile" depends="init">
@@ -182,18 +182,9 @@
     trying with javadoc 1.5 as set in wattos.properties: platform.javadoc
     -->
 	<target name="javadoc" depends="init,javadoc-build,javadoc-copy" description="Build Javadoc and copy some extra files from the src to doc dir" />
-	<target name="javadoc-build-old" depends="init">
-		<mkdir dir="${dist.javadoc.dir}" />
-		<javadoc additionalparam="" author="true" breakiterator="true" destdir="${dist.javadoc.dir}" executable="${platform.javadoc}" failonerror="true" linksource="true" noindex="false" nonavbar="false" notree="false" overview="${src.dir}/${project.name}/overview.html" private="true" source="1.5" splitindex="true" use="true" useexternalfile="false" version="false" Windowtitle="${ant.project.name}">
-			<classpath>
-				<path path="${javac.classpath}:${j2ee.platform.classpath}" />
-			</classpath>
-			<packageset dir="${src.dir}" includes="*/**" />
-		</javadoc>
-	</target>
 	<target name="javadoc-build">
 		<mkdir dir="${dist.javadoc.dir}" />
-		<javadoc additionalparam="" access="private" author="true" breakiterator="true" destdir="${dist.javadoc.dir}" doctitle="Wattos" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" overview="${src.dir}/${ant.project.name}/overview.html" source="1.4" sourcepath="src" splitindex="true" use="true" useexternalfile="false" version="false" Windowtitle="${ant.project.name}">
+		<javadoc additionalparam="" access="private" author="true" breakiterator="true" destdir="${dist.javadoc.dir}" doctitle="Wattos" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" overview="${src.dir}/${ant.project.name}/overview.html" source="1.5" sourcepath="src" splitindex="true" use="true" useexternalfile="false" version="false" Windowtitle="${ant.project.name}">
 			<classpath>
 				<path path="${javac.classpath}" />
 			</classpath>
