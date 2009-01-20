@@ -44,7 +44,7 @@ public class DBMRFile {
     public Date        date_modified;
     
     /** The blocks in an annotated DBMRFile*/
-    public ArrayList blocks;
+    public ArrayList<DBMRBlock> blocks;
     /** The lines of an DBMRFile*/
     ArrayList lines;
     /**String that annotation comments have to start with.*/
@@ -988,7 +988,8 @@ public class DBMRFile {
         int pos = 0;
         for ( Iterator i= blocks.iterator(); i.hasNext(); ) {
             i.next();
-            General.showOutput("Trying to convert block: " + pos );
+            DBMRBlock mrb = blocks.get(pos);
+            General.showOutput("Trying to convert block: " + pos + " of type: " + mrb.getBlockType());
             DBMRFile mrf_new = doConversion( classification, pos, star_version );
             if ( mrf_new != null ) {
                 //General.showDebug("Conversion done for block: " + pos );

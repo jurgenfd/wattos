@@ -3130,15 +3130,15 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
 //        General.showDebug("upp is: " + upp);
         if ( !Defs.isNull(low) && !Defs.isNull(tar) && low > tar ) {
             General.showDebug("Found lowerbound (" + low + ") larger than target (" + tar + ")");
-            return null;
+//            return null;
         }
         if ( !Defs.isNull(low) && !Defs.isNull(upp) && low > upp ) {
-            General.showError("Found lowerbound (" + low + ") larger than upperbound (" + upp + ")");
-            return null;
+            General.showWarning("Found lowerbound (" + low + ") larger than upperbound (" + upp + ")");
+//            return null;
         }
         if ( !Defs.isNull(tar) && !Defs.isNull(upp) && tar > upp ) {
-            General.showError("Found target (" + tar + ") larger than upperbound (" + upp + ")");
-            return null;
+            General.showWarning("Found target (" + tar + ") larger than upperbound (" + upp + ")");
+//            return null;
         }
         // 3 combinations where 1 is known
         if ( !Defs.isNull(tar) && Defs.isNull(low) && Defs.isNull(upp)) {

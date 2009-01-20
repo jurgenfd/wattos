@@ -11,12 +11,53 @@
 	<!-- Added for for functionality. Requires a ant-contrib.jar in classpath. -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 
+    <!-- Set the below to development 0 or production 1-->
+    <property name="isProduction" value="1" />
+	
+	
 	<target name="init" description="init">
 		<tstamp>
 			<format property="wattos_version" pattern="yyyyMMdd-HHmm" />
 		</tstamp>
 		<echo message="Initiating Wattos version: ${wattos_version}" />
 		<antcall target="set_version" />
+	    <if>
+	        <equals arg1="${isProduction}" arg2="1" />
+	        <then>
+	            <echo message="Now in environment for production." />
+	            <property name="servlet.web.machine" value="${servlet.web.machine.prod}" />
+	            <property name="servlet.web.user" value="${servlet.web.user.prod}" />
+	            <property name="servlet.web.dir" value="${servlet.web.dir.prod}" />
+	            <property name="home.web.machine" value="${home.web.machine.prod}" />
+	            <property name="home.web.machine.looped" value="${home.web.machine.looped.prod}" />
+	            <property name="home.web.port" value="${home.web.port.prod}" />
+	            <property name="home.web.dir" value="${home.web.dir.prod}" />
+	            <property name="home.web.user" value="${home.web.user.prod}" />
+	        </then>
+	        <else>
+	            <echo message="Now in environment for development." />
+	            <property name="servlet.web.machine" value="${servlet.web.machine.dev}" />
+	            <property name="servlet.web.user" value="${servlet.web.user.dev}" />
+	            <property name="servlet.web.dir" value="${servlet.web.dir.dev}" />
+	            <property name="home.web.machine" value="${home.web.machine.dev}" />
+	            <property name="home.web.machine.looped" value="${home.web.machine.looped.dev}" />
+	            <property name="home.web.port" value="${home.web.port.dev}" />
+	            <property name="home.web.dir" value="${home.web.dir.dev}" />
+	            <property name="home.web.user" value="${home.web.user.dev}" />        
+	        </else>
+	    </if>
+	    <echo message="servlet.web.machine    : ${servlet.web.machine}" />
+	    <echo message="servlet.web.user       : ${servlet.web.user}" />
+	    <echo message="servlet.web.dir        : ${servlet.web.dir}" />
+	    <echo message="home.web.machine       : ${home.web.machine}" />
+	    <echo message="home.web.port          : ${home.web.port}" />
+	    <echo message="home.web.dir           : ${home.web.dir}" />
+	    <echo message="home.web.user          : ${home.web.user}" />
+	    <echo message="home.web.machine.looped: ${home.web.machine.looped}" />
+
+
+	    <property name="home.web.url" value="${home.web.machine}/${ant.project.name}" />
+	    <property name="home.web.usermachine" value="${home.web.user}@${home.web.machine}" />
 	</target>
 
 	<!-- Is done automatically by ant build but can be used externally. 
@@ -201,7 +242,7 @@
 	<!-- Installation of production site jars including Wattos -->
 	<target name="install-jars" depends="jar">
 		<echo message="Installing Wattos jar(s) to production site: ${install.dir}" />
-		<scp todir="${install.dir}" keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" verbose="true">
+		<scp todir="${servlet.web.user}@${servlet.web.machine}:${install.dir}" keyfile="${servlet.web.keyfile}" knownhosts="${servlet.web.knownhosts}" passphrase="${servlet.web.passphrase}" verbose="true">
 			<fileset dir="${lib.local.dir}" includes="Wattos.jar" />
 		</scp>
 	</target>
@@ -223,34 +264,23 @@
     HOME SECTION
     ======================  
     -->
-	<target name="home" depends="init,jar,home-clean,home-zip,home-cp,home-doc-cp,macro-resources-cp" description="Creates the Wattos home page with new zip and javadoc files." />
-	<target name="home-clean" depends="init">
+	<target name="home" depends="init,jar,home-cp,home-doc-cp" description="Creates the Wattos home page with javadoc files." />
+	<target name="home-clean" depends="init" description="Fails to create new dirs so disabled until debugged.">
 		<input message="Sure you want to delete the Wattos webserver directory: ${home.web.dir}" validargs="y,n" addproperty="do.delete" />
 		<condition property="do.abort">
 			<equals arg1="n" arg2="${do.delete}" />
 		</condition>
 		<fail if="do.abort">Build aborted by user.</fail>
-		<sshexec host="${home.web.machine}" username="${home.web.user}" keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" command="\rm -rf ${home.web.dir}/*;mkdir ${home.web.dir}/doc;mkdir ${home.web.dir}/scripts;mkdir ${home.web.dir}/lib;mkdir ${home.web.dir}/macros">
+		<sshexec host="${home.web.machine.looped}" username="${home.web.user}" keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" command="\rm -rf ${home.web.dir}/*;mkdir ${home.web.dir}/doc;mkdir ${home.web.dir}/scripts;mkdir ${home.web.dir}/lib;mkdir ${home.web.dir}/macros">
 		</sshexec>
 	</target>
-	<target name="home-zip" depends="init">
-		<property name="home.zipfile" value="${home.zipfileprefix}${wattos_version}.zip" />
-		<zip destfile="${home.zipfile}" basedir=".." includes="wattos/build.xml wattos/Makefile wattos/README.txt wattos/wattos.properties wattos/tmp_dir wattos/data/** wattos/macros/** wattos/nbproject/** wattos/scripts/** wattos/src/** wattos/lib/** wattos/web/** wattos/test/**" excludes="**/.nbattrs **/keystore **/keyinfo.txt wattos/data/test_data/tmp_dir/* wattos/data/test_data/tmp_dir/sql/* wattos/tmp_dir/*" />
-	</target>
 	<target name="home-cp" depends="init">
-		<scp todir="${home.web.usermachine}:${home.web.dir}" port="${home.web.port}" keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" verbose="true">
+		<scp todir="${home.web.user}@${home.web.machine.looped}:${home.web.dir}" port="${home.web.port}" keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" verbose="true">
 			<fileset dir="${home.local.dir}" />
 		</scp>
 	</target>
-	<target name="release-zip" depends="init">
-		<ftp password="${release.web.passphrase}" server="${release.web.machine}" userid="${release.web.user}" remotedir="${release.web.dir}" verbose="true">
-			<fileset dir="${home.local.dir}" id="">
-				<include name="wattos**.zip" />
-			</fileset>
-		</ftp>
-	</target>
-	<target name="home-doc-cp" depends="init" description="takes forever (2:20) so perhaps send a tar and untar locally so that only 1 scp is needed">
-		<scp todir="${home.web.usermachine}:${home.web.dir}/${doc.web.dir}" port="${home.web.port}" keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}">
+	<target name="home-doc-cp" depends="init" description="takes a long time (3:29) to send these many files.">
+		<scp todir="${home.web.user}@${home.web.machine.looped}:${home.web.dir}/${doc.web.dir}" port="${home.web.port}" keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}">
 			<fileset dir="${doc.local.dir}" />
 		</scp>
 	</target>
@@ -267,20 +297,21 @@
         <copy todir="${wattos.production.local.dir}/WEB-INF/classes">
             <fileset dir="build" />
         </copy>
-        <!-- The Wattos code changes every now and then so it needs to be included live. Every now and then.  -->  
+        <!-- The Wattos code changes every now and then so it needs to be included live. Every now and then.
+        ISN'T THIS EXACTLY THE SAME AS THE ABOVE?    
         <copy todir="${wattos.production.local.dir}/WEB-INF/classes">
             <fileset dir="${WS}/wattos/build"/>                     
         </copy>
-           
+        -->           
 
         <zip destfile="${wattos.war.file}">
             <fileset dir="${wattos.production.local.dir}" />
         </zip>
-        <echo message="toDir: ${home.web.user}@${home.web.machine}:${servlet.web.dir}"/>
-        <echo message="with port = ${home.web.port} and knownhosts=${home.web.knownhosts} passphrase=${home.web.passphrase} keyfile=${home.web.keyfile} "/>
+        <echo message="toDir: ${servlet.web.user}@${servlet.web.machine}:${servlet.web.dir}"/>
+        <echo message="with port = ${servlet.web.port} and knownhosts=${servlet.web.knownhosts} passphrase=${servlet.web.passphrase} keyfile=${servlet.web.keyfile} "/>
 
-        <scp todir="${home.web.user}@${home.web.machine}:${servlet.web.dir}" keyfile="${home.web.keyfile}" 
-            knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" verbose="true" >
+        <scp todir="${servlet.web.user}@${servlet.web.machine}:${servlet.web.dir}" keyfile="${servlet.web.keyfile}" 
+            knownhosts="${servlet.web.knownhosts}" passphrase="${servlet.web.passphrase}" verbose="true" >
             <fileset file="${wattos.war.file}" />
         </scp>
     </target>
@@ -293,14 +324,14 @@
 
 	<target name="servlet-jar-cp" depends="init">
 		<echo message="Installing Wattos jar(s) to servlet engine: ${servlet.web.usermachine}:${servlet.web.dir}/${servlet.lib.dir}" />
-		<scp todir="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.lib.dir}" port="${home.web.port}" keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" verbose="true">
+		<scp todir="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.lib.dir}" port="${servlet.web.port}" keyfile="${servlet.web.keyfile}" knownhosts="${servlet.web.knownhosts}" passphrase="${servlet.web.passphrase}" verbose="true">
 			<fileset dir="${lib.local.dir}" includes="Wattos.jar" />
 		</scp>
 	</target>
 
 	<target name="servlet-resources-cp" depends="init">
 		<echo message="Installing giffies and html to servlet engine: ${servlet.web.usermachine}:${servlet.web.dir}/${servlet.resource.remote.dir}" />
-		<scp todir="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.resource.remote.dir}" port="${home.web.port}" keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}" verbose="true">
+		<scp todir="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.resource.remote.dir}" port="${servlet.web.port}" keyfile="${servlet.web.keyfile}" knownhosts="${servlet.web.knownhosts}" passphrase="${servlet.web.passphrase}" verbose="true">
 			<fileset dir="${servlet.resource.local.dir}" excludes=".svn" />
 		</scp>
 	</target>

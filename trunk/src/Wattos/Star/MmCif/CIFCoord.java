@@ -611,6 +611,12 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                     atomSet.and(atomSetModel);
                     int firstAtomRid = atomSet.nextSetBit(0);
 //                    General.showDebug("Looking at coor table for record: " + tTCoor.toStringRow(firstAtomRid, false));
+                    if ( firstAtomRid < 0 ) {
+                        General.showError("Failed to find any atom in first model for entity: " + entityId);
+                        General.showError("This was found in for instance entry 1j6t for the PO3 group and was reported in NRG issue 157");
+                        General.showError("No easy work around possible.");
+                        return false;                        
+                    }
                     int resCount=1;
                     String resName = tTCoor.getValueString(firstAtomRid, tagNameAtomResName);
                     // Water is so special for live on earth.
