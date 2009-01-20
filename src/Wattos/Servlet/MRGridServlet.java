@@ -31,20 +31,6 @@ import java.text.DecimalFormat;
 public class MRGridServlet extends HttpServlet {      
     private static final long serialVersionUID = 5504236505334962699L;
  
-    /** Global       // sanity checks first
-        if ( !Defs.isNull(low) && !Defs.isNull(tar) && low > tar ) {
-            General.showError("Found lowerbound (" + low + ") larger than target (" + tar + ")");
-            return null;
-        }
-        if ( !Defs.isNull(low) && !Defs.isNull(upp) && low > upp ) {
-            General.showError("Found lowerbound (" + low + ") larger than upperbound (" + upp + ")");
-            return null;
-        }
-        if ( !Defs.isNull(tar) && !Defs.isNull(upp) && tar > upp ) {
-            General.showError("Found target (" + tar + ") larger than upperbound (" + upp + ")");
-            return null;
-        }
- settings. */ 
     Globals g=null; 
        
     /** DB connection for the Episode_II package.*/
