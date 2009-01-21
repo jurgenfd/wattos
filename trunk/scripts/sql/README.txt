@@ -3,10 +3,10 @@ This directory contains database related files used by Wattos.
 Content files           Description
 ------------------------+-------------------------------------------------------
 README.txt              This file.
-analysesPaper.sql       Analyses on WattosAn database for paper DOCR2
-createWattosAn.sql		Creates a datbase for analysis of the NMR Restraint Grid db.
+analysesPaper.sql       Analysis on WattosAn database for paper DOCR2
+createWattosAn.sql		Creates a database for analysis of the NMR Restraint Grid db.
 importExternalTablesWattosAn.sql Imports relevant external tables.
-wattosAn.clay			Clay related file for modellling databases.
+wattosAn.clay			Clay related file for modeling databases.
 
 
 Notes:
