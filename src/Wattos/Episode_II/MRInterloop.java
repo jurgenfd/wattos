@@ -931,7 +931,7 @@ public class MRInterloop {
      */
     public static void main (String[] args) 
     {
-        General.showOutput("MRInterloop, version 2.3");
+        General.showOutput("MRInterloop, version 2.4");
         General.setVerbosityToDebug();
         
         // Change some of the standard settings defined in the Globals class

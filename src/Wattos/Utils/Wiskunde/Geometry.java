@@ -8,7 +8,8 @@ package Wattos.Utils.Wiskunde;
 
 import Wattos.Utils.General;
 
-import com.braju.format.*;              // printf equivalent
+import com.braju.format.Format;
+import com.braju.format.Parameters;
 
 /**
  *Static methods for calculating distances, angles, vector products etc.
@@ -27,17 +28,14 @@ public class Geometry {
     /** Conversion factor from rad to degrees. Use the fact that the acos of 0 is
      *equal to 90 degrees but the value is returned in radians. CF times a value in
      *radians gives the value in degrees.
+     *
+     *In [3]: 90./1.5707963267948966
+     *Out[3]: 57.295779513082323
      */
-    public static final double CF = 90d/Math.acos(0);
+    public static final double CF = 90.0d/Math.acos(0);
     /** float equivalent of CF
      */
-    public static final float fCF = (float) (90d/Math.acos(0));
-    /** Inverse of CF.
-     */
-    public static final double CFI = Math.acos(0)/90.0d;
-    /** float equivalent of CFI
-     */
-    public static final float fCFI = (float) (Math.acos(0)/90.0d);
+    public static final float fCF = (float) CF;
     
     public static final double PI = Math.PI;
     public static final double TWO_PI = 2.0*Math.PI;
@@ -294,8 +292,11 @@ public class Geometry {
         return result;
     }
 
-    /** Returns the largest range that contains all input;
-     * TODO: has this routine been fully debugged?
+    /** Returns the largest range that contains all input dihedral angles.
+     * The algorithm grows the range with each value. Of course this is a bit
+     * difficult. Which direction of rotation do you choose growing range [0,0] with a new value of 180? The possible results
+     * are different: [0,180] and [-180,0]. 
+     * NB input and output are in radians.
      *  */
     public static double[] getMinMaxAngle(double[] ds) {
         
@@ -304,21 +305,26 @@ public class Geometry {
             return null;
         }
         double[] result = new double[2];
+//        float[] resultDeg = new float[2];
         result[0] = ds[0];
         result[1] = ds[0];
         
         for (int i=1;i<ds.length;i++) {
-            double viol = violationAngles(result[0], result[1], ds[i]);
+            double d = ds[i];
+            double viol = violationAngles(result[0], result[1], d);
             if (viol<ANGLE_EPSILON) {
                 continue;
             }
             // which of the two sides was violated?
-            boolean[] isLowUppViol = isLowUppViolationAngles(result[0], result[1], ds[i], viol);
-            if ( isLowUppViol[0] ) {
-                result[0] = ds[i];
+            boolean[] isLowUppViol = isLowUppViolationAngles(result[0], result[1], d, viol);
+            if ( isLowUppViol[1] ) {
+                result[0] = d;
             } else {
-                result[1] = ds[i];
+                result[1] = d;
             }
+//            resultDeg[0] = (float) Math.toDegrees(result[0]);
+//            resultDeg[1] = (float) Math.toDegrees(result[1]);
+//            General.showDebug("Range grew to: ["+PrimitiveArray.toString( resultDeg ));
         }
         return result;
     }

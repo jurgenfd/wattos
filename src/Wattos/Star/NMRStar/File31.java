@@ -1505,7 +1505,8 @@ public class File31 {
                 ||
                 // varDCContributionfractionalval == null ||
                 varDCConstrainttreenodememberID == null || varDCEntityassemblyID == null || varDCEntityID == null
-                || varDCCompindexID == null || varDCCompID == null
+                || varDCCompindexID == null
+                || varDCCompID == null
                 || varDCAtomID == null
                 || varDCAuthsegmentcode == null
                 || varDCAuthseqID == null
@@ -2374,10 +2375,10 @@ public class File31 {
                 Integer logicalOperationInteger = null;
 
                 while (starDCTreeRId < tTTree.sizeRows) { // scan the whole tree tagtable.
-                // General.showDebug( "Working on dc tree rid: " + starDCTreeRId);
+                    // General.showDebug( "Working on dc tree rid: " + starDCTreeRId);
                     boolean atomFoundForAllInDC = true;
                     if (dCNumb != varDCtreeConstraintsID[starDCTreeRId]) { // start a new constraint; will be executed
-                                                                           // on first tree row.
+                        // on first tree row.
                         if (dCNumb != (varDCtreeConstraintsID[starDCTreeRId] - 1)) {
                             General.showWarning("Jumped dc number with a number different from +1. Jumped from "
                                     + dCNumb + " to " + varDCtreeConstraintsID[starDCTreeRId]);
@@ -2400,7 +2401,7 @@ public class File31 {
                         dc.entryIdMain[currentDCId] = currentEntryId;
                         dc.selected.set(currentDCId);
                         dc.hasUnLinkedAtom.clear(currentDCId); // presume that all atoms can be linked to those in the
-                                                               // definition. Actually already clear by default.
+                        // definition. Actually already clear by default.
                         // Reset the other numbers.
                         dCMembNumb = 0;
                         dCNodeNumb = 0;
@@ -2426,7 +2427,7 @@ public class File31 {
                     // General.showDebug( "Working on dc node number: " + dCNodeNumb);
                     // General.showDebug( "Working on dc node rid   : " + currentDCNodeId);
                     if (logicalOperationString != varDCtreeLogicoperation[starDCTreeRId]) { // fast equality op possible
-                                                                                            // because of nr list.
+                        // because of nr list.
                         logicalOperationString = varDCtreeLogicoperation[starDCTreeRId];
                         logicalOperationInteger = (Integer) DistConstr.logicalOperationString2Int
                                 .get(logicalOperationString);
@@ -2514,7 +2515,7 @@ public class File31 {
                             }
                             if (varDCConstrainttreenodememberID[starDCAtomRid] != dCMembNumb) { // atom in same member
                                 if (varDCConstrainttreenodememberID[starDCAtomRid] != (dCMembNumb + 1)) { // atom in
-                                                                                                          // next member
+                                    // next member
                                     General.showError("The varDCConstrainttreenodememberID ("
                                             + varDCConstrainttreenodememberID[starDCAtomRid]
                                             + ") should be the dCMembNumb(" + dCMembNumb + ") + 1 or the same.");
@@ -2542,7 +2543,7 @@ public class File31 {
                                     return false;
                                 }
                                 dc.dcNodeIdMemb[currentDCMembId] = currentDCNodeId; // funny enough this table has only
-                                                                                    // all-fkc columns
+                                // all-fkc columns
                                 dc.dcMainIdMemb[currentDCMembId] = currentDCId;
                                 dc.dcListIdMemb[currentDCMembId] = currentDCListId;
                                 dc.entryIdMemb[currentDCMembId] = currentEntryId;
@@ -2590,10 +2591,10 @@ public class File31 {
                                     } else {
                                         Object[] tmpje = atomSet.toArray();
                                         int ridAnyAtomInSameRes = ((Integer) res2AtomMap.get(tmpje[0])).intValue(); // too
-                                                                                                                    // expensive
-                                                                                                                    // of
-                                                                                                                    // course
-                                                                                                                    // .
+                                        // expensive
+                                        // of
+                                        // course
+                                        // .
                                         String resName = res.nameList[atom.resId[ridAnyAtomInSameRes]];
                                         // General.showDebug("Using residue name for pseudo atom lookup: " + resName);
                                         ArrayList list = (ArrayList) ui.wattosLib.pseudoLib.toAtoms.get(resName,
@@ -2623,7 +2624,7 @@ public class File31 {
                                 String atomNameAuthor = varDCAuthatomID[starDCAtomRid];
                                 // General.showDebug("working on: atomName: [" + atomNameAuthor +"]");
                                 int offsetSequence = 171 - 13 - 1; // only valid for 1brv; mmCIF starts at ASN 1 and VAL
-                                                                   // is 14; in restraints VAL is 171 TODO: fix code
+                                // is 14; in restraints VAL is 171 TODO: fix code
                                 // int molId = varDCEntityassemblyID[ starDCAtomRid ];
                                 int molId = 1; // valid for 1brv
                                 int molRID = molID2RID[molId];
@@ -2664,9 +2665,9 @@ public class File31 {
                                 } else {
                                     tmpje = atomSet.toArray();
                                     ridAnyAtomInSameRes = ((Integer) res2AtomMap.get(tmpje[0])).intValue(); // too
-                                                                                                            // expensive
-                                                                                                            // of
-                                                                                                            // course.
+                                    // expensive
+                                    // of
+                                    // course.
                                     // General.showDebug("Using residue name for pseudo atom lookup: " + resName);
                                     resName = res.nameList[atom.resId[ridAnyAtomInSameRes]];
                                 }
@@ -2919,7 +2920,7 @@ public class File31 {
                     sc.entryIdMain[currentSCId] = currentEntryId;
                     sc.selected.set(currentSCId);
                     sc.hasUnLinkedAtom.clear(currentSCId); // presume that all atoms can be linked to those in the
-                                                           // definition. Actually already clear by default.
+                    // definition. Actually already clear by default.
                     String angleName = tTMain.getValueString(starSCMainId, tagNameCDIH_Torsion_angle_name);
                     if (!Defs.isNull(angleName)) {
                         sc.nameList[currentSCId] = sc.nameListNR.intern(angleName);
@@ -2927,8 +2928,11 @@ public class File31 {
 
                     // General.showDebug( "Getting info from star dist rid: " + starCDIHDistRId);
                     sc.target[currentSCId] = Defs.NULL_FLOAT;
-                    sc.uppBound[currentSCId] = varCDIH_Angle_upper_bound_val[starSCMainId] * Geometry.fCFI;
-                    sc.lowBound[currentSCId] = varCDIH_Angle_lower_bound_val[starSCMainId] * Geometry.fCFI;
+                    // Store angles in radians in Wattos.
+                    sc.uppBound[currentSCId] = varCDIH_Angle_upper_bound_val[starSCMainId] / Geometry.fCF;
+                    sc.lowBound[currentSCId] = varCDIH_Angle_lower_bound_val[starSCMainId] / Geometry.fCF;
+//                    General.showDebug("Read upper bound: " + sc.uppBound[currentSCId] + "(in degrees: "
+//                            + Math.toDegrees(sc.uppBound[currentSCId]));
                     // Now do the hard part in looking up the atom ids.
                     // Tie the atoms in the restraints to the atoms in the soup or leave them unlinked.
                     Object[][] varAtomXLol = new Object[][] { // needs to match order in e.g. LOC_ENTITY_ASSEMBLY_ID
@@ -2941,7 +2945,7 @@ public class File31 {
                             { varCDIH_Label_entity_assembly_ID_4, varCDIH_Label_entity_ID_4,
                                     varCDIH_Label_comp_index_ID_4, varCDIH_Label_comp_ID_4, varCDIH_Label_atom_ID_4 } };
                     Object[][] varAtomXLolAuthor = new Object[][] { // needs to match order in e.g.
-                                                                    // LOC_ENTITY_ASSEMBLY_ID
+                            // LOC_ENTITY_ASSEMBLY_ID
                             { varCDIH_Auth_segment_code_1, varCDIH_Auth_seq_ID_1, varCDIH_Auth_comp_ID_1,
                                     varCDIH_Auth_atom_ID_1 },
                             { varCDIH_Auth_segment_code_2, varCDIH_Auth_seq_ID_2, varCDIH_Auth_comp_ID_2,
@@ -3135,7 +3139,7 @@ public class File31 {
                     sc.entryIdMain[currentSCId] = currentEntryId;
                     sc.selected.set(currentSCId);
                     sc.hasUnLinkedAtom.clear(currentSCId); // presume that all atoms can be linked to those in the
-                                                           // definition. Actually already clear by default.
+                    // definition. Actually already clear by default.
 
                     sc.target[currentSCId] = varRDC_val[starSCMainId];
                     sc.targetError[currentSCId] = varRDC_val_err[starSCMainId];
@@ -3153,7 +3157,7 @@ public class File31 {
                             { varRDC_Label_entity_assembly_ID_2, varRDC_Label_entity_ID_2,
                                     varRDC_Label_comp_index_ID_2, varRDC_Label_comp_ID_2, varRDC_Label_atom_ID_2 } };
                     Object[][] varAtomXLolAuthor = new Object[][] { // needs to match order in e.g.
-                                                                    // LOC_ENTITY_ASSEMBLY_ID
+                            // LOC_ENTITY_ASSEMBLY_ID
                             { varRDC_Auth_segment_code_1, varRDC_Auth_seq_ID_1, varRDC_Auth_comp_ID_1,
                                     varRDC_Auth_atom_ID_1 },
                             { varRDC_Auth_segment_code_2, varRDC_Auth_seq_ID_2, varRDC_Auth_comp_ID_2,
@@ -3295,8 +3299,8 @@ public class File31 {
         // create star nodes
         DataBlock db = toSTARDataBlock(usePostFixedOrdinalsAtomName);
         if (db == null) {
-            General
-                    .showError("Failed to get datablock in STAR in-memory tree for this entry; not attempting any other entries.");
+            General.showError("Failed to get datablock in STAR in-memory tree for this entry;"
+                    + "not attempting any other entries.");
             return false;
         }
         // db.general.setStarFlavor( StarGeneral.STANDARD_FLAVOR_NMRSTAR );
@@ -3955,7 +3959,7 @@ public class File31 {
             return null;
         }
         int modelRID = modelSet.nextSetBit(0); // The first model will determine the description of the molecular
-                                               // system.
+        // system.
         if (modelRID < 0) {
             General.showError("Failed to find any molecular system (model) to write again");
             return null;
@@ -4316,7 +4320,7 @@ public class File31 {
                 // FOR EACH CONSTRAINT
                 // Write them in a sorted fashion
                 int[] map = dc.mainRelation.getRowOrderMap(Relation.DEFAULT_ATTRIBUTE_ORDER_ID); // Includes just the
-                                                                                                 // dcs in this list
+                // dcs in this list
                 if ((map != null) && (map.length != dcCountTotal)) {
                     General
                             .showWarning("Trying to get an order map but failed to give back the correct number of elements: "
@@ -4326,7 +4330,7 @@ public class File31 {
                 if (map == null) {
                     General
                             .showWarning("Failed to get the row order sorted out for distance constraints; using physical ordering."); // not
-                                                                                                                                       // fatal
+                    // fatal
                     map = PrimitiveArray.toIntArray(dcSet);
                     if (map == null) {
                         General.showError("Failed to get the used row map list so not writing this table.");
@@ -4500,9 +4504,9 @@ public class File31 {
                                 return null;
                             }
                             IntArrayList statusList = new IntArrayList(); // List of status (like ok, pseudo, deleted)
-                                                                          // for the original atoms
+                            // for the original atoms
                             ObjectArrayList pseudoNameList = new ObjectArrayList(); // List of pseudo atom names also
-                                                                                    // parrallel to dcAtoms.
+                            // parrallel to dcAtoms.
                             statusList.setSize(dcAtoms.size());
                             pseudoNameList.setSize(dcAtoms.size());
                             if (!atom.collapseToPseudo(atomRids, statusList, pseudoNameList, ui.wattosLib.pseudoLib)) {
@@ -4588,9 +4592,9 @@ public class File31 {
                                     }
                                     if (statusAtom == PseudoLib.DEFAULT_REPLACED_BY_PSEUDO) {
                                         atomName = (String) pseudoNameList.getQuick(currentDCAtomBatchId); // get the
-                                                                                                           // next one
-                                                                                                           // from the
-                                                                                                           // list.
+                                        // next one
+                                        // from the
+                                        // list.
                                     } else {
                                         if (statusAtom != PseudoLib.DEFAULT_OK) {
                                             General.showCodeBug("Didn't expect this one in File31 for atom name: "
@@ -4704,7 +4708,7 @@ public class File31 {
                 // FOR EACH CONSTRAINT
                 // Write them in a sorted fashion
                 int[] map = cdih.mainRelation.getRowOrderMap(Relation.DEFAULT_ATTRIBUTE_ORDER_ID); // Includes just the
-                                                                                                   // scs in this list
+                // scs in this list
                 if ((map != null) && (map.length != scCountTotal)) {
                     General
                             .showWarning("Trying to get an order map but failed to give back the correct number of elements: "
@@ -4714,7 +4718,7 @@ public class File31 {
                 if (map == null) {
                     General
                             .showWarning("Failed to get the row order sorted out for simple (CDIH) constraints; using physical ordering."); // not
-                                                                                                                                            // fatal
+                    // fatal
                     map = PrimitiveArray.toIntArray(cdihSet);
                     if (map == null) {
                         General.showError("Failed to get the used row map list so not writing this table.");
@@ -4794,8 +4798,10 @@ public class File31 {
                     if (!Defs.isNull(angleName)) {
                         tTMain.setValue(currentStarSCId, tagNameCDIH_Torsion_angle_name, angleName);
                     }
-                    tTMain.setValue(currentStarSCId, tagNameCDIH_Angle_lower_bound_val, cdih.lowBound[currentSCId]);
-                    tTMain.setValue(currentStarSCId, tagNameCDIH_Angle_upper_bound_val, cdih.uppBound[currentSCId]);
+                    tTMain.setValue(currentStarSCId, tagNameCDIH_Angle_lower_bound_val, (float) Math
+                            .toDegrees(cdih.lowBound[currentSCId]));
+                    tTMain.setValue(currentStarSCId, tagNameCDIH_Angle_upper_bound_val, (float) Math
+                            .toDegrees(cdih.uppBound[currentSCId]));
                     tTMain.setValue(currentStarSCId, tagNameCDIH_ID2, scCount);
 
                     int columnsPerAtom = 5;
@@ -4823,14 +4829,14 @@ public class File31 {
                         int molNum = gumbo.mol.number[currentMolId];
                         if (molNum != prevMolNum) {
                             entityNum = ((Integer) molNumber2EntityNumberMap.get(new Integer(molNum))).intValue(); // expensive
-                                                                                                                   // so
-                                                                                                                   // only
-                                                                                                                   // do
-                                                                                                                   // when
-                                                                                                                   // changes
-                                                                                                                   // are
-                                                                                                                   // possible
-                                                                                                                   // .
+                            // so
+                            // only
+                            // do
+                            // when
+                            // changes
+                            // are
+                            // possible
+                            // .
                         }
                         tTMain.setValue(currentStarSCId, offsetAtom + 0, molNum);
                         tTMain.setValue(currentStarSCId, offsetAtom + 1, entityNum);
@@ -4918,7 +4924,7 @@ public class File31 {
                 // FOR EACH CONSTRAINT
                 // Write them in a sorted fashion
                 int[] map = rdc.mainRelation.getRowOrderMap(Relation.DEFAULT_ATTRIBUTE_ORDER_ID); // Includes just the
-                                                                                                  // scs in this list
+                // scs in this list
                 if ((map != null) && (map.length != scCountTotal)) {
                     General
                             .showWarning("Trying to get an order map but failed to give back the correct number of elements: "
@@ -4928,7 +4934,7 @@ public class File31 {
                 if (map == null) {
                     General
                             .showWarning("Failed to get the row order sorted out for simple (RDC) constraints; using physical ordering."); // not
-                                                                                                                                           // fatal
+                    // fatal
                     map = PrimitiveArray.toIntArray(rdcSet);
                     if (map == null) {
                         General.showError("Failed to get the used row map list so not writing this table.");
@@ -5035,14 +5041,14 @@ public class File31 {
                         int molNum = gumbo.mol.number[currentMolId];
                         if (molNum != prevMolNum) {
                             entityNum = ((Integer) molNumber2EntityNumberMap.get(new Integer(molNum))).intValue(); // expensive
-                                                                                                                   // so
-                                                                                                                   // only
-                                                                                                                   // do
-                                                                                                                   // when
-                                                                                                                   // changes
-                                                                                                                   // are
-                                                                                                                   // possible
-                                                                                                                   // .
+                            // so
+                            // only
+                            // do
+                            // when
+                            // changes
+                            // are
+                            // possible
+                            // .
                         }
                         tTMain.setValue(currentStarSCId, offsetAtom + 0, molNum);
                         tTMain.setValue(currentStarSCId, offsetAtom + 1, entityNum);
@@ -5092,7 +5098,7 @@ public class File31 {
                 // atom.mainRelation.toStringRow(0,true));
 
                 SaveFrame sFCoor = getSFTemplateCoor(); // For efficiency not using template defs of the second part of
-                                                        // this sf.
+                // this sf.
                 sFCoor.setTitle("conformer_family_coord_set_1"); // To be extended later to include more than 1 set.
                 /**
                  * Cheapest thing to do is to link the original relation in which all non-selected rows have already
@@ -5107,7 +5113,7 @@ public class File31 {
                     return null;
                 }
                 tTCoor.init(atomMain); // With the lack of a casting operation we defined an init that takes the
-                                       // relation itself.
+                // relation itself.
                 sFCoor.remove(1); // removes the large coordinate loop definitions
                 sFCoor.add(1, tTCoor); // adds them from atomMain.
 
@@ -5356,7 +5362,7 @@ public class File31 {
         int[] modelNumOrg = model.number; // Org number
         int[] modelNumNew = tTCoor.getColumnInt(tagNameAtomModelId);// New number
         int[] modelIdOrg = tTCoor.getColumnInt(Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[RelationSet.RELATION_ID_COLUMN_NAME]);// Org
-                                                                                                                       // rid
+        // rid
         if ((modelNumOrg == null) || (modelNumNew == null) || (modelIdOrg == null)) {
             General.showError("Failed to get required columns in setModelNumbers");
             return false;
@@ -5398,7 +5404,7 @@ public class File31 {
                     prevMolNum = molNumber[molRID];
                     // Get new entity num even though it might be the same as before.
                     prevEntityNumNew = ((Integer) molNumber2EntityNumberMap.get(new Integer(prevMolNum))).intValue(); // expensive
-                                                                                                                      // .
+                    // .
                     prevAsymId = mol.asymId[molRID];
                 }
                 molNumNew[r] = prevMolNum; // quite fast.
