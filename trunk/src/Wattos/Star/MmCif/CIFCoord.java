@@ -112,7 +112,8 @@ public class CIFCoord {
     public String tagNameAtomAuthMolId;    
     public String tagNameAtomAuthResId;       
     public String tagNameAtomAuthResName;  
-    public String tagNameAtomAuthName;     
+    public String tagNameAtomAuthName;   
+    public String tagNameAtomPdbInsertionCode;       
     public String tagNameAtomElementId;    
     public String tagNameAtomCoorX;        
     public String tagNameAtomCoorY;        
@@ -210,6 +211,7 @@ public class CIFCoord {
             tagNameAtomAuthResId              = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID                                 )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameAtomAuthResName            = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME                               )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameAtomAuthName               = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME                              )).get(StarDictionary.POSITION_CIF_TAG_NAME);
+            tagNameAtomPdbInsertionCode       = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE                              )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameAtomElementId              = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID                                  )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameAtomCoorX                  = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_COOR_X                                      )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameAtomCoorY                  = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main",       Gumbo.DEFAULT_ATTRIBUTE_COOR_Y                                      )).get(StarDictionary.POSITION_CIF_TAG_NAME);
@@ -339,7 +341,7 @@ _atom_site.auth_asym_id
 _atom_site.auth_atom_id 
 _atom_site.pdbx_PDB_model_num 
 
-2hgh / 1ai0 waters without residue nummer in same entity:
+2hgh / 1ai0 waters without residue number in same entity:
 
 ATOM   1     P  P      . G   A 1 1  ? -6.937  29.285  -10.973 1.00 0.00 ? ? ? ? ? 1   G   B P      1  
 ATOM   6329  H  HB3    . ASP B 2 87 ? -13.031 33.553  -1.159  1.00 0.00 ? ? ? ? ? 190 ASP A HB3    2  
@@ -711,6 +713,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                 Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID,   
                 Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME, 
                 Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME,
+                Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE,
                 Gumbo.DEFAULT_ATTRIBUTE_COOR_X,        
                 Gumbo.DEFAULT_ATTRIBUTE_COOR_Y,        
                 Gumbo.DEFAULT_ATTRIBUTE_COOR_Z,        

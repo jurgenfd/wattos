@@ -113,6 +113,8 @@ public class Atom extends GumboItem implements Serializable {
     public StringSet   authResIdListNR;
     public String[]    authAtomNameList;
     public StringSet   authAtomNameListNR;
+    public String[]    pdbInsertionCodeList;
+    public StringSet   pdbInsertionCodeListNR;
     public BitSet      canHydrogenBond;
     public BitSet      isHBDonor;
     public BitSet      isHBAccep;
@@ -152,6 +154,7 @@ public class Atom extends GumboItem implements Serializable {
         DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME,                      new Integer(DATA_TYPE_STRINGNR));
         DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID,                        new Integer(DATA_TYPE_STRINGNR));
         DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME,                     new Integer(DATA_TYPE_STRINGNR));
+        DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE,                     new Integer(DATA_TYPE_STRINGNR));
         DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_MODEL_SIBLINGS,                     new Integer(DATA_TYPE_ARRAY_OF_INT));
         DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_MASTER_RID,                         new Integer(DATA_TYPE_INT));
 
@@ -170,6 +173,7 @@ public class Atom extends GumboItem implements Serializable {
         DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME);         
         DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID);         
         DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME);         
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE);         
         DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_MODEL_SIBLINGS);         
         DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_MASTER_RID);         
         DEFAULT_ATTRIBUTES_ORDER.add( CAN_HYDROGEN_BOND);         
@@ -207,12 +211,13 @@ public class Atom extends GumboItem implements Serializable {
     *to in-line this method. Which the JIT might do anyway.
     *Note that the atom coordinates will automatically be rounded to 3 digits after
     *the decimal dot.
+ * @param pdbInsertionCode TODO
      */
     public int add(String name,                                                 // WattosItem attributes
         boolean has_coor, float[] coor, float charge,                           // GumboItem attributes
         int elementId, float occupancy, float bfactor,                          // Atom attributes.
         String authMolName, String authResName, String authResId, String authAtomName, 
-        int parentId) {
+        int parentId, String pdbInsertionCode) {
             
         int maxSize = mainRelation.sizeMax;
         int result = super.add( name, has_coor, GumboItem.roundToPdbPrecision(coor), charge);
@@ -237,6 +242,7 @@ public class Atom extends GumboItem implements Serializable {
         authResNameList[    result ] = authResNameListNR.intern( authResName );          
         authResIdList[      result ] = authResNameListNR.intern( authResId );          
         authAtomNameList[   result ] = authAtomNameListNR.intern( authAtomName );          
+        pdbInsertionCodeList[   result ] = pdbInsertionCodeListNR.intern( authAtomName );          
         
         
         type[ result ] = dbms.ui.wattosLib.atomLibAmber.getAtomTypeId( gumbo.res.nameList[parentId], name);
@@ -1897,6 +1903,8 @@ public class Atom extends GumboItem implements Serializable {
         authResIdListNR     =               mainRelation.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID );
         authAtomNameList    = (String[])    mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME );
         authAtomNameListNR  =               mainRelation.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME);        
+        pdbInsertionCodeList    = (String[])    mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE );
+        pdbInsertionCodeListNR  =               mainRelation.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE);        
         occupancy           = (float[])     mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY);       
         bfactor             = (float[])     mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_BFACTOR);       
         canHydrogenBond     =               mainRelation.getColumnBit( CAN_HYDROGEN_BOND );
@@ -1912,6 +1920,7 @@ public class Atom extends GumboItem implements Serializable {
           || authResNameList == null || authResNameListNR == null 
           || authResIdList == null 
           || authAtomNameList == null || authAtomNameListNR == null
+          || pdbInsertionCodeList == null || pdbInsertionCodeListNR == null          
           || occupancy == null || bfactor == null
           || canHydrogenBond == null
           || isHBDonor == null
@@ -2245,6 +2254,7 @@ public class Atom extends GumboItem implements Serializable {
             entryId[            org_rid_dst]   = entryId[ ridOrgFound ];
             nameList[           org_rid_dst]   = nameListNR.intern( nameList[ rid ]);
             authAtomNameList[   org_rid_dst]   = null;
+            pdbInsertionCodeList[   org_rid_dst]   = pdbInsertionCodeList[ rid ];
             xList[              org_rid_dst]   = xList[rid];
             yList[              org_rid_dst]   = yList[rid];
             zList[              org_rid_dst]   = zList[rid];
@@ -2774,7 +2784,7 @@ the atom name."""
                 true, coorf, Defs.NULL_FLOAT, 
                 elId, 1.0f, Defs.NULL_FLOAT,
                 null, null, null, null, 
-                resId);
+                resId, null);
 //        General.showDebug("Added: " + toString(atomRid));
         return atomRid;
     }

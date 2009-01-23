@@ -141,7 +141,8 @@ public class STARParser {
         
         try {
             do {
-                tok = fLex.yylex();
+                tok = (fLex.yylex()).ordinal();
+                
                 switch( tok ) {
                     case STARLexer.ERROR :
                         fEh.error( fLex.getLine(), fLex.getColumn(), ERR_LEXER
@@ -221,9 +222,11 @@ public class STARParser {
 
     public void test_parse() {
         try {
-            int tok = fLex.yylex();
+            int tok = fLex.yylex().ordinal();
 	    while( tok != STARLexer.EOF ) {
-                    General.showOutputNoEol(STARLexer.TOKEN_TYPES[tok] + "(" 
+//            General.showOutputNoEol(STARLexer.TOKEN_TYPES[tok] + 
+                    General.showOutputNoEol("type id of token " +tok + 
+                            "(" 
                     + fLex.getLine() + ":" + fLex.getColumn() + "): " );
 	        switch( tok ) {
                         case STARLexer.DVNSINGLE :
@@ -234,7 +237,7 @@ public class STARParser {
                         default :
                             General.showOutput( fLex.getText() );
 	        }
-	        tok = fLex.yylex();
+	        tok = fLex.yylex().ordinal();
             }
             General.showOutput("End of data_ (EOF)" );
         }

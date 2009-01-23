@@ -30,6 +30,7 @@ public class Gumbo extends RelationSoS implements Serializable {
     public static String      DEFAULT_ATTRIBUTE_AUTH_RES_NAME       = "auth_res_name";    
     public static String      DEFAULT_ATTRIBUTE_AUTH_RES_ID         = "auth_res_id";    // author residue number not of type int but is a string!
     public static String      DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME      = "auth_atom_name";    
+    public static String      DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE  = "_Atom_site.PDB_ins_code";    
 
     /** Used in e.g. distance constraints for when atoms can't be matched to 
      *molecular description.

@@ -1,22 +1,10 @@
 /*
  * This software is copyright (c) 2006 Board of Regents, University of
  * Wisconsin. All Rights Reserved.
+ * 
+ * $Id$
  *
- * FILE:        $Source$
- *
- * AUTHOR:      $Author$
- * DATE:        $Date$
- *
- * UPDATE HISTORY:
- * ---------------
- * $Log$
- * Revision 1.1  2007/06/19 18:07:54  jurgenfd
- * Initial revision
- *
- * Revision 1.3  2006/09/20 16:32:58  jurgen
- * Updated STAR flex lexer and parser to Dimitri's specs for faster parsing of ;; delimited values etc.
- * Changed bug reports to Trac system outside of the Wattos package but nicer.
- * */
+ */
 //***************************************************************************
 // Scanner flex specification
 //***************************************************************************
@@ -45,8 +33,7 @@ import Wattos.Utils.*;
 %line
 %column
 %unicode
-//%type Types
-%int
+%type Types
 %x YYSINGLE YYDOUBLE YYSEMI YYSEMIEND
 
 %init{
@@ -54,6 +41,8 @@ import Wattos.Utils.*;
 %init}
 
 %{
+    private static final boolean DEBUG = false;
+    
     public static final int ERROR = 0;
             /** Parser warning. */
     public static final int WARNING = 1;
@@ -88,31 +77,46 @@ import Wattos.Utils.*;
             /** Comment. */
     public static final int COMMENT = 16;
             /** End of input. */
-    public static final int EOF = 17;
-
-
-    /** token names. Use int token constant as array index */
-    public static final String [] TOKEN_TYPES = {
-    "ERROR",
-    "WARNING",
-    "GLOBALSTART",
-    "GLOBALEND",
-    "DATASTART",
-    "DATAEND",
-    "SAVESTART",
-    "SAVEEND",
-    "LOOPSTART",
-    "STOP",
-    "TAGNAME",
-    "DVNSINGLE",
-    "DVNDOUBLE",
-    "DVNSEMICOLON",
-    "DVNFRAMECODE",
-    "DVNNON",
-    "COMMENT",
-    "EOF"
-};
-
+    public static final int EOF = 17;    
+    /** tokens */
+    public enum Types {
+        /** Parser error. */
+        ERROR,
+        /** Parser warning. */
+        WARNING,
+        /** Start of global block. */
+        GLOBALSTART,
+        /** End of global block. */
+        GLOBALEND,
+        /** Start of data block. */
+        DATASTART,
+        /** End of data block. */
+        DATAEND,
+        /** Start of saveframe. */
+        SAVESTART,
+        /** End of saveframe. */
+        SAVEEND,
+        /** Start of loop. */
+        LOOPSTART,
+        /** End of loop. */
+        STOP,
+        /** Tag.  */
+        TAGNAME,
+        /** Value enclosed in single quotes. */
+        DVNSINGLE,
+        /** Value enclosed in double quotes. */
+        DVNDOUBLE,
+        /** Value enclosed in semicolons. */
+        DVNSEMICOLON,
+        /** Framecode value. */
+        DVNFRAMECODE,
+        /** Bareword value. */
+        DVNNON,
+        /** Comment. */
+        COMMENT,
+        /** End of input. */
+        EOF;
+    }
     /* buffer for quoted values */
     private StringBuilder buf;
     /** Returns line number (counting from 1).
@@ -140,7 +144,7 @@ import Wattos.Utils.*;
      */
     public String getText() {
         if( buf.length() < 1 ) return yytext();
-	return buf.toString();
+    return buf.toString();
     }
     /** Pushes number of characters back into input stream.
      * @param num number of characters to push back
@@ -148,13 +152,28 @@ import Wattos.Utils.*;
     public void pushBack( int num ) {
         yypushback( num );
     }
+    /** Marks input stream.
+     * @param num read-ahead limit
+     */
+     /*
+    public void mark( int num ) throws java.io.IOException {
+    yy_reader.mark( num );
+    }
+    */
+    /** Rewinds input stream to last mark. */
+    /*
+    public void rewind() throws java.io.IOException {
+    yy_reader.reset();
+    }
+    */
 //******************************************************************************
 %}
 
 WS=[ \t\b\012]
-NON_WS=[^ \t\b\012]
-NL=[\n]
+NON_WS=[^ \t\b\012\r]
+NL=(\r|\n|\r\n)
 WS_NL = ({WS}|{NL})
+NON_NL = [^\r\n]
 
 GLOBALSTART         = ([gG][lL][oO][bB][aA][lL]_)
 DATASTART           = ([dD][aA][tT][aA]_)
@@ -165,13 +184,13 @@ STOP                = ([sS][tT][oO][pP]_)
    NMR-STAR 3.0/PDBX tagname
    TAGNAME              _[_[:alnum:]]+\.[][_[:alnum:]%-]+
 */
-/* NMR-STAR 2.1 tagname */
-/* TAGNAME             = (_[_[:letter:][:digit:]+[\]\[_[:letter:][:digit:]%-]+) */
+/* 
+   NMR-STAR 2.1 tagname
+   TAGNAME             = (_[_[:letter:][:digit:]+[\]\[_[:letter:][:digit:]%-]+)
+*/
 TAGNAME             = (_[_[:letter:][:digit:]]+[._\[\][:letter:][:digit:]%-]+)
-SINGLESTART         = {WS}+\'
- /* SINGLEEND           = \'{WS}+ */
-DOUBLESTART         = {WS}+\"
-/* DOUBLEEND           = \"{WS}+ */
+//SINGLESTART         = {WS}+\'
+//DOUBLESTART         = {WS}+\"
 
 /*
    PDBX definition for code (sf name) is
@@ -184,75 +203,71 @@ COMMENT             = #
 <YYINITIAL> {
     <<EOF>> {
         buf.setLength( 0 );
-        return EOF;
+        return Types.EOF;
     }
     {GLOBALSTART}{WS}* {
         buf.setLength( 0 );
-	    return GLOBALSTART;
+        return Types.GLOBALSTART;
     }
     {DATASTART}{NON_WS}+ {
         buf.setLength( 0 );
-	    buf.append( yytext().substring( 5 ) );
-	    return DATASTART;
+        buf.append( yytext().substring( 5 ) );
+        return Types.DATASTART;
     }
     {SAVEEND}{NON_WS}+ {
         buf.setLength( 0 );
-	    buf.append( yytext().substring( 5 ) );
-	    return SAVESTART;
+        buf.append( yytext().substring( 5 ) );
+        return Types.SAVESTART;
     }
     {SAVEEND}{WS}* {
         buf.setLength( 0 );
-	    return SAVEEND;
+        return Types.SAVEEND;
     }
-    {LOOPSTART}{WS}* {
+    {LOOPSTART}{WS_NL}* {
         buf.setLength( 0 );
-	    return LOOPSTART;
+        return Types.LOOPSTART;
     }
     {STOP}{WS}* {
         buf.setLength( 0 );
-	    return STOP;
+        return Types.STOP;
     }
     {COMMENT}.* {
         buf.setLength( 0 );
-	    return COMMENT;
+        return Types.COMMENT;
     }
     {TAGNAME} {
         buf.setLength( 0 );
-	    buf.append( yytext() );
-	    return TAGNAME;
+        buf.append( yytext() );
+        return Types.TAGNAME;
     }
     {FRAMECODE} {
         buf.setLength( 0 );
-	    buf.append( yytext().substring( 1 ) );
-	    return DVNFRAMECODE;
+        buf.append( yytext().substring( 1 ) );
+        return Types.DVNFRAMECODE;
     }
-    {SINGLESTART} {
-//System.err.printf( "Matched %s in {SINGLESTART}\n", yytext() );
+//    {SINGLESTART} {
+    ({NL}|{WS})+\' {
+if( DEBUG ) System.err.printf( "Matched |%s| in {SINGLESTART}\n", yytext() );
         buf.setLength( 0 );
-	    yybegin( YYSINGLE );
+        yybegin( YYSINGLE );
     }
-    {DOUBLESTART} {
+//    {DOUBLESTART} {
+    ({WS}|{NL})+\" {
+if( DEBUG ) System.err.printf( "Matched |%s| in {DOUBLESTART}\n", yytext() );
         buf.setLength( 0 );
         yybegin( YYDOUBLE );
     }
-/*
-    ^;{WS_NL} {
-//    General.showDebug( "Matched %s in ^{SEMI}" + yytext() );
-        buf.setLength( 0 );
-        yybegin( YYSEMI );
-    }
-*/
     ^;.* {
-//    General.showDebug( "Matched %s in ^{SEMI}" + yytext() );
+//System.err.printf( "Matched %s in ^{SEMI}\n", yytext() );
         buf.setLength( 0 );
         buf.append( yytext().substring( 1 ) );
         yybegin( YYSEMI );
     }
     {NON_WS}+ {
-//    General.showDebug( "Matched in {NON_WS}+ " + yytext());
+if( DEBUG ) System.err.printf( "Matched |%s| in {NON_WS}+\n", yytext() );
         buf.setLength( 0 );
-	    buf.append( yytext() );
-	    return DVNNON;
+        buf.append( yytext() );
+        return Types.DVNNON;
     }
     {WS_NL}+ {}
 }
@@ -267,30 +282,31 @@ COMMENT             = #
 <YYSINGLE>'/{WS_NL}+ {
 //System.err.printf( "Matched %s in {YYSINGLE}, exit\n", yytext() );
     yybegin( YYINITIAL );
-    return DVNSINGLE;
+    return Types.DVNSINGLE;
 }
 
 <YYDOUBLE>\"/{WS_NL}+ {
+//System.err.printf( "Matched %s in {YYDOUBLE}, exit\n", yytext() );
     yybegin( YYINITIAL );
-    return DVNDOUBLE;
+    return Types.DVNDOUBLE;
 }
 
 <YYSEMI> {
     {NL} {
 //System.err.printf( "In YYSEMI, matched |%s|, begin SEMIEND\n", yytext() );
-	yybegin( YYSEMIEND );
+    yybegin( YYSEMIEND );
     }
-    .+ {
+    {NON_NL}+ {
 //System.err.printf( "In YYSEMI, matched |%s|\n", yytext() );
         buf.append( yytext() );
     }
 }
 
 <YYSEMIEND> {
-    ;{WS_NL}+ {
+    ;/{WS_NL} {
 //System.err.printf( "In YYSEMIEND, matched |%s|, exit\n", yytext() );
         yybegin( YYINITIAL );
-        return DVNSEMICOLON;
+        return Types.DVNSEMICOLON;
     }
     {NL} {
         buf.append( "\n" );
@@ -298,8 +314,8 @@ COMMENT             = #
     [^;] {
 //System.err.printf( "In YYSEMIEND, matched |%s|, drop back\n", yytext() );
         buf.append( "\n" );
-	    buf.append( yytext() );
-	    yybegin( YYSEMI );
+        buf.append( yytext() );
+        yybegin( YYSEMI );
     }
 }
 
@@ -309,5 +325,5 @@ COMMENT             = #
     buf.append( "Unknown token: ``" );
     buf.append( yytext() );
     buf.append( "''" );
-    return ERROR;
+    return Types.ERROR;
 }
