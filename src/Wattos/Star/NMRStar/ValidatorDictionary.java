@@ -35,8 +35,10 @@ public class ValidatorDictionary implements Serializable {
     // TODO remove the next dependency on STARLIB if we don't want to serialize it with the rest of UserInterface.
     public TagTable tagTt = null;
     /** Local resource */
-    static final String FILE_LOCATION = "Data/validict.3.str";
-    
+//    static final String FILE_LOCATION = "Data/validict.3.str";
+    /** From ftp://ftp.bmrb.wisc.edu/pub/software/bmrb/validator/validict.20080404.1.str */
+    static final String FILE_LOCATION = "Data/validict.20080404.1.str";
+        
     static final String TAGCAT  = "_TAGCAT";
     static final String TAGNAME = "_TAGNAME";
     public String NMR_STAR_version = null;
@@ -101,6 +103,7 @@ public class ValidatorDictionary implements Serializable {
                 General.showDebug("Failed to find tagCat (leaving original order) for tT: " + tT.toString(true, false, false, false, false, false));
                 continue;
             }
+//            General.showDebug("Sorting: tagCat: ["+tagCat+"]");
             BitSet E = SQLSelect.selectBitSet(dbms,tagTt,TAGCAT,SQLSelect.OPERATION_TYPE_EQUALS,tagCat,false);
             StringArrayList salE = new StringArrayList();
             for (int j = E.nextSetBit(0); j >= 0; j=E.nextSetBit(j+1)) {

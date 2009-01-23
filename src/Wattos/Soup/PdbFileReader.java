@@ -43,8 +43,8 @@ public class PdbFileReader extends FastFileReader {
     public int      error_count               = 0;
     public char     chainId;
     public char     chainIdOld                = Defs.NULL_CHAR;    
-    public char     insertionCodeResidue      = Defs.NULL_CHAR;    
-    public char     insertionCodeResidueOld   = ' ';    
+    public String   insertionCodeResidue      = Defs.NULL_STRING_NULL;    
+    public String   insertionCodeResidueOld   = "ImpossibleInsertionCode";    
     public int      modelNumber               = Defs.NULL_INT;
     public float    coor_x                    = Defs.NULL_FLOAT;
     public float    coor_y                    = Defs.NULL_FLOAT;
@@ -211,9 +211,12 @@ COLUMNS       DATA TYPE      FIELD         DEFINITION
             authResName              = (new String(buf, offset+17, 4)).trim(); 
             chainId                  = buf[ offset + 21 ];
             authResId                = CharArray.parseIntSimple(buf, offset+22, 4);
-            insertionCodeResidue     = buf[ offset + 26 ]; // Usually it's ' '            
+            insertionCodeResidue     = (new String(buf, offset+26, 1));  // Usually it's " "            
             if ( chainId == ' ' ) {
                 chainId = Defs.NULL_CHAR;
+            }                        
+            if ( insertionCodeResidue.equals(" ") ) {
+                insertionCodeResidue = Defs.NULL_STRING_NULL;
             }                        
             coor_x = Float.parseFloat( new String( buf, offset+30, 8));
             coor_y = Float.parseFloat( new String( buf, offset+38, 8));
@@ -330,7 +333,7 @@ COLUMNS       DATA TYPE      FIELD         DEFINITION
                     elementIdPresent = true;
                 }
             }            
-            // Last chance is to derive it from the authorname.
+            // Last chance is to derive it from the author name.
             // Note that this algorithm isn't correct for all cases in PDB, but what is?
             if ( Defs.isNull( elementId ) && (!elementIdPresent)) {
                 //General.showDebug("Looking at 4 char atomNamePreFixed: [" + atomNamePreFixed + "]");
@@ -384,10 +387,10 @@ COLUMNS       DATA TYPE      FIELD         DEFINITION
             // Next interns are expensive and might be deleted...
             atom.nameList[           currentAtomId ] = atom.nameListNR.intern( atomName );
             atom.authAtomNameList[   currentAtomId ] = atom.authAtomNameListNR.intern( atomNamePreFixed.trim() );                      
+            atom.pdbInsertionCodeList[currentAtomId] = atom.pdbInsertionCodeListNR.intern( insertionCodeResidue );                                  
             atom.authMolNameList[    currentAtomId ] = atom.authMolNameListNR.intern(  authMolName );          
             atom.authResNameList[    currentAtomId ] = atom.authResNameListNR.intern(  authResName );          
             atom.authResIdList[      currentAtomId ] = atom.authResNameListNR.intern(  Integer.toString( authResId ));          
-            
             atom.selected.set( currentAtomId );            
         // Simply catch any error that might be thrown; parse errors include the out
         // of bounds exception java might throw because of buggy code in the simplyfied

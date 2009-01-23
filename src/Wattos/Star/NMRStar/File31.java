@@ -175,6 +175,7 @@ public class File31 {
     public String tagNameAtomAuthResId;
     public String tagNameAtomAuthResName;
     public String tagNameAtomAuthName;
+    public String tagNameAtomPdbInsertionCode;
     public String tagNameAtomElementId;
     public String tagNameAtomCoorX;
     public String tagNameAtomCoorY;
@@ -411,7 +412,7 @@ public class File31 {
     int[] varDCvalueTreenodeID = null;
     String[] varDCvalueSourceexperimentID = null;
     String[] varDCvalueSpectralpeakID = null;
-    // TODO: add the following 3 again after FC update.
+    // 
     // float[] varDCvalueIntensityval = null;
     // float[] varDCvalueIntensitylowervalerr = null;
     // float[] varDCvalueIntensityuppervalerr = null;
@@ -742,6 +743,8 @@ public class File31 {
                     Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME)).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameAtomAuthName = (String) ((ArrayList) starDict.toStar2D.get("atom_main",
                     Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME)).get(StarDictionary.POSITION_STAR_TAG_NAME);
+            tagNameAtomPdbInsertionCode = (String) ((ArrayList) starDict.toStar2D.get("atom_main",
+                    Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE)).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameAtomElementId = (String) ((ArrayList) starDict.toStar2D.get("atom_main",
                     Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID)).get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameAtomCoorX = (String) ((ArrayList) starDict.toStar2D.get("atom_main", Gumbo.DEFAULT_ATTRIBUTE_COOR_X))
@@ -3693,6 +3696,7 @@ public class File31 {
             namesAndTypes.put(tagNameAtomAuthResName, new Integer(Relation.DATA_TYPE_STRINGNR));
             namesAndTypes.put(tagNameAtomAuthName, new Integer(Relation.DATA_TYPE_STRINGNR));
             namesAndTypes.put(tagNameAtomElementId, new Integer(Relation.DATA_TYPE_STRINGNR));
+            namesAndTypes.put(tagNameAtomPdbInsertionCode, new Integer(Relation.DATA_TYPE_STRINGNR));
             namesAndTypes.put(tagNameAtomCoorX, new Integer(Relation.DATA_TYPE_FLOAT));
             namesAndTypes.put(tagNameAtomCoorY, new Integer(Relation.DATA_TYPE_FLOAT));
             namesAndTypes.put(tagNameAtomCoorZ, new Integer(Relation.DATA_TYPE_FLOAT));
@@ -3709,6 +3713,7 @@ public class File31 {
             order.add(tagNameAtomAuthResName);
             order.add(tagNameAtomAuthName);
             order.add(tagNameAtomElementId);
+            order.add(tagNameAtomPdbInsertionCode);
             order.add(tagNameAtomCoorX);
             order.add(tagNameAtomCoorY);
             order.add(tagNameAtomCoorZ);
@@ -5189,6 +5194,7 @@ public class File31 {
                         & tTCoor.renameColumn(Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME, tagNameAtomAuthResName)
                         & tTCoor.renameColumn(Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID, tagNameAtomAuthResId)
                         & tTCoor.renameColumn(Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME, tagNameAtomAuthName)
+                        & tTCoor.renameColumn(Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE, tagNameAtomPdbInsertionCode)
                         & tTCoor.renameColumn(Gumbo.DEFAULT_ATTRIBUTE_COOR_X, tagNameAtomCoorX)
                         & tTCoor.renameColumn(Gumbo.DEFAULT_ATTRIBUTE_COOR_Y, tagNameAtomCoorY)
                         & tTCoor.renameColumn(Gumbo.DEFAULT_ATTRIBUTE_COOR_Z, tagNameAtomCoorZ)
@@ -5223,6 +5229,7 @@ public class File31 {
                 columnListToKeep.add(tagNameAtomAuthResId);
                 columnListToKeep.add(tagNameAtomAuthResName);
                 columnListToKeep.add(tagNameAtomAuthName);
+                columnListToKeep.add(tagNameAtomPdbInsertionCode);
                 columnListToKeep.add(tagNameAtomElementId);
                 columnListToKeep.add(tagNameAtomCoorX);
                 columnListToKeep.add(tagNameAtomCoorY);
