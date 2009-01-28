@@ -478,13 +478,14 @@ public class MRInterloop {
         files.add( new String[] {"DOCR","distance",     "hydrogen bond",    "ambi", "DYANA/DIANA","$X_distance_HB_na_$N.lol"} );
         files.add( new String[] {"DOCR","dihedral angle","n/a",             "n/a",  "DYANA/DIANA","$X_dihedral_na_na_$N.aco"} );
         files.add( new String[] {"DOCR","dipolar coupling","n/a",           "n/a",  "DYANA/DIANA","$X_dipolar_coupling_na_na_$N.upl"} );
-
+ 
         // FRED
         files.add( new String[] {"FRED","entry",        "full",             "n/a",  "STAR","$X_project.str"} );
         files.add( new String[] {"FRED","entry",        "full",             "n/a",  "XML","$X_project.xml.tgz"} );
         files.add( new String[] {"FRED","check",        "stereo assignment",    "distance",  "Wattos",      "$X_assign.str"} );
         files.add( new String[] {"FRED","check",        "surplus",              "distance",  "Wattos",      "$X_surplus.str"} );
-        files.add( new String[] {"FRED","check",        "violation",            "distance",  "Wattos",      "$X_viol.str"} );
+        files.add( new String[] {"FRED","check",        "violation",            "distance",        "Wattos",      "$X_dist_viol.str"} );
+        files.add( new String[] {"FRED","check",        "violation",            "dihedral angle",  "Wattos",      "$X_dihed_viol.str"} );
         files.add( new String[] {"FRED","check",        "completeness",         "distance",  "Wattos",      "$X_compl.str"} );
                 
         

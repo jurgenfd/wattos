@@ -11,6 +11,7 @@ comment,n/a,n/a,MR_file_comments,-,-,Y,99,99,99,99,99,99,-,99,99,99,99,99,99,99,
 check,stereo assignment,distance,stereo_assignments,-,-,Y,-,-,-,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 check,surplus,distance,distance_constraint_surplus,-,-,Y,-,-,-,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 check,violation,distance,distance_constraint_statistics,-,-,Y,-,-,-,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
+check,violation,dihedral angle,distance_constraint_statistics,-,-,Y,-,-,-,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 check,completeness,distance,NOE_completeness_statistics,-,-,Y,-,-,-,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 coordinate,alignment tensor,n/a,unknown_sf_category,-,-,Y,X,X,X,X,X,X,-,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,-,-,X,-,-,-,-,-
 coordinate,initial,n/a,MR_file_coordinate_initial,-,-,Y,X,X,X,X,X,X,-,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,-,-,X,-,-,-,-,-
