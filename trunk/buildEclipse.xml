@@ -9,7 +9,10 @@
 	<property file="wattos.properties" />
 
 	<!-- Added for for functionality. Requires a ant-contrib.jar in classpath. -->
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<!-- Fedora 9: -->
+	<taskdef classpath="/usr/share/java/ant-contrib.jar" resource="net/sf/antcontrib/antlib.xml" />
+	<!-- systems where ant-contrib installs properly: -->
+<!--	<taskdef resource="net/sf/antcontrib/antlib.xml" /> -->
 
     <!-- Set the below to development 0 or production 1-->
     <property name="isProduction" value="1" />
@@ -73,6 +76,7 @@
 		</javac>
 		<copy todir="${build.dir}">
 			<fileset dir="${src.dir}" includes="**/*.csv" />
+			<fileset dir="${src.dir}" includes="**/*.str" />
 		</copy>
 	</target>
 

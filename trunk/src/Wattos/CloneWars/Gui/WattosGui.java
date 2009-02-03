@@ -692,25 +692,25 @@ public class WattosGui extends JFrame implements ActionListener {
         final JPanel jPanelToFillFinal       = jPanelToFill;
         final int    jPanelToFillTabIdxFinal = jPanelToFillTabIdx;
         
-        final SwingWorker worker = new SwingWorker() {
+        final edu.oswego.cs.dl.util.concurrent.misc.SwingWorker worker = new edu.oswego.cs.dl.util.concurrent.misc.SwingWorker() {
             public Object construct() {
                 jPanelToFillFinal.removeAll();
                 
                 try {
-                    GroupLayout jPanelLayout = new GroupLayout(jPanelToFillFinal);
+                    org.jdesktop.layout.GroupLayout jPanelLayout = new org.jdesktop.layout.GroupLayout(jPanelToFillFinal);
                     jPanelToFillFinal.setLayout(jPanelLayout);
                     jPanelLayout.setHorizontalGroup(
-                            jPanelLayout.createParallelGroup(GroupLayout.LEADING)
+                            jPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jPanelLayout.createSequentialGroup()
                             .addContainerGap()
-                            .add(jPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(jPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addContainerGap())
                             );
                     jPanelLayout.setVerticalGroup(
-                            jPanelLayout.createParallelGroup(GroupLayout.LEADING)
+                            jPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jPanelLayout.createSequentialGroup()
                             .addContainerGap()
-                            .add(jPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(jPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addContainerGap())
                             );
                 } catch ( Throwable t ) {

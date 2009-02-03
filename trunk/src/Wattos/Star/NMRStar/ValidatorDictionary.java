@@ -55,6 +55,7 @@ public class ValidatorDictionary implements Serializable {
             file_location = FILE_LOCATION;
 //            General.showDebug("Reading Star dictionary from local resource : " + file_location);
         }
+        
         StarFileReader sfr = new StarFileReader(dbms);
         InputStream file_is = getClass().getResourceAsStream(file_location);        
         StarNode sn = sfr.parse(new BufferedInputStream(file_is));
