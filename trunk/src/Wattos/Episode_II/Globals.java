@@ -118,7 +118,7 @@ public class Globals {
         }
         if (hostname.equals("stella")) {
             General.showDebug("Now in Wattos.Episode_II.Globals on development machine");
-        } else if (hostname.equals("tang") || hostname.equals("grunt")) {
+        } else if (hostname.equals("tang")) {
             m.put("testing", Boolean.valueOf(false));
             /** Use local servlet engine. */
             m.put("act_locally", Boolean.valueOf(false));
@@ -145,16 +145,14 @@ public class Globals {
         // General.showOutput("WATTOSROOT: " + wattosRootDirStr);
 
         // String dbfs_root = fs+"mnt"+fs+"mrgrid";
-        // String dbfs_root = fs + "big" + fs + "jurgen" + fs + "DB" + fs + "mrgrid";
-        String dbfs_root = fs + "raid";
+        String dbfs_root = fs + "big" + fs + "jurgen" + fs + "DB" + fs + "mrgrid";
         // String localTestingPlatform = "C:\\jurgen\\tmp_unb_";
-         String localTestingPlatform = "/Users/jd/wattosTestingPlatform";
-      //   String pdbmirror_root = fs+"pdbmirror2"; // different from "pdbmirr".
+        String localTestingPlatform = "/Users/jd/wattosTestingPlatform";
+        // String pdbmirror_root = fs+"pdbmirror2"; // different from "pdbmirr".
         String pdbmirror_root = fs + "dumpzone" + fs + "pdb";
         // Match the settings here with the one in the nmrrestrntsgrid project in:
         // scripts/settings.csh
-        // String UJ_dir = fs + "big" + fs + "docr";
-        String UJ_dir = fs + "raid" + fs + "docr";
+        String UJ_dir = fs + "big" + fs + "docr";
 
         String osName = System.getProperty("os.name");
         if (osName.startsWith("Windows")) {
@@ -212,15 +210,13 @@ public class Globals {
         // Directory with annotated mr files, ready to be split
         // Used in MRInterloop and MRReclassify
         // m.put("mr_anno_dir", share_root+fs+"wattos"+fs+"mr_anno_test");
-        // m.put("mr_anno_dir", share_root + fs + "wattos" + fs + "mr_anno_backup");
-        m.put("mr_anno_dir", dbfs_root + fs + "backup" + fs + "mr_anno_backup");
+        m.put("mr_anno_dir", share_root + fs + "wattos" + fs + "mr_anno_backup");
         if (((Boolean) m.get("testing")).booleanValue()) {
             m.put("mr_anno_progress_dir", share_root + fs + "jurgen" + fs + "tmp_unb_" + fs + "Wattos" + fs
                     + "mr_anno_progress");
             UJ_dir = fs + "Users" + fs + "jd";
         } else {
-//            m.put("mr_anno_progress_dir", pdbmirror_root + fs + "mr_anno_progress_nrg31");
-            m.put("mr_anno_progress_dir", dbfs_root + fs + "mr_anno_progress");
+            m.put("mr_anno_progress_dir", pdbmirror_root + fs + "mr_anno_progress_nrg31");
         }
         String big_dir = UJ_dir + fs + "NRG";
         String wwPDB_dir = big_dir + fs + "wwPDB";
@@ -237,7 +233,7 @@ public class Globals {
             m.put("amber_pdb_dir", localTestingPlatform + fs + "external" + fs + "amber_pdb");
         }
 
-        m.put("servlet_top_dir", "/website/htdocs/wattos"); // Exists only on servlet machine
+        m.put("servlet_top_dir", "/bmrb/htdocs/wattos"); // Exists only on servlet machine
         m.put("MRGridServlet", "MRGridServlet");
         m.put("servlet_top_url", "NRG"); // was WebModule for a LONG time.
         m.put("servlet_root_url", "http://restraintsgrid.bmrb.wisc.edu");
