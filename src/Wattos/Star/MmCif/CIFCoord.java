@@ -782,8 +782,8 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                 mol_main_id[    atomCount] = rid_mol[   modelNum][molNum];
                 res_main_id[    atomCount] = rid_res[   modelNum][molNum][resNum];                
             }
-        } catch ( Exception e ) {
-            General.showThrowable(e);
+        } catch ( Throwable t ) {
+            General.showThrowable(t);
             General.showError("For atom: " + atomCount + " in the file, failed to set the RIDs" );
             General.showError("Model number: " + atomModelIdList[  atomCount] + ", molecule number: " + atomMolIdList[    atomCount] + ", residue number: " + atomResIdList[    atomCount]);
             General.showError("Is the atom in known topology. E.g. does the residue occur in the system description.");                
