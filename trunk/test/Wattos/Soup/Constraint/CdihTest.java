@@ -15,7 +15,7 @@ public class CdihTest extends TestCase {
         float rangeFound = xplorSet[1];
         General.showDebug("targetFound " + targetFound + " degrees");
         General.showDebug("rangeFound " + rangeFound + " degrees");
-        float targetExpected = -5.0000001f;
+        float targetExpected = 355.0000001f;
         assertEquals(targetExpected, targetFound, Geometry.ANGLE_EPSILON);
     }
 }

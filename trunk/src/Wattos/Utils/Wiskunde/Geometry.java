@@ -6,7 +6,9 @@
 
 package Wattos.Utils.Wiskunde;
 
+import Wattos.Database.Defs;
 import Wattos.Utils.General;
+import Wattos.Utils.PrimitiveArray;
 
 import com.braju.format.Format;
 import com.braju.format.Parameters;
@@ -49,9 +51,13 @@ public class Geometry {
         
     
     /**
-     * Translates any angle to a value between -Pi and +Pi (inclusive)
+     * Translates any angle to a value between -Pi and +Pi (inclusive).
+     * Returns null on null input.
      */
     public static double toMinusPIPlusPIRange(double ang) {
+        if ( ang == Defs.NULL_DOUBLE ) { // also prevents a stack overflow by to many recursive calls.
+            return Defs.NULL_DOUBLE;
+        }
         if (ang > -PI && ang <= PI ) {
             return ang;
         }
@@ -60,7 +66,7 @@ public class Geometry {
         } else if ( ang > PI ) {
             ang -= 2.0*PI;
         }
-        // Repeat as necessary (useally the value is between -2 pi and 2 pi so speed is no issue)
+        // Repeat as necessary (usually the value is between -2 pi and 2 pi so speed is no issue)
         return toMinusPIPlusPIRange(ang);
     }
     
@@ -171,10 +177,30 @@ public class Geometry {
         return a;  
     }
     
-    /** Stolen from Aqua. Angles should be in range [-pi,pi>>.
+    /** Convenience method */
+    public static double[] toRadians( double[] alpha ) {
+        double[] result = new double[alpha.length];
+        for (int i=0;i<alpha.length;i++) {
+            result[i] = Math.toRadians(alpha[i]);
+        }
+        return result;
+    }
+    
+    /** Convenience method */
+    public static double[] toDegrees( double[] alpha ) {
+        double[] result = new double[alpha.length];
+        for (int i=0;i<alpha.length;i++) {
+            result[i] = Math.toDegrees(alpha[i]);
+        }
+        return result;
+    }
+    
+    /** Stolen from Aqua. Angles should be in range [-pi,pi>.
      * Resulting average is also in this range.
-     * In case of impossible average (vector average too close to 0,0 
-     * the routine returns Double.NaN.
+     * In case of impossible average (vector average too close to 0,0)
+     * the routine returns Defs.NULL_DOUBLE.
+     * It makes the routine much less useful. Consider using {@link #differenceAngles(double, double)}
+     * when dealing with just a lower and upper bound.
      * */
     public static double averageAngles( double[] alpha ) {
         double sumX = 0;
@@ -189,7 +215,9 @@ public class Geometry {
             General.showWarning("Failed to average angles; average to close to center.");
             General.showWarning("X: "+ sumX);
             General.showWarning("Y: "+ sumY);
-            return Double.NaN;
+            General.showWarning("input was:       " + PrimitiveArray.toString(alpha));
+            General.showWarning("input was (deg): " + PrimitiveArray.toString(toDegrees(alpha)));            
+            return Defs.NULL_DOUBLE;
         }
         
 //        if ( sumX < DISTANCE_EPSILON ) {

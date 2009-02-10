@@ -966,6 +966,14 @@ public class PrimitiveArray {
         }        
         return Strings.toString( out.toArray() );
     }
+
+    public static String toString( double[] in ) {
+        ArrayList<Double> out = new ArrayList();
+        for (int i=0;i<in.length;i++) {
+            out.add( new Double(in[i]) );
+        }        
+        return Strings.toString( out.toArray() );
+    }
     
     public static String toString( Object o ) {
         if (o instanceof int[] ) {
@@ -973,6 +981,9 @@ public class PrimitiveArray {
         }
         if (o instanceof float[] ) {
             return toString( (float[]) o);
+        }
+        if (o instanceof double[] ) {
+            return toString( (double[]) o);
         }
         if (o instanceof short[] ) {
             return toString( (short[]) o);

@@ -2378,7 +2378,7 @@ public class File31 {
                 Integer logicalOperationInteger = null;
 
                 while (starDCTreeRId < tTTree.sizeRows) { // scan the whole tree tagtable.
-                    // General.showDebug( "Working on dc tree rid: " + starDCTreeRId);
+                     General.showDebug( "Working on dc tree rid: " + starDCTreeRId);
                     boolean atomFoundForAllInDC = true;
                     if (dCNumb != varDCtreeConstraintsID[starDCTreeRId]) { // start a new constraint; will be executed
                         // on first tree row.
@@ -2492,7 +2492,7 @@ public class File31 {
                             // -1- when atom is in different member, node, or restraint.
                             /** Indicates if all atoms within a member where found */
                             boolean atomFound = true;
-                            // General.showDebug( "Getting info from star atom rid: " + starDCAtomRid);
+                             General.showDebug( "Getting info from star atom rid: " + starDCAtomRid);
                             // CHECKS on validity of ONE atom tT row
                             if (varDCConstraintsID[starDCAtomRid] != dCNumb) {
                                 if (varDCConstraintsID[starDCAtomRid] != (dCNumb + 1)) {
@@ -2532,7 +2532,7 @@ public class File31 {
                             // }
                             if (varDCConstrainttreenodememberID[starDCAtomRid] != dCMembNumb) {
                                 dCMembNumb++; // safe after tests above.
-                                // General.showDebug( "Getting info from star member number: " + dCMembNumb);
+                                 General.showDebug( "Getting info from star member number: " + dCMembNumb);
                                 currentDCMembId = dc.distConstrMemb.getNextReservedRow(currentDCMembId);
                                 if (currentDCMembId == Relation.DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW) {
                                     currentDCMembId = dc.distConstrMemb.getNextReservedRow(0); // now it should be fine.
@@ -3125,7 +3125,7 @@ public class File31 {
                 int starSCMainId = 0; // RID into the main star loop
                 while (starSCMainId < tTMain.sizeRows) { // scan the whole tagtable.
                     boolean atomFoundForAllInSC = true;
-                    General.showDebug("Working on sc main rid: " + starSCMainId);
+//                    General.showDebug("Working on sc main rid: " + starSCMainId);
                     currentSCId = sc.mainRelation.getNextReservedRow(currentSCId);
                     if (currentSCId == Relation.DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW) {
                         currentSCId = sc.mainRelation.getNextReservedRow(0); // now it should be fine.
@@ -3146,10 +3146,10 @@ public class File31 {
 
                     sc.target[currentSCId] = varRDC_val[starSCMainId];
                     sc.targetError[currentSCId] = varRDC_val_err[starSCMainId];
-                    General.showDebug("Size sc.targetError     " + sc.targetError.length);
-                    General.showDebug("Size sc.uppBound        " + sc.uppBound.length);
-                    General.showDebug("Size varRDC_val_err     " + varRDC_val_err.length);
-                    General.showDebug("Size varRDC_upper_bound " + varRDC_upper_bound.length);
+//                    General.showDebug("Size sc.targetError     " + sc.targetError.length);
+//                    General.showDebug("Size sc.uppBound        " + sc.uppBound.length);
+//                    General.showDebug("Size varRDC_val_err     " + varRDC_val_err.length);
+//                    General.showDebug("Size varRDC_upper_bound " + varRDC_upper_bound.length);
                     sc.uppBound[currentSCId] = varRDC_upper_bound[starSCMainId];
                     sc.lowBound[currentSCId] = varRDC_lower_bound[starSCMainId];
                     // Now do the hard part in looking up the atom ids.

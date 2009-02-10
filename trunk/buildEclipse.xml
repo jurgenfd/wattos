@@ -12,7 +12,8 @@
 	<!-- Fedora 9: -->
 	<taskdef classpath="/usr/share/java/ant-contrib.jar" resource="net/sf/antcontrib/antlib.xml" />
 	<!-- systems where ant-contrib installs properly: -->
-<!--	<taskdef resource="net/sf/antcontrib/antlib.xml" /> -->
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 
     <!-- Set the below to development 0 or production 1-->
     <property name="isProduction" value="1" />
