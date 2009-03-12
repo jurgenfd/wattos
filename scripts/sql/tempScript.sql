@@ -1,3 +1,4 @@
-SELECT * FROM `mrblock`;
+delete FROM `entry`
+;
 
 

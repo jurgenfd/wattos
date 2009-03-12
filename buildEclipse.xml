@@ -217,8 +217,9 @@
 	<target name="report_errors" if="error_list">
 		<echo message="${error_list}" />
 	</target>
-	<target name="set_version">
-		<replaceregexp file="${src.dir}/Wattos/CloneWars/UserInterface.java" match="String WATTOS_VERSION=(.*)" replace='String WATTOS_VERSION="${wattos_version}";' byline="true" />
+	<target name="set_version" >
+		<replaceregexp file="${src.dir}/Wattos/CloneWars/UserInterface.java" 
+			match="String WATTOS_VERSION=(.*)" replace='String WATTOS_VERSION="${wattos_version}";' byline="true" />
 	</target>
 	<!--
     ======================
