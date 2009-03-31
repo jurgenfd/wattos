@@ -18,6 +18,7 @@ import java.util.Stack;
 import Wattos.Database.DBMS;
 import Wattos.Database.Relation;
 import Wattos.Database.RelationSet;
+import Wattos.Episode_II.Globals;
 import Wattos.Soup.Atom;
 import Wattos.Soup.AtomMap;
 import Wattos.Soup.Entry;
@@ -757,7 +758,7 @@ public class CommandHub implements Serializable {
     
     /** Convenience method */
     public boolean ExecuteMacroUser() {
-        URL url = InOut.getUrlFile(UserInterface.in, "Enter url to (gzipped) Wattos script file: (http://www.bmrb.wisc.edu/wattos/macros/QuitBeforeBegun.wcf)");
+        URL url = InOut.getUrlFile(UserInterface.in, "Enter url to (gzipped) Wattos script file: ("+Globals.wattos_home_page+"/macros/QuitBeforeBegun.wcf)");
         Object[] methodArgs = { url };
         return ExecuteMacroUser(methodArgs);
     }

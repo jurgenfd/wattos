@@ -533,7 +533,8 @@ public class WattosGui extends JFrame implements ActionListener {
         par_url.type = WattosParameter.TYPE_URL;
         par_url.prompt = "Enter url to (gzipped) Wattos script file:";
         par_url.examples.add("C:/jurgen/Wattos/macros/CheckCompleteness.wcf");
-        par_url.examples.add("http://www.bmrb.wisc.edu/wattos/macros/QuitBeforeBegun.wcf");
+        
+        par_url.examples.add(Globals.wattos_home_page+"/macros/QuitBeforeBegun.wcf");
         par_url.examples.add("C:\\my\\Wattos\\macros\\QuitBeforeBegun.wcf");
         par_url.defaultValue = par_url.examples.getString(0);
         par_url.allowedValues = null; // anthing goes.
