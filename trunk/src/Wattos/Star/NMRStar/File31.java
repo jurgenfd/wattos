@@ -2378,7 +2378,7 @@ public class File31 {
                 Integer logicalOperationInteger = null;
 
                 while (starDCTreeRId < tTTree.sizeRows) { // scan the whole tree tagtable.
-                     General.showDebug( "Working on dc tree rid: " + starDCTreeRId);
+//                     General.showDebug( "Working on dc tree rid: " + starDCTreeRId);
                     boolean atomFoundForAllInDC = true;
                     if (dCNumb != varDCtreeConstraintsID[starDCTreeRId]) { // start a new constraint; will be executed
                         // on first tree row.
@@ -2492,7 +2492,7 @@ public class File31 {
                             // -1- when atom is in different member, node, or restraint.
                             /** Indicates if all atoms within a member where found */
                             boolean atomFound = true;
-                             General.showDebug( "Getting info from star atom rid: " + starDCAtomRid);
+//                             General.showDebug( "Getting info from star atom rid: " + starDCAtomRid);
                             // CHECKS on validity of ONE atom tT row
                             if (varDCConstraintsID[starDCAtomRid] != dCNumb) {
                                 if (varDCConstraintsID[starDCAtomRid] != (dCNumb + 1)) {
@@ -2532,7 +2532,7 @@ public class File31 {
                             // }
                             if (varDCConstrainttreenodememberID[starDCAtomRid] != dCMembNumb) {
                                 dCMembNumb++; // safe after tests above.
-                                 General.showDebug( "Getting info from star member number: " + dCMembNumb);
+//                                 General.showDebug( "Getting info from star member number: " + dCMembNumb);
                                 currentDCMembId = dc.distConstrMemb.getNextReservedRow(currentDCMembId);
                                 if (currentDCMembId == Relation.DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW) {
                                     currentDCMembId = dc.distConstrMemb.getNextReservedRow(0); // now it should be fine.

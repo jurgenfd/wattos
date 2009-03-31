@@ -1,4 +1,6 @@
 package Wattos.CloneWars.Gui;
+
+import Wattos.Episode_II.Globals;
 /*
  * WattosParameterPanel.java
  *
@@ -41,7 +43,7 @@ public class WattosParameterPanel extends javax.swing.JPanel {
         jLabel5.setText("Message about chosen value when in error.");
 
         jTextFieldInputFile1.setEditable(false);
-        jTextFieldInputFile1.setText("http://www.bmrb.wisc.edu/wattos/macros/SleepWithoutQuit.wcf");
+        jTextFieldInputFile1.setText(Globals.wattos_home_page+"/macros/SleepWithoutQuit.wcf");
 
         jButtonOpen4.setText("Help");
         jButtonOpen4.addActionListener(new java.awt.event.ActionListener() {
@@ -66,7 +68,7 @@ public class WattosParameterPanel extends javax.swing.JPanel {
 
         jLabel9.setText("Enter Url:");
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "http://www.bmrb.wisc.edu/wattos/macros/SleepWithoutQuit.wcf", "C:\\my\\Wattos\\macros\\QuitBeforeBegun.wcf", "/share/my/Wattos/macros/QuitBeforeBegun.wcf" }));
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { Globals.wattos_home_page+"/macros/SleepWithoutQuit.wcf", "C:\\my\\Wattos\\macros\\QuitBeforeBegun.wcf", "/share/my/Wattos/macros/QuitBeforeBegun.wcf" }));
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);

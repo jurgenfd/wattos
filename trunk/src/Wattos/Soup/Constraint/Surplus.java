@@ -12,6 +12,7 @@ import Wattos.Utils.*;
 import Wattos.CloneWars.*;
 import Wattos.Database.*;
 import Wattos.Database.Indices.*;
+import Wattos.Episode_II.Globals;
 import Wattos.Star.NMRStar.*;
 import Wattos.Star.*;
 import cern.colt.list.*;
@@ -62,7 +63,7 @@ public class Surplus {
         int i=1;
         explanation = "\n" +
                 "A detailed methodology description is available at:\n" +
-                "http://www.bmrb.wisc.edu/wattos/doc/Wattos/Soup/Constraint/dc_surplus.html\n" +                
+                Globals.wattos_home_page+"/doc/Wattos/Soup/Constraint/dc_surplus.html\n" +                
                 "\n" +                
                 "Description of the tags in this list:\n" +
                 "*  "+i+++" * Administrative tag\n" +

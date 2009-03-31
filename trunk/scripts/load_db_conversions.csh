@@ -9,10 +9,14 @@ set max_cpu_time = 72000
 
 limit cputime $max_cpu_time
 
+#setenv WATTOSMEM 2g failed after updating OS FS to case sensitive
+setenv WATTOSMEM 1500m
+
 echo "Maximum cpu time is  : " $max_cpu_time
 echo "PATH is              : " $PATH
 echo "CLASSPATH for java is: " $CLASSPATH
 echo "Cron script is       : " load_db_raw.csh
+echo "WATTOSMEM            : " $WATTOSMEM
 
 # List of arguments
 # 1 Do incremental conversions only(y) or do all classified mr files (n)? : (y/n):n

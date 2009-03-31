@@ -31,7 +31,8 @@
 	            <echo message="Now in environment for production." />
 	            <property name="servlet.web.machine" value="${servlet.web.machine.prod}" />
 	            <property name="servlet.web.user" value="${servlet.web.user.prod}" />
-	            <property name="servlet.web.dir" value="${servlet.web.dir.prod}" />
+                <property name="servlet.web.dir" value="${servlet.web.dir.prod}" />
+                <property name="servlet.web.port" value="${servlet.web.port.prod}" />
 	            <property name="home.web.machine" value="${home.web.machine.prod}" />
 	            <property name="home.web.machine.looped" value="${home.web.machine.looped.prod}" />
 	            <property name="home.web.port" value="${home.web.port.prod}" />
@@ -43,6 +44,7 @@
 	            <property name="servlet.web.machine" value="${servlet.web.machine.dev}" />
 	            <property name="servlet.web.user" value="${servlet.web.user.dev}" />
 	            <property name="servlet.web.dir" value="${servlet.web.dir.dev}" />
+                <property name="servlet.web.port" value="${servlet.web.port.dev}" />
 	            <property name="home.web.machine" value="${home.web.machine.dev}" />
 	            <property name="home.web.machine.looped" value="${home.web.machine.looped.dev}" />
 	            <property name="home.web.port" value="${home.web.port.dev}" />
@@ -52,7 +54,9 @@
 	    </if>
 	    <echo message="servlet.web.machine    : ${servlet.web.machine}" />
 	    <echo message="servlet.web.user       : ${servlet.web.user}" />
-	    <echo message="servlet.web.dir        : ${servlet.web.dir}" />
+        <echo message="servlet.web.dir        : ${servlet.web.dir}" />
+        <echo message="servlet.web.port       : ${servlet.web.port}" />
+
 	    <echo message="home.web.machine       : ${home.web.machine}" />
 	    <echo message="home.web.port          : ${home.web.port}" />
 	    <echo message="home.web.dir           : ${home.web.dir}" />

@@ -18,6 +18,7 @@ import Wattos.Utils.Wiskunde.*;
 import Wattos.CloneWars.*;
 import Wattos.Database.*;
 import Wattos.Database.Indices.*;
+import Wattos.Episode_II.Globals;
 import Wattos.Star.*;
 import Wattos.Star.NMRStar.*;
 import Wattos.Utils.Charts.*;
@@ -184,8 +185,9 @@ public class Completeness {
     static {
         int i=1;
         String expl_1 = "\n" +
-                "A detailed methodology description is available at:\n" +
-                "http://www.bmrb.wisc.edu/wattos/doc/Wattos/Soup/Constraint/dc_completeness.html\n" +
+                "A detailed methodology description is available at:" +
+                "\n" +
+                Globals.wattos_home_page+"/doc/Wattos/Soup/Constraint/dc_completeness.html\n" +
                 "\n" +
                 "Please note that the contributions in ambiguous restraints are considered\n" +
                 "separate 'restraints' for the sets defined below.\n" +

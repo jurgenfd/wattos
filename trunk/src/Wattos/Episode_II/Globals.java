@@ -55,6 +55,7 @@ public class Globals {
 
     private String fs = File.separator;
 
+    public static final String wattos_home_page = "http://nmr.cmbi.ru.nl/~jd/wattos";
     /**
      * Show the content of the hash map m
      */
@@ -100,6 +101,8 @@ public class Globals {
         /** Use the local mr files. */
         m.put("act_locally_mr", Boolean.valueOf(true));
 
+        m.put("wattos_home_page", wattos_home_page);
+        
         // String hostname = "stella.cmbi.umcn.nl"; # if connected to the web at cmbi.
         String hostname = "Stella.local";
         try {
