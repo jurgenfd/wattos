@@ -4,7 +4,6 @@
 # into a directory.
 # Make sure that bin-log is set in the config.
 #   http://free.netartmedia.net/Databases/Databases24.html
-
 # TODO: Change the below to the right password. Don't want to include it with distribution
 # but is required for using --master-data option
 set password = ''
@@ -15,7 +14,8 @@ set user = root
 
 # Limit the cpu usage to 6 minutes.
 set max_cpu_time = 360
-set DUMP_DIR = /Users/jd/Sites/viavia/mr_mysql_backup
+#set DUMP_DIR = /Users/jd/Sites/viavia/mr_mysql_backup
+set DUMP_DIR = /share/wattos/mr_mysql_backup
 ## NO CHANGES BELOW THIS LINE 
 ##############################################################
 echo "Doing backup_mysqldb.csh"
