@@ -1,4 +1,0 @@
-delete FROM `entry`
-;
-
-
