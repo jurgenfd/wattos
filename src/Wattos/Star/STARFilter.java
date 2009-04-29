@@ -308,6 +308,7 @@ save_
     
     public static void showUsage() {
         General.showOutput("Usage: java Wattos.Star.STARFilter inputFile outputFile ruleFile");        
+        General.showOutput("    ruleFile may be a '.' to denote no rules to be done; just a pass thru.");        
     }
     
     /**
@@ -316,6 +317,7 @@ save_
     public static void main(String[] args) {
         STARFilter Sfilter = new STARFilter();
         General.setVerbosityToDebug();
+        General.showDebug("test");
         if ( ! Sfilter.filter(args)) {
             General.doErrorExit("Failed to STARFilter"); // give a error status code exit.
 		}

@@ -62,11 +62,11 @@ import cern.colt.list.ObjectArrayList;
 
 /**
  *Code for reading/writing NMR-STAR 3.1 according to the tag names as defined in an external dictionary.
- * 
+ *
  *Note that standard IDs (those that can are inserted by method enterStandardIDs) are omitted from the external
  * dictionary and this code in order to simplify them. Note the exceptions listed for that method. No other exception
  * exist.
- * 
+ *
  * @author Jurgen F. Doreleijers
  */
 public class File31 {
@@ -412,7 +412,7 @@ public class File31 {
     int[] varDCvalueTreenodeID = null;
     String[] varDCvalueSourceexperimentID = null;
     String[] varDCvalueSpectralpeakID = null;
-    // 
+    //
     // float[] varDCvalueIntensityval = null;
     // float[] varDCvalueIntensitylowervalerr = null;
     // float[] varDCvalueIntensityuppervalerr = null;
@@ -539,7 +539,7 @@ public class File31 {
     // String[] varEntryNMR_STAR_version = null;
     // String[] varEntryExperimental_method = null;
     // String[] varEntryDetails = null;
-    //                
+    //
     // // String[] varAssemblyEntry_ID = null;
     // String[] varAssemblyNumber_of_components = null;
     // String[] varAssemblyOrganic_ligands = null;
@@ -766,7 +766,7 @@ public class File31 {
                     .get(StarDictionary.POSITION_STAR_TAG_NAME);
             tagNameAtomDetails = (String) ((ArrayList) starDict.toStar2D.get("atom_main", "_Atom_site.Details"))
                     .get(StarDictionary.POSITION_STAR_TAG_NAME);
-            //            
+            //
             tagNameDCSfcategory = (String) ((ArrayList) starDict.toStar2D.get("unknown",
                     "_Distance_constraint_list.Sf_category")).get(StarDictionary.POSITION_STAR_TAG_NAME);
             // tagNameDCID = (String) ((ArrayList)starDict.toStar2D.get( "unknown", "_Distance_constraint_list.ID"
@@ -1259,7 +1259,7 @@ public class File31 {
         // // tagNameDCparsefileconverrParsefileconstraintID,
         // // tagNameDCparsefileconverrConverrortype,
         // // tagNameDCparsefileconverrConverrornote,
-        //                
+        //
         // tagNameCDIH_Sf_category,
         // // tagNameCDIH_ID1,
         // tagNameCDIH_MR_file_block_position,
@@ -1341,7 +1341,7 @@ public class File31 {
         // tagNameRDC_RDC_lower_bound,
         // tagNameRDC_RDC_upper_bound,
         // tagNameRDC_RDC_val_err,
-        //                
+        //
         //
         // // tagNameAssemblyEntry_ID,
         // tagNameAssemblyNumber_of_components,
@@ -1794,7 +1794,7 @@ public class File31 {
      * Convert the data in the file to components in the gumbo etc. Will list max of one conversion error per column in
      * db. Deselects all other entries in DBMS until now. If atoms in restraint data can not be linked to atoms in
      * coordinate list they will be marked in e.g. dc.hasUnLinkedAtom.
-     * 
+     *
      * @return true for success.
      * @param matchRestraints2SoupByAuthorDetails
      *            Normally atoms are linked by the regular NMR-STAR tags. The info defined in the author details will be
@@ -1905,11 +1905,11 @@ public class File31 {
             }
             /**
              * We got for 1ai0:
-             * 
+             *
              * _Entity_assembly.ID _Entity_assembly.Entity_assembly_name _Entity_assembly.Entity_ID
              * _Entity_assembly.Entity_label _Entity_assembly.Asym_ID _Entity_assembly.Details _Entity_assembly.Entry_ID
              * _Entity_assembly.Assembly_ID
-             * 
+             *
              * 1 . 1 $R6_INSULIN_HEXAMER A . 1ai0 1 2 . 2 $R6_INSULIN_HEXAMER_2 B . 1ai0 1 3 . 1 $R6_INSULIN_HEXAMER C .
              * 1ai0 1 4 . 2 $R6_INSULIN_HEXAMER_2 D . 1ai0 1 5 . 1 $R6_INSULIN_HEXAMER E . 1ai0 1 6 . 2
              * $R6_INSULIN_HEXAMER_2 F . 1ai0 1 7 . 1 $R6_INSULIN_HEXAMER G . 1ai0 1 8 . 2 $R6_INSULIN_HEXAMER_2 H .
@@ -1917,7 +1917,7 @@ public class File31 {
              * $R6_INSULIN_HEXAMER K . 1ai0 1 12 . 2 $R6_INSULIN_HEXAMER_2 L . 1ai0 1 13 . 3 $ZINC_ION M . 1ai0 1 14 . 3
              * $ZINC_ION N . 1ai0 1 15 . 4 $PHENOL O . 1ai0 1 16 . 4 $PHENOL P . 1ai0 1 17 . 4 $PHENOL Q . 1ai0 1 18 . 4
              * $PHENOL R . 1ai0 1 19 . 4 $PHENOL S . 1ai0 1 20 . 4 $PHENOL T . 1ai0 1 21 . 5 $water U . 1ai0 1
-             * 
+             *
              * Only allow sequential _Entity_assembly.ID in the table.
              */
             if (!tTAssembly.isSortedFromOneInColumn(tagNameMolId)) {
@@ -1982,10 +1982,10 @@ public class File31 {
                     /**
                      * Got: _Entity.Sf_category entity _Entity.Entry_ID 1ai0 _Entity.ID 5 _Entity.Name water
                      * _Entity.Type water
-                     * 
+                     *
                      * loop_ _Entity_comp_index.ID _Entity_comp_index.Comp_ID _Entity_comp_index.Comp_label
                      * _Entity_comp_index.Entry_ID _Entity_comp_index.Entity_ID
-                     * 
+                     *
                      * 1 HOH $HOH 1ai0 5 2 HOH $HOH 1ai0 5
                      */
                     currentMolId = mol.add(null, Defs.NULL_CHAR, currentModelId, null);
@@ -2378,7 +2378,7 @@ public class File31 {
                 Integer logicalOperationInteger = null;
 
                 while (starDCTreeRId < tTTree.sizeRows) { // scan the whole tree tagtable.
-//                     General.showDebug( "Working on dc tree rid: " + starDCTreeRId);
+                    General.showDebug("Working on dc tree rid: " + starDCTreeRId);
                     boolean atomFoundForAllInDC = true;
                     if (dCNumb != varDCtreeConstraintsID[starDCTreeRId]) { // start a new constraint; will be executed
                         // on first tree row.
@@ -2387,7 +2387,7 @@ public class File31 {
                                     + dCNumb + " to " + varDCtreeConstraintsID[starDCTreeRId]);
                         }
                         dCNumb++; // safe after test above and faster because no array lookup.
-                        // General.showDebug( "Working on dc number: " + dCNumb);
+                        General.showDebug("Working on dc number: " + dCNumb);
                         currentDCId = dc.mainRelation.getNextReservedRow(currentDCId);
                         if (currentDCId == Relation.DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW) {
                             currentDCId = dc.mainRelation.getNextReservedRow(0); // now it should be fine.
@@ -2427,8 +2427,8 @@ public class File31 {
                         return false;
                     }
                     dCNodeNumb++; // safe after test above
-                    // General.showDebug( "Working on dc node number: " + dCNodeNumb);
-                    // General.showDebug( "Working on dc node rid   : " + currentDCNodeId);
+                    General.showDebug("Working on dc node number: " + dCNodeNumb);
+                    General.showDebug("Working on dc node rid   : " + currentDCNodeId);
                     if (logicalOperationString != varDCtreeLogicoperation[starDCTreeRId]) { // fast equality op possible
                         // because of nr list.
                         logicalOperationString = varDCtreeLogicoperation[starDCTreeRId];
@@ -2481,18 +2481,18 @@ public class File31 {
                                 .intern(varDCvalueSpectralpeakID[starDCDistRId]);
                         // dc.weight[ currentDCNodeId ] = varDCvalueWeight[ starDCDistRId ];
                         starDCDistRId++;
-                        // General.showDebug("---- incremented rid on star dc dist loop to: " + starDCDistRId);
+                        General.showDebug("---- incremented rid on star dc dist loop to: " + starDCDistRId);
 
                         // For each constraint node scan for the members; usually there are two.
                         // Scan that part of the star distance loop applicable to this node.
                         // Early abort for not running out of bounds.
-                        dCMembNumb = 0; // reset to one before the next expected one for each node when usefull.
+                        dCMembNumb = 0; // reset to one before the next expected one for each node when useful.
                         while (starDCAtomRid < tTAtom.sizeRows) {
                             // breaks exist too for:
                             // -1- when atom is in different member, node, or restraint.
                             /** Indicates if all atoms within a member where found */
                             boolean atomFound = true;
-//                             General.showDebug( "Getting info from star atom rid: " + starDCAtomRid);
+                            // General.showDebug( "Getting info from star atom rid: " + starDCAtomRid);
                             // CHECKS on validity of ONE atom tT row
                             if (varDCConstraintsID[starDCAtomRid] != dCNumb) {
                                 if (varDCConstraintsID[starDCAtomRid] != (dCNumb + 1)) {
@@ -2532,7 +2532,7 @@ public class File31 {
                             // }
                             if (varDCConstrainttreenodememberID[starDCAtomRid] != dCMembNumb) {
                                 dCMembNumb++; // safe after tests above.
-//                                 General.showDebug( "Getting info from star member number: " + dCMembNumb);
+                                General.showDebug("Getting info from star member number: " + dCMembNumb);
                                 currentDCMembId = dc.distConstrMemb.getNextReservedRow(currentDCMembId);
                                 if (currentDCMembId == Relation.DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW) {
                                     currentDCMembId = dc.distConstrMemb.getNextReservedRow(0); // now it should be fine.
@@ -2561,6 +2561,12 @@ public class File31 {
                             if (matchRestraints2SoupByDefaultDetails) {
                                 // Convenience variables.
                                 int molId = varDCEntityassemblyID[starDCAtomRid];
+                                if ( Defs.isNull(molId)) {
+                                    General.showWarning("Skipping reading DC: "+dCNumb+": Coulnd't find mol perhaps no info from FC?");
+                                    atomFoundForAllInDC = false;
+                                    starDCAtomRid++;
+                                    continue;
+                                }
                                 int molRID = molID2RID[molId];
                                 Integer molNumb = new Integer(mol.number[molRID]);
                                 Integer resNumb = new Integer(varDCCompindexID[starDCAtomRid]);
@@ -2594,10 +2600,7 @@ public class File31 {
                                     } else {
                                         Object[] tmpje = atomSet.toArray();
                                         int ridAnyAtomInSameRes = ((Integer) res2AtomMap.get(tmpje[0])).intValue(); // too
-                                        // expensive
-                                        // of
-                                        // course
-                                        // .
+                                        // expensive of course
                                         String resName = res.nameList[atom.resId[ridAnyAtomInSameRes]];
                                         // General.showDebug("Using residue name for pseudo atom lookup: " + resName);
                                         ArrayList list = (ArrayList) ui.wattosLib.pseudoLib.toAtoms.get(resName,
@@ -2934,8 +2937,8 @@ public class File31 {
                     // Store angles in radians in Wattos.
                     sc.uppBound[currentSCId] = varCDIH_Angle_upper_bound_val[starSCMainId] / Geometry.fCF;
                     sc.lowBound[currentSCId] = varCDIH_Angle_lower_bound_val[starSCMainId] / Geometry.fCF;
-//                    General.showDebug("Read upper bound: " + sc.uppBound[currentSCId] + "(in degrees: "
-//                            + Math.toDegrees(sc.uppBound[currentSCId]));
+                    // General.showDebug("Read upper bound: " + sc.uppBound[currentSCId] + "(in degrees: "
+                    // + Math.toDegrees(sc.uppBound[currentSCId]));
                     // Now do the hard part in looking up the atom ids.
                     // Tie the atoms in the restraints to the atoms in the soup or leave them unlinked.
                     Object[][] varAtomXLol = new Object[][] { // needs to match order in e.g. LOC_ENTITY_ASSEMBLY_ID
@@ -3125,7 +3128,7 @@ public class File31 {
                 int starSCMainId = 0; // RID into the main star loop
                 while (starSCMainId < tTMain.sizeRows) { // scan the whole tagtable.
                     boolean atomFoundForAllInSC = true;
-//                    General.showDebug("Working on sc main rid: " + starSCMainId);
+                    // General.showDebug("Working on sc main rid: " + starSCMainId);
                     currentSCId = sc.mainRelation.getNextReservedRow(currentSCId);
                     if (currentSCId == Relation.DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW) {
                         currentSCId = sc.mainRelation.getNextReservedRow(0); // now it should be fine.
@@ -3146,10 +3149,10 @@ public class File31 {
 
                     sc.target[currentSCId] = varRDC_val[starSCMainId];
                     sc.targetError[currentSCId] = varRDC_val_err[starSCMainId];
-//                    General.showDebug("Size sc.targetError     " + sc.targetError.length);
-//                    General.showDebug("Size sc.uppBound        " + sc.uppBound.length);
-//                    General.showDebug("Size varRDC_val_err     " + varRDC_val_err.length);
-//                    General.showDebug("Size varRDC_upper_bound " + varRDC_upper_bound.length);
+                    // General.showDebug("Size sc.targetError     " + sc.targetError.length);
+                    // General.showDebug("Size sc.uppBound        " + sc.uppBound.length);
+                    // General.showDebug("Size varRDC_val_err     " + varRDC_val_err.length);
+                    // General.showDebug("Size varRDC_upper_bound " + varRDC_upper_bound.length);
                     sc.uppBound[currentSCId] = varRDC_upper_bound[starSCMainId];
                     sc.lowBound[currentSCId] = varRDC_lower_bound[starSCMainId];
                     // Now do the hard part in looking up the atom ids.
@@ -3273,7 +3276,7 @@ public class File31 {
 
     /**
      * remove any $ if present and replace _ by space
-     * 
+     *
      * @param molName
      * @return
      */
@@ -3288,7 +3291,7 @@ public class File31 {
      * name -2- copy all data in DBMS (maybe be refined later on to do only certain tables) -3- remove all data not
      * selected (top-down and cascading) -4- create required star tables from relations in DBMS -5- reformat values in
      * star tag tables to formatting as specified in star dictionary. -6- write star data node to file.
-     * 
+     *
      *NOTES: selection determines what's written:
      *<UL>
      *<LI>molecule selection determines molecular system description section (not model/residue). If no molecules are
@@ -3647,7 +3650,7 @@ public class File31 {
     /**
      * Note that the large coor table hasn't been exercised/tested It is generated from internal tables for speed
      * reasons in toSTARDatablock()
-     * 
+     *
      * @return
      */
     public SaveFrame getSFTemplateCoor() {
@@ -3877,7 +3880,7 @@ public class File31 {
      * first entry (by physical address ordering) if more than one is still present. STAR entities are created on the
      * basis of their sequence. If molecules have the same sequence they will be combined and referred to as 1 entity.
      * The instance of an entity is called a molecule here.
-     * 
+     *
      *TODO: not loose the author names in case multiple atoms are specified on input but Wattos would normally combine
      * them and show the author info of one of the input atoms.
      */
@@ -5330,7 +5333,7 @@ public class File31 {
 
     /**
      * replaces any invalid character in input with an underscore to make it suitable for use as a saveframe label.
-     * 
+     *
      * @param valueString
      * @return
      */
@@ -5381,7 +5384,7 @@ public class File31 {
         return true;
     }
 
-    /** 
+    /**
      */
     public boolean setEntityNumber(TagTable tTCoor, HashMap molNumber2EntityNumberMap) {
 
@@ -5677,7 +5680,7 @@ public class File31 {
      * sequential order. The only exceptions are for: _Entry.Sf_category entry_information _Chem_comp.Sf_category
      * chem_comp where there is no .Entry_ID in first tt and no .XXXX_ID in the further tts. Even for the exception
      * above; the correct tags will be added and filled.
-     * 
+     *
      * @return true for success.
      */
     public static boolean enterStandardIDs(StarNode sn, String entry_id) {
