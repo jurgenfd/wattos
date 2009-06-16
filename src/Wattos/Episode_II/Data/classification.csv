@@ -41,7 +41,7 @@ molecular system,n/a,n/a,molecular_system,Y,-,-,X,X,X,X,X,X,-,X,X,X,X,X,X,X,X,X,
 n/a,n/a,n/a,unknown_sf_category,-,-,Y,X,X,X,X,-,-,-,X,X,X,X,X,X,X,X,X,X,X,X,X,-,X,X,X,X,X,-,-,-,-,-,-,-,-,-
 order parameter,n/a,n/a,MR_file_n/a,-,-,Y,X,X,X,X,-,-,-,X,X,X,X,X,X,X,X,X,X,X,X,X,-,X,X,X,X,X,-,-,-,-,-,-,-,-,-
 other,n/a,n/a,other_constraints,Y,-,-,X,X,X,X,X,X,-,X,X,-,-,-,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
-peak,n/a,n/a,spectral_peak_list,Y,-,-,X,X,X,X,X,X,-,X,X,-,-,-,-,X,-,-,-,-,-,-,-,X,X,-,-,-,X,X,-,X,X,X,X,X,-
+peak,n/a,n/a,spectral_peak_list,Y,-,-,X,X,X,X,X,X,-,X,X,-,-,-,-,X,-,-,-,-,-,-,-,X,X,-,-,-,X,X,-,X,X,X,X,X,X
 planarity,n/a,n/a,MR_file_planarity,-,-,Y,X,X,X,X,X,X,-,X,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 protocol,structure calculation,n/a,unknown_sf_category,-,-,-,X,X,X,X,-,-,-,X,X,X,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 pseudocontact shift,n/a,n/a,chem_shift_interaction_diff,-,Y,-,X,X,X,X,-,-,-,X,-,X,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
