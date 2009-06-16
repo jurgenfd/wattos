@@ -13,47 +13,48 @@ def getEntryListFromCsvFile(urlLocation):
 ##149d
   r1 = urllib.urlopen(urlLocation)
   data = r1.read()
-  r1.close()  
-  dataLines = data.split("\n")   
+  r1.close()
+  dataLines = data.split("\n")
   for dataLine in dataLines:
     if dataLine:
         (pdbCode,) = dataLine.split()
-        result.append( pdbCode )     
+        result.append( pdbCode )
   return result
 
 
 def getBmrbNmrGridEntries():
   result = []
-  urlLocation = urlDB+"/entry.txt" 
+  urlLocation = urlDB+"/entry.txt"
 ##4583    \N    108d    \N    \N
 ##4584    \N    149d    \N    \N
   r1 = urllib.urlopen(urlLocation)
   data = r1.read()
-  r1.close()  
-  dataLines = data.split("\n")   
+  r1.close()
+  dataLines = data.split("\n")
   for dataLine in dataLines:
     if dataLine:
         # b is for bogus/unused
+#        print "DEBUG: read dataLine: [%s]" % dataLine
         (b1,b2,pdbCode,b3,b4) = dataLine.split() #@UnusedVariable
-        result.append( pdbCode )     
+        result.append( pdbCode )
   return result
- 
+
 def getBmrbNmrGridEntriesDOCRfREDDone():
   result = []
-  urlLocation = urlDB+"/mrfile.txt" 
+  urlLocation = urlDB+"/mrfile.txt"
 ##61458    7567    4-filtered-FRED    2gov    2006-05-11
 ##61459    7567    4-filtered-FRED    2gov    2006-05-11
   r1 = urllib.urlopen(urlLocation)
   data = r1.read()
-  r1.close()  
-  dataLines = data.split("\n")   
+  r1.close()
+  dataLines = data.split("\n")
   for dataLine in dataLines:
     if dataLine:
         # b is for bogus/unused
         (b1,b2,stage,pdbCode,b3) = dataLine.split() #@UnusedVariable
         if stage=="4-filtered-FRED":
             if pdbCode not in result:
-                result.append( pdbCode )     
+                result.append( pdbCode )
   return result
 
 #### 1
@@ -70,7 +71,7 @@ def getBmrbNmrGridEntriesDOCRfREDDone():
 ##for x in listCurrentEntries:
 ##    if x not in listDOCRfREDiteration1:
 ##        listDOCRfREDiteration2.append(x)
-##listDOCRfREDiteration2.sort()    
+##listDOCRfREDiteration2.sort()
 ##print "Number entries listDOCRfREDiteration2        : %s" % len(listDOCRfREDiteration2)
 ##
 #### 4
