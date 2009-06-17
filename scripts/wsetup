@@ -47,6 +47,7 @@ setenv CLASSPATH ${WATTOSJARSDIR}/Wattos.jar
 set wattoshost = (`hostname|gawk -F'[.]' '{print tolower($1)}'`)
 #set wattoshost = (`hostname`)
 if ( $wattoshost == 'stella' ) then
+    # Disable the next line if on development machine we still want to use the production jar.
     setenv CLASSPATH ${WATTOSCLASSDIR}
     # Note that the following statement interfers with scp when shown.
     # echo "DEBUG: Wattos wsetup found to be on development machine"
