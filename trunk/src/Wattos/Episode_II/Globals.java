@@ -121,7 +121,7 @@ public class Globals {
         }
         if (hostname.equals("stella")) {
             General.showDebug("Now in Wattos.Episode_II.Globals on development machine");
-        } else if (hostname.equals("tang")) {
+        } else if (hostname.equals("tang") || hostname.equals("grunt")) {
             m.put("testing", Boolean.valueOf(false));
             /** Use local servlet engine. */
             m.put("act_locally", Boolean.valueOf(false));
@@ -176,6 +176,12 @@ public class Globals {
             General.showOutput("The OS of this machine is determined by Java as: " + osName);
             return;
         }
+        
+        if (hostname.equals("grunt")) {
+        	dbfs_root = fs + "raid";
+        	UJ_dir = fs + "raid" + fs + "docr";
+        }
+        
         if (((Boolean) m.get("act_locally_db")).booleanValue()) {
             dbfs_root = fs + "Users" + fs + "jd" + fs + "CloneWars" + fs + "DB" + fs + "mrgrid";
         }
@@ -213,13 +219,21 @@ public class Globals {
         // Directory with annotated mr files, ready to be split
         // Used in MRInterloop and MRReclassify
         // m.put("mr_anno_dir", share_root+fs+"wattos"+fs+"mr_anno_test");
-        m.put("mr_anno_dir", share_root + fs + "wattos" + fs + "mr_anno_backup");
+        if( ! hostname.equals("grunt") )  {
+        	m.put("mr_anno_dir", share_root + fs + "wattos" + fs + "mr_anno_backup");
+        } else {
+        	m.put("mr_anno_dir", dbfs_root + fs + "backup" + fs + "mr_anno_backup");
+        }
         if (((Boolean) m.get("testing")).booleanValue()) {
             m.put("mr_anno_progress_dir", share_root + fs + "jurgen" + fs + "tmp_unb_" + fs + "Wattos" + fs
                     + "mr_anno_progress");
             UJ_dir = fs + "Users" + fs + "jd";
         } else {
-            m.put("mr_anno_progress_dir", pdbmirror_root + fs + "mr_anno_progress_nrg31");
+            if( ! hostname.equals("grunt") ) {
+            	m.put("mr_anno_progress_dir", pdbmirror_root + fs + "mr_anno_progress_nrg31");
+            } else { 
+                m.put("mr_anno_progress_dir", dbfs_root + fs + "mr_anno_progress");
+            }
         }
         String big_dir = UJ_dir + fs + "NRG";
         String wwPDB_dir = big_dir + fs + "wwPDB";
