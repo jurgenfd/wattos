@@ -176,7 +176,8 @@ public class MRGridServlet extends HttpServlet {
         String html_header_text = g.getValueString("html_header_text");
         Properties subs = new Properties();
         String title_html = "<H1><a href=\"" + 
-            g.getValueString("servlet_mrgrid_absolute_url") +
+            //g.getValueString("servlet_mrgrid_absolute_url") +
+            "MRGridServlet" +
             "\">NMR Restraints Grid</a></H1>";
         String url_image  = "/" + g.getValueString("servlet_image_dir") + "/NMRRestraintsGridFlow.gif";
         String image_html = 
