@@ -83,10 +83,10 @@
 	<!-- Installation of production site jars including Wattos -->
 	<target name="install-jars" depends="jar">
 		<echo message="Installing Wattos jar(s) to production site: ${install.dir}" />
-		<scp todir="${servlet.web.user}@${servlet.web.machine}:${install.dir}" keyfile="${servlet.web.keyfile}" knownhosts="${servlet.web.knownhosts}" passphrase="${servlet.web.passphrase}" verbose="true">
+		<copy todir="${install.dir}" verbose="true">
 		<!--	<fileset dir="${lib.local.dir}" includes="**.jar" /> -->
 			<fileset dir="${lib.local.dir}" includes="Wattos.jar" />
-		</scp>
+		</copy>
 	</target>
 	<!-- Installation of production site scripts -->
 	<target name="install-scripts">
@@ -126,10 +126,9 @@
         <echo message="toDir: ${servlet.web.user}@${servlet.web.machine}:${servlet.web.dir}"/>
         <echo message="with port = ${servlet.web.port} and knownhosts=${servlet.web.knownhosts} passphrase=${servlet.web.passphrase} keyfile=${servlet.web.keyfile} "/>
 
-        <scp todir="${servlet.web.user}@${servlet.web.machine}:${servlet.web.dir}" keyfile="${servlet.web.keyfile}" 
-            knownhosts="${servlet.web.knownhosts}" passphrase="${servlet.web.passphrase}" verbose="true" >
+        <copy todir="${servlet.web.dir}" verbose="true" >
             <fileset file="${wattos.war.file}" />
-        </scp>
+        </copy>
     </target>
 	
 	<target name="servlet-resources-cp" depends="init">

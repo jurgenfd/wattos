@@ -124,11 +124,11 @@ public class Globals {
         } else if (hostname.equals("tang") || hostname.equals("grunt")) {
             m.put("testing", Boolean.valueOf(false));
             /** Use local servlet engine. */
-            m.put("act_locally", Boolean.valueOf(false));
+            m.put("act_locally", Boolean.valueOf(true));
             /** Use the local database engine. */
-            m.put("act_locally_db", Boolean.valueOf(false));
+            m.put("act_locally_db", Boolean.valueOf(true));
             /** Use the local mr files. */
-            m.put("act_locally_mr", Boolean.valueOf(false));
+            m.put("act_locally_mr", Boolean.valueOf(true));
         }
         /**
          * Initializing some variables Use unix notation as a standard for directories
@@ -177,15 +177,15 @@ public class Globals {
             return;
         }
         
+        if (((Boolean) m.get("act_locally_db")).booleanValue()) {
+            dbfs_root = fs + "Users" + fs + "jd" + fs + "CloneWars" + fs + "DB" + fs + "mrgrid";
+        }
+
         if (hostname.equals("grunt")) {
         	dbfs_root = fs + "raid";
         	UJ_dir = fs + "raid" + fs + "docr";
         }
         
-        if (((Boolean) m.get("act_locally_db")).booleanValue()) {
-            dbfs_root = fs + "Users" + fs + "jd" + fs + "CloneWars" + fs + "DB" + fs + "mrgrid";
-        }
-
         // Favorite editor on Unix or Windows systems
         String jar_file_name = share_root + fs + "linux" + fs + "src" + fs + "jedit" + fs + "4.1" + fs + "jedit.jar";
         String java_binary_file_name = "java";
@@ -242,7 +242,7 @@ public class Globals {
         m.put("big_dir", big_dir);
         m.put("wwPDB_dir", wwPDB_dir);
 
-        if (((Boolean) m.get("act_locally_mr")).booleanValue()) {
+        if (((Boolean) m.get("act_locally_mr")).booleanValue() && (! hostname.equals("grunt"))  ) {
             m.put("mr_dir", localTestingPlatform + fs + "pdb" + fs + "data" + fs + "structures" + fs + "divided" + fs
                     + "nmr_restraints");
             m.put("mr_anno_dir", localTestingPlatform + fs + "Wattos" + fs + "mr_anno_dir");
@@ -254,10 +254,10 @@ public class Globals {
         m.put("MRGridServlet", "MRGridServlet");
         m.put("servlet_top_url", "NRG"); // was WebModule for a LONG time.
         m.put("servlet_root_url", "http://restraintsgrid.bmrb.wisc.edu");
-        m.put("apache_data_url", getValueString("servlet_root_url") + "/servlet_data");
         if (getValueBoolean("act_locally")) {
             m.put("servlet_root_url", "http://localhost");
         }
+        m.put("apache_data_url", getValueString("servlet_root_url") + "/servlet_data");
         m.put("servlet_mrgrid_url", getValueString("servlet_top_url") + "/" + getValueString("MRGridServlet"));
 
         m.put("servlet_wattos_dir", getValueString("servlet_top_url") + "/wattos");
@@ -273,7 +273,10 @@ public class Globals {
         m.put("servlet_image_absolute_url", getValueString("servlet_root_url") + "/"
                 + getValueString("servlet_image_dir"));
 
-        m.put("servlet_molgrap_dir", getValueString("apache_data_url") + "/molgrap");
+        //m.put("servlet_molgrap_dir", getValueString("apache_data_url") + "/molgrap");
+        //From: http://grunt.bmrb.wisc.edu/NRG/MRGridServlet
+        //To:   http://grunt.bmrb.wisc.edu/servlet_data/molgrap/molgrap
+        m.put("servlet_molgrap_dir", "/../servlet_data/molgrap/molgrap");
         // m.put("servlet_pdb_coordinate_dir", getValueString("apache_data_url") + "/pdb");
         // m.put("servlet_pdb_restraint_dir", getValueString("apache_data_url") + "/pdbmr");
 
@@ -284,8 +287,8 @@ public class Globals {
         // m.put("dress_url", "http://www2.cmbi.ru.nl/dress/index.spy?pdbid=");
         m.put("dress_url", "http://www.cmbi.kun.nl/dress/index.spy?site=dress&action=Home&moreflag=1&pdbid=");
 
-        // Location for molgrap images
-        m.put("molgrap_dir", root + fs + "pdbmirror2" + fs + "molgrap");
+        // Location for molgrap images NOT USED ANYMORE.
+//        m.put("molgrap_dir", root + fs + "pdbmirror2" + fs + "molgrap");
         // Dir for temporary files (/tmp is too small)
 
         /**
