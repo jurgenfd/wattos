@@ -8,6 +8,6 @@ cd /website/ftp/pub/webdata
 mysql -u root --password="TOPSECRET" -e "source /website/admin/wattos.sql"
 if [ $? -ne 0 ]
 then
-    echo "mysql -u root --password=\"!Ecj%Y&R\" -e \"source /website/admin/wattos.sql\" returned $?" | mailx -s "DB update error" $MAILTO
+    echo "mysql -u root --password=\"TOPSECRET\" -e \"source /website/admin/wattos.sql\" returned $?" | mailx -s "DB update error" $MAILTO
     exit 1
 fi
