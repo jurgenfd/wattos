@@ -107,22 +107,33 @@
     ======================  
     -->
 	
-    <target name="servlet-wattos-new-install" depends="init">
-        <echo message="Ensure that the tomcat and apache are already setup. As well as the production staging area." />
-
+    <target name="war" depends="init">
         <copy todir="${wattos.production.local.dir}/WEB-INF/classes">
             <fileset dir="build" />
         </copy>
+        <zip destfile="${wattos.war.file}">
+            <fileset dir="${wattos.production.local.dir}" />
+        </zip>
+    </target>
+    <target name="servlet-wattos-new-install" depends="war">
+<!-- "init"> -->
+        <echo message="Ensure that the tomcat and apache are already setup. As well as the production staging area." />
+<!--
+        <copy todir="${wattos.production.local.dir}/WEB-INF/classes">
+            <fileset dir="build" />
+        </copy>
+-->
         <!-- The Wattos code changes every now and then so it needs to be included live. Every now and then.
         ISN'T THIS EXACTLY THE SAME AS THE ABOVE?    
         <copy todir="${wattos.production.local.dir}/WEB-INF/classes">
             <fileset dir="${WS}/wattos/build"/>                     
         </copy>
         -->           
-
+<!--
         <zip destfile="${wattos.war.file}">
             <fileset dir="${wattos.production.local.dir}" />
         </zip>
+-->
         <echo message="toDir: ${servlet.web.user}@${servlet.web.machine}:${servlet.web.dir}"/>
         <echo message="with port = ${servlet.web.port} and knownhosts=${servlet.web.knownhosts} passphrase=${servlet.web.passphrase} keyfile=${servlet.web.keyfile} "/>
 

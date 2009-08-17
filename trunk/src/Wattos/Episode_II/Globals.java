@@ -37,7 +37,9 @@ public class Globals {
     /**
      * Main container of data of this class.
      */
-    public HashMap m = new HashMap();
+//    public HashMap m = new HashMap();
+    public java.util.Properties m = new java.util.Properties();
+    private final static String PROPFILE = "wattos.runtime.properties";
     /**
      * Some special values for these variable types. Use them with caution. In some cases it might make sense to have a
      * standard for the boolean value to denote an invalid value; rarely though
@@ -121,7 +123,9 @@ public class Globals {
         }
         if (hostname.equals("stella")) {
             General.showDebug("Now in Wattos.Episode_II.Globals on development machine");
-        } else if (hostname.equals("tang") || hostname.equals("grunt")) {
+        } else if (hostname.equals("tang") || hostname.equals("grunt")
+               || hostname.equals("moray") || hostname.equals("swordfish")
+               || hostname.equals("www")) {
             m.put("testing", Boolean.valueOf(false));
             /** Use local servlet engine. */
             m.put("act_locally", Boolean.valueOf(true));
@@ -153,6 +157,9 @@ public class Globals {
         String localTestingPlatform = "/Users/jd/wattosTestingPlatform";
         // String pdbmirror_root = fs+"pdbmirror2"; // different from "pdbmirr".
         String pdbmirror_root = fs + "dumpzone" + fs + "pdb";
+        if (hostname.equals("moray") || hostname.equals("swordfish") || hostname.equals("www")) {
+            pdbmirror_root = "/website/ftp/pub";
+        }
         // Match the settings here with the one in the nmrrestrntsgrid project in:
         // scripts/settings.csh
         String UJ_dir = fs + "big" + fs + "docr";
@@ -185,6 +192,10 @@ public class Globals {
         	dbfs_root = fs + "raid";
         	UJ_dir = fs + "raid" + fs + "docr";
         }
+        else if (hostname.equals("moray") || hostname.equals("swordfish") || hostname.equals("www")) {
+        	dbfs_root = "/website/admin/wattos";
+        	UJ_dir = null;
+        }
         
         // Favorite editor on Unix or Windows systems
         String jar_file_name = share_root + fs + "linux" + fs + "src" + fs + "jedit" + fs + "4.1" + fs + "jedit.jar";
@@ -193,6 +204,9 @@ public class Globals {
             // jar_file_name = "\"C:\\Program Files\\jEdit4.3pre9\\jedit.jar\"";
             // jar_file_name = "/Users/bmrb/Desktop/jEdit.app/Contents/Resources/Java/jedit.jar";
             jar_file_name = "/Applications/jEdit.app/Contents/Resources/Java/jedit.jar";
+            if( hostname.equals("grunt")) {
+		jar_file_name = "/share/linux/src/jedit/4.1/jedit.jar";
+	    }
             // java_binary_file_name = "/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home/bin/java";
         }
         // Note that the -noserver is not needed but watch out not to have any other Jedit applications/views open.
@@ -211,8 +225,13 @@ public class Globals {
         m.put("amber_pdb_dir", pdbmirror_root + fs + "external" + fs + "amber_pdb");
 
         // Directory with zipped unannotated mr files for annotation use within subdir structure.
-        m.put("mr_dir", pdbmirror_root + fs + "pdb" + fs + "data" + fs + "structures" + fs + "divided" + fs
+        if (hostname.equals("moray") || hostname.equals("swordfish") || hostname.equals("www")) {
+            m.put("mr_dir", pdbmirror_root + fs + "data" + fs + "structures" + fs + "divided" + fs
                 + "nmr_restraints");
+        }
+        else m.put("mr_dir", pdbmirror_root + fs + "pdb" + fs + "data" + fs + "structures" + fs + "divided" + fs
+                + "nmr_restraints");
+
         // Directory with zipped pdb files within subdir structure.
         m.put("pdb_dir", pdbmirror_root + fs + "pdb" + fs + "data" + fs + "structures" + fs + "divided" + fs + "pdb");
 
@@ -276,7 +295,10 @@ public class Globals {
         //m.put("servlet_molgrap_dir", getValueString("apache_data_url") + "/molgrap");
         //From: http://grunt.bmrb.wisc.edu/NRG/MRGridServlet
         //To:   http://grunt.bmrb.wisc.edu/servlet_data/molgrap/molgrap
-        m.put("servlet_molgrap_dir", "/../servlet_data/molgrap/molgrap");
+        if (hostname.equals("moray") || hostname.equals("swordfish") || hostname.equals("www")) {
+            m.put("servlet_molgrap_dir", "/servlet_data/molgrap");
+        }
+        else m.put("servlet_molgrap_dir", "/../servlet_data/molgrap/molgrap");
         // m.put("servlet_pdb_coordinate_dir", getValueString("apache_data_url") + "/pdb");
         // m.put("servlet_pdb_restraint_dir", getValueString("apache_data_url") + "/pdbmr");
 
@@ -441,7 +463,26 @@ public class Globals {
 
     /** Creates new Globals */
     public Globals() {
+//System.err.println( "Loading map" );
         loadMap();
+        try {
+            java.util.Properties p = new java.util.Properties();
+            java.io.File f = new java.io.File( System.getProperty( "user.home" )
+                                             + java.io.File.separator + PROPFILE );
+//System.err.println( "Looking for " + f.getAbsolutePath() );
+            if( f.exists() ) {
+                java.io.FileInputStream in = new java.io.FileInputStream( f );
+//System.err.println( "Loading properties from " + f.getAbsolutePath() );
+                p.load( in );
+                in.close();
+                m.putAll( p );
+            }
+        }
+        catch( java.io.IOException e ) { // default properties didn't get replaced
+//System.err.println( "IOException on " + System.getProperty( "user.home" ) + "/" + PROPFILE );
+//System.err.println( e );
+
+        }
     }
 
     /**
