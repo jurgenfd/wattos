@@ -45,6 +45,7 @@ peak,n/a,n/a,spectral_peak_list,Y,-,-,X,X,X,X,X,X,-,X,X,-,-,-,-,X,-,-,-,-,-,-,-,
 planarity,n/a,n/a,MR_file_planarity,-,-,Y,X,X,X,X,X,X,-,X,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 protocol,structure calculation,n/a,unknown_sf_category,-,-,-,X,X,X,X,-,-,-,X,X,X,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 pseudocontact shift,n/a,n/a,chem_shift_interaction_diff,-,Y,-,X,X,X,X,-,-,-,X,-,X,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
+relaxation,n/a,n/a,unknown_sf_category,-,Y,-,X,X,X,X,X,X,-,X,-,X,-,-,-,X,-,-,-,-,-,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-
 sequence,n/a,n/a,monomeric_polymer,Y,-,-,X,X,X,X,X,X,-,X,X,X,-,X,X,X,X,X,X,X,X,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-
 stereochemistry,chirality,n/a,MR_file_stereochemistry_chirality,-,-,Y,X,X,X,X,-,-,-,X,X,X,-,X,X,X,X,X,X,X,X,X,-,X,X,X,X,X,-,-,-,-,-,-,-,-,-
 stereochemistry,prochirality,n/a,MR_file_stereochemistry_prochirality,-,-,Y,X,X,X,X,-,-,-,X,X,X,-,X,X,X,X,X,X,X,X,X,-,X,X,X,X,X,-,-,-,-,-,-,-,-,-
