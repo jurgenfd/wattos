@@ -187,8 +187,11 @@ public class Globals {
         if (((Boolean) m.get("act_locally_db")).booleanValue()) {
             dbfs_root = fs + "Users" + fs + "jd" + fs + "CloneWars" + fs + "DB" + fs + "mrgrid";
         }
-
-        if (hostname.equals("grunt")) {
+        if (hostname.equals("tang")) {
+        	dbfs_root = fs + "big" + fs + "jurgen" + fs + "DB" + fs + "mrgrid";
+        	UJ_dir = fs + "big" + fs + "docr";
+        }
+        else if (hostname.equals("grunt")) {
         	dbfs_root = fs + "raid";
         	UJ_dir = fs + "raid" + fs + "docr";
         }
@@ -204,9 +207,9 @@ public class Globals {
             // jar_file_name = "\"C:\\Program Files\\jEdit4.3pre9\\jedit.jar\"";
             // jar_file_name = "/Users/bmrb/Desktop/jEdit.app/Contents/Resources/Java/jedit.jar";
             jar_file_name = "/Applications/jEdit.app/Contents/Resources/Java/jedit.jar";
-            if( hostname.equals("grunt")) {
-		jar_file_name = "/share/linux/src/jedit/4.1/jedit.jar";
-	    }
+            if( hostname.equals("grunt") || hostname.equals("tang")) {
+		        jar_file_name = "/share/linux/src/jedit/4.1/jedit.jar";
+	         }
             // java_binary_file_name = "/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home/bin/java";
         }
         // Note that the -noserver is not needed but watch out not to have any other Jedit applications/views open.
@@ -295,7 +298,7 @@ public class Globals {
         //m.put("servlet_molgrap_dir", getValueString("apache_data_url") + "/molgrap");
         //From: http://grunt.bmrb.wisc.edu/NRG/MRGridServlet
         //To:   http://grunt.bmrb.wisc.edu/servlet_data/molgrap/molgrap
-        if (hostname.equals("moray") || hostname.equals("swordfish") || hostname.equals("www")) {
+        if (hostname.equals("moray") || hostname.equals("swordfish") || hostname.equals("www") || hostname.equals("tang")) {
             m.put("servlet_molgrap_dir", "/servlet_data/molgrap");
         }
         else m.put("servlet_molgrap_dir", "/../servlet_data/molgrap/molgrap");
@@ -305,7 +308,7 @@ public class Globals {
         m.put("servlet_webmaster", "webmaster@bmrb.wisc.edu");
         m.put("dbmatch", "http://www.bmrb.wisc.edu/cgi-bin/dbmatch.cgi?db=pdb&auto=yes&id=");
         m.put("bmrb_url", "http://www.bmrb.wisc.edu/cgi-bin/explore.cgi?bmrbId=");
-        m.put("recoord_url", "http://www.ebi.ac.uk/msd-srv/msdlite/atlas/nmr");
+        m.put("recoord_url", "http://www.ebi.ac.uk/pdbe/docs/NMR/recoord/main.html");
         // m.put("dress_url", "http://www2.cmbi.ru.nl/dress/index.spy?pdbid=");
         m.put("dress_url", "http://www.cmbi.kun.nl/dress/index.spy?site=dress&action=Home&moreflag=1&pdbid=");
 
