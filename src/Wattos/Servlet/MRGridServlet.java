@@ -925,6 +925,8 @@ public class MRGridServlet extends HttpServlet {
                 htmltable.setValueHtmlCode( r, column_in_recoord,  
                     "<A HREF=\""  + url_recoord_file + "\">",
                     "</A>");                        
+            } else {
+                htmltable.setValue( r, column_in_recoord, "" );                                
             }
         }
         // Setup the dress links. Do before pdb mutalation.
@@ -943,7 +945,10 @@ public class MRGridServlet extends HttpServlet {
                 htmltable.setValueHtmlCode( r, column_in_dress,  
                     "<A HREF=\""  + url_dress_file + "\">",
                     "</A>");                        
-            } 
+            }  else {
+                htmltable.setValue( r, column_in_dress, "" );                                
+            }
+
         }
 
         // Setup the pdb links.
