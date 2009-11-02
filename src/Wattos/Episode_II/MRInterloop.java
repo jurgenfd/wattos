@@ -30,12 +30,6 @@ public class MRInterloop {
      * @param classification Allowed block types as read from a csv file.
      */
     public static void loadLoop(Globals g, Classification classification) {
-//        boolean status;
-//        boolean testing              = g.getValueBoolean( "testing" );
-//        /String  mr_anno_di/r          = g.getValueString(  "mr_anno_dir" );
-//        String mr_anno_dir = Strings.getInputString(
-//        "Directory with the mr files to be loaded: (e.g. .): " );
-//        String mr_anno_dir = Strings.getInputString(
 //        "Directory with the mr files to be loaded: " );
         String mr_anno_dir = ".";
 
