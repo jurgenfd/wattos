@@ -15,7 +15,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -29,7 +28,7 @@ import com.braju.format.Parameters;
 /**
  * Holds the global settings like directory locations and preferred text editors. The nice thing is that most things can
  * be modified after instantiating.
- * 
+ *
  * @author Jurgen F. Doreleijers
  * @version 0.1
  */
@@ -37,7 +36,7 @@ public class Globals {
     /**
      * Main container of data of this class.
      */
-//    public HashMap m = new HashMap();
+    // public HashMap m = new HashMap();
     public java.util.Properties m = new java.util.Properties();
     private final static String PROPFILE = "wattos.runtime.properties";
     /**
@@ -58,6 +57,7 @@ public class Globals {
     private String fs = File.separator;
 
     public static final String wattos_home_page = "http://nmr.cmbi.ru.nl/~jd/wattos";
+
     /**
      * Show the content of the hash map m
      */
@@ -104,7 +104,7 @@ public class Globals {
         m.put("act_locally_mr", Boolean.valueOf(true));
 
         m.put("wattos_home_page", wattos_home_page);
-        
+
         // String hostname = "stella.cmbi.umcn.nl"; # if connected to the web at cmbi.
         String hostname = "Stella.local";
         try {
@@ -123,9 +123,8 @@ public class Globals {
         }
         if (hostname.equals("stella")) {
             General.showDebug("Now in Wattos.Episode_II.Globals on development machine");
-        } else if (hostname.equals("tang") || hostname.equals("grunt")
-               || hostname.equals("moray") || hostname.equals("swordfish")
-               || hostname.equals("www")) {
+        } else if (hostname.equals("tang") || hostname.equals("grunt") || hostname.equals("moray")
+                || hostname.equals("swordfish") || hostname.equals("www")) {
             m.put("testing", Boolean.valueOf(false));
             /** Use local servlet engine. */
             m.put("act_locally", Boolean.valueOf(true));
@@ -138,8 +137,7 @@ public class Globals {
          * Initializing some variables Use unix notation as a standard for directories
          */
         // Set the root
-        String root = "";
-
+        // String root = "";
         /** These are set because on windows we need to go through drive letters */
         // String bmrb_root = fs+"bmrb";
         String share_root = fs + "share";
@@ -166,7 +164,7 @@ public class Globals {
 
         String osName = System.getProperty("os.name");
         if (osName.startsWith("Windows")) {
-            root = "I:"; // rootdir on 'Whelk'
+            // root = "I:"; // rootdir on 'Whelk'
             // bmrb_root = "K:"; //bmrb on 'Medusa'
             share_root = "S:"; // share on 'Medusa'
             dbfs_root = "M:" + fs + "jurgen" + fs + "DB" + fs + "mrgrid"; // big/jurgen/DB/mrgrid on 'tang'
@@ -183,23 +181,25 @@ public class Globals {
             General.showOutput("The OS of this machine is determined by Java as: " + osName);
             return;
         }
-        
+
         if (((Boolean) m.get("act_locally_db")).booleanValue()) {
             dbfs_root = fs + "Users" + fs + "jd" + fs + "CloneWars" + fs + "DB" + fs + "mrgrid";
         }
-        if (hostname.equals("tang")) {
-        	dbfs_root = fs + "big" + fs + "jurgen" + fs + "DB" + fs + "mrgrid";
-        	UJ_dir = fs + "big" + fs + "docr";
+
+        if (hostname.equals("grunt")) {
+            dbfs_root = fs + "raid";
+            UJ_dir = fs + "raid" + fs + "docr";
+        } else if (hostname.equals("tang")) {
+            dbfs_root = fs + "big" + fs + "jurgen" + fs + "DB" + fs + "mrgrid";
+            UJ_dir = fs + "big" + fs + "docr";
+        } else if (hostname.equals("grunt")) {
+            dbfs_root = fs + "raid";
+            UJ_dir = fs + "raid" + fs + "docr";
+        } else if (hostname.equals("moray") || hostname.equals("swordfish") || hostname.equals("www")) {
+            dbfs_root = "/website/admin/wattos";
+            UJ_dir = null;
         }
-        else if (hostname.equals("grunt")) {
-        	dbfs_root = fs + "raid";
-        	UJ_dir = fs + "raid" + fs + "docr";
-        }
-        else if (hostname.equals("moray") || hostname.equals("swordfish") || hostname.equals("www")) {
-        	dbfs_root = "/website/admin/wattos";
-        	UJ_dir = null;
-        }
-        
+
         // Favorite editor on Unix or Windows systems
         String jar_file_name = share_root + fs + "linux" + fs + "src" + fs + "jedit" + fs + "4.1" + fs + "jedit.jar";
         String java_binary_file_name = "java";
@@ -207,9 +207,9 @@ public class Globals {
             // jar_file_name = "\"C:\\Program Files\\jEdit4.3pre9\\jedit.jar\"";
             // jar_file_name = "/Users/bmrb/Desktop/jEdit.app/Contents/Resources/Java/jedit.jar";
             jar_file_name = "/Applications/jEdit.app/Contents/Resources/Java/jedit.jar";
-            if( hostname.equals("grunt") || hostname.equals("tang")) {
-		        jar_file_name = "/share/linux/src/jedit/4.1/jedit.jar";
-	         }
+            if (hostname.equals("grunt") || hostname.equals("tang")) {
+                jar_file_name = "/share/linux/src/jedit/4.1/jedit.jar";
+            }
             // java_binary_file_name = "/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home/bin/java";
         }
         // Note that the -noserver is not needed but watch out not to have any other Jedit applications/views open.
@@ -229,11 +229,10 @@ public class Globals {
 
         // Directory with zipped unannotated mr files for annotation use within subdir structure.
         if (hostname.equals("moray") || hostname.equals("swordfish") || hostname.equals("www")) {
-            m.put("mr_dir", pdbmirror_root + fs + "data" + fs + "structures" + fs + "divided" + fs
-                + "nmr_restraints");
-        }
-        else m.put("mr_dir", pdbmirror_root + fs + "pdb" + fs + "data" + fs + "structures" + fs + "divided" + fs
-                + "nmr_restraints");
+            m.put("mr_dir", pdbmirror_root + fs + "data" + fs + "structures" + fs + "divided" + fs + "nmr_restraints");
+        } else
+            m.put("mr_dir", pdbmirror_root + fs + "pdb" + fs + "data" + fs + "structures" + fs + "divided" + fs
+                    + "nmr_restraints");
 
         // Directory with zipped pdb files within subdir structure.
         m.put("pdb_dir", pdbmirror_root + fs + "pdb" + fs + "data" + fs + "structures" + fs + "divided" + fs + "pdb");
@@ -241,19 +240,19 @@ public class Globals {
         // Directory with annotated mr files, ready to be split
         // Used in MRInterloop and MRReclassify
         // m.put("mr_anno_dir", share_root+fs+"wattos"+fs+"mr_anno_test");
-        if( ! hostname.equals("grunt") )  {
-        	m.put("mr_anno_dir", share_root + fs + "wattos" + fs + "mr_anno_backup");
+        if (!hostname.equals("grunt")) {
+            m.put("mr_anno_dir", share_root + fs + "wattos" + fs + "mr_anno_backup");
         } else {
-        	m.put("mr_anno_dir", dbfs_root + fs + "backup" + fs + "mr_anno_backup");
+            m.put("mr_anno_dir", dbfs_root + fs + "backup" + fs + "mr_anno_backup");
         }
         if (((Boolean) m.get("testing")).booleanValue()) {
             m.put("mr_anno_progress_dir", share_root + fs + "jurgen" + fs + "tmp_unb_" + fs + "Wattos" + fs
                     + "mr_anno_progress");
             UJ_dir = fs + "Users" + fs + "jd";
         } else {
-            if( ! hostname.equals("grunt") ) {
-            	m.put("mr_anno_progress_dir", pdbmirror_root + fs + "mr_anno_progress_nrg31");
-            } else { 
+            if (!hostname.equals("grunt")) {
+                m.put("mr_anno_progress_dir", pdbmirror_root + fs + "mr_anno_progress_nrg31");
+            } else {
                 m.put("mr_anno_progress_dir", dbfs_root + fs + "mr_anno_progress");
             }
         }
@@ -264,7 +263,7 @@ public class Globals {
         m.put("big_dir", big_dir);
         m.put("wwPDB_dir", wwPDB_dir);
 
-        if (((Boolean) m.get("act_locally_mr")).booleanValue() && (! hostname.equals("grunt"))  ) {
+        if (((Boolean) m.get("act_locally_mr")).booleanValue() && (!hostname.equals("grunt"))) {
             m.put("mr_dir", localTestingPlatform + fs + "pdb" + fs + "data" + fs + "structures" + fs + "divided" + fs
                     + "nmr_restraints");
             m.put("mr_anno_dir", localTestingPlatform + fs + "Wattos" + fs + "mr_anno_dir");
@@ -272,7 +271,7 @@ public class Globals {
             m.put("amber_pdb_dir", localTestingPlatform + fs + "external" + fs + "amber_pdb");
         }
 
-        m.put("servlet_top_dir", "/bmrb/htdocs/wattos"); // Exists only on servlet machine
+        // m.put("servlet_top_dir", "/bmrb/htdocs/wattos"); // Exists only on servlet machine
         m.put("MRGridServlet", "MRGridServlet");
         m.put("servlet_top_url", "NRG"); // was WebModule for a LONG time.
         m.put("servlet_root_url", "http://restraintsgrid.bmrb.wisc.edu");
@@ -295,13 +294,15 @@ public class Globals {
         m.put("servlet_image_absolute_url", getValueString("servlet_root_url") + "/"
                 + getValueString("servlet_image_dir"));
 
-        //m.put("servlet_molgrap_dir", getValueString("apache_data_url") + "/molgrap");
-        //From: http://grunt.bmrb.wisc.edu/NRG/MRGridServlet
-        //To:   http://grunt.bmrb.wisc.edu/servlet_data/molgrap/molgrap
-        if (hostname.equals("moray") || hostname.equals("swordfish") || hostname.equals("www") || hostname.equals("tang")) {
+        // m.put("servlet_molgrap_dir", getValueString("apache_data_url") + "/molgrap");
+        // From: http://grunt.bmrb.wisc.edu/NRG/MRGridServlet
+        // To: http://grunt.bmrb.wisc.edu/servlet_data/molgrap/molgrap
+        if (hostname.equals("moray") || hostname.equals("swordfish") || hostname.equals("www")
+                || hostname.equals("tang")) {
             m.put("servlet_molgrap_dir", "/servlet_data/molgrap");
+        } else {
+            m.put("servlet_molgrap_dir", "/../servlet_data/molgrap/molgrap");
         }
-        else m.put("servlet_molgrap_dir", "/../servlet_data/molgrap/molgrap");
         // m.put("servlet_pdb_coordinate_dir", getValueString("apache_data_url") + "/pdb");
         // m.put("servlet_pdb_restraint_dir", getValueString("apache_data_url") + "/pdbmr");
 
@@ -309,17 +310,10 @@ public class Globals {
         m.put("dbmatch", "http://www.bmrb.wisc.edu/cgi-bin/dbmatch.cgi?db=pdb&auto=yes&id=");
         m.put("bmrb_url", "http://www.bmrb.wisc.edu/cgi-bin/explore.cgi?bmrbId=");
         m.put("recoord_url", "http://www.ebi.ac.uk/pdbe/docs/NMR/recoord/main.html");
-        // m.put("dress_url", "http://www2.cmbi.ru.nl/dress/index.spy?pdbid=");
         m.put("dress_url", "http://www.cmbi.kun.nl/dress/index.spy?site=dress&action=Home&moreflag=1&pdbid=");
+        // %s is pdb_entry_code and %t is pdb_entry_code[1:3]
+        m.put("nrg_cing_url", "http://nmr.cmbi.ru.nl/NRG-CING/data/%t/%s/%s.cing");
 
-        // Location for molgrap images NOT USED ANYMORE.
-//        m.put("molgrap_dir", root + fs + "pdbmirror2" + fs + "molgrap");
-        // Dir for temporary files (/tmp is too small)
-
-        /**
-         * if ( osName.startsWith("Windows") ) { m.put("tmp_dir", "C:" + fs + "temp" + fs + "wattos"); } else {
-         * m.put("tmp_dir", "/opt/tmp/jurgen" ); } TMPDIR = getValueString("tmp_dir");
-         */
         // A default database tablespace name is chosen on the basis of the
         // user id in mysql
         // Make sure to use a different user id for each of the database to
@@ -330,7 +324,7 @@ public class Globals {
         m.put("db_conn_prefix", "jdbc:mysql://");
 
         // Production settings ; see nmrrestrntsgrid project: scripts/sql/prepare_database_mysql.sql
-        m.put("db_username", "wattos1");// 
+        m.put("db_username", "wattos1");//
         m.put("db_password", "4I4KMS"); // was U for wattos2; S for 1.
         m.put("db_machine", "localhost");
         if (!setDbUserNameDerivedVariables()) {
@@ -368,18 +362,13 @@ public class Globals {
                 + "var pageTracker = _gat._getTracker(\"UA-4422425-1\");\n" + "pageTracker._trackPageview();\n"
                 + "</script>\n";
 
+        // Should be put just before the ending body tag.
         m.put("html_footer_text", "<p><hr>\n" + "Please acknowledge these <A HREF=\"/" + html_location
                 + "/howto.html#References\">references</A>\n"
                 + "in publications where the data from this site have been utilized.\n" + "<p>Contact the "
                 + "<A HREF=\"mailto:" + m.get("servlet_webmaster") + "\">webmaster</a> " + "for help, if required. "
-                + "<!-- INSERT DATE HERE --> \n" + "(<!-- INSERT DB_USERNAME HERE -->)\n" + googleAnalytics + // should
-                // be put
-                // just
-                // before
-                // the
-                // /body
-                // tag.
-                "</body></html>");
+                + "<!-- INSERT DATE HERE --> \n" + "(<!-- INSERT DB_USERNAME HERE -->)\n" + googleAnalytics
+                + "</body></html>");
     }
 
     /** Call whenever db user name changes */
@@ -395,7 +384,7 @@ public class Globals {
 
     /**
      * Generic version of get returning an object.
-     * 
+     *
      * @param key
      *            The key for the object to get.
      * @return The object reference or null if the key is invalid.
@@ -411,7 +400,7 @@ public class Globals {
 
     /**
      * Returns a boolean value.
-     * 
+     *
      * @param key
      *            The key for the object to get.
      * @return <CODE>true</CODE> if key exists and the value of the referenced object is <CODE>true</CODE>.
@@ -427,7 +416,7 @@ public class Globals {
 
     /**
      * Returns a int value.
-     * 
+     *
      * @param key
      *            The key for the object to get.
      * @return The integer value referenced by key.
@@ -444,7 +433,7 @@ public class Globals {
     /**
      * Returns a string reference. If the key is null or doesn't occur in the hash it will return the default string
      * reference indicating invalidity.
-     * 
+     *
      * @param key
      *            The key for the object to get.
      * @return The reference to a string referenced by key.
@@ -466,31 +455,29 @@ public class Globals {
 
     /** Creates new Globals */
     public Globals() {
-//System.err.println( "Loading map" );
+        // System.err.println( "Loading map" );
         loadMap();
         try {
             java.util.Properties p = new java.util.Properties();
-            java.io.File f = new java.io.File( System.getProperty( "user.home" )
-                                             + java.io.File.separator + PROPFILE );
-//System.err.println( "Looking for " + f.getAbsolutePath() );
-            if( f.exists() ) {
-                java.io.FileInputStream in = new java.io.FileInputStream( f );
-//System.err.println( "Loading properties from " + f.getAbsolutePath() );
-                p.load( in );
+            java.io.File f = new java.io.File(System.getProperty("user.home") + java.io.File.separator + PROPFILE);
+            // System.err.println( "Looking for " + f.getAbsolutePath() );
+            if (f.exists()) {
+                java.io.FileInputStream in = new java.io.FileInputStream(f);
+                // System.err.println( "Loading properties from " + f.getAbsolutePath() );
+                p.load(in);
                 in.close();
-                m.putAll( p );
+                m.putAll(p);
             }
-        }
-        catch( java.io.IOException e ) { // default properties didn't get replaced
-//System.err.println( "IOException on " + System.getProperty( "user.home" ) + "/" + PROPFILE );
-//System.err.println( e );
+        } catch (java.io.IOException e) { // default properties didn't get replaced
+            // System.err.println( "IOException on " + System.getProperty( "user.home" ) + "/" + PROPFILE );
+            // System.err.println( e );
 
         }
     }
 
     /**
      * Self test; tests the function <CODE>showmap</CODE>.
-     * 
+     *
      * @param args
      *            Ignored.
      */
