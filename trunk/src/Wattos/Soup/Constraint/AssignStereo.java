@@ -19,7 +19,7 @@ import Wattos.Star.*;
 /**
  * Swaps or deassigns stereospecific protons. For an explanation see {@link #doAssignStereo}. Routines are tested by the
  * JUnit test for Wattos.Star.NMRStar.File31.
- * 
+ *
  * @author jurgen
  * @see #doAssignStereo
  */
@@ -94,22 +94,22 @@ public class AssignStereo {
      * more than parameter <code>multi_model_rel_violation_deassign_criterium</code> percent of the models more than
      * <CODE>multi_model_violation_deassign_criterium</CODE> Angstrom then all restraints involved with this triplet
      * will be deassigned for the ambiguity in this triplet.
-     * 
+     *
      * <P>
      * The swapping algorithm is as follows:
-     * 
+     *
      * <PRE>
      *  find list of triplets
      *  sort according to -1- total number of restraints involved
      *                    -2- number of restraints with unique assignments
-     *  for each triplet T in order 
+     *  for each triplet T in order
      *      find set of restraints S containing T
      *      E is energy of S for the different models
      *      Eflip is energy of S with swapped stereospecific assignment for T
      *      if Eflip &lt; E for &gt;XX% of the models then
      *          swap the assignment for T
      * </PRE>
-     * 
+     *
      * <UL>
      * <LI>The algorithm is akin to the C code written in Aqua (AquaAssign module) and the Fortran code that Alexandre
      * Bonvin (Utrecht University) wrote for the statement "aria flip ...".
@@ -125,7 +125,7 @@ public class AssignStereo {
      * 662-672. See {@link <a
      * href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=15822098&dopt=Abstract"
      * >here< /a>}. <BR>
-     * 
+     *
      * @param energy_abs_criterium
      *            Absolute energy difference between the two assignment states that will cause a swap to be made. The
      *            energy is averaged by the number of models. Recommended value is 0.1 Ang**2. Set to a negative number
@@ -331,7 +331,7 @@ public class AssignStereo {
 
     /**
      * Returns best triplet not picked yet or -1 if none are left.
-     * 
+     *
      * @return <CODE>-1</CODE> for failure or best triplet id
      */
     public int pickNextBestTriplet(ArrayList tripletList) {
@@ -348,7 +348,7 @@ public class AssignStereo {
     /**
      * Simple count of the restraints associated with this triplet that are uniquely assigned with the exception of the
      * ambiguity possible from the given triplet.
-     * 
+     *
      * @return number for success or -1 for failure.
      */
     public int getUniqueAssignRestraintsInTriplet(Triplet triplet) {
@@ -370,7 +370,7 @@ public class AssignStereo {
      * Remove all restraints from triplet that are ambi in the triplet because those types of restraints don't need to
      * be considered. E.g. for triplet VAL QG a restraint VAL QG <-> GLY H will be removed but a restraint VAL MG <->
      * GLY H will not.
-     * 
+     *
      * @param triplet
      * @return <CODE>true</CODE> for success
      */
@@ -406,7 +406,7 @@ public class AssignStereo {
      * Returns true when the restraint is uniquely assigned with the exception of the ambiguity possible from the given
      * triplet.<BR>
      * The algorithm:<BR>
-     * 
+     *
      * <PRE>
      *  Get list of atoms L involved in restraint.
      *  Delete the atoms from L present in the triplet.
@@ -414,10 +414,10 @@ public class AssignStereo {
      *      if atom A is not unique return false
      *  return true
      * </PRE>
-     * 
+     *
      * Notes: An atom A is unique if it is not in any pseudoatom considered or if it is in such pseudoatom and all other
      * members of the pseudoatom are also in L.
-     * 
+     *
      * @param dcRid
      *            Distance constraint id
      * @return -1 for failure, 1 for true and 0 for false.
@@ -487,7 +487,7 @@ public class AssignStereo {
 
     /**
      * BEGIN BLOCK FOR SETTING NMR-STAR CONVENIENCE VARIABLES COPY FROM Wattos.Star.NMRStar.File31
-     * 
+     *
      * @return <CODE>true</CODE> for success
      */
     public boolean initConvenienceVariablesStar() {
@@ -583,36 +583,36 @@ public class AssignStereo {
             return false;
         }
 
-        if (false) {
-            String[] tagNames = {
-                    // tagNameListEntryID,
-                    // tagNameListId,
-                    tagNameSFCategory,
-                    tagNameTriplet_count,
-                    tagNameSwap_count,
-                    tagNameSwap_percentage,
-                    tagNameDeassign_count,
-                    tagNameDeassign_percentage,
-                    tagNameModel_count,
-                    tagNameTotal_energy_low_states,
-                    tagNameTotal_energy_high_states,
-                    tagNameCriterium_absolute_energy_difference,
-                    tagNameCriterium_relative_energy_difference,
-                    tagNameCriterium_percentage_models_favoring,
-                    tagNameCriterium_deassign_single_model_violation,
-                    tagNameCriterium_deassign_multiple_model_violation,
-                    tagNameCriterium_deassign_multiple_model_percentage,
-                    tagNameExplanation,
-                    // tagNameEntryID,
-                    // tagNameId,
-                    tagNameLabel_pseudo_ID, tagNameLabel_comp_index_ID, tagNameLabel_comp_ID, tagNameLabel_entity_ID,
-                    tagNameAssignment_ID, tagNameSwapped, tagNamePercentage_models_favoring,
-                    tagNamePercentage_energy_difference, tagNameEnergy_difference, tagNameEnergy_high_state,
-                    tagNameEnergy_low_state, tagNameRestraint_count, tagNameRestraint_ambi_count, tagNameDeassigned,
-                    tagNameMaximum_violation, tagNameViolation_single_model_criterium_count,
-                    tagNameViolation_multi_model_criterium_count, };
-            General.showDebug("Tagnames:\n" + Strings.toString(tagNames, true));
-        }
+//        if (false) {
+//            String[] tagNames = {
+//                    // tagNameListEntryID,
+//                    // tagNameListId,
+//                    tagNameSFCategory,
+//                    tagNameTriplet_count,
+//                    tagNameSwap_count,
+//                    tagNameSwap_percentage,
+//                    tagNameDeassign_count,
+//                    tagNameDeassign_percentage,
+//                    tagNameModel_count,
+//                    tagNameTotal_energy_low_states,
+//                    tagNameTotal_energy_high_states,
+//                    tagNameCriterium_absolute_energy_difference,
+//                    tagNameCriterium_relative_energy_difference,
+//                    tagNameCriterium_percentage_models_favoring,
+//                    tagNameCriterium_deassign_single_model_violation,
+//                    tagNameCriterium_deassign_multiple_model_violation,
+//                    tagNameCriterium_deassign_multiple_model_percentage,
+//                    tagNameExplanation,
+//                    // tagNameEntryID,
+//                    // tagNameId,
+//                    tagNameLabel_pseudo_ID, tagNameLabel_comp_index_ID, tagNameLabel_comp_ID, tagNameLabel_entity_ID,
+//                    tagNameAssignment_ID, tagNameSwapped, tagNamePercentage_models_favoring,
+//                    tagNamePercentage_energy_difference, tagNameEnergy_difference, tagNameEnergy_high_state,
+//                    tagNameEnergy_low_state, tagNameRestraint_count, tagNameRestraint_ambi_count, tagNameDeassigned,
+//                    tagNameMaximum_violation, tagNameViolation_single_model_criterium_count,
+//                    tagNameViolation_multi_model_criterium_count, };
+//            General.showDebug("Tagnames:\n" + Strings.toString(tagNames, true));
+//        }
 
         if (
 

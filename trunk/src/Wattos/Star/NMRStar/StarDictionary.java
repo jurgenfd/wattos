@@ -45,24 +45,24 @@ import com.Ostermiller.util.ExcelCSVParser;
  * that relation.
  * Maps FROM nmr-star to wattos:
  * <PRE> HashOfHashes fromStar2D -> ArrayList
- *      "Saveframe category" -> "Tag name" -> ("Wattos relation", "Wattos name", "Wattos data type") 
+ *      "Saveframe category" -> "Tag name" -> ("Wattos relation", "Wattos name", "Wattos data type")
  * HashMap fromStar -> ArrayList
- *      "Tag name" -> ("Wattos relation", "Wattos name", "Wattos data type") 
+ *      "Tag name" -> ("Wattos relation", "Wattos name", "Wattos data type")
  * Maps TO nmr-star from wattos:
  * HashOfHashes toStar2D -> ArrayList
- *      "Wattos relation" -> "Wattos name" -> ("Saveframe category", "Tag name", "Text format") 
- * </PRE>The maps are not supposed to be modified after loading. 
+ *      "Wattos relation" -> "Wattos name" -> ("Saveframe category", "Tag name", "Text format")
+ * </PRE>The maps are not supposed to be modified after loading.
  * The maps are intended to be extended in the future when other info might be usefull too.
  *@see <a href="Data/WattosDictionary_STAR30.csv">WattosDictionary_STAR30.csv</a>
  * @author Jurgen F. Doreleijers
  */
 public class StarDictionary implements Serializable {
-        
-    private static final long serialVersionUID = -1207795172754062330L;  
+
+    private static final long serialVersionUID = -1207795172754062330L;
     /** Definitions for a table. */
     static final String DEFAULT_TABLE_BEGIN     = "TBL_BEGIN";
     static final String DEFAULT_TABLE_END       = "TBL_END";
-    
+
     static final String COLUMN_NAME_RELATION_NAME   = "WattosRelationName";
     static final String COLUMN_NAME_ATTR_NAME       = "WattosAttributeName";
     static final String COLUMN_NAME_DATA_TYPE       = "WattosDataType";
@@ -71,34 +71,34 @@ public class StarDictionary implements Serializable {
     static final String COLUMN_NAME_TAG_NAME        = "TagName";
     static final String COLUMN_NAME_TAG_NAME_CIF    = "TagNameCIF";
     static final String COLUMN_NAME_COMMENTS        = "Comments";
-    
+
     static final String[] columnList = {
-        COLUMN_NAME_RELATION_NAME,  
-        COLUMN_NAME_ATTR_NAME,   
-        COLUMN_NAME_DATA_TYPE, 
+        COLUMN_NAME_RELATION_NAME,
+        COLUMN_NAME_ATTR_NAME,
+        COLUMN_NAME_DATA_TYPE,
         COLUMN_NAME_TEXT_FORMAT,
         COLUMN_NAME_SF_CATEGORY,
         COLUMN_NAME_TAG_NAME,
         COLUMN_NAME_TAG_NAME_CIF,
         COLUMN_NAME_COMMENTS
     };
-    
-    // Positions in ("Wattos relation", "Wattos name", "Wattos data type") 
+
+    // Positions in ("Wattos relation", "Wattos name", "Wattos data type")
     public static final int POSITION_WATTOS_RELATION              = 0;
     public static final int POSITION_WATTOS_NAME                  = 1;
     public static final int POSITION_WATTOS_DATATYPE              = 2;
 
-    // Positons in ("Saveframe category", "Tag name", "Text format") 
+    // Positons in ("Saveframe category", "Tag name", "Text format")
     public static final int POSITION_STAR_CATEGORY              = 0;
     public static final int POSITION_STAR_TAG_NAME              = 1;
     public static final int POSITION_STAR_TAG_FORMAT            = 2;
 
-    // Positons in ("Tag name", "Text format") 
+    // Positons in ("Tag name", "Text format")
     public static final int POSITION_CIF_TAG_NAME              = 0;
     public static final int POSITION_CIF_TAG_FORMAT            = 1;
-    
+
     /**Keys SF_CATEGORY, TAG_NAME. Values: RELATION_NAME, ATTR_NAME, DATA_TYPE */
-    public HashOfHashes  fromStar2D;    
+    public HashOfHashes  fromStar2D;
     /**Key TAG_NAME. Values: RELATION_NAME, ATTR_NAME, DATA_TYPE*/
     public HashMap       fromStar;
     /**Keys RELATION_NAME, ATTR_NAME. Values: SF_CATEGORY, TAG_NAME, TEXT_FORMAT*/
@@ -106,18 +106,18 @@ public class StarDictionary implements Serializable {
     /**Keys RELATION_NAME, ATTR_NAME. Values: TAG_NAME, TEXT_FORMAT*/
     public HashOfHashes  toCIF2D;
     /**Key TAG_NAME_CIF. Values: RELATION_NAME, ATTR_NAME, DATA_TYPE */
-    public HashMap  fromCIF;    
-    
+    public HashMap  fromCIF;
+
     /** Local resource */
     static final String CSV_FILE_LOCATION = "Data/WattosDictionary_STAR31.csv";
-    
+
     /** Settings within for a change */
     public StarDictionary() {
         fromStar2D = new HashOfHashes();
         fromStar   = new HashMap();
         fromCIF    = new HashMap();
         toStar2D   = new HashOfHashes();
-        toCIF2D    = new HashOfHashes();        
+        toCIF2D    = new HashOfHashes();
     }
 
     /** Given category and key with possible whitespace added
@@ -125,7 +125,7 @@ public class StarDictionary implements Serializable {
      */
     public String getTagName(String cat, String key) {
         String keyStr1 = cat.trim();
-        String keyStr2 = key.trim();       
+        String keyStr2 = key.trim();
         ArrayList info = (ArrayList) toStar2D.get( keyStr1,keyStr2);
         if ( info == null ) {
             General.showError("Failed to find key: " + key + " in category: " + cat);
@@ -139,7 +139,7 @@ public class StarDictionary implements Serializable {
      */
     public String getTagNameCIF(String cat, String key) {
         String keyStr1 = cat.trim();
-        String keyStr2 = key.trim();       
+        String keyStr2 = key.trim();
         ArrayList info = (ArrayList) toCIF2D.get( keyStr1,keyStr2);
         if ( info == null ) {
             General.showError("Failed to find key: " + key + " in category: " + cat);
@@ -147,7 +147,7 @@ public class StarDictionary implements Serializable {
         }
         return (String) info.get(POSITION_CIF_TAG_NAME);
     }
-    
+
     /** Returns data type as defined by dictionary or -1 for failure.
      */
     public int getDataType(String tagName, boolean isMMCIF) {
@@ -160,13 +160,13 @@ public class StarDictionary implements Serializable {
         }
         if ( info == null ) {
             General.showError("Tag not found (1): " + tagName);
-            return -1;            
+            return -1;
         }
         String dataTypeString = (String) info.get(POSITION_WATTOS_DATATYPE);
         if ( dataTypeString == null ) {
             General.showCodeBug("Tag not found (2): " + tagName);
             return -1;
-        }            
+        }
         // Reuse variable for new data type
         int result = Relation.dataTypeArrayList.indexOf( dataTypeString );
         if ( result < 0 ) {
@@ -176,7 +176,7 @@ public class StarDictionary implements Serializable {
         }
         return result;
     }
-            
+
     public boolean putFromDict( HashMap namesAndTypes, ArrayList order,
             String tagName ) {
         int result = getDataType(tagName, false);
@@ -186,34 +186,34 @@ public class StarDictionary implements Serializable {
         }
         Object v = namesAndTypes.put( tagName, new Integer(result));
         if ( v != null ) {
-            General.showWarning("Failed to put tagName: " + tagName + 
+            General.showWarning("Failed to put tagName: " + tagName +
                         " with type: " + result + " because there already was such a key.");
             General.showWarning("Value to the key: " + v);
             return false;
         }
         if ( ! order.add(tagName)) {
-            General.showWarning("Failed to add in order, tagName: " + tagName + 
+            General.showWarning("Failed to add in order, tagName: " + tagName +
                         " with type: " + result);
             return false;
         }
-        
+
         return true;
     }
-    
+
     /** Read the possible star names.
      *Uses standard location if argument is null;
      * @param csv_file_location Url for file with the comma separated info.
      * @return <CODE>true</CODE> if all operations are successful.
      */
-    public boolean readCsvFile(String csv_file_location) {            
-        if ( csv_file_location == null ) {            
+    public boolean readCsvFile(String csv_file_location) {
+        if ( csv_file_location == null ) {
 //            General.showDebug("Reading Star dictionary from local resource : " + CSV_FILE_LOCATION);
         }
         String[][] values = null;
         int FIRST_ROW_WITH_DATA = 1;
         int LAST_ROW_WITH_DATA = -1;
         try {
-            Reader reader = null;        
+            Reader reader = null;
             if ( csv_file_location == null ) {
                 InputStream csv_file_is = getClass().getResourceAsStream(CSV_FILE_LOCATION);
                 reader = new InputStreamReader( csv_file_is );
@@ -224,7 +224,7 @@ public class StarDictionary implements Serializable {
                 General.showWarning("Failed to open resource as a stream from location: " + csv_file_location);
                 return false;
             }
-            
+
             BufferedReader br = new BufferedReader( reader );
             ExcelCSVParser parser = new ExcelCSVParser(br);
             if ( parser == null ) {
@@ -244,7 +244,7 @@ public class StarDictionary implements Serializable {
             }
             values = Strings.deleteAllWhiteSpace(values);
             ArrayList columnLabels = new ArrayList( Arrays.asList( values[0] ) );
-            
+
             /** Get the interesting column indexes */
             int[] columnIdx = new int[ columnList.length ];
             for (int c=0;c<columnList.length;c++) {
@@ -256,31 +256,13 @@ public class StarDictionary implements Serializable {
                 }
                 //General.showDebug(" found column name: " + columnList[c] + " in column number: " + columnIdx[c] );
             }
-            
-            /** Find the begin and end of the table */
-//            for (int r=0;r<values.length;r++) {
-//                if ( values[r][0].equals( DEFAULT_TABLE_BEGIN ) ) {
-//                    FIRST_ROW_WITH_DATA = r+1;
-//                }
-//                if ( values[r][0].equals( DEFAULT_TABLE_END ) ) {
-//                    LAST_ROW_WITH_DATA = r-1;
-//                }
-//            }
-//            if ( FIRST_ROW_WITH_DATA == -1 ) {
-//                General.showError(" did not found begin of table; should start with: " + DEFAULT_TABLE_BEGIN );
-//                return false;
-//            }
-//            
-//            if ( LAST_ROW_WITH_DATA == -1 ) {
-//                General.showError(" did not found end of table; should end with: " + DEFAULT_TABLE_END );
-//                return false;
-//            }
+
             FIRST_ROW_WITH_DATA = 1;
             LAST_ROW_WITH_DATA = values.length - 1;
-//            General.showDebug("Data starts at row:  "+FIRST_ROW_WITH_DATA);
-//            General.showDebug("Data ends after row: "+LAST_ROW_WITH_DATA);
-            
-            
+            General.showDebug("Data starts at row:  "+FIRST_ROW_WITH_DATA);
+            General.showDebug("Data ends after row: "+LAST_ROW_WITH_DATA);
+
+
             /** Create bogus items to start */
             String[] v = new String[columnList.length];
             for (int r=FIRST_ROW_WITH_DATA;r<=LAST_ROW_WITH_DATA;r++) {
@@ -291,9 +273,9 @@ public class StarDictionary implements Serializable {
                 //General.showDebug("v: [" + Strings.toString(v));
                 // Name them.
                 String RELATION_NAME   = v[0];
-                String ATTR_NAME       = v[1];    
+                String ATTR_NAME       = v[1];
                 String DATA_TYPE       = v[2];
-                String TEXT_FORMAT     = v[3];                
+                String TEXT_FORMAT     = v[3];
                 String SF_CATEGORY     = v[4];
                 String TAG_NAME        = v[5];
                 String TAG_NAME_CIF    = v[6];
@@ -310,7 +292,7 @@ public class StarDictionary implements Serializable {
                 ArrayList alCif = new ArrayList();
                 alCif.add( TAG_NAME_CIF );
                 alCif.add( TEXT_FORMAT );
-                
+
                 fromStar2D.put( SF_CATEGORY, TAG_NAME, alWattos );
                 toStar2D.put( RELATION_NAME, ATTR_NAME, alStar);
                 fromStar.put( TAG_NAME, alWattos );
@@ -318,20 +300,20 @@ public class StarDictionary implements Serializable {
                     fromCIF.put( TAG_NAME_CIF, alWattos );
                     toCIF2D.put( RELATION_NAME, ATTR_NAME, alCif);
                 }
-                
+
             }
         } catch ( Throwable t ) {
             General.showThrowable(t);
             return false;
         }
-        
+
         /** Some debugging: */
-//        General.showDebug("Read number of star tag names from STAR dictionary: " + (LAST_ROW_WITH_DATA-FIRST_ROW_WITH_DATA+1));                
+//        General.showDebug("Read number of star tag names from STAR dictionary: " + (LAST_ROW_WITH_DATA-FIRST_ROW_WITH_DATA+1));
 //        General.showDebug("Dictionary looks like: ");
 //        General.showDebug(toString());
         return checkConsistency();
     }
-    
+
     private boolean checkConsistency() {
         Object[] sfCategoryList = fromStar2D.keySet().toArray();
         for (int i=0;i<sfCategoryList.length;i++) {
@@ -342,8 +324,8 @@ public class StarDictionary implements Serializable {
                 if ( ! niceTagName( tagName )) {
                     return false;
                 }
-//                ArrayList alWattos = (ArrayList) tagNameMap.get( tagNameList[j]);                
-            }            
+//                ArrayList alWattos = (ArrayList) tagNameMap.get( tagNameList[j]);
+            }
         }
         return true;
     }

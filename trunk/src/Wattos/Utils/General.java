@@ -69,12 +69,12 @@ never used so don't define here.
     public static final int verbosityNothing  = 0; // Even errors will be supressed
     public static final int verbosityError    = 1; // show only errrors
     public static final int verbosityWarning  = 2; // show errrors and warnings
-    public static final int verbosityOutput   = 3; // and regular output DEFAULT 
+    public static final int verbosityOutput   = 3; // and regular output DEFAULT
     public static final int verbosityDetail   = 4; // show more details
     public static final int verbosityDebug    = 9; // add debugging info (not recommended for casual user)
-    public static int verbosity = verbosityOutput; 
-    //public static int verbosity = verbosityDebug; 
-    
+    public static int verbosity = verbosityOutput;
+    //public static int verbosity = verbosityDebug;
+
     /** Should be the same value as the ResultSet.getInt methods return for nulls.
      * This is wrongly documented in O'Reilly's "Java enterprise in a nutshell",
      * 1st Ed., p.25.*/
@@ -93,12 +93,12 @@ never used so don't define here.
     public static final int EXIT_STATUS_OUT_OF_MEMORY           = 3;
     /** Undetermined error.     */
     public static final int EXIT_STATUS_ERROR                   = 9;
-    
+
     public static String eol;
 
     static {
         Properties prop = System.getProperties();
-        eol = prop.getProperty("line.separator");  
+        eol = prop.getProperty("line.separator");
         //showOutput("EOL is: [" + eol + "] with number of chars: " + eol.length());
     }
     /** Issues an error message saying this class can not be initiated.
@@ -106,7 +106,7 @@ never used so don't define here.
     public General() {
         General.showError("Don't try to initiate the General class; it's methods are static");
     }
-    
+
 
     public static void sleep( long sleepTimeInMilliseconds ) {
         try {
@@ -125,7 +125,7 @@ never used so don't define here.
         do {
             wasFree = isFree;
             rt.runFinalization();
-            rt.gc(); 
+            rt.gc();
             isFree = rt.freeMemory();
             //General.showOutput("Memory free: " + isFree );
         } while ( isFree > wasFree );
@@ -143,25 +143,25 @@ never used so don't define here.
         Runtime rt = Runtime.getRuntime();
 
         long total = rt.totalMemory();
-        long free  = rt.freeMemory(); 
-        long used  = total - free;        
+        long free  = rt.freeMemory();
+        long used  = total - free;
         String pattern = "0,000,000,000";
         DecimalFormat nf = new DecimalFormat(pattern);
         String usedStr = nf.format(used);
         String totalStr = nf.format(total);
-        
+
         General.showOutput( "Memory used before GC: "+usedStr+" out of: "+ totalStr);
         doFullestGarbageCollection();
         total = rt.totalMemory();
-        free  = rt.freeMemory(); 
+        free  = rt.freeMemory();
         used  = total - free;
         /**
         p.add( used );
-        p.add( total );        
+        p.add( total );
         General.showOutput( Format.sprintf("Memory used before GC: %13d out of: %13d", p) );
          */
     }
-    
+
     /** Show a little debug info on environment     */
     public static void showEnvironment( ) {
         Properties prop = System.getProperties();
@@ -172,9 +172,9 @@ never used so don't define here.
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }  
+        }
     }
-    
+
     /** Show a little info on memory limitations then exit.*/
     public static void doOutOfMemoryExit( Error e ) {
         String message = "";
@@ -182,40 +182,40 @@ never used so don't define here.
         message += "A way to increase the allowed memory consumption is to\n";
         message += "specify this when starting the Java virtual machine, like:\n";
         message += "   java -Xmx512m Wattos.Utils.General\n";
-        message += "to set the maximum memory of the heap to 512 Mb.\n\n";        
+        message += "to set the maximum memory of the heap to 512 Mb.\n\n";
         General.showError( message);
         if ( verbosity >= verbosityError ) {
             General.showThrowable(e);
         }
         showMemoryUsed();
-        doExit(General.EXIT_STATUS_OUT_OF_MEMORY);        
+        doExit(General.EXIT_STATUS_OUT_OF_MEMORY);
     }
-    
+
 
     private static void doExit(int code) {
-        System.exit(code);     
+        System.exit(code);
     }
-    
+
     public static void doErrorExit( String message ) {
         General.showError(message);
-        doExit(General.EXIT_STATUS_ERROR);        
+        doExit(General.EXIT_STATUS_ERROR);
     }
-    
+
     public static void doCodeBugExit( String message ) {
         doCodeBugExit( message, null, null, null );
     }
 
     public static void doCodeBugExit( String message, String lastKnownPosition, Throwable t, Class c ) {
         showCodeBug( message, lastKnownPosition, t, c );
-        doExit(General.EXIT_STATUS_CODE_ERROR);        
+        doExit(General.EXIT_STATUS_CODE_ERROR);
     }
 
-                
+
     public static void showCodeBug( String message, String lastKnownPosition, Throwable t, Class c ) {
 
         if ( verbosity < verbosityError ) {
             return;
-        }            
+        }
         if ( lastKnownPosition != null ) {
             message += "\nERROR: ran into a code bug at: ";
             if ( c != null ) {
@@ -231,14 +231,14 @@ never used so don't define here.
             if ( t != null ) {
                 message += t.getMessage();
             }
-        }            
+        }
         General.showError(message);
     }
 
     public static void showCodeBug( String message ) {
         showCodeBug( message, null, null, null);
     }
-    
+
     public static void showError( String message, String lastKnownPosition, Throwable t, Class c ) {
 
         if ( verbosity < verbosityError ) {
@@ -266,14 +266,14 @@ never used so don't define here.
                 message = "ERROR: null";
             }
         }
-        
+
         General.showOutput(message);
     }
-    
+
     public static void showError( String message ) {
         showError( message, null, null, null);
     }
-    
+
     public static void showThrowable( Throwable t ) {
         StringWriter stw = new StringWriter();
         PrintWriter pw = new PrintWriter(stw,true);
@@ -283,7 +283,7 @@ never used so don't define here.
         General.showError(General.eol+stw.toString());
         General.showError("Found throwable error above");
     }
-    
+
     public static void showWarning( String message, String lastKnownPosition, Throwable t, Class c ) {
         if ( verbosity < verbosityWarning ) {
             return;
@@ -308,16 +308,16 @@ never used so don't define here.
         }
         General.showOutput(message);
     }
-    
+
     public static void showWarning( String message ) {
         showWarning( message, null, null, null);
     }
-    
+
     public static void showDebug( String message, String lastKnownPosition, Throwable t, Class c ) {
         if ( verbosity < verbosityDebug ) {
             return;
         }
-        
+
         if ( lastKnownPosition != null ) {
             message += "\nDEBUG: ran into a uncommon situation at: ";
             if ( c != null ) {
@@ -338,25 +338,25 @@ never used so don't define here.
         }
         General.showOutput(message);
     }
-    
+
     public static void showDebug( String message ) {
         showDebug( message, null, null, null);
     }
-    
+
     public static void showDetail( String message ) {
         if ( verbosity < verbosityDetail) {
             return;
         }
         General.showOutput(message);
     }
-    
+
     public static void showOutput( String message ) {
         if ( verbosity < verbosityOutput) {
             return;
         }
         out.println(message);
     }
-    
+
     public static void showOutputNoEOL( String message ) {
         if ( verbosity < verbosityOutput) {
             return;
@@ -370,14 +370,14 @@ never used so don't define here.
         }
         out.print(message);
     }
-    
+
     public static void showOutput( String message, int value ) {
         if ( verbosity < verbosityOutput) {
             return;
         }
         Parameters p = new Parameters(); // Printf parameters
         p.add( value );
-        String output = Format.sprintf(message, p);        
+        String output = Format.sprintf(message, p);
         General.showOutput(output);
     }
 
@@ -387,7 +387,7 @@ never used so don't define here.
         }
         Parameters p = new Parameters(); // Printf parameters
         p.add( value );
-        String output = Format.sprintf(message, p);        
+        String output = Format.sprintf(message, p);
         General.showOutput(output);
     }
 
@@ -397,7 +397,7 @@ never used so don't define here.
         }
         Parameters p = new Parameters(); // Printf parameters
         p.add( value );
-        String output = Format.sprintf(message, p);        
+        String output = Format.sprintf(message, p);
         General.showOutput(output);
     }
 
@@ -427,11 +427,11 @@ never used so don't define here.
          *subList didn't cast well and actually only generates a view...
         al.subList(first_position,al.size());
         al.removeRange(first_position,al.size());
-        al.addAll(0, al_temp);        
+        al.addAll(0, al_temp);
          */
     }
-    
-    
+
+
     /** Combine the contents in two attributes, putting the result into the first by
      * overwriting the original.
      *
@@ -447,25 +447,24 @@ never used so don't define here.
             }
         }
     }
-    
+
     /** Self test; tests the method: rotateCollectionToFirst.
      * @param args Command line arguments; ignored
      */
     public static void main (String[] args) {
         General.showOutput("Starting test of check routine." );
-        ArrayList al = new ArrayList();
-       
-        if ( false ) {
-            al = new ArrayList();
-            al.add("1hue");
-            al.add("1aub");
-            al.add("1brv");
-            al.add("1brv");
-            General.showOutput("Collection:" + al.toString());
-            rotateCollectionToFirst(al,"1brv");
-            General.showOutput("Sorted collection." );
-            General.showOutput("Collection:" + al.toString());
-        }
+//        ArrayList al = new ArrayList();
+//        if ( false ) {
+//            al = new ArrayList();
+//            al.add("1hue");
+//            al.add("1aub");
+//            al.add("1brv");
+//            al.add("1brv");
+//            General.showOutput("Collection:" + al.toString());
+//            rotateCollectionToFirst(al,"1brv");
+//            General.showOutput("Sorted collection." );
+//            General.showOutput("Collection:" + al.toString());
+//        }
         if ( true ) {
             showEnvironment();
         }
@@ -478,10 +477,10 @@ never used so don't define here.
     }
 
     public static void flushOutputStream() {
-        out.flush(); 
+        out.flush();
     }
     public static void setVerbosityToDebug(){
-        verbosity = verbosityDebug;        
+        verbosity = verbosityDebug;
     }
 
     /** Shows an error message with the string prepended to the current date

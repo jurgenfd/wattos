@@ -1,25 +1,42 @@
 package Wattos.CloneWars.Gui;
 
-import Wattos.CloneWars.*;
-import Wattos.Episode_II.*;
-import Wattos.Utils.*;
-import edu.oswego.cs.dl.util.concurrent.misc.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.net.*;
-import javax.swing.*;
-import javax.swing.event.*; 
-import org.jdesktop.layout.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Method;
+import java.net.URL;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.event.HyperlinkEvent;
+
 import org.jmol.adapter.smarter.SmarterJmolAdapter;
 import org.jmol.api.JmolAdapter;
 import org.jmol.api.JmolSimpleViewer;
 
+import Wattos.CloneWars.UserInterface;
+import Wattos.CloneWars.WattosParameter;
+import Wattos.CloneWars.WattosParameterList;
+import Wattos.Episode_II.Globals;
+import Wattos.Episode_II.Sjors;
+import Wattos.Utils.BareBonesBrowserLaunch;
+import Wattos.Utils.General;
+import Wattos.Utils.InOut;
+import Wattos.Utils.PrimitiveArray;
+import Wattos.Utils.Strings;
+
 public class WattosGui extends JFrame implements ActionListener {
-    
+
     private static final long serialVersionUID = -1207795172754062330L;
-    
+
     static private final String         newline = "\n";
 /*    static private File                 file = null;
     static private File                 outfile = null;
@@ -30,22 +47,22 @@ public class WattosGui extends JFrame implements ActionListener {
     static private final String         WATTOS_URL          = BMRB_URL + "/wattos";
     static private final String         COMPLETENESS_URL    = WATTOS_URL + "/doc/Wattos/Soup/Constraint/Completeness.html";
     static private final String         VIOL_URL            = WATTOS_URL + "/doc/Wattos/Soup/Constraint/DistConstr.html#showPlotPerResidue";
-    
+
     static final String strScript = "delay; move 360 0 0 0 0 0 0 0 4;";
-    
+
     static private PrintStream          stdout = null;
 //    static private PrintStream          stderr = null;
     static private String               fn = null;
     static private URL                  url = null;
     static private UserInterface        ui = null;
     ActionListener actionListener = null;
-    
+
     static int                          TAB_IDX_LOG     = 0;
     static int                          TAB_IDX_MODULE  = 1;
     static int                          TAB_IDX_3D      = 2;
     static int                          TAB_IDX_COMPL   = 3;
     static int                          TAB_IDX_VIOL    = 4;
-    
+
     public static JmolPanel jmolPanel = null;
     public static JmolSimpleViewer viewer = null;
     /** Wattos Graphical user interface. Actionlistener for windows closing maybe null.
@@ -59,8 +76,8 @@ public class WattosGui extends JFrame implements ActionListener {
         initComponents();
         init(ui);
     }
-    
-    
+
+
     public boolean init(UserInterface ui) {
         General.verbosity = General.verbosityDebug;
         WattosGui.ui = ui;
@@ -72,11 +89,11 @@ public class WattosGui extends JFrame implements ActionListener {
         jTabbedPane.setEnabledAt( TAB_IDX_3D,       true );
         jTabbedPane.setEnabledAt( TAB_IDX_COMPL,    false );
         jTabbedPane.setEnabledAt( TAB_IDX_VIOL,     false );
-        
-//        this.ff = new StarFilter();                
+
+//        this.ff = new StarFilter();
         return true;
     }
-    
+
     public boolean show3D(URL url) {
         jmolPanel = new JmolPanel();
         setJPanelToBeFilled(-1, jmolPanel );
@@ -91,7 +108,7 @@ public class WattosGui extends JFrame implements ActionListener {
         if (strError != null) {
           General.showError(strError);
         }
-        
+
         return true;
     }
     /** This method is called from within the constructor to
@@ -160,7 +177,7 @@ public class WattosGui extends JFrame implements ActionListener {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 System.out.println("Shutting down...");
                 System.exit(0);
-              }                        
+              }
         });
 
         getAccessibleContext().setAccessibleDescription("Wattos\n");
@@ -457,15 +474,15 @@ public class WattosGui extends JFrame implements ActionListener {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void jMenuItemModuleViolInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemModuleViolInfoActionPerformed
         BareBonesBrowserLaunch.openURL(VIOL_URL);
     }//GEN-LAST:event_jMenuItemModuleViolInfoActionPerformed
-    
+
     private void jMenuItemModuleComplInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemModuleComplInfoActionPerformed
         BareBonesBrowserLaunch.openURL(COMPLETENESS_URL);
     }//GEN-LAST:event_jMenuItemModuleComplInfoActionPerformed
-    
+
     private void jEditorPane1hyperlinkUpdateSjors(javax.swing.event.HyperlinkEvent evt) {//GEN-FIRST:event_jEditorPane1hyperlinkUpdateSjors
         if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             try {
@@ -480,15 +497,15 @@ public class WattosGui extends JFrame implements ActionListener {
             }
         }
     }//GEN-LAST:event_jEditorPane1hyperlinkUpdateSjors
-    
+
     private void jMenuItemBMRBHomePageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemBMRBHomePageActionPerformed
         BareBonesBrowserLaunch.openURL(BMRB_URL);
     }//GEN-LAST:event_jMenuItemBMRBHomePageActionPerformed
-    
+
     private void handlerShowWattosHomePage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_handlerShowWattosHomePage
         BareBonesBrowserLaunch.openURL(WATTOS_URL);
     }//GEN-LAST:event_handlerShowWattosHomePage
-    
+
     private void handlerCloseTab(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_handlerCloseTab
 // TODO add your handling code here:
         int selectedPaneIdx = jTabbedPane.getSelectedIndex();
@@ -500,7 +517,7 @@ public class WattosGui extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this, "Currently selected system pane can not be closed.");
             return;
         }
-        
+
         //default icon, custom title
         int n = JOptionPane.showConfirmDialog(
                 this,
@@ -514,9 +531,9 @@ public class WattosGui extends JFrame implements ActionListener {
         } else {
             General.showDebug("Canceled remove of selected panel.");
         }
-        
+
     }//GEN-LAST:event_handlerCloseTab
-    
+
     private void jRadioButtonMenuItemVerbosityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItemVerbosityActionPerformed
         if ( jRadioButtonMenuItemVerbosity.getModel().isSelected()) {
             General.verbosity = General.verbosityDebug;
@@ -524,7 +541,7 @@ public class WattosGui extends JFrame implements ActionListener {
             General.verbosity = General.verbosityOutput;
         }
     }//GEN-LAST:event_jRadioButtonMenuItemVerbosityActionPerformed
-    
+
     private void jMenuItemExecuteMacroUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExecuteMacroUserActionPerformed
         General.showDebug("Now in jMenuItemExecuteMacroUserActionPerformed");
 //        messageBoardCheckStdOut();
@@ -533,17 +550,17 @@ public class WattosGui extends JFrame implements ActionListener {
         par_url.type = WattosParameter.TYPE_URL;
         par_url.prompt = "Enter url to (gzipped) Wattos script file:";
         par_url.examples.add("C:/jurgen/Wattos/macros/CheckCompleteness.wcf");
-        
+
         par_url.examples.add(Globals.wattos_home_page+"/macros/QuitBeforeBegun.wcf");
         par_url.examples.add("C:\\my\\Wattos\\macros\\QuitBeforeBegun.wcf");
         par_url.defaultValue = par_url.examples.getString(0);
         par_url.allowedValues = null; // anthing goes.
         parametersToGet.add(par_url);
-        
+
 //        if ( ! getParameters(parametersToGet)) {
 //            // just fail for now.
 //        }
-        
+
         new WattosParameterSetDialog(this,true);
         par_url.value = par_url.examples.getString(0);
         URL url = InOut.getUrlFileFromName( par_url.value );
@@ -551,7 +568,7 @@ public class WattosGui extends JFrame implements ActionListener {
         String myMethodName = new Exception().getStackTrace()[0].getMethodName();
         executeCommand("ExecuteMacroUser", methodArgs, myMethodName);
     }//GEN-LAST:event_jMenuItemExecuteMacroUserActionPerformed
-    
+
     public void executeCommand( String methodName, Object[] methodArgs, String parentMethodName ) {
         Class[] classList = new Class[] { Object[].class };
         try {
@@ -568,23 +585,23 @@ public class WattosGui extends JFrame implements ActionListener {
             return;
         }
     }
-    
+
     public boolean afterEachCommandExecuted(String methodName, Object[] methodArgs) {
         General.showDebug( "Done with method: "+methodName+" with arguments: " + PrimitiveArray.toString( methodArgs ) );
         return true;
     }
-    
+
     private void windowClosingHandler(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_windowClosingHandler
         if ( actionListener != null ) {
             actionListener.actionPerformed(null);
         }
     }//GEN-LAST:event_windowClosingHandler
-    
+
     private void jMenuItemQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemQuitActionPerformed
         setVisible(false);
         windowClosingHandler(null);
     }//GEN-LAST:event_jMenuItemQuitActionPerformed
-    
+
     private void jMenuItemSleepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSleepActionPerformed
         int sleepytime = 5*1000;
         General.showDebug("From gui calling Sleep " + sleepytime);
@@ -592,7 +609,7 @@ public class WattosGui extends JFrame implements ActionListener {
         String myMethodName = new Exception().getStackTrace()[0].getMethodName();
         executeCommand("Sleep", methodArgs, myMethodName);
     }//GEN-LAST:event_jMenuItemSleepActionPerformed
-    
+
     private void jMenuItemInitAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemInitAllActionPerformed
         General.showDebug("Doing ui.commandHub.InitAll()");
         if ( ui == null ) {
@@ -605,7 +622,7 @@ public class WattosGui extends JFrame implements ActionListener {
         Object[] methodArgs = { };
         afterEachCommandExecuted(new Exception().getStackTrace()[0].getMethodName(),methodArgs);
     }//GEN-LAST:event_jMenuItemInitAllActionPerformed
-    
+
 //    public void messageBoardCheckStdOut() {
 //        try {
 //            out.flush();
@@ -615,17 +632,17 @@ public class WattosGui extends JFrame implements ActionListener {
 //        log.append(out.toString());
 //        out.reset();
 //    }
-    
+
     /** Defaults to red */
     private void messageBoardAddError( String msg ) {
         messageBoardAdd("ERROR: " + msg,Color.RED);
     }
-    
+
 //    /** Convenience method */
 //    private void messageBoardAdd( String msg) {
 //        messageBoardAdd(msg,null);
 //    }
-    
+
     /** Defaults to black */
     private void messageBoardAdd( String msg, java.awt.Color c) {
 //        messageBoardCheckStdOut();
@@ -636,7 +653,7 @@ public class WattosGui extends JFrame implements ActionListener {
         status.setForeground(c);
         status.setText(msg);
     }
-    
+
     /** Defaults to red */
     private void messageBoardAddThrowable( Throwable t ) {
 //        messageBoardCheckStdOut();
@@ -646,8 +663,8 @@ public class WattosGui extends JFrame implements ActionListener {
         String msg = "Found throwable error."+newline+stw.toString();
         messageBoardAddError(msg);
     }
-    
-    
+
+
     /**
      * @param args the command line arguments
      */
@@ -655,14 +672,14 @@ public class WattosGui extends JFrame implements ActionListener {
         boolean ignoreOldDumpIfPresent = false;
         final UserInterface ui = UserInterface.init(ignoreOldDumpIfPresent);
         final WattosGui gui = new WattosGui(ui,null);
-        
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 gui.setVisible(true);
             }
         });
     }
-    
+
     /** Calls interupt so make sure no other components are on the same
      *thread. This method should only be called when this frame is the
      *only application.
@@ -671,7 +688,7 @@ public class WattosGui extends JFrame implements ActionListener {
         Thread.currentThread().interrupt();
         dispose();
     }
-    
+
     /** Use -1 for 3D, 0 for completeness and 1 for violation panel
      */
     public void setJPanelToBeFilled( int panelToFillIdx, final JPanel jPanel ) {
@@ -696,7 +713,7 @@ public class WattosGui extends JFrame implements ActionListener {
         final edu.oswego.cs.dl.util.concurrent.misc.SwingWorker worker = new edu.oswego.cs.dl.util.concurrent.misc.SwingWorker() {
             public Object construct() {
                 jPanelToFillFinal.removeAll();
-                
+
                 try {
                     org.jdesktop.layout.GroupLayout jPanelLayout = new org.jdesktop.layout.GroupLayout(jPanelToFillFinal);
                     jPanelToFillFinal.setLayout(jPanelLayout);
@@ -724,7 +741,7 @@ public class WattosGui extends JFrame implements ActionListener {
         };
         worker.start();
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog jDialog1;
     private javax.swing.JEditorPane jEditorPane1;
@@ -761,7 +778,7 @@ public class WattosGui extends JFrame implements ActionListener {
     private javax.swing.JTextArea log;
     private javax.swing.JLabel status;
     // End of variables declaration//GEN-END:variables
-    
+
     static class JmolPanel extends JPanel {
         private static final long serialVersionUID = -788183597095243392L;
         JmolSimpleViewer viewer;
@@ -770,14 +787,14 @@ public class WattosGui extends JFrame implements ActionListener {
             adapter = new SmarterJmolAdapter(null);
             viewer = JmolSimpleViewer.allocateSimpleViewer(this, adapter);
         }
-        
+
         public JmolSimpleViewer getViewer() {
             return viewer;
         }
-        
+
         final Dimension currentSize = new Dimension();
         final Rectangle rectClip = new Rectangle();
-        
+
         public void paint(Graphics g) {
             getSize(currentSize);
             g.getClipBounds(rectClip);

@@ -48,23 +48,23 @@ public class StarNode {
         datanodes = new ArrayList();
         general = new StarGeneral();
         parent = null;
-    }    
+    }
 
     public void setStarParent(StarNode sn) {
-        parent                  = sn;        
+        parent                  = sn;
     }
-    
+
     /** General setter/getters to encapsulate the datanodes variable and add functionality
      *for parent relation.
      */
     public Object get( int idx ) {
         return datanodes.get(idx);
     }
-    
+
     public boolean add( Object o) {
         return add( datanodes.size(), o);
     }
-    
+
     public boolean add( int idx, Object o) {
         datanodes.add( idx, o );
         if ( o instanceof StarNode ) {
@@ -76,7 +76,7 @@ public class StarNode {
         }
         return true;
     }
-    
+
     /** Remove the starnode or tagtable element */
     public boolean remove( int idx ) {
         Object o = datanodes.remove(idx);
@@ -88,19 +88,19 @@ public class StarNode {
             tT.parent = null;
         }
         return true;
-    }        
+    }
 
     /** Doesn't support data outside SF yet.
      @see STARFilter#insertTag
      */
-    public boolean insertTag(String[] sFCategoryList, 
+    public boolean insertTag(String[] sFCategoryList,
                              String[] tagNameIdList,
                              String[] tagNameList,
                              String[] valueList,
                              String[] locList,
                             int tagCount ) {
 //        int tagCount = sFCategoryList.length;
-        for (int v=0;v<tagCount;v++) {            
+        for (int v=0;v<tagCount;v++) {
             String sFCategory = sFCategoryList[v];
             if ( sFCategory == null ) {
                 General.showError("Failed to get SF category for row rid: " + v );
@@ -178,7 +178,7 @@ public class StarNode {
     }
 
 
-    
+
     /** Remove the starnode or tagtable element except as by specification.
      *Algorithm is less efficient than removeAllButTagTableWithTagName so use it
      *after that if it makes sense.
@@ -226,7 +226,7 @@ public class StarNode {
                     }
                     // Remove sF without tT.
                     if ( sF.datanodes.size() == 0 ) {
-                        datanodes.remove(sF);                    
+                        datanodes.remove(sF);
                     }
                 }
             }
@@ -234,7 +234,7 @@ public class StarNode {
         return true;
     }
 
-    
+
     /** Remove the starnode or tagtable element except as by specification.
      *Doesn't support data outside SF yet.
      @see STARFilter#removeAllButTagTableWithTagName
@@ -250,7 +250,7 @@ public class StarNode {
 //                    General.showDebug("Removing "+ sF.title);
                     datanodes.remove(sF);
                     continue;
-                } 
+                }
                 // now what about if the saveframe is allowed but has tagtables to be removed.
                 for (int j=sF.datanodes.size()-1;j>=0;j--) {
                     Object p = sF.datanodes.get(j);
@@ -267,12 +267,12 @@ public class StarNode {
                 }
                 // Remove sF without tT.
                 if ( sF.datanodes.size() == 0 ) {
-                    datanodes.remove(sF);                    
+                    datanodes.remove(sF);
                 }
             }
         }
         return true;
-    }        
+    }
 
     /** Remove the starnode or tagtable element except as by specification.
      *Doesn't support data outside SF yet.
@@ -291,8 +291,8 @@ public class StarNode {
             }
         }
         return true;
-    }      
-    
+    }
+
     /**
      *Doesn't support data outside SF yet.
      */
@@ -309,13 +309,13 @@ public class StarNode {
             }
         }
         return true;
-    }        
+    }
 
     /** */
     public int size() {
         return datanodes.size();
     }
-    
+
 
     /** Return string in stead of output to a writer. Returns null if
      * unsuccessful.
@@ -329,7 +329,7 @@ public class StarNode {
         }
         return stw.toString();
     }
-    
+
 
     /** If the file name given ends with .gz it will be gzipped.
      */
@@ -337,7 +337,7 @@ public class StarNode {
         boolean status = false;
         File f = new File( fileName );
         BufferedWriter bw = null;
-        try {         
+        try {
             FileOutputStream fos = new FileOutputStream( f );
             if ( fileName.endsWith( ".gz" ) ) {
                 GZIPOutputStream gos = new GZIPOutputStream( fos );
@@ -345,9 +345,9 @@ public class StarNode {
                 bw = new BufferedWriter( osw );
             } else {
                 bw = new BufferedWriter( new OutputStreamWriter( fos ));
-            }                
+            }
             status = toSTAR( bw );
-            bw.close();            
+            bw.close();
         } catch ( FileNotFoundException e ) {
             General.showError("File not found: " +  e.getMessage() );
             return false;
@@ -360,7 +360,7 @@ public class StarNode {
 
     public boolean toSTAR( Writer w ) {
 //        General.showDebug("Doing toSTAR in starnode with name: " + title);
-        try {             
+        try {
             for (Iterator it=datanodes.iterator();it.hasNext();) {
                 Object o = it.next();
                 if ( o instanceof StarNode ) {
@@ -376,10 +376,10 @@ public class StarNode {
             General.showThrowable(e);
             return false;
         }
-        
+
         return true;
-    }        
-    
+    }
+
     /** According to the data types specified in the dictionary
      *translate it assuming that all are strings of type non-redundant.
      *
@@ -390,10 +390,10 @@ public class StarNode {
     public boolean translateToNativeTypesByDict( StarDictionary starDict, boolean isMMCIF) {
         //General.showDebug("Doing translate to native datatypes by dictionary definitions");
         TagTable tT = null;
-        boolean overallStatus = true;        
+        boolean overallStatus = true;
         for (Iterator it=datanodes.iterator();it.hasNext();) {
             boolean status = false;
-            Object o = it.next();                
+            Object o = it.next();
             if ( o instanceof TagTable ) {
                 tT = (TagTable) o;
                 status = tT.translateToNativeTypesByDict(starDict, isMMCIF);
@@ -407,9 +407,9 @@ public class StarNode {
         }
         return overallStatus;
     }
-    
+
     /** Recursively looks for the top star node which has info on like the
-     *preferred format. Usually it only takes a couple of look ups so it's 
+     *preferred format. Usually it only takes a couple of look ups so it's
      *very fast.
      */
     public StarNode getTopStarNode() {
@@ -419,9 +419,9 @@ public class StarNode {
             return parent.getTopStarNode();
         }
     }
-    
+
     /** Find the correct tagtable in the tree under this starnode.
-     * One can use the wild card '*' for the any of the arguments. Returns null if no tagtable is 
+     * One can use the wild card '*' for the any of the arguments. Returns null if no tagtable is
      *present in the tree. The saveframeNodeCategoryName is intended to be used in the future
      *perhaps, currently not supported.
      */
@@ -443,9 +443,9 @@ public class StarNode {
               (selectionName.equals( title )))) {
             return null;
         }
-        
+
         ArrayList result = new ArrayList(datanodes.size()); // give it the maximum number of elements possible.
-        
+
         for (Iterator it=datanodes.iterator();it.hasNext();) {
             Object o = it.next();
             if ( o instanceof StarNode ) {
@@ -476,9 +476,9 @@ public class StarNode {
         return getTagTable( StarGeneral.WILDCARD, columnName, showWarning );
     }
 
-    
+
     /** In the expectation of 1 and only 1 item to be returned. showWarning if
-     *not 1 is found 
+     *not 1 is found
      *Perfectly fine to use this to get the first tag table in a node.
      */
     public TagTable getTagTableByName( String tagTableName, boolean showError ) {
@@ -489,7 +489,7 @@ public class StarNode {
                 Relation r = tT.dbms.getRelation(tagTableName);
                 if ( r == null ) {
                     if ( showError ) {
-                        General.showError("Failed to find a tagtable with the name: [" + tagTableName + "] from dbms relation: " + r.name);
+                        General.showError("Failed to find a tagtable with the name: [" + tagTableName + "] from dbms relation: xxx");
                     }
                 }
                 return (TagTable) r;
@@ -502,9 +502,9 @@ public class StarNode {
     }
 
     /** In the expectation of 1 and only 1 item to be returned. showError if
-     *not 1 is found 
+     *not 1 is found
      */
-    public TagTable getTagTableBySaveFrameNameAndTagName( String saveFrameName, 
+    public TagTable getTagTableBySaveFrameNameAndTagName( String saveFrameName,
             String columnName, boolean showError ) {
         SaveFrame sF = getSaveFrameByName(saveFrameName, showError);
         if ( sF == null ) {
@@ -539,7 +539,7 @@ public class StarNode {
                 }
             } else {
                 General.showDebug("Skipping non saveFrame: " + o.toString());
-            }            
+            }
         }
         if ( showError ) {
             General.showError("Failed to find SaveFrame with the name: [" + saveFrameName + "]");
@@ -551,7 +551,7 @@ public class StarNode {
      *not 1 is found. Will still return 1 item if multiple are found.
      */
     public TagTable getTagTable( String saveframeNodeCategoryName, String columnName, boolean showWarning ) {
-//        General.showDebug("Looking for tagtable in sf: " + saveframeNodeCategoryName + 
+//        General.showDebug("Looking for tagtable in sf: " + saveframeNodeCategoryName +
 //                " with column: " +columnName);
         ArrayList tTList = getTagTableList(StarGeneral.WILDCARD,saveframeNodeCategoryName,StarGeneral.WILDCARD,columnName);
         if ( tTList == null ) {
@@ -564,29 +564,29 @@ public class StarNode {
                 General.showWarning("(in saveFrame: "+ getCategory() + ") for column name:" + columnName );
             }
             return null;
-        }    
+        }
         if ( tTList.size() > 1 ) {
             if ( showWarning ) {
                 General.showWarning("Find tTAssemblyList sf not once but: " + tTList.size());
                 General.showWarning("(in saveFrame: "+ getCategory() + ") for column name:" + columnName );
             }
 //            return null;
-        }    
+        }
         TagTable tT = (TagTable) tTList.get(0);
         return tT;
     }
-    
+
     public String getCategory() {
         return null;
     }
-        
+
     /** Find the correct saveframe in the tree under this starnode.
-     * One can use the wild card '*' for the any of the arguments. Returns null if no save frame is 
+     * One can use the wild card '*' for the any of the arguments. Returns null if no save frame is
      *present in the tree.
      */
     public ArrayList getSaveFrameListByCategory( String saveframeNodeCategoryName ) {
-        
-        ArrayList result = new ArrayList();        
+
+        ArrayList result = new ArrayList();
         for (Iterator it=datanodes.iterator();it.hasNext();) {
             Object o = it.next();
             if ( o instanceof StarNode ) { // Skip tag tables
@@ -598,19 +598,19 @@ public class StarNode {
             }
         }
         if ( result.size() == 0 ) {
-            return null; 
+            return null;
         }
         return result;
     }
-    
-    
+
+
     /** Only one column per table will be changed.
      *
      * @param tagNameRegexp
      * @param value
      * @return
      */
-    public boolean setAllByTagNameRegexp(String tagNameRegexp, String value) { 
+    public boolean setAllByTagNameRegexp(String tagNameRegexp, String value) {
         ArrayList tTList = getTagTableList(
                 StarGeneral.WILDCARD,
                 StarGeneral.WILDCARD,
@@ -628,14 +628,14 @@ public class StarNode {
             tT.setValueByColumn(labelColumnIDEcho, value);
         }
         return true;
-        
+
     }
-    
-    /** Find all saveframes in the tree under this starnode. Returns empty list if no save frame is 
+
+    /** Find all saveframes in the tree under this starnode. Returns empty list if no save frame is
      *present in the tree.
      */
-    public ArrayList getSaveFrameList() {        
-        ArrayList result = new ArrayList();        
+    public ArrayList getSaveFrameList() {
+        ArrayList result = new ArrayList();
         for (Iterator it=datanodes.iterator();it.hasNext();) {
             Object o = it.next();
             if ( o instanceof StarNode ) { // Skip tag tables
@@ -648,13 +648,13 @@ public class StarNode {
         }
         return result;
     }
-    
+
     /** Find the correct saveframe in the tree under this starnode.
-     * One can use the wild card '*' for the any of the arguments. Returns null if no save frame is 
+     * One can use the wild card '*' for the any of the arguments. Returns null if no save frame is
      *present in the tree.
      */
     public SaveFrame getSaveFrameByCategory( String saveframeNodeCategoryName, boolean showError ) {
-        
+
         ArrayList resultTmp = getSaveFrameListByCategory( saveframeNodeCategoryName );
         if ( resultTmp == null ) {
             if ( showError ) {
@@ -667,11 +667,11 @@ public class StarNode {
                 General.showError("Found sf not once but: " + resultTmp.size() + " for category name: " + saveframeNodeCategoryName );
             }
             return null;
-        }              
+        }
         SaveFrame result = (SaveFrame) resultTmp.get(0);
         return result;
-    }    
-    
+    }
+
     /** Will use the dictionary definitions to convert tagvalues that might be in primitive types like
      *floats to textual representations where definitions exist to do something else than the default
      *to text operations Wattos does. I.e. it will not convert data for which no dictionary definitions
@@ -699,15 +699,15 @@ public class StarNode {
                     General.showError("Failed to convert with dictionary text formatting for tag table: " + tT.toString(false,false,false,false,false,false));
                     return false;
                 }
-            } 
+            }
         }
         return true;
-    }   
-    
+    }
+
     /** human readible representation */
     public String toString(boolean showRows) {
         StringBuffer result = new StringBuffer();
-        result.append( "StarNode of type: " + StarGeneral.DATA_NODE_TYPE_DESCRIPTION[dataNodeType] + " has number of nodes: "+datanodes.size()+General.eol);        
+        result.append( "StarNode of type: " + StarGeneral.DATA_NODE_TYPE_DESCRIPTION[dataNodeType] + " has number of nodes: "+datanodes.size()+General.eol);
         for (Iterator it=datanodes.iterator();it.hasNext();) {
             Object o = it.next();
             if ( o instanceof StarNode ) {
@@ -718,7 +718,7 @@ public class StarNode {
                 TagTable tT = (TagTable) o;
                 result.append( "Tagtable:\n");
                 result.append( tT.toString(true,true,true,true,false,false) );
-            } 
+            }
         }
         return result.toString();
     }

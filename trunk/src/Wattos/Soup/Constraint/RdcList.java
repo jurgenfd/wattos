@@ -23,20 +23,20 @@ import Wattos.Utils.General;
  * @version 1
  */
 public class RdcList extends SimpleConstrList implements Serializable {
-    
+
     private static final long serialVersionUID = -1207795172754062330L;
-        
+
     /** Convenience variables */
     public StarDictionary starDict;
-            
-    
+
+
     public RdcList(DBMS dbms, RelationSoS relationSoSParent) {
         super(dbms, relationSoSParent);
 //        General.showDebug("back in RdcList constructor");
         constr = (Constr) relationSoSParent;
         resetConvenienceVariables();
     }
-    
+
     /** The relationSetName is a parameter so non-standard relation sets
      *can be created; e.g. AtomTmp with a relation named AtomTmpMain etc.
      */
@@ -47,12 +47,12 @@ public class RdcList extends SimpleConstrList implements Serializable {
         constr = (Constr) relationSoSParent;
         resetConvenienceVariables();
     }
-    
+
     public boolean init(DBMS dbms) {
 //        General.showDebug("now in RdcList.init()");
         super.init(dbms);
 //        General.showDebug("back in RdcList.init()");
-        
+
         name = Constr.DEFAULT_ATTRIBUTE_SET_RDC_LIST[RELATION_ID_SET_NAME];
 //        General.showDebug("Found ATTRIBUTE_SET_SUB_CLASS:"+Strings.toString(ATTRIBUTE_SET_SUB_CLASS));
         // MAIN RELATION in addition to the ones in SimpleConstr item.
@@ -65,28 +65,28 @@ public class RdcList extends SimpleConstrList implements Serializable {
             General.showThrowable(e);
             return false;
         }
-        
+
         // Create the fkcs without checking that the columns exist yet.
         DEFAULT_ATTRIBUTE_FKCS = ForeignKeyConstrSet.createFromRelation(dbms, DEFAULT_ATTRIBUTE_FKCS_FROM_TO, relationName);
         relation.insertColumnSet( 0, DEFAULT_ATTRIBUTES_TYPES, DEFAULT_ATTRIBUTES_ORDER,
                 DEFAULT_ATTRIBUTE_VALUES, DEFAULT_ATTRIBUTE_FKCS);
         addRelation( relation );
         mainRelation = relation;
-        
+
         return true;
     }
-    
-    
-    
+
+
+
     /**     */
     public boolean resetConvenienceVariables() {
         super.resetConvenienceVariables();
-        
+
         ATTRIBUTE_SET_SUB_CLASS      = Constr.DEFAULT_ATTRIBUTE_SET_RDC;
         ATTRIBUTE_SET_SUB_CLASS_LIST = Constr.DEFAULT_ATTRIBUTE_SET_RDC_LIST;
 
         entry_id                    = (int[])       mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[   RelationSet.RELATION_ID_COLUMN_NAME]);// Atom (starting with fkcs)
-        
+
         constrCount              = (int[])       mainRelation.getColumn(  Constr.DEFAULT_ATTRIBUTE_CONSTR_COUNT);
         violCount                = (int[])       mainRelation.getColumn(  Constr.DEFAULT_ATTRIBUTE_VIOL_COUNT  );
         violTotal                = (float[])     mainRelation.getColumn(  Constr.DEFAULT_ATTRIBUTE_VIOL_TOTAL  );
@@ -94,7 +94,7 @@ public class RdcList extends SimpleConstrList implements Serializable {
         violRms                  = (float[])     mainRelation.getColumn(  Constr.DEFAULT_ATTRIBUTE_VIOL_RMS    );
         violAll                  = (float[])     mainRelation.getColumn(  Constr.DEFAULT_ATTRIBUTE_VIOL_ALL    );
         violAvViol               = (float[])     mainRelation.getColumn(  Constr.DEFAULT_ATTRIBUTE_VIOL_AV_VIOL);
-        
+
         /**
          * constrLowCount              = (int[])       mainRelation.getColumn(  Constr.DEFAULT_ATTRIBUTE_CONSTR_LOW_COUNT);
          * violLowCount                = (int[])       mainRelation.getColumn(  Constr.DEFAULT_ATTRIBUTE_VIOL_LOW_COUNT  );
@@ -104,20 +104,20 @@ public class RdcList extends SimpleConstrList implements Serializable {
          * violLowAll                  = (float[])     mainRelation.getColumn(  Constr.DEFAULT_ATTRIBUTE_VIOL_LOW_ALL    );
          * violLowAvViol               = (float[])     mainRelation.getColumn(  Constr.DEFAULT_ATTRIBUTE_VIOL_LOW_AV_VIOL);
          */
-        
+
         subTypeList     = (String[])    mainRelation.getColumn(             Constr.DEFAULT_ATTRIBUTE_SUB_TYPE );
         subTypeListNR   =               mainRelation.getColumnStringSet(    Constr.DEFAULT_ATTRIBUTE_SUB_TYPE );
         formatList      = (String[])    mainRelation.getColumn(             Constr.DEFAULT_ATTRIBUTE_FORMAT );
         formatListNR    =               mainRelation.getColumnStringSet(    Constr.DEFAULT_ATTRIBUTE_FORMAT );
         programList     = (String[])    mainRelation.getColumn(             Constr.DEFAULT_ATTRIBUTE_PROGRAM  );
         programListNR   =               mainRelation.getColumnStringSet(    Constr.DEFAULT_ATTRIBUTE_PROGRAM);
-        
+
         position         = (int[])       mainRelation.getColumn(    Constr.DEFAULT_ATTRIBUTE_POSITION         );
-        
+
         constrCount                 = (int[])       mainRelation.getColumn(  Relation.DEFAULT_ATTRIBUTE_COUNT);
-        
+
         cutoff = mainRelation.getColumnFloat(    Constr.DEFAULT_ATTRIBUTE_CUTOFF);
-        
+
         if ( entry_id == null || constrCount == null
                 || subTypeList     == null
                 || subTypeListNR   == null
@@ -148,17 +148,17 @@ public class RdcList extends SimpleConstrList implements Serializable {
         }
         return true;
     }
-    
+
     /** */
     public boolean toXplor(BitSet todo, String fn, String atomNomenclature) {
         int fileCount = 0;
         for (int listRID = todo.nextSetBit(0); listRID >= 0; listRID=todo.nextSetBit(listRID+1)) {
             fileCount++;
-            BitSet ridsRDC = SQLSelect.selectBitSet(dbms, 
-                    constr.rdc.mainRelation, 
+            BitSet ridsRDC = SQLSelect.selectBitSet(dbms,
+                    constr.rdc.mainRelation,
                     Constr.DEFAULT_ATTRIBUTE_SET_RDC_LIST[RelationSet.RELATION_ID_COLUMN_NAME],
-                    SQLSelect.OPERATION_TYPE_EQUALS, 
-                    new Integer( listRID ), 
+                    SQLSelect.OPERATION_TYPE_EQUALS,
+                    new Integer( listRID ),
                     false);
             if ( ridsRDC == null ) {
                 General.showError("Failed to get ridsRDC for toXplor.");
@@ -174,8 +174,8 @@ public class RdcList extends SimpleConstrList implements Serializable {
         }
         return true;
     }
-    
-    
+
+
     public BitSet getRDCRidsInListAndTodo(int ridList, BitSet todoRDC ) {
         // Get all restraints in list
         BitSet result = SQLSelect.selectBitSet(dbms,
@@ -205,13 +205,13 @@ public class RdcList extends SimpleConstrList implements Serializable {
         return result;
     }
     */
-    
-    
-    
+
+
+
     /** Remove existing violation records for this list if they exist.
      *
     public boolean removeViolationsByListId( int currentRDCListId ) {
-        BitSet rdcViolRidSet = getRDCViolRidsByListId(currentRDCListId );        
+        BitSet rdcViolRidSet = getRDCViolRidsByListId(currentRDCListId );
         if ( rdcViolRidSet == null ) {
             General.showError("Failed to getRDCRidsInListAndTodo in removeViolationsByListId");
             return false;
@@ -222,7 +222,7 @@ public class RdcList extends SimpleConstrList implements Serializable {
         return constr.rdc.distConstrViol.removeRowsCascading(rdcViolRidSet,false);
     }
     */
-    
+
     /**
      * Calculates the violation for given list and only consider restraints
      *given in the todoRDC set.
@@ -234,18 +234,18 @@ public class RdcList extends SimpleConstrList implements Serializable {
         if ( Defs.isNull(cutoffValue)) {
             cutoffValue = .5f;
         }
-        
-        BitSet selectedModels = gumbo.model.selected;        
+
+        BitSet selectedModels = gumbo.model.selected;
         BitSet todoRDCFiltered = getRDCRidsInListAndTodo(currentRDCListId,todoRDC);
         if ( todoRDCFiltered == null ) {
             General.showError("Failed to getRDCRidsInListAndTodo");
             return false;
         }
 //        if ( todoRDC.cardinality() != todoRDCFiltered.cardinality() ) {
-//            General.showDebug("Filtered restraints because todoRDC: " + 
+//            General.showDebug("Filtered restraints because todoRDC: " +
 //                    todoRDC.cardinality() +" and todoRDCFiltered: " +  todoRDCFiltered.cardinality() );
 //        }
-        
+
         int count = todoRDCFiltered.cardinality();
         int selectedModelsCount = selectedModels.cardinality();
         if ( selectedModelsCount < 1 ) {
@@ -253,24 +253,24 @@ public class RdcList extends SimpleConstrList implements Serializable {
             return true;
         }
         float[][] violationMatrix = new float[count][selectedModelsCount];
-        
+
 //        General.showDebug("Calculating violations for rdcs numbering: "   + count +
 //                " in models numbering: "                      + selectedModelsCount);
 //        General.showDebug("Dcs   : " + PrimitiveArray.toString( todoRDCFiltered));
         int[] selectedModelArray = PrimitiveArray.toIntArray( selectedModels ); // for efficiency.
 //        General.showDebug("Models: " + PrimitiveArray.toString( selectedModelArray ));
-        
+
         if ( count == 0 ) {
             General.showWarning("No distance constraints selected in calcDistance.");
             return true;
         }
-        
+
         // Remove existing violation records for this list if they exist.
         if ( ! removeViolationsByListId(currentRDCListId)) {
             General.showError("Failed to get all indexes.");
             return false;
         }
-        
+
         IndexSortedInt indexMembAtom = (IndexSortedInt) rdc.distConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_RDC_MEMB_ID,                                    Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexNodeMemb = (IndexSortedInt) rdc.distConstrMemb.getIndex(Constr.DEFAULT_ATTRIBUTE_RDC_NODE_ID,                                    Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexMainNode = (IndexSortedInt) rdc.distConstrNode.getIndex(Constr.DEFAULT_ATTRIBUTE_SET_RDC[ RelationSet.RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_SORTED);
@@ -280,8 +280,8 @@ public class RdcList extends SimpleConstrList implements Serializable {
             General.showCodeBug("Failed to get all indexes.");
             return false;
         }
-        
-        int currentRDCViolId = 0;        
+
+        int currentRDCViolId = 0;
         int rdcCount         = 0;
         int violationCount  = 0;
         BitSet unlinkedAtomSelected = (BitSet) rdc.hasUnLinkedAtom.clone();
@@ -304,11 +304,11 @@ public class RdcList extends SimpleConstrList implements Serializable {
                 return false;
             }
 //            int currentRDCEntryId = rdc.entryIdMain[     currentRDCId ];
-            
+
             float[] lowTargetUppBound = rdc.getLowTargetUppTheoBound( currentRDCId );
             float low = lowTargetUppBound[ 0 ]; // cache some variables for speed and convenience.
             float upp = lowTargetUppBound[ 2 ];
-            
+
             rdc.violUppMax[currentRDCId] = -1f;
             rdc.violLowMax[currentRDCId] = -1f;
             // When the set of atoms involved is collected for the first model, the other models can easily be done too.
@@ -341,7 +341,7 @@ public class RdcList extends SimpleConstrList implements Serializable {
                         viol = 0f;
                     }
                 }
-                
+
                 //General.showDebug("**** Found dist, viol, upp, low: " + dist + ", " + viol + ", " + upp + ", " + low);
                 currentRDCViolId = rdc.distConstrViol.getNextReservedRow(currentRDCViolId);
                 // Check if the relation grew in size because not all relations can be adaquately estimated.
@@ -356,14 +356,14 @@ public class RdcList extends SimpleConstrList implements Serializable {
                     General.showCodeBug("Failed to get next reserved row in distance constraint violation table.");
                     return false;
                 }
-                
+
                 rdc.modelIdViol[  currentRDCViolId ] = selectedModelArray[ currentModelId ];
                 rdc.rdcMainIdViol[ currentRDCViolId ] = currentRDCId;
                 rdc.rdcListIdViol[ currentRDCViolId ] = rdc.rdcListIdMain[    currentRDCId ];
                 rdc.entryIdViol[  currentRDCViolId ] = rdc.entryIdMain[     currentRDCId ];
                 rdc.distance[     currentRDCViolId ] = dist;
                 rdc.violation[    currentRDCViolId ] = viol;
-                
+
                 int modelNumber = gumbo.model.number[ selectedModelArray[ currentModelId ] ];
                 if ( isUppViol && (rdc.violUppMax[currentRDCId] < viol) ) {
                     rdc.violUppMax[currentRDCId] = viol;
@@ -378,7 +378,7 @@ public class RdcList extends SimpleConstrList implements Serializable {
                 }
                 violationMatrix[rdcCount][currentModelId] = viol;
             } // end of loop per model
-            
+
             // check to see if there actually was a viol.
             if ( rdc.violUppMax[currentRDCId] == -1f ) {
                 rdc.violUppMax[currentRDCId] = Defs.NULL_FLOAT;
@@ -389,11 +389,11 @@ public class RdcList extends SimpleConstrList implements Serializable {
             rdcCount++;
         } // end of loop per constraint
         rdc.distConstrViol.cancelAllReservedRows();
-        
+
         float[] violArray   = PrimitiveArray.toFloatArray(  violationMatrix);
         float[] avSd        = Statistics.getAvSd(           violArray);
         float sum           = Statistics.getSum(            violArray);
-        
+
         constrCount[ currentRDCListId ] = count;
         violCount  [ currentRDCListId ] = violationCount;
         violTotal  [ currentRDCListId ] = sum*selectedModelsCount;
@@ -402,12 +402,12 @@ public class RdcList extends SimpleConstrList implements Serializable {
         violAll    [ currentRDCListId ] = avSd[0];
         violAvViol [ currentRDCListId ] = sum/violationCount;
         cutoff[      currentRDCListId ] = cutoffValue;
-        
+
 //        General.showDebug("Calculated distances for number of constraints: " + rdcCount + " in number of models: " + selectedModelArray.length);
         return true;
     }
     */
-    
+
     /**
      * @return <CODE>true</CODE> for success
      */
@@ -415,18 +415,18 @@ public class RdcList extends SimpleConstrList implements Serializable {
         // Please note that the following names are not hard-coded as star names.
         try {
             starDict = dbms.ui.wattosLib.starDictionary;
-//            tagNameRDCStats_Sf_category                      = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_list.Sf_category                 ");            
+//            tagNameRDCStats_Sf_category                      = starDict.getTagName( "distance_constraint_statistics","_Distance_constraint_stats_list.Sf_category                 ");
         } catch ( Exception e ) {
             General.showError("Failed to get all the tag names from dictionary compare code with dictionary");
             General.showThrowable(e);
             return false;
         }
-        if ( true
-//                tagNameRDCStats_Sf_category  == null 
-                ) {
+//        if ( true
+////                tagNameRDCStats_Sf_category  == null
+//                ) {
             General.showError("Failed to get all the tag names from dictionary, compare code with dictionary.");
             return false;
-        }
-        return true;
+//        }
+//        return true;
     }
 }

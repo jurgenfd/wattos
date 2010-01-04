@@ -30,28 +30,28 @@ import Wattos.Utils.*;
  *the file would end up. If the directory doesn't exist it will be created. When the file is deleted as
  *the last file in the directory the directory itself needs to be deleted to keep the tree optimal.
  *
- *This way not too many directories get created: 10^6 for 10^9 files and they only get created if/when 
+ *This way not too many directories get created: 10^6 for 10^9 files and they only get created if/when
  *needed. E.g. if the number of files is < 10^6 only 10^3 directories get created.
  *In one directory there will only be 10^3 files and 10^3 directories max. which is deemed optimal.
- *The method doesn't allow data to be spread out over multiple partitions but logical partitions 
+ *The method doesn't allow data to be spread out over multiple partitions but logical partitions
  *can be made very large nowadays.
  *
  * @author Jurgen F. Doreleijers
  * @version 0.1
  */
 public class DBFSFile {
-    
+
     /** Maximum number of digits that make up the maximum number of
      *files in the directory. Don't change this value unless you reinstall the database.*/
     private static final int NUMBER_DIGITS_PER_DIRECTORY = 3;
 
     /** Maximum number of files per directory which is 10**NUMBER_DIGITS_PER_DIRECTORY */
     private static final int MAX_FILES_PER_DIRECTORY = (int) Math.pow(10,NUMBER_DIGITS_PER_DIRECTORY);
-        
+
     /** The root of the dbfs change if a different range of ids needs to be used
      */
     private String dbfsRoot;
-    
+
     /** The actual file object which can't be modified directly
      */
     private File file;
@@ -64,14 +64,14 @@ public class DBFSFile {
      *at the cost of having to check for it all the time
      */
     private static boolean ENSURE_MINIMUM_NUMBER_DIRS = false;
-    
+
     /** Creates a new instance of DBFS */
-    public DBFSFile(int fileId ) {   
+    public DBFSFile(int fileId ) {
         this.fileId = fileId;
         init();
     }
-    
-    
+
+
     public boolean init() {
         dbfsRoot = g.getValueString("dbfs_dir");
         String fullFileName = getFullFileName();
@@ -82,11 +82,11 @@ public class DBFSFile {
         file = new File(fullFileName);
         /**
         General.showDebug("Number of files per directory is     : " + MAX_FILES_PER_DIRECTORY);
-        General.showDebug("Number of digits per directory is    : " + NUMBER_DIGITS_PER_DIRECTORY);        
+        General.showDebug("Number of digits per directory is    : " + NUMBER_DIGITS_PER_DIRECTORY);
          */
         return true;
     }
-    
+
     /** Returns a sorted list of all dbfs ids that exist in the filesystem.
      *The list is compiled by doing a recursive directory listing.
      */
@@ -109,51 +109,51 @@ public class DBFSFile {
                 result.add( Integer.parseInt( InOut.getFilenameBase(f) ));
             }
         } catch ( Throwable t ) {
-            General.showThrowable(t);            
+            General.showThrowable(t);
             return null;
         }
         result.sort();
         return result;
     }
-    
-    
+
+
     /** simply removes any and all empty sub dir.
      *Returns true if all are analyzed and deleted if applicable.
      */
     public boolean cleanEmptyDirs() {
         return InOut.removeEmptySubDirs( new File(dbfsRoot) );
     }
-    
-    
+
+
     /** Returns the full file name with dbfs root and possible subdirectories prepended.
      */
     public String getFullFileName() {
         if ( fileId < 0 ) {
             General.showError("Failed to format a full file name for negative id");
-            return null;            
+            return null;
         }
-         
+
         Parameters p = new Parameters(); // Printf parameters
         StringBuffer sb = new StringBuffer( );
         int fileIdLeft = fileId;
         int digitCount = NUMBER_DIGITS_PER_DIRECTORY;
-        
+
         // Get the path
         while ( fileIdLeft >= MAX_FILES_PER_DIRECTORY ) { // Need to insert a subdir.
             fileIdLeft /= MAX_FILES_PER_DIRECTORY;
-            p.add( fileIdLeft % MAX_FILES_PER_DIRECTORY );        
+            p.add( fileIdLeft % MAX_FILES_PER_DIRECTORY );
             sb.insert( 0, Format.sprintf("%0"+NUMBER_DIGITS_PER_DIRECTORY+"d", p)+File.separator); // could be cached for speed.
             digitCount += NUMBER_DIGITS_PER_DIRECTORY;
         }
         sb.insert(0, dbfsRoot + File.separator );
-        
+
         // Get the file name.
-        p.add( fileId );        
+        p.add( fileId );
         sb.append( Format.sprintf("%0"+digitCount+"d", p) );
-        sb.append( ".dat" );        
+        sb.append( ".dat" );
         return sb.toString();
     }
-    
+
     /** returns true if containing dir already existed or if it could be
      *created including any needed additional parents.
      */
@@ -165,7 +165,7 @@ public class DBFSFile {
         }
         return dir.mkdirs();
     }
-    
+
     /** Returns true if dir already didn't exist or if it could be removed.
      *Needs only to be called by the delete method.
      */
@@ -175,7 +175,7 @@ public class DBFSFile {
             General.showWarning("Dir didn't exist: " + dir );
             return true;
         }
-        
+
         if ( ! dir.isDirectory() ) {
             General.showError("Parent file isn't a dir: " + dir );
             return false;
@@ -191,8 +191,8 @@ public class DBFSFile {
         }
         return true;
     }
-    
-    
+
+
     /** Removes a bunch of them
      */
     public static boolean delete( int[] dbfsList ) {
@@ -206,8 +206,8 @@ public class DBFSFile {
         }
         return true;
     }
-    
-    
+
+
     /** Deletes
      *the file and depending on the settings (default false) also the directory if it is empty afterwards.
      *Returns true only if successfull
@@ -216,19 +216,19 @@ public class DBFSFile {
         if ( ! file.delete() ){
             General.showError("Failed to delete DBFSFile: " + file.toString());
             return false;
-        }        
+        }
         if ( ENSURE_MINIMUM_NUMBER_DIRS ) {
             if ( ! deleteContainingDirIfNeeded()) {
                 return false;
             }
-        }        
+        }
         return true;
     }
-    
+
     public String toString() {
         return file.toString();
     }
-    
+
     /**
      * Getter for property fileId.
      * @return Value of property fileId.
@@ -236,7 +236,7 @@ public class DBFSFile {
     public int getFileId() {
         return fileId;
     }
-    
+
     /**
      * Setter for property fileId.
      * @param fileId New value of property fileId.
@@ -245,7 +245,7 @@ public class DBFSFile {
         this.fileId = fileId;
         init();
     }
-        
+
     /**
      * Getter for property dbfsRoot.
      * @return Value of property dbfsRoot.
@@ -253,7 +253,7 @@ public class DBFSFile {
     public String getDbfsRoot() {
         return dbfsRoot;
     }
-    
+
     /**
      * Setter for property dbfsRoot.
      * @param dbfsRoot New value of property dbfsRoot.
@@ -262,7 +262,7 @@ public class DBFSFile {
         this.dbfsRoot = dbfsRoot;
         init();
     }
-    
+
     /**
      * Getter for property file.
      * @return Value of property file.
@@ -270,22 +270,22 @@ public class DBFSFile {
     public java.io.File getFile() {
         return file;
     }
-        
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         General.verbosity = General.verbosityDebug;
         General.showOutput("Doing tests");
-        //int fileId = 12345678;    
-        int fileId = 100;    
-        
+        //int fileId = 12345678;
+        int fileId = 100;
+
         DBFSFile dbfsFile = new DBFSFile(fileId);
         File from_file = new File( "M:\\bfiles\\README.txt" );
 
-        if ( false ) {
-            General.showError("Don't execute these tests unless you know what you're doing; perhaps you might destroy the archive.");
-        }
+//        if ( false ) {
+//            General.showError("Don't execute these tests unless you know what you're doing; perhaps you might destroy the archive.");
+//        }
         // Create a new set of dbfs files by copying a certain file to it.
         if ( true ) {
             for (fileId=9;fileId<10;fileId++) {
@@ -293,26 +293,26 @@ public class DBFSFile {
                 dbfsFile = new DBFSFile( fileId);
                 General.showOutput("File name is: " + dbfsFile );
                 //createContainingDir(testFile);
-                //General.showOutput("Creating dir if needed: " + createContainingDir(testFile));            
+                //General.showOutput("Creating dir if needed: " + createContainingDir(testFile));
                 dbfsFile.createContainingDirIfNeeded();
                 FileCopy.copy(from_file, dbfsFile.file, true, false);
                 //General.showOutput("Copying a file to it: " + FileCopy.copy(from_file, testFile, true, false));
             }
         }
-        
-        // Delete a dbfs file and the directory it is in if needed. Making sure not to delete the 
+
+        // Delete a dbfs file and the directory it is in if needed. Making sure not to delete the
         // top directory.
-        if ( false ) {
-            for (fileId=0;fileId<2000;fileId++) {
-                dbfsFile = new DBFSFile( fileId);
-                General.showOutput("Removing file with name: " + dbfsFile );
-                dbfsFile.delete();
-            }
-        }
-        
-        if ( false ) {
-            General.showOutput("Removing all empty (sub-)directories: " + dbfsFile.cleanEmptyDirs());
-        }
+//        if ( false ) {
+//            for (fileId=0;fileId<2000;fileId++) {
+//                dbfsFile = new DBFSFile( fileId);
+//                General.showOutput("Removing file with name: " + dbfsFile );
+//                dbfsFile.delete();
+//            }
+//        }
+//
+//        if ( false ) {
+//            General.showOutput("Removing all empty (sub-)directories: " + dbfsFile.cleanEmptyDirs());
+//        }
         General.showOutput("Done.");
     }
 }

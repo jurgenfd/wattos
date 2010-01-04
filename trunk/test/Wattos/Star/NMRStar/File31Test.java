@@ -33,29 +33,29 @@ import Wattos.Utils.Strings;
  * @author jurgen
  */
 public class File31Test extends TestCase {
-     
+
     String fs = File.separator;
-    // Below parameters are true by default. 
+    // Below parameters are true by default.
     //Note that the checks are dependent so e.g. for writeStar to be successful some (assume all) need to be done.
     boolean calcDist            = false;
     boolean getSurplus          = false;
     boolean doAssignment        = false;
     boolean doCompletenessCheck = false;
     boolean doClassification    = false;
-    boolean sort                = false;  
+    boolean sort                = false;
     boolean showTables          = false;
     boolean writeStar           = true;
     //int avg_method              = DistConstrList.DEFAULT_AVERAGING_METHOD_CENTER;
     int avg_method              = DistConstrList.DEFAULT_AVERAGING_METHOD_SUM;
     int monomers                = 1; // e.g. set to 2 for a symmetric dimer.
-    
+
 //    String baseInputName = "2hgh_wim_small_2007-05-25";
 //    String baseInputName = "1ai0_rem_small_out";
 //    String baseInputName = "2hgh_rem_small_out";
 //    String baseInputName = "2hgh_rest_chris";
     String baseInputName = "1brv_DOCR_small";
 //    String baseInputName = "2hgh-nmrif_small";
-    
+
     String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
     File inputDir       = new File( wattosRoot,"data"+fs+"test_data" );
     File outputDir      = new File( wattosRoot,"tmp_dir" );
@@ -68,7 +68,7 @@ public class File31Test extends TestCase {
     boolean status = true;
     long start;
     long taken;
-    
+
     public File31Test(String testName) {
         super(testName);
         // Select to show no output if all goes well because the routine in normal mode has
@@ -76,20 +76,20 @@ public class File31Test extends TestCase {
         General.setVerbosityToDebug();
 //        General.verbosity = General.verbosityNothing;
         //General.showEnvironment();
-        
+
         General.showDebug("wattos root: " + wattosRoot);
         General.showDebug("inputDir: " + inputDir);
-                
+
         if ( gumbo == null ) {
             fail("gumbo from ui still null");
         }
     }
-    
+
     public static Test suite() {
         TestSuite suite = new TestSuite(File31Test.class);
         return suite;
     }
-    
+
     public void test() {
         File input = new File(inputDir, baseInputName+".str.gz");
         URL url = InOut.getUrlFileFromName(input.toString());
@@ -119,10 +119,10 @@ public class File31Test extends TestCase {
         } else {
             General.showDebug("DBMS is consistent after reading in file.");
         }
-        
-        if ( false)
-            return;
-        
+
+//        if ( false)
+//            return;
+
         if ( calcDist && (!doCalcDist())) {
             fail("doCalcDist");
         }
@@ -149,7 +149,7 @@ public class File31Test extends TestCase {
         }
         return;
     }
-    
+
     public boolean doCalcDist() {
         float   max_viol_report     = 0.1f;
         int violationCountExpected  = 44;
@@ -176,7 +176,7 @@ public class File31Test extends TestCase {
         String exp = InOut.getLines(violListFileName,0,99999);
         msg = Strings.dos2unix(msg);
         exp = Strings.dos2unix(exp);
-        
+
 //        General.showDebug( "Produced constraint violations: "       +  General.eol + msg);
         if ( ! msg.equals( exp)) {
             if ( ! DiffPrint.printDiff( msg, exp )) {
@@ -191,15 +191,15 @@ public class File31Test extends TestCase {
         }
         return true;
     }
-    
-    
+
+
     public boolean getSurplus() {
         File refFile               = new File( inputDir,  baseInputName + "_surplus.txt");// reference
         File summaryAssignBase     = new File( outputDir, baseInputName ); // to generate
-        
+
         int surplusCountExpected  = 24;
         // no changes below in block.
-        
+
         //General.showDebug("minimum distance in redundantlib is: " + RedundantLib.LOWER_DISTANCE_MINIMUM);
         Surplus surplus = new Surplus(ui);
         float thresholdRedundancy           = Surplus.THRESHOLD_REDUNDANCY_DEFAULT; // percentage
@@ -231,7 +231,7 @@ public class File31Test extends TestCase {
         String exp = InOut.getLines(refFile.toString(),0,99999);
         msg = Strings.dos2unix(msg);
         exp = Strings.dos2unix(exp);
-        
+
 //        General.showDebug( "Found constraint surplus:"       +  General.eol + msg);
         assertEquals(surplusCountExpected, surplusCount);
          if ( ! msg.equals( exp)) {
@@ -247,11 +247,11 @@ public class File31Test extends TestCase {
         }
         return true;
     }
-    
+
     public boolean doCompletenessCheck() {
         File summaryFileNameCompleteness = new File(baseInputName + "_sumCompl.str");
         File refFile                     = new File(inputDir,  summaryFileNameCompleteness.toString()); // reference
-        summaryFileNameCompleteness      = new File(outputDir, summaryFileNameCompleteness.toString()); 
+        summaryFileNameCompleteness      = new File(outputDir, summaryFileNameCompleteness.toString());
         File file_name_base_dc           = new File(outputDir, baseInputName);
 
         Completeness completeness = new Completeness(ui);
@@ -263,10 +263,10 @@ public class File31Test extends TestCase {
         float max_dist_expected      = 5f;
         int   numb_shells_expected   = 6;
         float avg_power_models       = 1.0f;
-        
+
 //        boolean double_count    = false;
         boolean use_intra       = false;
-        boolean write_dc_lists  = false; 
+        boolean write_dc_lists  = false;
         String ob_file_name = CompletenessLib.STR_FILE_NAME;
         status = completeness.doCompletenessCheck(
                 max_dist_expectedOverall,
@@ -292,7 +292,7 @@ public class File31Test extends TestCase {
         }
         String msg = InOut.getLines(summaryFileNameCompleteness.toString(),0,99999);
         String exp = InOut.getLines(refFile.toString(),0,99999);
-        msg = Strings.dos2unix(msg);        
+        msg = Strings.dos2unix(msg);
         exp = Strings.dos2unix(exp);
         if ( ! msg.equals( exp)) {
             if ( ! DiffPrint.printDiff( msg, exp)) {
@@ -300,7 +300,7 @@ public class File31Test extends TestCase {
             }
             fail("Completeness representation in STAR file is not as before.");
         }
-       
+
         if ( ! dbms.foreignKeyConstrSet.checkConsistencySet(false, true) ) {
             fail("DBMS is NOT consistent after Completeness check.");
         } else {
@@ -308,12 +308,12 @@ public class File31Test extends TestCase {
         }
         return true;
     }
-    
+
     public boolean doAssignment() {
         File summaryFileNameAssign  = new File( outputDir, baseInputName + "_sumAssign.str" ); // to generate
         File listFile               = new File( inputDir,   "1brv_DOCR_small_sumAssign.str");// reference
         // no changes below in block.
-        
+
         //General.showDebug("minimum distance in redundantlib is: " + RedundantLib.LOWER_DISTANCE_MINIMUM);
         AssignStereo assignStereo = new AssignStereo(ui);
         float energy_abs_criterium                          = 0.1f;
@@ -349,7 +349,7 @@ public class File31Test extends TestCase {
         }
         return true;
     }
-    
+
     public boolean doClassification() {
         if ( ! constr.dc.getClassification(constr.dc.selected)) {
             fail("Failed to get classification");
@@ -361,7 +361,7 @@ public class File31Test extends TestCase {
         }
         return true;
     }
-    
+
     public boolean sort() {
         //constr.dc.order( constr.dc.selected );
         if ( ! constr.dc.sortAll( constr.dc.selected, 0)) {
@@ -376,14 +376,14 @@ public class File31Test extends TestCase {
         }
         return true;
     }
-    
-    
-    
+
+
+
     /**
      * gumbo.atom.mainRelation.removeRow(1,false);
      * General.showOutput("Removed atom 1 (rid 2) from main atom relation.");
      */
-    
+
     /**
      * BitSet rowSet = (BitSet) gumbo.model.mainRelation.used.clone();
      * rowSet.clear(1);
@@ -391,8 +391,8 @@ public class File31Test extends TestCase {
      * gumbo.model.mainRelation.removeRowsCascading(rowSet, false );
      * General.showOutput("Removed (cascading) all model from main model relation: " + PrimitiveArray.toString(rowSet));
      */
-    
-    
+
+
     /**
      * status = file.toWattos(url);
      * if ( ! status ) {
@@ -400,7 +400,7 @@ public class File31Test extends TestCase {
      * System.exit(1);
      * }
      */
-    
+
     /** Remove some models
      * start = System.currentTimeMillis();
      * BitSet rowSet = (BitSet) gumbo.model.mainRelation.used.clone();
@@ -424,7 +424,7 @@ public class File31Test extends TestCase {
         }
         taken = System.currentTimeMillis() - start;
         General.showDebug( "to STAR took: " + taken + "(" + (taken/1000.0) + " sec)" );
-        
+
 //        File listFile               = new File( inputDir,   outputFileName);// reference
 //        String msg = InOut.getLines(outputFile.toString(),0,99999);         // produced
 //        String exp = InOut.getLines(listFile.toString(),0,99999);           // expected
@@ -436,10 +436,10 @@ public class File31Test extends TestCase {
 //            }
 //            fail("Output STAR representation is not as before.");
 //        }
-        
+
         return true;
     }
-    
+
     public static boolean showTables(Gumbo gumbo, Constr constr ) {
         /**
          * String outputFileName2 = "1b4c_clean_mol_system_out2.str";
@@ -447,7 +447,7 @@ public class File31Test extends TestCase {
          * General.showError("Failed to convert TO nmr star 3.0 file FROM wattos.");
          * }
          */
-        
+
         /**
          * General.showDebug( "Produced entries: "     + gumbo.entry.mainRelation.toString() );
          * General.showDebug( "Produced models: "      + gumbo.model.mainRelation.toString() );
@@ -455,7 +455,7 @@ public class File31Test extends TestCase {
          * General.showDebug( "Produced residues: "    + gumbo.res.mainRelation.toString() );
          */
         //General.showDebug( "Produced atoms: "       + gumbo.atom.mainRelation.toString() );
-        
+
         //General.showDebug( "Produced dc atom: "       + constr.dc.distConstrAtom.toString() );
         //General.showDebug( "Produced dc memb: "       + constr.dc.distConstrMemb.toString() );
         //General.showDebug( "Produced dc node: "       + constr.dc.distConstrNode.toString() );

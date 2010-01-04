@@ -46,7 +46,7 @@ import org.jfree.data.xy.*;
  * @author Jurgen F. Doreleijers
  */
 public class Completeness {
-    
+
     UserInterface ui;
     DistConstr dc;
     DistConstrList dcList;
@@ -55,18 +55,18 @@ public class Completeness {
     float min_dist_observed       = 0f;
     float max_dist_observed       = 0f;
     int numb_shells_observed      = 0;
-    
+
     float min_dist_expected       = 0f;
     float max_dist_expected       = 0f;
     int numb_shells_expected      = 0;
-    
+
     float avg_power_models        = 0f;
     int avg_method                = 0;
     int monomers                  = 0;
-    
+
     DataBlock db = null;
     int[] todoModelArray = null;
-    
+
     /** Parallel to the Atom mainrelation rows. Don't delete atoms in the meanwhile!*/
     BitSet atomsObservableSet = null;
     /** Hashed by possible pseudoatom is the list of constituent atoms.
@@ -86,7 +86,7 @@ public class Completeness {
     /** The residue rids in the first model that have observable atoms */
     BitSet resAtomsObservableSet = null;
     private static final int NO_SIBLING_FOUND = -1;
-    
+
     /** Keeping track of restraints */
     BitSet USet = new BitSet();
     BitSet VSet = new BitSet();
@@ -103,7 +103,7 @@ public class Completeness {
     BitSet DSet = new BitSet();
     BitSet LSet = new BitSet();
     BitSet PSet = new BitSet();
-    
+
     public String tagNameNOE_compl_listSf_category;
 //    public String tagNameNOE_compl_listEntry_ID;
 //    public String tagNameNOE_compl_listCompl_list_ID;
@@ -171,17 +171,17 @@ public class Completeness {
     public String tagNameNOE_compl_shellCompl_cumul;
 //    public String tagNameNOE_compl_shellEntry_ID;
 //    public String tagNameNOE_compl_shellCompl_list_ID;
-    
+
     public StarDictionary starDict;
     /** Note that the string is given in Unix flavor */
     public static final String explanation;
     public static final String OVER_NUMBER_OF_SIGMAS_STR    = ">sigma";
     public static final String NO_MULTIMER_STR              = "no multimer";
     public static final String NO_INTRAS_STR                = "no intras";
-    
+
     /** The eight is used for overflow */
     public static final int MAX_SHELLS_OBSERVED = 9;
-    
+
     static {
         int i=1;
         String expl_1 = "\n" +
@@ -291,12 +291,12 @@ public class Completeness {
         starDict = ui.wattosLib.starDictionary;
         if ( ! initConvenienceVariablesStar()) {
             General.showError("Failed: Completeness.initConvenienceVariablesStar");
-        }        
+        }
     }
-    
+
     private boolean setTagTableClasses(SaveFrame sF) {
         TagTable tT = (TagTable) sF.get(1);
-        BitSet setClassMod = null; 
+        BitSet setClassMod = null;
         int rowIdx = 0;
         for (int class_iteration_id =0; class_iteration_id<DistConstr.DEFAULT_CLASS_NAMES.length;class_iteration_id++) {
             //General.showDebug("doing class: " + class_iteration_id);
@@ -312,19 +312,19 @@ public class Completeness {
             rowIdx = tT.getNewRowId(); // do no error handeling.
             //General.showDebug("Got row id: " + rowIdx);
             BitSet setClass = dc.mainRelation.getColumnBit( classificationName );
-            
+
             setClassMod = (BitSet) setClass.clone();
             setClassMod.and( ASet );
             int ASetLocalcount = setClassMod.cardinality();
-            
+
             setClassMod = (BitSet) setClass.clone();
             setClassMod.and( BSet );
             int BSetLocalcount = setClassMod.cardinality();
-            
+
             setClassMod = (BitSet) setClass.clone();
             setClassMod.and( MSet );
             int MSetLocalcount = setClassMod.cardinality();
-            
+
             float completenessPercentage = Defs.NULL_FLOAT;
             if ( BSetLocalcount != 0 ) {
                 completenessPercentage = 100f * MSetLocalcount / BSetLocalcount;
@@ -390,12 +390,12 @@ public class Completeness {
          */
         return true;
     }
-    
+
     /** Get the elements Mij etc. into a table.
      */
     private boolean setTagTableShell(SaveFrame sF) {
         TagTable tT = (TagTable) sF.get(2);
-        
+
         // BiSet contributions in B that fall within shell i (exp)/ j (obs) distance
         String[] dcSetNamesB  = new String[numb_shells_expected];
         String[] dcSetNamesMi = new String[numb_shells_expected];
@@ -411,7 +411,7 @@ public class Completeness {
         dcSetNames = Strings.append( dcSetNames, dcSetNamesB);
         dcSetNames = Strings.append( dcSetNames, dcSetNamesMi);
         dcSetNames = Strings.append( dcSetNames, dcSetNamesMj);
-        
+
         // MiSet contributions in M that fall within shell i for the distance in the ensemble
         // MijSet contributions in B that fall within shell i for the distance in the ensemble and in shell j for
         //      the observed NOE distance. Any constraint in Mij where i<j is a violated constraint.
@@ -431,7 +431,7 @@ public class Completeness {
                 return false;
             }
         }
-        
+
         BitSet[] dcBitSetB = new BitSet[numb_shells_expected];
         for (int s=0;s<numb_shells_expected;s++) {
             dcBitSetB[s] = dc.mainRelation.getColumnBit(dcSetNamesB[s]);
@@ -446,7 +446,7 @@ public class Completeness {
         Histogram2D m2 = new Histogram2D("Mj",numb_shells_expected, min_dist_expected, max_dist_expected, numb_shells_observed, min_dist_observed, max_dist_observed );
         FixedAxis xAxis = (FixedAxis) m2.xAxis();
         FixedAxis yAxis = (FixedAxis) m2.yAxis();
-        
+
         for (int rid=ASet.nextSetBit(0);rid>=0;rid=ASet.nextSetBit(rid+1)) {
             float[] d = dc.getLowTargetUppTheoBound(rid);
             a1.fill(d[DistConstr.THE_IDX]);
@@ -482,7 +482,7 @@ public class Completeness {
              * }
              */
         }
-        
+
         nf.setMinimumFractionDigits(0);
         nf.setMaximumFractionDigits(0);
         int sumB = 0;
@@ -510,7 +510,7 @@ public class Completeness {
                 }
                 tT.setValue(rid, colName, nf.format(matched));
             }
-            
+
             sumB += b1.binEntries(indexI);
             sumM += m1.binEntries(indexI);
             float compl_cumul = Defs.NULL_FLOAT;
@@ -532,7 +532,7 @@ public class Completeness {
             tT.setValue(rid, tagNameNOE_compl_shellCompl_shell,      compl_shell);
         }
 //        String colNameAnn;
-        
+
         // Get the sums
         rid = tT.getNewRowId();
         tT.setValue(rid, Relation.DEFAULT_ATTRIBUTE_ORDER_ID,       rid);
@@ -552,7 +552,7 @@ public class Completeness {
             }
             tT.setValue(rid, colName, nf.format(matched));
         }
-        
+
         /** Observed contacts
          * rid = tT.getNewRowId();
          * float lowEdge = (float) xAxis.binUpperEdge(numb_shells_expected-1); // could be simpler.
@@ -562,8 +562,8 @@ public class Completeness {
          * tT.setValue(rid, tagNameNOE_compl_shellExpected_NOEs,    0); // by definition
          * tT.setValue(rid, tagNameNOE_compl_shellMatched_NOEs,     m1.binEntries(Histogram1D.OVERFLOW));
          */
-        
-        
+
+
         // Remove the dcSets from dc.
         for (int c=0;c< dcSetNames.length;c++) {
             if ( dc.mainRelation.removeColumn( dcSetNames[ c ]) == null) {
@@ -571,18 +571,18 @@ public class Completeness {
                 return false;
             }
         }
-        
+
         return true;
     }
-    
-    
+
+
     /** Get the elements per residue into a table.
      */
-    private boolean setTagTableRes(SaveFrame sF, String file_name_base_dc) {        
+    private boolean setTagTableRes(SaveFrame sF, String file_name_base_dc) {
         TagTable tT = (TagTable) sF.get(3);
 //        String tagNameResRid = "Temp_Res_Rid"; // used for plotting data directly of off tT.
 //        tT.insertColumn(tagNameResRid, Relation.DATA_TYPE_INT,null);
-        
+
         // Get the (index -1) of last observable residue
         int resMax = resAtomsObservableSet.length();
         if ( resMax < 0 ) {
@@ -592,7 +592,7 @@ public class Completeness {
         Histogram1D b1 = new Histogram1D("B", resMax+1, 0, resMax+1);
         Histogram1D m1 = new Histogram1D("M", resMax+1, 0, resMax+1);
 //        FixedAxis xAxis = (FixedAxis) m1.xAxis();
-        
+
         BitSet dcToDo = ASet;
         Histogram1D hisToDo = a1;
         for (int s=0;s<3;s++) {
@@ -606,7 +606,7 @@ public class Completeness {
             }
             for (int rid=dcToDo.nextSetBit(0);rid>=0;rid=dcToDo.nextSetBit(rid+1)) {
                 BitSet atomRidSet = dc.getAtomRidSet(rid);
-                BitSet resRidSet = gumbo.atom.getResidueList(atomRidSet);                
+                BitSet resRidSet = gumbo.atom.getResidueList(atomRidSet);
                 // Set all involved residues once per restraint.
                 for (int rrid=resRidSet.nextSetBit(0);rrid>=0;rrid=resRidSet.nextSetBit(rrid+1)) {
                     double d = (double) rrid;
@@ -641,7 +641,7 @@ public class Completeness {
             tT.setValue(rid, tagNameNOE_compl_resRst_match_count,       m1.binEntries(rrid));
             tT.setValue(rid, tagNameNOE_compl_resCompl_cumul,           compl_cumul);
         }
-        
+
         float[] av_sd = tT.getAvSd(tagNameNOE_compl_resCompl_cumul);
         if ( av_sd == null ) {
             General.showWarning("Failed to get the average and standard deviation of a column: " +
@@ -669,10 +669,10 @@ public class Completeness {
                     rowIdx++;
                 }
             }
-        }        
+        }
         return true;
     }
-    
+
     /** Convenience method.
      */
     public boolean doCompletenessCheck(
@@ -720,8 +720,8 @@ public class Completeness {
         }
         return true;
     }
-    
-    
+
+
     /** Analyzes the first selected entry for completeness of selected distance constraints
      *with respect to selected atoms.
      * Reset the completeness lib first in the ui if needed to change from standard.
@@ -747,27 +747,27 @@ public class Completeness {
             boolean write_dc_lists,
             String file_name_base_dc
             ) {
-        
+
         if ( numb_shells_observed > MAX_SHELLS_OBSERVED ) {
             numb_shells_observed = MAX_SHELLS_OBSERVED;
         }
-        
+
         if ( ! isPerShellRun ) {
             max_dist_expected = max_dist_expectedOverall;
         }
-        
+
         this.min_dist_expected      = min_dist_expected;
         this.max_dist_expected      = max_dist_expected;
         this.numb_shells_expected   = numb_shells_expected;
-        
+
         this.min_dist_observed      = min_dist_observed;
         this.max_dist_observed      = max_dist_observed;
         this.numb_shells_observed   = numb_shells_observed;
-        
+
         this.avg_power_models       = avg_power_models;
         this.avg_method             = avg_method;
         this.monomers               = monomers;
-        
+
         boolean showValues = false;
         // Store the selections that can get changed by this code.
         BitSet atomSelectedSave     = (BitSet) gumbo.atom.selected.clone();
@@ -775,7 +775,7 @@ public class Completeness {
         BitSet entrySelectedSave    = (BitSet) gumbo.entry.selected.clone();
         BitSet dcSelectedSave       = (BitSet) dc.selected.clone();
         BitSet dcListSelectedSave   = (BitSet) dcList.selected.clone();
-                
+
         // find first entry and store variable in class instance.
         currentEntryId = dc.gumbo.entry.selected.nextSetBit(0);
         if ( currentEntryId < 0 ) {
@@ -814,7 +814,7 @@ public class Completeness {
         int modelCount = todoModelArray.length;
         doFancyAveraging = (avg_power_models!=1.0f); // faster to do simpel averaging.
         General.showDebug("doFancyAveraging: " + doFancyAveraging);
-        
+
         // Find constraints
         BitSet dcInEntry = SQLSelect.selectBitSet( dc.dbms,
                 dc.mainRelation,
@@ -827,7 +827,7 @@ public class Completeness {
             General.showWarning("No selected dcs in first selected entry.");
             return true;
         }
-        
+
         // Find selected atoms in first model.
         BitSet atomInModel = SQLSelect.selectBitSet( dc.dbms,
                 dc.gumbo.atom.mainRelation,
@@ -836,24 +836,24 @@ public class Completeness {
         BitSet atomSelectedInModel = (BitSet) atomInModel.clone();
         atomSelectedInModel.and( dc.gumbo.atom.selected );
         int atomSelectedInModelCount = atomSelectedInModel.cardinality();
-        
+
         // Get residue list
         resInModel = SQLSelect.selectBitSet( dc.dbms,
                 dc.gumbo.res.mainRelation,
                 Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RelationSet.RELATION_ID_COLUMN_NAME ],
                 SQLSelect.OPERATION_TYPE_EQUALS, currentModelRidInt, false );
-        
+
         // Find dc constraint list properties
         // First constraint:
 //        int dcCurrentRID = dcSelectedInEntry.nextSetBit(0);
 //        int dcListCurrentRID = dc.dcListIdMain[ dcCurrentRID ];
 //        Constr constr = (Constr) dc.relationSoSParent;
-        
+
         if ( atomSelectedInModelCount < 1 ) {
             General.showError("No selected atoms in first selected entry.");
             return false;
         }
-        
+
         if ( ! getAtomsObservableObjects(currentModelRid, atomSelectedInModel)) {
             General.showError("Failed to get the observable atoms within the first model");
             return false;
@@ -866,15 +866,15 @@ public class Completeness {
             General.showWarning("No observables.");
             return true;
         }
-        
-        
+
+
         // Set the newDCListId class attribute
         if ( ! splitDCs( dcSelectedInEntry )) { // input dcs may be spread over multiple dclists.
             General.showError("Failed to split the selected DCs in entry to a new list with one potentially observable contribution per constraint.");
             return false;
         }
-        
-        
+
+
         /** Create the sets anew */
         String[] dcSetNames = {
             "USet", // universe of experimental constraints
@@ -924,10 +924,10 @@ public class Completeness {
         DSet =  dc.mainRelation.getColumnBit( "DSet" );
         LSet =  dc.mainRelation.getColumnBit( "LSet" );
         PSet =  dc.mainRelation.getColumnBit( "PSet" );
-        
+
         BitSet[] setsToWrite    = {  USet,   VSet,   WSet,   ESet,   OSet,   ISet,   SSet,   ASet,   BSet,   MSet,   CSet,   DSet };
         String[] setsToWriteStr = { "USet", "VSet", "WSet", "ESet", "OSet", "ISet", "SSet", "ASet", "BSet", "MSet", "CSet", "DSet" }; // stupid
-        
+
         BitSet splitDcs = SQLSelect.selectBitSet( dc.dbms,
                 dc.mainRelation,
                 Constr.DEFAULT_ATTRIBUTE_SET_DC_LIST[ RelationSet.RELATION_ID_COLUMN_NAME ],
@@ -976,7 +976,7 @@ public class Completeness {
         boolean updateOriginalConstraints = false;
         boolean onlyFilterFixed = false;
 //        boolean append = true;
-        
+
         result = surplus.getSelectionSurplus(
                 XSet,
                 Surplus.THRESHOLD_REDUNDANCY_DEFAULT,
@@ -994,11 +994,11 @@ public class Completeness {
             General.showError( "Failed to get surplus.");
             return false;
         }
-        
+
         SSet.or( result );
         General.showDebug("Constraints (S): " + PrimitiveArray.toString( SSet, showValues  ));
         XSet.andNot( SSet ); // keeps shrinking
-        
+
         // DO THE LOGIC AGAIN.
         BitSet cleared = (BitSet) ESet.clone();
         cleared.or( OSet );
@@ -1007,24 +1007,24 @@ public class Completeness {
         ASet.clear();
         ASet.or(USet);
         ASet.andNot( cleared );
-        
+
         cleared = (BitSet) ISet.clone();
         cleared.or( SSet );
         BSet.clear();
         BSet.or(VSet);
         BSet.andNot( cleared );
-        
+
         MSet.or( ASet );
         MSet.and( BSet );
         CSet.or(ASet);
         CSet.andNot(MSet);
         DSet.or(BSet);
         DSet.andNot(MSet);
-        
+
         WSet.clear();
         WSet.or( USet );
         WSet.or( VSet );
-        
+
         int USetCount = USet.cardinality();
         int VSetCount = VSet.cardinality();
         int ESetCount = ESet.cardinality();
@@ -1036,7 +1036,7 @@ public class Completeness {
         int MSetCount = MSet.cardinality();
         int CSetCount = CSet.cardinality();
         int DSetCount = DSet.cardinality();
-        
+
         float overall_completeness_factor = Defs.NULL_FLOAT;
         if ( !isPerShellRun ) {
             if ( BSetCount != 0 ) {
@@ -1044,14 +1044,14 @@ public class Completeness {
             } else {
                 General.showWarning("The completeness is undefined because there aren't any expected constraints.");
             }
-            
+
             if ( Defs.isNull( overall_completeness_factor )) {
                 General.showWarning("Failed to calculate the completeness");
             } else {
                 General.showOutput( "Overal completeness is " + overall_completeness_factor );
             }
         }
-        
+
         gumbo.entry.selected.clear();
         gumbo.entry.selected.set(currentEntryId);   // only use the current entry
         gumbo.mol.selected.clear();  // clearing the molecules will disable writing them
@@ -1081,7 +1081,7 @@ public class Completeness {
             }
         }
         int entryId = gumbo.entry.getEntryId();
-        
+
         if ( ! isPerShellRun ) {
             // Create star nodes
             db = new DataBlock();
@@ -1098,7 +1098,7 @@ public class Completeness {
             db.add(sF);
             int rowIdx = 0;
             // INTRO
-            
+
             TagTable tT = (TagTable) sF.get(0);
             tT.setValue(rowIdx, Relation.DEFAULT_ATTRIBUTE_ORDER_ID , 0);
             tT.setValue(rowIdx, tagNameNOE_compl_listModel_count,     modelCount);
@@ -1112,7 +1112,7 @@ public class Completeness {
             tT.setValue(rowIdx, tagNameNOE_compl_listCompl_cutoff,    max_dist_expected);
             tT.setValue(rowIdx, tagNameNOE_compl_listCompl_cumul,     overall_completeness_factor);
             tT.setValue(rowIdx, tagNameNOE_compl_listRst_unexp_count, dcSelectedInEntry.cardinality());
-            
+
             tT.setValue(rowIdx, tagNameNOE_compl_listRestraint_count, USetCount);
             tT.setValue(rowIdx, tagNameNOE_compl_listPair_count,      VSetCount);
             tT.setValue(rowIdx, tagNameNOE_compl_listRst_excep_count, ESetCount);
@@ -1124,9 +1124,9 @@ public class Completeness {
             tT.setValue(rowIdx, tagNameNOE_compl_listRst_match_count, MSetCount);
             tT.setValue(rowIdx, tagNameNOE_compl_listRst_unmat_count, CSetCount);
             tT.setValue(rowIdx, tagNameNOE_compl_listRst_exnob_count, DSetCount);
-            
+
             tT.setValue(rowIdx, tagNameNOE_compl_listDetails,         explanation);
-            
+
             // CLASSES
             if ( ! setTagTableClasses( sF )) {
                 General.showError("Failed setTagTableClasses");
@@ -1158,23 +1158,23 @@ public class Completeness {
                 return false;
             }
         }
-        
+
         // Restore the selections that can get changed by this code.
         gumbo.atom.selected.clear();
         gumbo.mol.selected.clear();
         gumbo.entry.selected.clear();
         dc.selected.clear();
         dcList.selected.clear();
-        
+
         gumbo.atom.selected.or(     atomSelectedSave);
         gumbo.mol.selected.or(      molSelectedSave);
         gumbo.entry.selected.or(    entrySelectedSave);
         dc.selected.or(             dcSelectedSave);
         dcList.selected.or(         dcListSelectedSave);
-        
+
         return true;
     }
-    
+
     /**Make a list of restraints from the (collapsed) atoms of the
      *original restraints.
      *For atoms that are not stereospecifically observable but their representing
@@ -1186,7 +1186,7 @@ public class Completeness {
         resAtomsObservableSet = new BitSet();
         atomsObservableCombos = new ArrayList();
         indexToCombo = new HashMap();
-        
+
         String pseudoAtomName = null;
         int pseudoAtomType = Defs.NULL_INT;
 //        int atomCountInPseudo = Defs.NULL_INT;
@@ -1196,17 +1196,17 @@ public class Completeness {
             String resName      = gumbo.res.nameList[ currentResRid ];
             String atomName     = gumbo.atom.nameList[ currentAtomRid ];
             //General.showDebug("Considering selected atom: " + atomName + " in residue type: " + resName );
-            
+
             ArrayList tmpObsAtomList = (ArrayList) ui.wattosLib.completenessLib.obs.get( resName );
             if ( tmpObsAtomList == null ) {
                 continue; // Failure to get completeness library for this residue name means it's not considered observable.
             }
-            
+
             pseudoAtomName = null;
             pseudoAtomType = Defs.NULL_INT;
 //            atomCountInPseudo = Defs.NULL_INT;
-            
-            
+
+
             if ( tmpObsAtomList.contains( atomName )) {
                 pseudoAtomName = atomName;
                 //General.showDebug("It's a simple observable atom: " + atomName);
@@ -1244,8 +1244,8 @@ public class Completeness {
             resAtomsObservableSet.set( ps.getResRid()); // mark the residue as having observable atoms
             //General.showDebug("Added atom: " + ps);
         }
-        
-        
+
+
         Collections.sort( atomsObservableCombos );
         Integer atomsObservableCombosIndex = null;
         PseudoAtom ps = null;
@@ -1264,18 +1264,18 @@ public class Completeness {
 //         General.showDebug("Found observable atom combos in model (sorted)                  : " + Strings.toString( atomsObservableCombos, true ) );
 //         General.showOutput("Found observable atoms in model             : " + gumbo.atom.toString(atomsObservableSet));
 //         General.showOutput("Index observable atoms to combo id          : " + Strings.toString(indexToCombo));
-         
+
          if ( atomsObservableCombos.size() == 0) {
              General.showWarning("Failed to find any observable atom(-group)");
          }
         return true;
     }
-    
-    
+
+
     /**Make a new list of dc restraints from the selected dcs in the entry with only 1 potentially observable
      *contribution per constraint.
      *NOTES:
-     *<PRE> 
+     *<PRE>
      *-1- this method will return success status but also set the new dc list rid variable: newDCListId
      *-2- The first selected constraint determines the dc list attributes like averaging method etc.
      *Pseudo code:
@@ -1315,7 +1315,7 @@ public class Completeness {
         int newDCMembId = 0;
         int newDCNodeId = 0;
         int newDCId     = 0;
-        
+
         int dcCountTotal = dcSelectedInEntry.cardinality();
         General.showDetail("Number of distance constraints in list(s): " + dcCountTotal);
         if ( dcCountTotal < 1 ) {
@@ -1327,7 +1327,7 @@ public class Completeness {
         dc.distConstrNode.reserveRows( dcCountTotal * 5);
         dc.distConstrMemb.reserveRows( dcCountTotal * 10);
         dc.distConstrAtom.reserveRows( dcCountTotal * 30);
-        
+
         // IMPORTANT sets instance variable newDCListId
         newDCListId = dcList.mainRelation.getNewRowId();
         if ( newDCListId < 0 ) {
@@ -1347,7 +1347,7 @@ public class Completeness {
         //dcList.avgMethod[ newDCListId ]         = DistConstrList.DEFAULT_AVERAGING_METHOD;
         //dcList.numberMonomers[ newDCListId ]    = DistConstrList.DEFAULT_AVERAGING_MONOMER_COUNT;
         dcList.selected.set( newDCListId );
-        
+
         // These indexes don't need to be updated if they're only used to lookup rows that exist at this point
         // I.e. not the new ones added by this routine.
         IndexSortedInt indexMembAtom = (IndexSortedInt) dc.distConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_MEMB_ID,                                    Index.INDEX_TYPE_SORTED);
@@ -1359,9 +1359,9 @@ public class Completeness {
             General.showCodeBug("Failed to get all indexes to dc main in atom/memb/node");
             return false;
         }
-        
+
         int newDCCount=0;
-        
+
         // FOR EACH CONSTRAINT
         for (int dcCount = 1;currentDCId>=0;currentDCId=dcSelectedInEntry.nextSetBit(currentDCId+1),dcCount++) {
             if ( ! dc.mainRelation.used.get( currentDCId ) ) {
@@ -1384,7 +1384,7 @@ public class Completeness {
                 General.showError("Failed to order nodes by order column");
                 return false;
             }
-            
+
             // FOR EACH NODE
             for ( int currentDCNodeBatchId=0, dCNodeNumber=1;currentDCNodeBatchId<dcNodes.size();currentDCNodeBatchId++,dCNodeNumber++) {
                 currentDCNodeId = dcNodes.getQuick( currentDCNodeBatchId );
@@ -1411,7 +1411,7 @@ public class Completeness {
                 // Determines which of the two it is.
                 BooleanArrayList isInComboListI = null;
                 BooleanArrayList isInComboListJ = null;
-                
+
                 // FOR EACH MEMBER (usually just 2)
                 for (int currentDCMembBatchId=0;currentDCMembBatchId<dcMembs.size(); currentDCMembBatchId++) {
                     int currentDCMembID = dcMembs.getQuick( currentDCMembBatchId );
@@ -1423,7 +1423,7 @@ public class Completeness {
                         General.showError("Didn't find a single atom for a member in constraint node (" + dCNodeNumber + "): for constraint number: " + dcCount);
                         return false;
                     }
-                    
+
                     if ( ! PrimitiveArray.orderIntArrayListByIntArray( dcAtoms, dc.orderAtom )) {
                         General.showError("Failed to order atoms by order column");
                         return false;
@@ -1468,7 +1468,7 @@ public class Completeness {
                      * }
                      * //General.showDebug("AFTER removeDuplicates atoms : " + PrimitiveArray.toString( dcAtoms ));
                      */
-//                    General.showDebug("After lookup and remove duplicates; rids of dc atoms in constraint node (" + dCNodeNumber + "): " + PrimitiveArray.toString( dcAtoms ));                    
+//                    General.showDebug("After lookup and remove duplicates; rids of dc atoms in constraint node (" + dCNodeNumber + "): " + PrimitiveArray.toString( dcAtoms ));
 //                    General.showDebug("in combo?                    : " + PrimitiveArray.toString( isInComboList ));
                     if ( currentDCMembBatchId == 0) { // switch between the 2 members
                         dcAtomsI = dcAtoms;
@@ -1478,7 +1478,7 @@ public class Completeness {
                         isInComboListJ = isInComboList;
                     }
                 } // end of loop per member
-                
+
                 // match constraints to the closest permutation in the model(s).
                 ArrayList matchedConstraintList = matchConstraints(dcAtomsI,dcAtomsJ,isInComboListI,isInComboListJ);
                 if ( (matchedConstraintList == null) ||(matchedConstraintList.size()<1) ) {
@@ -1487,7 +1487,7 @@ public class Completeness {
                     continue;
 //                    return false;
                 }
-                
+
                 for ( int m=0;m<matchedConstraintList.size();m++ ) {
                     Object[] match = (Object[]) matchedConstraintList.get(m);
                     if ( match == null ) {
@@ -1498,7 +1498,7 @@ public class Completeness {
                     int dcAtomJ         = dcAtomsJ.getQuick( ((Integer) match[1]).intValue());
                     boolean isInComboI  = ((Boolean) match[2]).booleanValue();
                     boolean isInComboJ  = ((Boolean) match[3]).booleanValue();
-                    
+
                     // EACH NEW DC
                     // Now a new constraint will be created for each combination of member I dcAtom/combo and member J dcAtom/combo
                     newDCCount++;
@@ -1521,7 +1521,7 @@ public class Completeness {
                     //dc.entryIdMain[             newDCId ] = currentEntryId; // need to be the same.
                     dc.selected.set(            newDCId );
                     dc.hasUnLinkedAtom.clear(   newDCId ); //TODO figure out which need to be set !
-                    
+
                     // EACH NEW DC node
                     newDCNodeId = dc.distConstrNode.getNextReservedRow(currentDCNodeId);
                     if ( newDCNodeId == Relation.DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW ) {
@@ -1544,7 +1544,7 @@ public class Completeness {
                     dc.downId[          newDCNodeId ] = Defs.NULL_INT; // Not needed because only 1 node per constraint.
                     dc.rightId[         newDCNodeId ] = Defs.NULL_INT;
                     dc.logicalOp[       newDCNodeId ] = Defs.NULL_INT;
-                    
+
                     // FOR EACH NEW member
                     for (int dCMembNumb = 0;dCMembNumb<2;dCMembNumb++) {
                         //General.showDebug("Generating new dc member: for contribution memb: " + dCMembNumb);
@@ -1560,14 +1560,14 @@ public class Completeness {
                             General.showCodeBug("Failed to get next reserved row in member distance constraint table.");
                             return false;
                         }
-                        
+
                         dc.dcNodeIdMemb[    newDCMembId ] = newDCNodeId;  // funny enough this table has only all-fkc columns
                         dc.dcMainIdMemb[    newDCMembId ] = newDCId;
                         dc.dcListIdMemb[    newDCMembId ] = newDCListId;
                         dc.entryIdMemb[     newDCMembId ] = currentEntryId;
                         dc.numbMemb[        newDCMembId ] = dCMembNumb+1;
-                        
-                        
+
+
                         int dcAtom = Defs.NULL_INT;
                         boolean isInCombo = false;
 //                        int obs = Defs.NULL_INT;
@@ -1635,7 +1635,7 @@ public class Completeness {
                 } // end of loop per match
             } // end of loop per node
         } // end of loop per constraint
-        
+
         // Before returning, free some space; otherwise the rows are still marked -in use-
         boolean status_1 = true; //ui.constr.dcList.mainRelation.cancelAllReservedRows();
         boolean status_2 = dc.mainRelation.cancelAllReservedRows();
@@ -1652,8 +1652,8 @@ public class Completeness {
         }
         return true;
     }
-    
-    
+
+
     /** Remove duplicates considering the same int for different type of refs arent' duplicates.
      */
     public boolean removeDuplicates(IntArrayList dcAtoms, BooleanArrayList isInComboList) {
@@ -1671,8 +1671,8 @@ public class Completeness {
         }
         return true;
     }
-    
-    
+
+
     /** BEGIN BLOCK FOR SETTING LOCAL CONVENIENCE VARIABLES COPY FROM Wattos.Star.NMRStar.File31 */
     public boolean initConvenienceVariablesConstr() {
         if ( ! ( dc.resetConvenienceVariables() &&
@@ -1683,7 +1683,7 @@ public class Completeness {
         return true;
     }
     /** END BLOCK */
-    
+
     /** Mark the contributions with at least 1 not observable atom
      */
     public boolean setSelectionObscured(BitSet todo) {
@@ -1693,16 +1693,16 @@ public class Completeness {
             return false;
         }
         BitSet OSet =  dc.mainRelation.getColumnBit( "OSet" );
-        
+
         IndexSortedInt indexMainAtom = (IndexSortedInt) dc.distConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_SET_DC[ RelationSet.RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_SORTED);
         if ( indexMainAtom == null ) {
             General.showCodeBug("Failed to get all indexes.");
             return false;
         }
-        
+
         int currentDCId             = Defs.NULL_INT;
 //        int currentDCAtomId         = Defs.NULL_INT;
-        
+
         // FOR EACH CONSTRAINT
         for (currentDCId = todo.nextSetBit(0);currentDCId>=0;currentDCId = todo.nextSetBit(currentDCId+1)) {
             Integer currentDCIdInteger = new Integer(currentDCId);
@@ -1719,7 +1719,7 @@ public class Completeness {
         }
         return true;
     }
-    
+
     /** Returns true only if all atoms in list are observable. */
     public boolean containsOnlyObservableAtoms( int[] normalAtoms ) {
         int atomCount = normalAtoms.length;
@@ -1731,7 +1731,7 @@ public class Completeness {
         }
         return true;
     }
-    
+
     /** Look for close contacts between pairs of observable (pseudo)atoms
      *and create new constraints for them if they don't occur in ASet already.
      *
@@ -1771,15 +1771,15 @@ public class Completeness {
      * </PRE>
      */
     public BitSet addTheoreticalConstraints(BitSet ASet, float max_dist_expected, boolean use_intra) {
-        // The returned new theoretical constraint rids 
+        // The returned new theoretical constraint rids
         BitSet result = new BitSet();
-        
+
         int atomSetCount   = atomsObservableCombos.size();
         if ( avg_method < 0 ) {
             avg_method      = dcList.avgMethod[        newDCListId ];
             monomers = dcList.numberMonomers[   newDCListId ];
         }
-        
+
         // Sync models if needed.
         if ( ! gumbo.entry.modelsSynced.get( currentEntryId ) ) {
             if ( ! gumbo.entry.syncModels( currentEntryId )) {
@@ -1787,7 +1787,7 @@ public class Completeness {
             }
             //General.showDebug("Sync-ed models for calculating distances for constraints");
         }
-        
+
         // Hash the current dcs.
         HashMap currentDCMap = dc.getHashMap(ASet);
         if ( currentDCMap == null ) {
@@ -1795,10 +1795,10 @@ public class Completeness {
             return null;
         }
         //General.showDebug("hash map to dc is: " + Strings.toString( currentDCMap ));
-        
+
         // precalculated.
         //General.showDebug("Models todo: " + PrimitiveArray.toString( todoModelArray ));
-        
+
         /** Rids into the specific tables. Values set are to start search, will be reset later.*/
         int newDCAtomId = 0;
         int newDCMembId = 0;
@@ -1813,12 +1813,12 @@ public class Completeness {
         estCount = Math.max( minCount, estCount );
         estCount = Math.min( maxCount, estCount );
         General.showDebug("Estimated number of theo contacts: " + estCount + " (after range check)");
-        
+
         dc.mainRelation.reserveRows( estCount * 1);         // Was 5 before, no idea why though...
         dc.distConstrNode.reserveRows( estCount * 1);       // Was 5 before
         dc.distConstrMemb.reserveRows( estCount * 2);      // Was 10 before
         dc.distConstrAtom.reserveRows( estCount * 6);      // Was 30 before
-        
+
         try {
             // Nothing fancy here just test the whole upper right triangle of the matrix trying not
             // to create too many objects per inner most loop (left/right/model: already 3 levels).
@@ -1851,7 +1851,7 @@ public class Completeness {
                     int atomCountB = atomRidsB.size();
                     IntArrayList atomsBNew = new IntArrayList(atomCountB);
                     atomsBNew.setSize(atomCountB);
-                    
+
                     // FOR EACH selected MODEL
                     for ( int currentModelId=0; currentModelId<todoModelArray.length; currentModelId++) {
                         //General.showDebug("Working on model: " + (currentModelId+1)); // used to seeing model numbers starting at 1.
@@ -1901,7 +1901,7 @@ public class Completeness {
                     for (int x=0;x<atomCountB;x++) {
                         atomsBNew.setQuick( x, gumbo.atom.modelSiblingIds[ atomRidsB.getQuick(x) ][currentModelId]);
                     }
-                    
+
                     ArrayList atomsInvolvedModel = new ArrayList(); // encapsulating object needed in order to reuse more general code.
                     atomsInvolvedModel.add(new IntArrayList[] {atomsANew, atomsBNew});
                     dist[currentModelId] = gumbo.atom.calcDistance( atomsInvolvedModel, avg_method, monomers );
@@ -1913,8 +1913,8 @@ public class Completeness {
                     atomsTemp.addAllOf( atomsBNew );
                     int[] atoms = atomsTemp.elements();
                     atoms = PrimitiveArray.resizeArray(atoms, atomsTemp.size());
-                    
-                    
+
+
                     // BEGIN BLOCK MAKE SURE THE HASHING METHOD IS THE SAME AS ELSEWHERE FOR THIS OBJECT
                     Arrays.sort( atoms );
                     //General.showDebug("Using elements: " + PrimitiveArray.toString(atoms));
@@ -1922,7 +1922,7 @@ public class Completeness {
                     //General.showDebug("Has hash code : " + hash);
                     // in java 1.5 use the Arrays.hashCode method.
                     // END BLOCK MAKE SURE THE HASHING METHOD IS THE SAME AS ELSEWHERE FOR THIS OBJECT
-                    
+
                     //dc.mainRelation.hash[ ridTemp ] = hash;
                     Integer hashInt = new Integer( hash );
                     /** Find one or more matching constraints and put them in newDCIdList
@@ -1961,7 +1961,7 @@ public class Completeness {
                         dc.entryIdMain[             newDCId ] = currentEntryId;
                         dc.selected.set(            newDCId );
                         dc.hasUnLinkedAtom.clear(   newDCId ); // this is false for the theos.
-                        
+
                         // EACH NEW DC node
                         newDCNodeId = dc.distConstrNode.getNextReservedRow(newDCNodeId);
                         if ( newDCNodeId == Relation.DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW ) {
@@ -1984,7 +1984,7 @@ public class Completeness {
                         dc.rightId[         newDCNodeId ] = Defs.NULL_INT;
                         dc.logicalOp[       newDCNodeId ] = Defs.NULL_INT;
                         dc.target[          newDCNodeId ] = avgDist; // so they aren't redundant unless they're a fixed distance.
-                        
+
                         // FOR EACH NEW member
                         for (int dCMembNumb = 0;dCMembNumb<2;dCMembNumb++) {
                             //General.showDebug("Generating new dc member: for contribution memb: " + dCMembNumb);
@@ -2000,13 +2000,13 @@ public class Completeness {
                                 General.showCodeBug("Failed to get next reserved row in member distance constraint table.");
                                 return null;
                             }
-                            
+
                             dc.dcNodeIdMemb[    newDCMembId ] = newDCNodeId;  // funny enough this table has only all-fkc columns
                             dc.dcMainIdMemb[    newDCMembId ] = newDCId;
                             dc.dcListIdMemb[    newDCMembId ] = newDCListId;
                             dc.entryIdMemb[     newDCMembId ] = currentEntryId;
                             dc.numbMemb[        newDCMembId ] = dCMembNumb+1;
-                            
+
                             IntArrayList dcAtoms = null;
                             if ( dCMembNumb == 0) { // switch between the 2 members
                                 dcAtoms = atomRidsA;
@@ -2071,7 +2071,7 @@ public class Completeness {
         }
         return result;
     }
-    
+
     /**
      * Reduce the number of new dcs by choosing the closest contacts in the models.
      * <PRE>
@@ -2081,11 +2081,11 @@ public class Completeness {
      * HB2   - MD1       if that's the shortest distance among the permutations
      * Note that this assumes HB2 and HB3 aren't seperately observed. If they are they should be in a different
      * node or more likely still in a different contraint al toghether.
-     * 
+     *
      * The result will be an ArrayList of matchedContributions which is an Object[] of 2 Integers and 2 Booleans:
      * dcAtomI,dcAtomJ,isInComboI,isInComboJ. Kind of expensive at the price
      * of 5 extra encapsulating objects per matchedContribution.
-     * 
+     *
      * Pseudo code for doing this
      * for each left (pseudo)atom
      *     add related left atom to candiates if present
@@ -2095,14 +2095,14 @@ public class Completeness {
      *             calculate distance combination
      *         add the ONE shortest combination of them all to result
      * </PRE>
-     * 
+     *
      * Again, dcAtomsI and J are pointers to the combolist elements or if the atoms aren't in the combolist
      * they are pointers to a dcatom record.
      */
     private ArrayList matchConstraints(
-            IntArrayList dcAtomsI, 
+            IntArrayList dcAtomsI,
             IntArrayList dcAtomsJ,
-            BooleanArrayList isInComboListI, 
+            BooleanArrayList isInComboListI,
             BooleanArrayList isInComboListJ) {
 
             ArrayList result = new ArrayList();
@@ -2137,7 +2137,7 @@ public class Completeness {
                 BooleanArrayList skipDCAtomsJ = new BooleanArrayList(); // code might be optimize by caching
                 skipDCAtomsJ.setSize(dcAtomsJ.size());
                 for (int j=0;j<dcAtomsJ.size();j++ ) {
-//                    General.showDebug("Trying dcAtomsJ: " + j + " with rid: " + dcAtomsJ.getQuick(j));                    
+//                    General.showDebug("Trying dcAtomsJ: " + j + " with rid: " + dcAtomsJ.getQuick(j));
                     if ( skipDCAtomsJ.getQuick(j) ) {
                         continue; // the atom was a sibling and doesn't need to be considered again.
                     }
@@ -2186,7 +2186,7 @@ public class Completeness {
             }
             return result;
     }
-    
+
     /**Checks the combinations of matchedAtomsI and matchedAtomsJ for the shortest distance.
      *An unknown distance is assumed to be larger than any known distance.
      *Returns the index into matchedAtomsI and J or null on error.
@@ -2195,13 +2195,13 @@ public class Completeness {
             IntArrayList dcAtomsI,           IntArrayList dcAtomsJ,
             BooleanArrayList isInComboListI, BooleanArrayList isInComboListJ,
             IntArrayList matchedAtomsI,      IntArrayList matchedAtomsJ) {
-        
+
         int[] shortestMatchIdices = new int[2]; // points to
         shortestMatchIdices[0] = 0; // by default get's update on every iteration
         shortestMatchIdices[1] = 0;
 //        int combinationCount = dcAtomsI.size()*dcAtomsJ.size();
         float shortestDistance = Float.MAX_VALUE;
-        
+
         // Nothing fancy here just test the whole upper right triangle of the matrix trying not
         // to create too many objects per inner most loop (left/right/model: already 3 levels).
         float[] dist = new float[ todoModelArray.length ]; // distances per model recycled object per candidate match
@@ -2212,7 +2212,7 @@ public class Completeness {
                 //General.showDebug("skipping unknown distance due to atom I");
                 continue; // leads to defaulting to first candiate if nothing else.
             }
-            
+
             PseudoAtom ps_i = (PseudoAtom) atomsObservableCombos.get( dcATomI );
             //General.showDebug("PseudoAtom ps_i: " + ps_i);
             IntArrayList atomRidsI = new IntArrayList( ps_i.atomRids );
@@ -2230,7 +2230,7 @@ public class Completeness {
                     //General.showDebug("skipping unknown distance due to atom J");
                     continue;
                 }
-                
+
                 PseudoAtom ps_j = (PseudoAtom) atomsObservableCombos.get( dcATomJ );
                 //General.showDebug("PseudoAtom ps_j: " + ps_j);
                 IntArrayList atomRidsJ = new IntArrayList( ps_j.atomRids );
@@ -2242,7 +2242,7 @@ public class Completeness {
                 int atomCountJ = atomRidsJ.size();
                 IntArrayList atomsJNew = new IntArrayList(atomCountJ);
                 atomsJNew.setSize(atomCountJ);
-                
+
                 // FOR EACH selected MODEL
                 for ( int currentModelId=0; currentModelId<todoModelArray.length; currentModelId++) {
                     //General.showDebug("Working on model: " + (currentModelId+1)); // used to seeing model numbers starting at 1.
@@ -2288,10 +2288,10 @@ public class Completeness {
         }
         return shortestMatchIdices;
     }
-    
-    /** Look for atoms that are in the same pseudoatom as the atom at prevIdx in dcAtoms 
+
+    /** Look for atoms that are in the same pseudoatom as the atom at prevIdx in dcAtoms
      * from prevIdx+1 and on.
-     *Return NO_SIBLING_FOUND for success but no sibling encountered or 
+     *Return NO_SIBLING_FOUND for success but no sibling encountered or
      *Return Defs.Null for error (never happens)
      *Return the idx of dcAtoms if a sibling was found.
      *Notes: dcAtoms and isInComboList run parallel.
@@ -2312,12 +2312,12 @@ public class Completeness {
         String currentResName   = gumbo.res.nameList[ currentResRid ];
         String[] atom_name_list = new String[2];
         atom_name_list[0] = firstAtomName;
-        
+
         for (int i=(prevIdx+1);i<dcAtoms.size();i++) { // usually 1 or 2 in length.
             boolean candidateInCombo = isInComboList.get( i );
 //            General.showDebug("Looking for sibling in dcAtoms element: "+ i + " rid: " + dcAtoms.get( i ) + " which is in combo: " + candidateInCombo);
             // This check is new as introduced for entry 2djy in which a lot of stereo atom coordinates are absent.
-            if ( ! candidateInCombo ) {                
+            if ( ! candidateInCombo ) {
 //                General.showDebug("Candidate is NOT in combo");
                 return NO_SIBLING_FOUND;
             }
@@ -2337,7 +2337,7 @@ public class Completeness {
         }
         return NO_SIBLING_FOUND;
     }
-    
+
     /**
      * @return <CODE>true</CODE> for success
      */
@@ -2411,7 +2411,7 @@ public class Completeness {
             tagNameNOE_compl_shellCompl_cumul       = starDict.getTagName( "NOE_completeness","_NOE_compl_shel.Compl_cumul    ");
 //            tagNameNOE_compl_shellEntry_ID          = starDict.getTagName( "NOE_completeness","_NOE_compl_shel.Entry_ID       ");
 //            tagNameNOE_compl_shellCompl_list_ID     = starDict.getTagName( "NOE_completeness","_NOE_compl_shel.Compl_list_ID  ");
-            
+
         } catch ( Exception e ) {
             General.showThrowable(e);
             General.showError("Failed to get all the tag names from dictionary compare code with dictionary");
@@ -2483,25 +2483,25 @@ public class Completeness {
                 tagNameNOE_compl_shellDetails        == null ||
                 tagNameNOE_compl_shellObs_NOEs_total == null ||
                 tagNameNOE_compl_shellCompl_shell == null ||
-                tagNameNOE_compl_shellCompl_cumul == null 
+                tagNameNOE_compl_shellCompl_cumul == null
 //                tagNameNOE_compl_shellEntry_ID == null ||
 //                tagNameNOE_compl_shellCompl_list_ID == null
                 ) {
             General.showError("Failed to get all the tag names from dictionary, compare code with dictionary.");
             return false;
         }
-        /** debug */
-        if ( false ) {
-            String[] tagNames = {
-                tagNameNOE_compl_listSf_category
-            };
-            General.showDebug("Tagnames:\n"+Strings.toString(tagNames,true));
-        }
-        
-        
+
+//        if ( false ) {
+//            String[] tagNames = {
+//                tagNameNOE_compl_listSf_category
+//            };
+//            General.showDebug("Tagnames:\n"+Strings.toString(tagNames,true));
+//        }
+
+
         return true;
     }
-    
+
     /** Returns a template with the star formatted output template
      */
     private SaveFrame getSFTemplate() {
@@ -2527,7 +2527,7 @@ public class Completeness {
             namesAndValues.put( tagNameNOE_compl_listSf_category, cat);
 //            namesAndValues.put( tagNameNOE_compl_listEntry_ID, new Integer(1));
 //            namesAndValues.put( tagNameNOE_compl_listCompl_list_ID, new Integer(1));
-            
+
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listSf_category     );
 //            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listEntry_ID        );
 //            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listCompl_list_ID   );
@@ -2541,7 +2541,7 @@ public class Completeness {
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listAveraging_power );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listCompl_cutoff    );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listCompl_cumul     );
-            
+
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listRst_unexp_count );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listRestraint_count );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listPair_count      );
@@ -2555,15 +2555,15 @@ public class Completeness {
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listRst_unmat_count );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listRst_exnob_count ); //new
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_listDetails         );
-            
-            
+
+
             // Append columns after order id column.
             if ( ! tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, null)) {
                 General.showError("Failed to tT.insertColumnSet");
                 return null;
             }
             sF.add( tT );
-            
+
             // CLASS
             namesAndTypes           = new HashMap();
             order                   = new ArrayList();
@@ -2572,7 +2572,7 @@ public class Completeness {
             tT.isFree = false;
 //            namesAndValues.put( tagNameNOE_compl_clasEntry_ID, new Integer(1));
 //            namesAndValues.put( tagNameNOE_compl_clasCompl_list_ID, new Integer(1));
-            
+
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasType            );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasRst_obser_count );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasRst_expec_count );
@@ -2582,16 +2582,16 @@ public class Completeness {
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasDetails         );
 //            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasEntry_ID        );
 //            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_clasCompl_list_ID   );
-            
+
             if ( ! tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, null)) {
                 General.showError("Failed to tT.insertColumnSet");
                 return null;
             }
             sF.add( tT );
-            
-            
-            
-            
+
+
+
+
             // SHELL
             namesAndTypes           = new HashMap();
             order                   = new ArrayList();
@@ -2600,7 +2600,7 @@ public class Completeness {
             tT.isFree = false;
 //            namesAndValues.put( tagNameNOE_compl_shellEntry_ID, new Integer(1));
 //            namesAndValues.put( tagNameNOE_compl_shellCompl_list_ID, new Integer(1));
-            
+
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellDetails        );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellShell_start    );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellShell_end      );
@@ -2621,13 +2621,13 @@ public class Completeness {
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellCompl_cumul    );
 //            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellEntry_ID       );
 //            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_shellCompl_list_ID  );
-            
+
             if ( ! tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, null)) {
                 General.showError("Failed to tT.insertColumnSet");
                 return null;
             }
             sF.add( tT );
-            
+
             // RESIDUE
             namesAndTypes           = new HashMap();
             order                   = new ArrayList();
@@ -2636,7 +2636,7 @@ public class Completeness {
             tT.isFree = false;
 //            namesAndValues.put( tagNameNOE_compl_resEntry_ID, new Integer(1));
 //            namesAndValues.put( tagNameNOE_compl_resCompl_list_ID, new Integer(1));
-            
+
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resEntity_ID        );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resComp_index_ID    );
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resComp_ID          );
@@ -2649,13 +2649,13 @@ public class Completeness {
             starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resDetails          );
 //            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resEntry_ID         );
 //            starDict.putFromDict( namesAndTypes, order, tagNameNOE_compl_resCompl_list_ID    );
-            
+
             if ( ! tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, null)) {
                 General.showError("Failed to tT.insertColumnSet");
                 return null;
             }
             sF.add( tT );
-            
+
         } catch ( Exception e ) {
             General.showThrowable(e);
             return null;
@@ -2664,7 +2664,7 @@ public class Completeness {
     }
 
     public boolean showPlotPerResidue(URL url, boolean saveImage, String file_name_base_dc) {
-        StarFileReader sfr = new StarFileReader(ui.dbms); 
+        StarFileReader sfr = new StarFileReader(ui.dbms);
         StarNode sn = sfr.parse( url );
         if ( sn == null ) {
             General.showError("Parse not successful");
@@ -2672,7 +2672,7 @@ public class Completeness {
         }
         General.showDebug("Parse successful");
         // data type modifications on column
-        ArrayList tTList = (ArrayList) sn.getTagTableList(StarGeneral.WILDCARD, 
+        ArrayList tTList = (ArrayList) sn.getTagTableList(StarGeneral.WILDCARD,
                 StarGeneral.WILDCARD, StarGeneral.WILDCARD, tagNameNOE_compl_resComp_index_ID);
         if ( tTList == null ) {
             General.showError("Expected a match but none found");
@@ -2683,7 +2683,7 @@ public class Completeness {
             return false;
         }
         TagTable tT = (TagTable) tTList.get(0);
-        if ( 
+        if (
             (!tT.convertDataTypeColumn(tagNameNOE_compl_resCompl_cumul,       TagTable.DATA_TYPE_FLOAT, null ))||
             (!tT.convertDataTypeColumn(tagNameNOE_compl_resRst_obser_count,   TagTable.DATA_TYPE_INT, null ))||
             (!tT.convertDataTypeColumn(tagNameNOE_compl_resEntity_ID,         TagTable.DATA_TYPE_INT, null ))||
@@ -2691,9 +2691,9 @@ public class Completeness {
             General.showError("Failed converting (some of) the data to the types expected.");
             return false;
         }
-        
+
         // Create a nice plot
-        try {        
+        try {
             StringArrayList columnNameListValue = new StringArrayList();
             columnNameListValue.add(tagNameNOE_compl_resCompl_cumul);
             columnNameListValue.add(tagNameNOE_compl_resRst_obser_count);
@@ -2703,12 +2703,12 @@ public class Completeness {
             seriesNameList.add(complLabelName);
             seriesNameList.add(restrLabelName);
             DefaultTableXYDataset dataSet = ResiduePlot.createDatasetFromRelation(
-                    tT, 
+                    tT,
                     columnNameListValue,
                     seriesNameList);
 
             JFreeChart chart = ResiduePlot.createChart(dataSet,
-                    tT, 
+                    tT,
                     tagNameNOE_compl_resEntity_ID,
                     tagNameNOE_compl_resComp_index_ID,
                     tagNameNOE_compl_resComp_ID);
@@ -2725,12 +2725,12 @@ public class Completeness {
                     axis.setTickUnit(new NumberTickUnit(20));
                 } else if ( key.equals(restrLabelName)) {
                     General.showDebug("Changing axis");
-                    axis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());                    
+                    axis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
                 }
             }
             if ( ui.hasGuiAttached() ) {
-                ChartPanel chartPanel = new ChartPanel(chart);                
-                ui.gui.setJPanelToBeFilled( 0, chartPanel ); // executed on event-dispatching thread                
+                ChartPanel chartPanel = new ChartPanel(chart);
+                ui.gui.setJPanelToBeFilled( 0, chartPanel ); // executed on event-dispatching thread
             } else {
                 General.showOutput("Skipping the actual show because there is not Gui attached.");
             }
@@ -2741,10 +2741,10 @@ public class Completeness {
                 int width = 1024;
                 int height = 768;
                 General.showOutput("Saving chart as JPEG");
-                ChartUtilities.saveChartAsJPEG(new File(fileName), chart, width, height);            
+                ChartUtilities.saveChartAsJPEG(new File(fileName), chart, width, height);
                 General.showOutput("Saving chart as PDF");
                 fileName = file_name_base_dc+".pdf";
-                PdfGeneration.convertToPdf(chart, width, height, fileName);                        
+                PdfGeneration.convertToPdf(chart, width, height, fileName);
             }
         } catch (Throwable t) {
             General.showThrowable(t);

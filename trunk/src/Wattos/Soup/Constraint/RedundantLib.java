@@ -20,13 +20,13 @@ import Wattos.Star.*;
  * @author Jurgen F. Doreleijers
  */
 public class RedundantLib implements Serializable {
-        
-    private static final long serialVersionUID = -1207795172754062330L;    
-     
+
+    private static final long serialVersionUID = -1207795172754062330L;
+
     public static float LOWER_DISTANCE_MINIMUM_CORRECTION = 0.2f; // To get from 2.0 to 1.8 Ang. like in Aqua
-    public static float LOWER_DISTANCE_MINIMUM = 2f-LOWER_DISTANCE_MINIMUM_CORRECTION; 
-    
-    /** Local resource */ 
+    public static float LOWER_DISTANCE_MINIMUM = 2f-LOWER_DISTANCE_MINIMUM_CORRECTION;
+
+    /** Local resource */
     static final String STR_FILE_LOCATION = "Data/redundant.str";
 
     public static String saveframeNodeCategoryName      = "redundant_distance_info";
@@ -42,14 +42,14 @@ public class RedundantLib implements Serializable {
     /** In case the bound has no known upper limit; use this value.*/
     //public static float DEFAULT_UNKNOWN_BOUND_UPP = 100.0f;
     /** In case the bound has no known lower limit; use this value.
-     *Currently set to two times the radius of a hydrogen atom 
+     *Currently set to two times the radius of a hydrogen atom
      *but can be changed.
      */
-    //public static float DEFAULT_UNKNOWN_BOUND_LOW = 1.8f;        
+    //public static float DEFAULT_UNKNOWN_BOUND_LOW = 1.8f;
 
     /** A map that's fast to do lookups like:<BR>
-     *In nomenclature id X for residue name Y for atom name Z what's 
-     *the atom name in nomenclature X**-1. 
+     *In nomenclature id X for residue name Y for atom name Z what's
+     *the atom name in nomenclature X**-1.
      *E.g. to get the IUPAC name for PDB name 1HD in PHE use:
      *toIUPAC.get(NOMENCLATURE_ID_PDB, "PHE", "1HD" ) (add casts)
      *If many in the same residue and nomenclature need to be looked up it
@@ -57,25 +57,25 @@ public class RedundantLib implements Serializable {
      *HashMap tmpMap = toIUPAC.get(NOMENCLATURE_ID_PDB, "PHE" ) (add casts)
      *and then look in that one directly:
      *tmpMap.get("1HD");
-     */    
+     */
     public HashOfHashesOfHashes bounds;
-    
+
     /** Creates a new instance of AtomMap */
-    public RedundantLib() {                
+    public RedundantLib() {
         init();
     }
-    
+
     public boolean init() {
         bounds  = new HashOfHashesOfHashes();
         return true;
     }
-    
+
     public boolean readStarFile( URL url) {
         if ( url == null ) {
             url = getClass().getResource(STR_FILE_LOCATION);
         }
         DBMS dbms_local = new DBMS(); // Create a local copy so anything can be read in.
-        StarFileReader sfr = new StarFileReader(dbms_local);        
+        StarFileReader sfr = new StarFileReader(dbms_local);
 //        long start = System.currentTimeMillis();
         StarNode sn = sfr.parse( url );
 //        long taken = System.currentTimeMillis() - start;
@@ -85,7 +85,7 @@ public class RedundantLib implements Serializable {
             return false;
         }
         //General.showOutput("Parse successful");
-    
+
         TagTable tT = sn.getTagTable( saveframeNodeCategoryName, tagNameCompID, true);
         if ( tT == null ) {
             General.showError("Expected to find the appropriate tagtable but apparently not." );
@@ -96,7 +96,7 @@ public class RedundantLib implements Serializable {
         String[] varAtomID      = tT.getColumnString(tagNameAtomID);
         String[] varDistanceType= tT.getColumnString(tagNameDistanceType);
         float[][]varBounds      = new float[atomPerResidueCountMax][];
-        
+
         for (int c=1;c<=atomPerResidueCountMax;c++ ) {
             String label = tagNameDistanceAtomBase + c;
             if ( ! tT.containsColumn( label )) {
@@ -113,9 +113,9 @@ public class RedundantLib implements Serializable {
                 return false;
             }
         }
-        
+
         //Wattos.Utils.General.showDebug("DBMS: " + dbms_local.toString( true ));
-        
+
         String currentCompId = Defs.NULL_STRING_NULL;
         for (int r=0;r<tT.sizeRows;) {
             ArrayList alAtomNames = new ArrayList();
@@ -124,7 +124,7 @@ public class RedundantLib implements Serializable {
             //General.showDebug("Looking for atoms for residue: " + currentCompId);
             int s=r;
             for (;s<tT.sizeRows;s++ ) {
-                if ( ! currentCompId.equals( varCompID[s] )) {                    
+                if ( ! currentCompId.equals( varCompID[s] )) {
                     break; // all atoms have been collected.
                 }
                 if ( varDistanceType[s].equals("L")) {
@@ -133,7 +133,7 @@ public class RedundantLib implements Serializable {
                 //General.showDebug("Found atom: " + varAtomID[s] + " at row: " + s);
                 alAtomNames.add( varAtomID[s] );
             }
-            //s--; // rewind one so s points to 
+            //s--; // rewind one so s points to
             // at this point r points to beginning and s points to end of atoms in residue.
             //General.showDebug("Found atoms in rows: " + r + " to: " + s );
             for (int t=r;t<s;t++ ) { // loop over atoms
@@ -186,19 +186,19 @@ public class RedundantLib implements Serializable {
                     }
                 }
             }
-            r = s;            
+            r = s;
         }
-        //General.showDebug("Found number of elements in bounds : " + bounds.cardinality());        
+        //General.showDebug("Found number of elements in bounds : " + bounds.cardinality());
         return true;
     }
-    
-            
-    
+
+
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        RedundantLib rl = new RedundantLib();         
+        RedundantLib rl = new RedundantLib();
         boolean status = rl.readStarFile( null );
         if (! status) {
             General.showError(" in RedundantLib.main found:");
@@ -206,16 +206,16 @@ public class RedundantLib implements Serializable {
             System.exit(1);
         }
         General.showDebug(" read RedundantLib star file.");
-                
-        if ( false ) {
-            General.showOutput("RedundantLib:\n" + rl.bounds);
-        }
+
+//        if ( false ) {
+//            General.showOutput("RedundantLib:\n" + rl.bounds);
+//        }
         if ( true ) {
             String resName   = "VAL";
             String atomName1 = "H";
             String atomName2 = "HG11";
-            General.showOutput("Found for "+resName+", "+atomName1+", "+atomName2+": " + 
+            General.showOutput("Found for "+resName+", "+atomName1+", "+atomName2+": " +
                 PrimitiveArray.toString( rl.bounds.get(resName, atomName1, atomName2)));
-        }        
-    }    
+        }
+    }
 }

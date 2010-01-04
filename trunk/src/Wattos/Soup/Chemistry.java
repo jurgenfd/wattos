@@ -19,7 +19,7 @@ import java.util.*;
 public class Chemistry {
 
     /** What dimensionality of a world do we live in? */
-    //public static final byte   SIZE_3D                         = 3;    
+    //public static final byte   SIZE_3D                         = 3;
 
     /** Thanks to Computer Chemistry Consultancy, Feldstr.20, 8488 Turbenthal, Switzerland, +41 52 3851745 or +41 76 3088403, info@CompChemCons.com
      *for typing this in. All the symbols are 2 characters long with a space padded at the back.
@@ -168,20 +168,20 @@ public class Chemistry {
         289f,
         288f,
         293f,
-        294f        
+        294f
     };
     /** Left justified 2 character string set in all upper case characters. */
-    public static final String[]        ELEMENT_SYMBOLS_UPPER_CASE;    
-    public static final String[]        ELEMENT_SYMBOLS_UPPER_CASE_TRIMMED;    
+    public static final String[]        ELEMENT_SYMBOLS_UPPER_CASE;
+    public static final String[]        ELEMENT_SYMBOLS_UPPER_CASE_TRIMMED;
     public static final String[]        ELEMENT_SYMBOLS_UPPER_CASE_RIGHT_JUSTIFIED; // Convention in pdb.
     /** A map for fast look up of the element id given the 2 letter right justified uppercase string.*/
     public static final StringIntMap    ELEMENT_SYMBOLS_UPPER_CASE_MAP;
     public static final StringIntMap    ELEMENT_SYMBOLS_UPPER_CASE_TRIMMED_MAP;
     public static final StringIntMap    ELEMENT_SYMBOLS_UPPER_CASE_RIGHT_JUSTIFIED_MAP;
-    
+
     public static final String ELEMENT_SYMBOL_UPPER_CASE_RIGHT_JUSTIFIED_UNKNOWN_1 = " X";
     public static final String ELEMENT_SYMBOL_UPPER_CASE_RIGHT_JUSTIFIED_UNKNOWN_2 = " U"; // whatif doing
-    
+
     /** Typed these myself. A little specific for NMR when talking about the isotope number.*/
     public static final int ELEMENT_ID_UNKNOWN  = Defs.NULL_INT;
     public static final int ELEMENT_ID_PSEUDO   = 0;
@@ -194,50 +194,50 @@ public class Chemistry {
     public static final int ELEMENT_ID_SULFUR   = 16;
     public static final int ELEMENT_ID_CALCIUM  = 20;
     public static final int ELEMENT_ID_ZINC     = 30;
-    
+
     public static final int[] MAX_BONDS;
-    /** More available at: 
+    /** More available at:
      *http://www.cmbi.kun.nl/cheminf/csd/cqdoc/ConQuest/PortableHTML/CQdocn16322.html#250776
 <PRE>
-They are taken from Bondi, J.Phys.Chem., 68, 441, 1964. 
-Ag 1.72  
-Ar 1.88  
-As 1.85  
-Au 1.66  
-Br 1.85  
-C 1.70  
-Cd 1.58  
-Cl 1.75  
-Cu 1.40  
-F 1.47  
-Ga 1.87  
+They are taken from Bondi, J.Phys.Chem., 68, 441, 1964.
+Ag 1.72
+Ar 1.88
+As 1.85
+Au 1.66
+Br 1.85
+C 1.70
+Cd 1.58
+Cl 1.75
+Cu 1.40
+F 1.47
+Ga 1.87
 H 1.20    This seems to be high to me but is what all list. The HH bond is only 0.74 Ang long!
-He 1.40  
-Hg 1.55  
-I 1.98  
-In 1,93  
-K 2.75  
-Kr 2.02  
-Li 1.82  
-Mg 1.73  
-N 1.55  
-Na 2.27  
-Ne 1.54  
-Ni 1.63  
-O 1.52  
-P 1.80  
-Pb 2.02  
-Pd 1.63  
-Pt 1.72  
-S 1.80  
-Se 1.90  
-Si 2.10  
-Sn 2.17  
-Te 2.06  
-Tl 1.96  
-U 1.86  
-Xe 2.16  
-Zn 1.39  
+He 1.40
+Hg 1.55
+I 1.98
+In 1,93
+K 2.75
+Kr 2.02
+Li 1.82
+Mg 1.73
+N 1.55
+Na 2.27
+Ne 1.54
+Ni 1.63
+O 1.52
+P 1.80
+Pb 2.02
+Pd 1.63
+Pt 1.72
+S 1.80
+Se 1.90
+Si 2.10
+Sn 2.17
+Te 2.06
+Tl 1.96
+U 1.86
+Xe 2.16
+Zn 1.39
 </PRE>
      */
     /**
@@ -258,32 +258,32 @@ Zn 1.39
      */
     /** Taken from molmol setup/AtomRadius
      */
-    public static float  ELEMENT_RADIUS_HYDROGEN = 0.4f; 
+    public static float  ELEMENT_RADIUS_HYDROGEN = 0.4f;
     public static float  ELEMENT_RADIUS_CARBON   = 0.85f;
     public static float  ELEMENT_RADIUS_NITROGEN = 0.8f;
-    public static float  ELEMENT_RADIUS_OXYGEN   = 0.7f; 
+    public static float  ELEMENT_RADIUS_OXYGEN   = 0.7f;
     public static float  ELEMENT_RADIUS_SULFUR   = 1.3f;
     public static float  ELEMENT_RADIUS_PHOSPOR  = 1.2f;
     public static float  ELEMENT_RADIUS_FLUOR    = 0.8f;
     public static float  ELEMENT_RADIUS_ZINC     = 1.3f; // any metal?
     public static float  ELEMENT_RADIUS_CALCIUM  = ELEMENT_RADIUS_ZINC;
 
-    public static final int elementCount = ELEMENT_SYMBOLS.length;   
+    public static final int elementCount = ELEMENT_SYMBOLS.length;
     public static final float[] radii;
-    public static float sumRadiiProtonProton = ELEMENT_RADIUS_HYDROGEN + ELEMENT_RADIUS_HYDROGEN;    
+    public static float sumRadiiProtonProton = ELEMENT_RADIUS_HYDROGEN + ELEMENT_RADIUS_HYDROGEN;
     /** CRC Handbook of physics and chemistry, 1st student edition */
     public static float smallestBondEver = 0.74611f;    // in H2 and are there smaller ones?
 
     private static StringArrayList ION_RESIDUE_NAME_LIST = new StringArrayList();
     public static BitSet METAL_ION_ELEMENT_ID_Set = new BitSet();
-    
-    // In case we want to be redundant -> see redundant 
-    public static final int ISOTOPE_ID_HYDROGEN    = 1; 
-    public static final int ISOTOPE_ID_DEUTERIUM   = 2; 
-    public static final int ISOTOPE_ID_TRITIUM     = 3; 
-    public static final int ISOTOPE_ID_CARBON_13   = 13; 
-    public static final int ISOTOPE_ID_NITROGEN_15 = 15; 
-            
+
+    // In case we want to be redundant -> see redundant
+    public static final int ISOTOPE_ID_HYDROGEN    = 1;
+    public static final int ISOTOPE_ID_DEUTERIUM   = 2;
+    public static final int ISOTOPE_ID_TRITIUM     = 3;
+    public static final int ISOTOPE_ID_CARBON_13   = 13;
+    public static final int ISOTOPE_ID_NITROGEN_15 = 15;
+
     static {
         int[] sequentialArray = PrimitiveArray.createSequentialArray( ELEMENT_SYMBOLS.length, 1);
         ELEMENT_SYMBOLS_UPPER_CASE                      = Strings.toUpperCase(ELEMENT_SYMBOLS);
@@ -292,21 +292,21 @@ Zn 1.39
         ELEMENT_SYMBOLS_UPPER_CASE_MAP                  = new StringIntMap( ELEMENT_SYMBOLS_UPPER_CASE,                 sequentialArray );
         ELEMENT_SYMBOLS_UPPER_CASE_TRIMMED_MAP          = new StringIntMap( ELEMENT_SYMBOLS_UPPER_CASE_TRIMMED,         sequentialArray );
         ELEMENT_SYMBOLS_UPPER_CASE_RIGHT_JUSTIFIED_MAP  = new StringIntMap( ELEMENT_SYMBOLS_UPPER_CASE_RIGHT_JUSTIFIED, sequentialArray );
-         
+
         //General.showDebug( "out is: " + Strings.toString( ELEMENT_SYMBOLS_UPPER_CASE_RIGHT_JUSTIFIED ));
         radii = new float[ elementCount ];
         Arrays.fill(radii, 0, elementCount, Defs.NULL_FLOAT);
         // Fill with default values.
         radii[ ELEMENT_ID_HYDROGEN ]    = ELEMENT_RADIUS_HYDROGEN;
         radii[ ELEMENT_ID_CARBON ]      = ELEMENT_RADIUS_CARBON;
-        radii[ ELEMENT_ID_NITROGEN ]    = ELEMENT_RADIUS_NITROGEN; 
+        radii[ ELEMENT_ID_NITROGEN ]    = ELEMENT_RADIUS_NITROGEN;
         radii[ ELEMENT_ID_OXYGEN ]      = ELEMENT_RADIUS_OXYGEN;
         radii[ ELEMENT_ID_PHOSPOR ]     = ELEMENT_RADIUS_PHOSPOR;
-        radii[ ELEMENT_ID_FLUOR  ]      = ELEMENT_RADIUS_FLUOR;        
-        radii[ ELEMENT_ID_SULFUR ]      = ELEMENT_RADIUS_SULFUR;        
-        radii[ ELEMENT_ID_CALCIUM ]     = ELEMENT_RADIUS_CALCIUM;        
-        radii[ ELEMENT_ID_ZINC   ]      = ELEMENT_RADIUS_ZINC; 
-        MAX_BONDS = new int[ elementCount ];        
+        radii[ ELEMENT_ID_FLUOR  ]      = ELEMENT_RADIUS_FLUOR;
+        radii[ ELEMENT_ID_SULFUR ]      = ELEMENT_RADIUS_SULFUR;
+        radii[ ELEMENT_ID_CALCIUM ]     = ELEMENT_RADIUS_CALCIUM;
+        radii[ ELEMENT_ID_ZINC   ]      = ELEMENT_RADIUS_ZINC;
+        MAX_BONDS = new int[ elementCount ];
         Arrays.fill(MAX_BONDS, 0, elementCount, 4); // vague rule.
         MAX_BONDS[ ELEMENT_ID_HYDROGEN ] = 1;
         MAX_BONDS[ ELEMENT_ID_OXYGEN ]   = 2;
@@ -315,22 +315,22 @@ Zn 1.39
         MAX_BONDS[ ELEMENT_ID_HYDROGEN ] = 1;
         // Extend as capabilities in xplor-nih extend.
         ION_RESIDUE_NAME_LIST.add("ZN");
-        
+
         METAL_ION_ELEMENT_ID_Set.set(11,14); // Na, Mg, Al
         METAL_ION_ELEMENT_ID_Set.set(19,33); // K, thru Ge
         METAL_ION_ELEMENT_ID_Set.set(37,52); // Rb, thru Sb
         METAL_ION_ELEMENT_ID_Set.set(55,85); // Cs, thru Po
         METAL_ION_ELEMENT_ID_Set.set(87,107);// Fr, thru Unh
     }
-    
+
     /** Creates new Chemistry */
     public Chemistry() {
     }
 
     /** Returns Defs.NULL_FLOAT unless both radii are known. */
-    public static float getSumRadii( int atom_element_id_1, int atom_element_id_2 ) {        
+    public static float getSumRadii( int atom_element_id_1, int atom_element_id_2 ) {
         if ( atom_element_id_1 == ELEMENT_ID_HYDROGEN && atom_element_id_2 == ELEMENT_ID_HYDROGEN ) {
-            return sumRadiiProtonProton;            
+            return sumRadiiProtonProton;
         }
         // Watch out for undefined arithmics.
         float sum = radii[ atom_element_id_1 ];
@@ -343,52 +343,52 @@ Zn 1.39
         sum += radii[ atom_element_id_2 ];
         return sum;
     }
-    
+
     /** Optimized to run on string array in which elements are non-redundant and
      *the == operator can be used to check equality.
      */
     public static boolean translateElementNameToIdInArrays( String[] in, int[] out,
         boolean useRightJustified,
         int startPosition, int endPosition ) {
-            
+
         String  elementSymbol   = in[startPosition].toUpperCase(); // cache strings and ints for efficiency.
         String  elementSymbolNext = null;
         int     elementId       = Defs.NULL_INT;
         if ( useRightJustified ) {
-            elementId       = ELEMENT_SYMBOLS_UPPER_CASE_RIGHT_JUSTIFIED_MAP.getInt(    elementSymbol );        
+            elementId       = ELEMENT_SYMBOLS_UPPER_CASE_RIGHT_JUSTIFIED_MAP.getInt(    elementSymbol );
         } else {
-            elementId       = ELEMENT_SYMBOLS_UPPER_CASE_TRIMMED_MAP.getInt(            elementSymbol );        
+            elementId       = ELEMENT_SYMBOLS_UPPER_CASE_TRIMMED_MAP.getInt(            elementSymbol );
         }
-        out[startPosition] = elementId;        
-        
+        out[startPosition] = elementId;
+
 
         if ( useRightJustified ) {
             for (int i=startPosition+1; i<endPosition; i++) {
                 elementSymbolNext = in[i].toUpperCase();
                 if ( elementSymbolNext != elementSymbol ) {
                     elementSymbol = elementSymbolNext;
-                    elementId = ELEMENT_SYMBOLS_UPPER_CASE_RIGHT_JUSTIFIED_MAP.getInt( elementSymbol );        
+                    elementId = ELEMENT_SYMBOLS_UPPER_CASE_RIGHT_JUSTIFIED_MAP.getInt( elementSymbol );
                 }
                 out[i] = elementId;
-            }                            
+            }
         } else { // unroll loop for efficiency.
             for (int i=startPosition+1; i<endPosition; i++) {
                 elementSymbolNext = in[i].toUpperCase();
                 if ( elementSymbolNext != elementSymbol ) {
                     elementSymbol = elementSymbolNext;
-                    elementId = ELEMENT_SYMBOLS_UPPER_CASE_TRIMMED_MAP.getInt( elementSymbol );        
+                    elementId = ELEMENT_SYMBOLS_UPPER_CASE_TRIMMED_MAP.getInt( elementSymbol );
                 }
                 out[i] = elementId;
-            }                            
-        }            
-        return true;                                
+            }
+        }
+        return true;
     }
-    
+
     /** start is inclusive and end is exclusive.
      */
-    public static boolean translateElementIdToNameInArrays( int[] in, String[] out, 
+    public static boolean translateElementIdToNameInArrays( int[] in, String[] out,
         int startPosition, int endPosition ) {
-            
+
         int     elementId;
 //        String  elementSymbol;
         int     previousElementId = Defs.NULL_INT;
@@ -399,20 +399,20 @@ Zn 1.39
             elementId = in[i];
             if ( elementId == previousElementId ) {
                 out[i] = previousElementName;
-            } else  { 
+            } else  {
                 if ( Defs.isNull( elementId ) || (elementId < 0) ) {
                     out[i] = Defs.NULL_STRING_NULL;
                 } else {
                     out[i] = ELEMENT_SYMBOLS_UPPER_CASE_TRIMMED[ elementId ];
                 }
                 previousElementName = out[i];
-                previousElementId   = elementId;                
+                previousElementId   = elementId;
             }
             //General.showDebug("Element: " +i + " has in: " + in[i] + " out: " + out[i] );
         }
-        return true;                                
+        return true;
     }
-    
+
     /**
     * @param args the command line arguments
     */
@@ -420,47 +420,47 @@ Zn 1.39
         int length = 5;
         String[] str = new String[length];
         int[] ints = new int[length];
-       
+
         General.verbosity = General.verbosityDebug;
-        
-        if ( false ) {
-            str[0] = "N";
-            str[1] = "S";
-            str[2] = "C";
-            str[4] = "H";
-            boolean useRightJustified = true;
-            boolean status = translateElementNameToIdInArrays( str, ints, 
-                useRightJustified, 0, length );
-            
-            General.showDebug("Status: " + status);
-            General.showDebug("in   str: " + Strings.toString( str ));
-            General.showDebug("out ints: " + Strings.toString( PrimitiveArray.asList(ints)));
-            
-        }
-        
+
+//        if ( false ) {
+//            str[0] = "N";
+//            str[1] = "S";
+//            str[2] = "C";
+//            str[4] = "H";
+//            boolean useRightJustified = true;
+//            boolean status = translateElementNameToIdInArrays( str, ints,
+//                useRightJustified, 0, length );
+//
+//            General.showDebug("Status: " + status);
+//            General.showDebug("in   str: " + Strings.toString( str ));
+//            General.showDebug("out ints: " + Strings.toString( PrimitiveArray.asList(ints)));
+//
+//        }
+
         if ( true ) {
             ints[0] = 6;
             ints[1] = 6;
             ints[2] = Defs.NULL_INT;
             ints[3] = 0;
             ints[4] = 1;
-            boolean status = translateElementIdToNameInArrays( ints, str, 
+            boolean status = translateElementIdToNameInArrays( ints, str,
                 0, length );
             General.showDebug("Status: " + status);
             General.showDebug("in  ints: " + Strings.toString( PrimitiveArray.asList(ints)));
             General.showDebug("out  str: " + Strings.toString( str ));
         }
-        if ( false ) {
-            General.showOutput("Maximum number of bonds allowed:");
-            General.showOutput(PrimitiveArray.toString(MAX_BONDS));
-        }
-        
+//        if ( false ) {
+//            General.showOutput("Maximum number of bonds allowed:");
+//            General.showOutput(PrimitiveArray.toString(MAX_BONDS));
+//        }
+
     }
 
     /**
-     * 
+     *
      * @param sequence space separated
-     * @return 
+     * @return
      */
     public static boolean sequenceIsIonsOnly(String sequence) {
         String[] resList = sequence.split(" ");
