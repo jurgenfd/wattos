@@ -16,15 +16,15 @@ import com.Ostermiller.util.ExcelCSVParser;
  * Commands have attributes like name, parent Menu, Description, Keyboard shortcut, Example
  * , etc.
  * This allows for nesting although support is up to 4 levels
- * because of limitations in the definitions used in a spreadsheet used to define 
+ * because of limitations in the definitions used in a spreadsheet used to define
  * the menu.
  * @author Jurgen F. Doreleijers
  */
 public class WattosMenu extends WattosMenuItem implements Serializable  {
-    
-    /** Faking this variable makes the serializing not worry 
+
+    /** Faking this variable makes the serializing not worry
      *about potential small differences.*/
-    private static final long serialVersionUID = -1207795172754062330L;    
+    private static final long serialVersionUID = -1207795172754062330L;
 
     public static final String DEFAULT_MAIN_MENU_NAME = "DEFAULT_MAIN_MENU_NAME";
 
@@ -48,31 +48,31 @@ public class WattosMenu extends WattosMenuItem implements Serializable  {
      * (MAX_COMMANDS_PER_PROMPT_LINE+1) * MAX_COMMAND_NAME_LENGTH
      */
     public static final int MAX_MENUS_PER_PROMPT_LINE       = 5;
-    
+
     public static final int SUB_LEVEL_COUNT = 4;
-    
+
     static final String[] columnList = {
-        COLUMN_NAME_MENUSUB0,            
-        COLUMN_NAME_MENUSUB1,            
-        COLUMN_NAME_MENUSUB2,            
-        COLUMN_NAME_MENUSUB3,            
-        COLUMN_NAME_COMMAND,             
-        COLUMN_NAME_KEYBOARD_SHORTCUT,   
-        COLUMN_NAME_DESCRIPTION,         
-        COLUMN_NAME_HELP_HTML         
+        COLUMN_NAME_MENUSUB0,
+        COLUMN_NAME_MENUSUB1,
+        COLUMN_NAME_MENUSUB2,
+        COLUMN_NAME_MENUSUB3,
+        COLUMN_NAME_COMMAND,
+        COLUMN_NAME_KEYBOARD_SHORTCUT,
+        COLUMN_NAME_DESCRIPTION,
+        COLUMN_NAME_HELP_HTML
     };
 
     /** Local resource */
     static final String CSV_FILE_LOCATION = "Data/WattosMenu.csv";
-    
+
     /** A list of menu items */
     public ArrayList items;
-    
+
     /** A alphabetically sorted list of items in this menu and all levels of submenus.
      Variable is only set for the main menu. Menus and submenus also become commands
      so make sure they are mutually unique overall.*/
     public ArrayList mainMenuCommandNames;
-    
+
     /** Asks a user to enter a command from this menu and no submenu. With thanks
      *to Gert Vriend at EMBL/CMBI for coming up with the design as in WHAT IF's
      *menu.
@@ -85,10 +85,10 @@ public class WattosMenu extends WattosMenuItem implements Serializable  {
         items = new ArrayList();
         mainMenuCommandNames = new ArrayList();
         prompt = null;
-    }            
-    
+    }
 
-    /** Should only be executed on toplevel menu because that's where it 
+
+    /** Should only be executed on toplevel menu because that's where it
      *will look: mainMenuCommandNames.
      *If the command is not in the list the function returns -1
      */
@@ -100,11 +100,11 @@ public class WattosMenu extends WattosMenuItem implements Serializable  {
         }
         return -1;
     }
-    
-    
+
+
     /**
      * @return Null or the cached string.
-     */    
+     */
     public String getPrompt() {
         if ( prompt == null ) {
             boolean status = setPrompt();
@@ -115,7 +115,7 @@ public class WattosMenu extends WattosMenuItem implements Serializable  {
         }
         return prompt;
     }
-    
+
     /** Each line in the prompt is a fixed number of characters long.
      * The prompt might look like:
      *<PRE>
@@ -126,7 +126,7 @@ public class WattosMenu extends WattosMenuItem implements Serializable  {
      *</PRE>
      */
     private boolean setPrompt() {
-        
+
         ArrayList lines = new ArrayList();
 
         // Line length determined by the command length mostly.
@@ -142,13 +142,13 @@ public class WattosMenu extends WattosMenuItem implements Serializable  {
         char[] submenusLine = new char[lineLength];
         char[] commandsLine = new char[lineLength];
         System.arraycopy( dashLine, 0, submenusLine, 0, lineLength);
-        System.arraycopy( dashLine, 0, commandsLine, 0, lineLength);        
+        System.arraycopy( dashLine, 0, commandsLine, 0, lineLength);
         String submenus = "SubMenus:";
         String commands = "Commands:";
         System.arraycopy( submenus.toCharArray(),   0, submenusLine, 0, submenus.length());
         System.arraycopy( commands.toCharArray(),   0, commandsLine, 0, commands.length());
-        
-        // Find the submenus and commands               
+
+        // Find the submenus and commands
         ArrayList submenuList = new ArrayList();
         ArrayList commandList = new ArrayList();
         for (int i=0;i<items.size();i++) {
@@ -157,7 +157,7 @@ public class WattosMenu extends WattosMenuItem implements Serializable  {
                 commandList.add( o );
                 //General.showDebug(" Looking at item: " + i + " " + ((WattosCommand)o).name );
             } else if ( o instanceof WattosMenu ) {
-                submenuList.add( o );                
+                submenuList.add( o );
                 //General.showDebug(" Looking at item: " + i + " " + ((WattosMenu)o).name );
             } else {
                 General.showError("failed to get the correct class for menu item in menu with name: " + name);
@@ -167,7 +167,7 @@ public class WattosMenu extends WattosMenuItem implements Serializable  {
         //General.showDebug(" Number of commands found: " + commandList.size() );
         //General.showDebug(" Number of submenus found: " + submenuList.size() );
 
-        
+
         // Add the submenus (always showing one line)
         lines.add( submenusLine );
         char[] currentLine = new char[lineLength];
@@ -189,7 +189,7 @@ public class WattosMenu extends WattosMenuItem implements Serializable  {
         }
         // Grab the last line
         lines.add( currentLine );
-                
+
         // Add the commands
         lines.add( commandsLine );
         currentLine = new char[lineLength];
@@ -210,8 +210,8 @@ public class WattosMenu extends WattosMenuItem implements Serializable  {
         }
         // Grab the last line
         lines.add( currentLine );
-                
-        
+
+
         // Insert path to the top menu
         submenuList = new ArrayList();
         WattosMenu currentMenu = this;
@@ -227,8 +227,8 @@ public class WattosMenu extends WattosMenuItem implements Serializable  {
             currentLine = (char[]) lines.get(lineId);
             System.arraycopy( menuName, 0, currentLine, positionOnLine, menuName.length);
         }
-        
-        
+
+
         StringBuffer sb = new StringBuffer();
         for (int i=0;i<lines.size();i++) {
             sb.append((char[])lines.get(i));
@@ -237,13 +237,13 @@ public class WattosMenu extends WattosMenuItem implements Serializable  {
         return true;
     }
 
-    
-    
+
+
     public String toHtml(int level) {
         String identString = Strings.createStringOfXTimesTheCharacter(' ', level*6);
         StringBuffer sb = new StringBuffer();
         if ( level == 0 ) {
-            sb.append( "<PRE>" + General.eol );        
+            sb.append( "<PRE>" + General.eol );
         }
         sb.append("Menu: " + name + General.eol);
         for (int i=0;i<items.size();i++) {
@@ -254,7 +254,7 @@ public class WattosMenu extends WattosMenuItem implements Serializable  {
             sb.append(identString + "MainMenuCommandName: " + i + " " + mainMenuCommandNames.get(i) + General.eol);
         }
         if ( level == 0 ) {
-            sb.append( "</PRE>" + General.eol );        
+            sb.append( "</PRE>" + General.eol );
         }
         return sb.toString();
     }
@@ -283,29 +283,29 @@ blabla
      * @param csv_file_location Url for file with the comma separated info.
      * @return <CODE>true</CODE> if all operations are successful.
      */
-    public boolean readCsvFile(String csv_file_location) {        
+    public boolean readCsvFile(String csv_file_location) {
         String[][] values = null;
         try {
             Reader reader = null;
-            if ( csv_file_location == null ) {            
+            if ( csv_file_location == null ) {
                 //General.showDebug("Reading WattosMenu dictionary from local resource : " + CSV_FILE_LOCATION);
-                InputStream is = getClass().getResourceAsStream(CSV_FILE_LOCATION);            
+                InputStream is = getClass().getResourceAsStream(CSV_FILE_LOCATION);
                 if ( is == null ) {
                     General.showWarning("Failed to open InputStream from location: " + CSV_FILE_LOCATION);
                     return false;
                 }
                 reader = new InputStreamReader(is);
-            } else {            
+            } else {
                 //General.showDebug("Reading WattosMenu dictionary from local resource : " + csv_file_location);
                 reader = new FileReader( csv_file_location );
             }
 
-                
+
             if ( reader == null ) {
                 General.showWarning("Failed to open reader from location: " + csv_file_location);
                 return false;
             }
-            
+
             BufferedReader br = new BufferedReader( reader );
             ExcelCSVParser parser = new ExcelCSVParser(br);
             if ( parser == null ) {
@@ -313,11 +313,11 @@ blabla
                 return false;
             }
             // Parse the data
-            values = parser.getAllValues();            
+            values = parser.getAllValues();
             if ( values == null ) {
                 General.showError("no data read from csv file");
                 return false;
-            }            
+            }
             if ( values.length <= 0 ) {
                 General.showError("number of rows found: " + values.length);
                 General.showOutput("but expected at least      : " + 1);
@@ -328,7 +328,7 @@ blabla
 
             /** Get the interesting column indexes */
             int[] columnIdx = new int[ columnList.length ];
-            for (int c=0;c<columnList.length;c++) {                
+            for (int c=0;c<columnList.length;c++) {
                 columnIdx[c] = columnLabels.indexOf( columnList[c] );
                 if ( columnIdx[c] == -1 ) {
                     General.showError("failed to find a column with label: " + columnList[c]);
@@ -337,31 +337,31 @@ blabla
                 }
                 //General.showDebug(" found column name: " + columnList[c] + " in column number: " + columnIdx[c] );
             }
-            
+
             int FIRST_ROW_WITH_DATA = -1;
             int LAST_ROW_WITH_DATA = -1;
             /** Find the begin and end of the table */
-            for (int r=0;r<values.length;r++) {       
+            for (int r=0;r<values.length;r++) {
                 if ( values[r][0].equals( DEFAULT_TABLE_BEGIN ) ) {
                     FIRST_ROW_WITH_DATA = r+1;
                 } else if ( values[r][0].equals( DEFAULT_TABLE_END ) ) {
                     LAST_ROW_WITH_DATA = r-1;
-                }                
+                }
             }
             if ( FIRST_ROW_WITH_DATA == -1 ) {
                 General.showError(" did not found begin of table; should start with: " + DEFAULT_TABLE_BEGIN );
                 return false;
-            }                        
-                
+            }
+
             if ( LAST_ROW_WITH_DATA == -1 ) {
                 General.showError(" did not found end of table; should end with: " + DEFAULT_TABLE_END );
                 return false;
-            }                        
-                
-            
-            
+            }
+
+
+
             /** Create bogus items to start */
-            String[] menuNames = new String[SUB_LEVEL_COUNT+1];            
+            String[] menuNames = new String[SUB_LEVEL_COUNT+1];
             menuNames[0]    = "MAIN LEVEL MENU NAME";
             for (int r=FIRST_ROW_WITH_DATA;r<=LAST_ROW_WITH_DATA;r++) {
                 //General.showDebug(" doing row: " + r + " which reads (csv) with: " + Strings.toString( values[r] ));
@@ -374,29 +374,29 @@ blabla
                 String description     = values[r][ columnIdx[6] ];
                 String helpHtml        = values[r][ columnIdx[7] ];
                 // Parent menu to be set later for wattos command
-                WattosCommand command = new WattosCommand( null, commandName, shortcut, description, helpHtml);                
+                WattosCommand command = new WattosCommand( null, commandName, shortcut, description, helpHtml);
                 //General.showDebug(" adding to menu a command with name: " + command.name);
                 addCommand( menuNames, command );
-            }            
+            }
         } catch ( Throwable t ) {
             General.showThrowable(t);
             return false;
         }
         Collections.sort( mainMenuCommandNames );
-        
+
         /** Some debugging: */
         //General.showDebug("Read number of commands and menus: " + mainMenuCommandNames.size());
 //        String longestString = Strings.longestString( Strings.toStringArray(mainMenuCommandNames));
         //General.showDebug("Longest commands and menus is    : " + longestString + " at length: " + longestString.length());
-        
-         
+
+
         return true;
     }
 
     /** Adds by iterating through menus to find the place.
      */
     private boolean addCommand( String[] menuNames, WattosCommand command ) {
-        
+
         WattosMenu[] menus = new WattosMenu[SUB_LEVEL_COUNT+1]; // Actually 5 levels including main and 4 sublevels.
         // Set the first level.
         menus[0] = this;
@@ -406,7 +406,7 @@ blabla
             menus[level] = menus[level-1].getSubMenu( menuNames[level] );
             // Create a new menu if it didn't exist before.
             if ( menus[level] == null ) {
-                menus[level] = new WattosMenu( menus[level-1], menuNames[level] );                
+                menus[level] = new WattosMenu( menus[level-1], menuNames[level] );
                 menus[level-1].items.add( menus[level] );
                 mainMenuCommandNames.add( menus[level].name ); // Add menu names as commands too; kind of weird but nice.
             }
@@ -421,9 +421,9 @@ blabla
         General.showError(" failed to add the command: " + command + " For menu names: " + Strings.toString(menuNames));
         return false;
     }
-    
-    
-    /** Does a slow scan but works and number of elements very limited 
+
+
+    /** Does a slow scan but works and number of elements very limited
      *Case insensitive.
      */
     public WattosMenu getSubMenu( String name ) {
@@ -439,8 +439,8 @@ blabla
         }
         return null;
     }
-            
-    /** Does a slow scan but works and number of elements very limited 
+
+    /** Does a slow scan but works and number of elements very limited
      *Case insensitive.
      */
     public boolean containsSubMenu( String name ) {
@@ -450,8 +450,8 @@ blabla
         }
         return true;
     }
-    
-    /** Does a slow iterative scan but works and number of elements very limited 
+
+    /** Does a slow iterative scan but works and number of elements very limited
      *Case insensitive.
      */
     public boolean containsSubMenuInAny( String name ) {
@@ -461,7 +461,7 @@ blabla
         }
         for (int i=0;i<items.size();i++) {
             Object o = items.get(i);
-            if ( o instanceof WattosMenu ) {                
+            if ( o instanceof WattosMenu ) {
                 WattosMenu m = (WattosMenu) o;
                 //General.showDebug(" Looking at menu: " + " " + m.name );
                 if ( m.name.equalsIgnoreCase( name ) ) {
@@ -473,17 +473,17 @@ blabla
         }
         return false;
     }
-    
-            
-            
+
+
+
     /**
      * The main can be used to regenerated a bin file that contains the menu description.
-     * It also loads it back in to check for any errors. Individual methods can 
+     * It also loads it back in to check for any errors. Individual methods can
      * be used to do parts, e.g. readObject.
      */
     public static void main(String[] args) {
 
-        WattosMenu menu = new WattosMenu(null, "Wattos Menu");                
+        WattosMenu menu = new WattosMenu(null, "Wattos Menu");
         boolean status = menu.readCsvFile(null);
         if (! status) {
             General.showError(" in WattosMenu.main found:");
@@ -491,13 +491,13 @@ blabla
             System.exit(1);
         } else {
             General.showDebug(" read WattosMenu CSV file.");
-        }        
-        
-        if ( false ) {
-            WattosMenu fileMenu     = (WattosMenu) menu.items.get(0);
-            WattosMenu macroMenu    = (WattosMenu) fileMenu.items.get(2);
-            General.showOutput("Macro menu prompt is:\n" + macroMenu.getPrompt() );
         }
+
+//        if ( false ) {
+//            WattosMenu fileMenu     = (WattosMenu) menu.items.get(0);
+//            WattosMenu macroMenu    = (WattosMenu) fileMenu.items.get(2);
+//            General.showOutput("Macro menu prompt is:\n" + macroMenu.getPrompt() );
+//        }
         if ( true ) {
             General.showOutput("Menu:\n" + menu.toHtml(0));
         }

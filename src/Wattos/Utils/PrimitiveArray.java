@@ -39,7 +39,7 @@ import com.braju.format.Parameters;
 
 /**
  * Many methods for fast handling of primitive arrays such as: int[]. Parsing/unparsing
- * from a String representation, converting to/from {@link java.util.Collections}, 
+ * from a String representation, converting to/from {@link java.util.Collections},
  * and <CODE>cern.colt</CODE> APIs. There are even some simple calculation methods
  *such as averaging floats and getting a MD5 check sum.
  * @author Jurgen F. Doreleijers
@@ -51,24 +51,24 @@ public class PrimitiveArray {
     public static final int MD5SumLength = 16;
     /** number of chars for the md5 sum */
     public static final int MD5SumStringLength = MD5SumLength * 2;
-     
+
 
     public static final char CHARACTER_INDICATING_MAKING_CUTOFF = '*';
-    
+
     public static Matcher countMakingCutoffMatcher = null;
-    
+
     static {
         Pattern p = Pattern.compile("[\\*\\-\\+]");
         countMakingCutoffMatcher = p.matcher("");
-    }                        
-    
-            
-    
+    }
+
+
+
     /** Creates new PrimitiveArray */
     public PrimitiveArray( ) {
     }
 
-    /** Fast method for rectangular matrix as input. 
+    /** Fast method for rectangular matrix as input.
      *Input needs to be rectangular.
      */
     public static float[] toFloatArray(Object[] m) {
@@ -114,8 +114,8 @@ public class PrimitiveArray {
         return toFloatArray(result);
     }
 
-    
-    /** Fast method for rectangular matrix as input. 
+
+    /** Fast method for rectangular matrix as input.
      *Input needs to be rectangular.
      */
     public static float[] toFloatArray(float[][] m) {
@@ -130,14 +130,14 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     public static boolean equals( int[] l1, int[] l2 ) {
         IntArrayList ll1 = new IntArrayList(l1);
         IntArrayList ll2 = new IntArrayList(l2);
-        
+
         return ll1.equals(ll2);
     }
-    
+
     public static boolean containsNullObject( Object[] l ) {
         for (int i=0;i<l.length;i++) {
             if ( l[i]==null ) {
@@ -146,7 +146,7 @@ public class PrimitiveArray {
         }
         return false;
     }
-    
+
     /** Returns the maximum number of columns of all rows.
      */
     public static int getMaxColumns( Object[][] o ) {
@@ -173,7 +173,7 @@ public class PrimitiveArray {
                 count++;
             }
         }
-        
+
     }
     public static boolean hasPluralCardinality( BitSet b ) {
         int next = b.nextSetBit(0);
@@ -186,7 +186,7 @@ public class PrimitiveArray {
         }
         return true;
     }
-    
+
     /** Transfers the lines to content variable.
      */
     public static byte[] fillContent(ArrayList lines ) {
@@ -201,18 +201,18 @@ public class PrimitiveArray {
             return null;
         }
         //General.showDebug("In method PrimitiveArray.fillContent found number of lines: " + lines.size());
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream ();
         // output : Unicode to Cp850 (MS-DOS Latin-1)
         OutputStreamWriter out = null;
         try {
-            
+
             out = new OutputStreamWriter(baos);
             //General.showDebug("Encoding: " + out.getEncoding());
             // web app failed here when encoding "Cp850" was given.
             Iterator i=lines.iterator();
 //            int lineCount = 0;
-            while (i.hasNext()) {            
+            while (i.hasNext()) {
                 String line = (String) i.next();
                 //General.showDebug("line: " + ++lineCount + " has length: " + line.length());
                 out.write( line );
@@ -222,11 +222,11 @@ public class PrimitiveArray {
             return baos.toByteArray();
         } catch ( Exception e ) {
             General.showThrowable(e);
-        }        
-        return null;        
+        }
+        return null;
     }
-    
-    
+
+
     /** Creates an array with elements ascending in order starting from start */
     static public int[] createSequentialArray( int length, int start ) {
         if ( length < 1 ) {
@@ -257,14 +257,14 @@ public class PrimitiveArray {
         MessageDigest digester = null;
         try {
             digester = MessageDigest.getInstance("MD5");
-            ByteArrayInputStream bais = new ByteArrayInputStream(input);        
+            ByteArrayInputStream bais = new ByteArrayInputStream(input);
             DigestInputStream dis = new DigestInputStream(bais,digester);
             // Now create a stream who's data can be read easily.
             DataInputStream dais = new DataInputStream(dis);
-            byte[] buffer = new byte[ input.length ];        
+            byte[] buffer = new byte[ input.length ];
             dais.readFully(buffer);
             result = digester.digest();
-            //General.showOutput("MD5 sum digest: " + Strings.toHex( result ));        
+            //General.showOutput("MD5 sum digest: " + Strings.toHex( result ));
             if ( result.length != MD5SumLength ) {
                 General.showCodeBug("Didn't calculate a md5 sum of proper length.");
                 General.showCodeBug("Expeced length: " + MD5SumLength);
@@ -298,8 +298,8 @@ public class PrimitiveArray {
         }
         return m;
     }
-        
-    
+
+
     /** Returns null if even one element isn't of type Integer */
     static public IntArrayList toIntArrayList( Collection c ) {
         IntArrayList result = new IntArrayList();
@@ -316,8 +316,8 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
-    
+
+
     static public boolean removeDuplicatesBySort( IntArrayList a ) {
         a.sort();
         for (int i=a.size(); i>0; i--) {
@@ -325,7 +325,7 @@ public class PrimitiveArray {
                 //General.showDebug("Removed duplicate " + a.get(i) + " at index: " + i );
                 a.remove(i);
             }
-        }        
+        }
         return true;
     }
 
@@ -336,9 +336,9 @@ public class PrimitiveArray {
             //General.showDebug("Using float: " + in[i]);
             sum += in[ i ];
         }
-        return sum;        
+        return sum;
     }
-    
+
     /** Warning; does no checking of any kind */
     static public int getSum( int[] in ) {
         int sum = 0;
@@ -346,7 +346,7 @@ public class PrimitiveArray {
             //General.showDebug("Using float: " + in[i]);
             sum += in[ i ];
         }
-        return sum;        
+        return sum;
     }
 
     static public float getAverage( float[] in ) {
@@ -369,7 +369,7 @@ public class PrimitiveArray {
         }
         return loc;
     }
-    
+
     /** Return index of the max value */
     static public int getMaxLocation( float[] in ) {
         int loc = 0;
@@ -382,7 +382,7 @@ public class PrimitiveArray {
         }
         return loc;
     }
-    
+
     /** Return index of the max value below or above the cutoff or -1
      *if no such value exists. Returns -2 on error. If getMax is set to false
      *it will get the minimum value below or above the cutoff.
@@ -390,19 +390,19 @@ public class PrimitiveArray {
      *of:
      *ArrayList -> float[] for every restraint -> float for every model
      */
-    static public int getMaxLocationMakingCutoff( Object in2, float cutoff, 
+    static public int getMaxLocationMakingCutoff( Object in2, float cutoff,
             boolean smallerThanCutoff, boolean getMax ) {
         float maxVal;
         float minVal;
 
         boolean isArrayList = false;
         if ( in2 instanceof ArrayList ) {
-            isArrayList = true;            
+            isArrayList = true;
         }
-        
+
         int loc = -1;
         float extreem = Defs.NULL_FLOAT;
-        
+
         if ( ! isArrayList ) {
             float[] in = (float[]) in2;
             int countModels = in.length;
@@ -410,7 +410,7 @@ public class PrimitiveArray {
                 General.showError("Failed to getMaxLocationMakingCutoff as no models present.");
                 return -2;
             }
-            for (int i=0;i<countModels;i++) {            
+            for (int i=0;i<countModels;i++) {
                 if ( smallerThanCutoff ) {
                     //in[i] < cutoff
                     if ( in[i] < cutoff ) {
@@ -420,7 +420,7 @@ public class PrimitiveArray {
                         // ( in[i] > extreem )
                         } else if ( Logic.smallerThanOrLargerThan(getMax, extreem, in[i])) {
                             extreem = in[i];
-                            loc = i;                        
+                            loc = i;
                         }
                     }
                 } else {
@@ -431,49 +431,49 @@ public class PrimitiveArray {
                         // ( in[i] > extreem )
                         } else if ( Logic.smallerThanOrLargerThan(getMax, extreem, in[i]) ) {
                             extreem = in[i];
-                            loc = i;                        
+                            loc = i;
                         }
-                    }                
+                    }
                 }
             }
         } else { // in case of ArrayList input
-            ArrayList al = (ArrayList) in2;                        
+            ArrayList al = (ArrayList) in2;
             float[] valueList = (float[]) al.get(0);
             if ( (valueList == null) || (valueList.length==0)) {
                 General.showError("Got invalid values in getMaxLocationMakingCutoff");
                 return -2;
             }
-            int countModels = valueList.length;            
+            int countModels = valueList.length;
             if ( countModels == 0 ) {
                 General.showError("Failed to getMaxLocationMakingCutoff as no models present.");
                 return -2;
             }
-            for (int i=0;i<countModels;i++) {   // loop over models      
+            for (int i=0;i<countModels;i++) {   // loop over models
                 minVal = Float.MAX_VALUE;
                 maxVal = Float.MIN_VALUE;
                 for (int j=0;j<al.size();j++) { // loop over restraints
-                    valueList = (float[]) al.get(j);                    
+                    valueList = (float[]) al.get(j);
                     if ( valueList.length != countModels ) {
-                        General.showError("Inconsistent number of models from first constraint: " + 
+                        General.showError("Inconsistent number of models from first constraint: " +
                                 countModels + " and restraint: " + j + " where it is: " + valueList.length);
                         return -2;
                     }
-                    
+
                     if ( valueList[i] < minVal ) {
-                        if ( Logic.smallerThanOrLargerThan(smallerThanCutoff, valueList[i], cutoff)) {  
+                        if ( Logic.smallerThanOrLargerThan(smallerThanCutoff, valueList[i], cutoff)) {
                             minVal = valueList[i];
-                        }                        
+                        }
                     }
                     if ( valueList[i] > maxVal) {
-                        if ( Logic.smallerThanOrLargerThan(smallerThanCutoff, valueList[i], cutoff)) {  
+                        if ( Logic.smallerThanOrLargerThan(smallerThanCutoff, valueList[i], cutoff)) {
                             maxVal = valueList[i];
                         }
                     }
                 }
-                
+
                 //General.showDebug("Found in model: " + i + " minVal: " + minVal);
                 //General.showDebug("Found in model: " + i + " maxVal: " + maxVal);
-                
+
                 if ( getMax ) {
                     if ( maxVal != Float.MIN_VALUE ) {  // a value making cutoff existed.
                         if ( Defs.isNull(extreem) ) {
@@ -481,7 +481,7 @@ public class PrimitiveArray {
                             loc = i;
                         } else if ( maxVal > extreem ) {
                             extreem = maxVal;
-                            loc = i;                        
+                            loc = i;
                         }
                     }
                 } else {
@@ -491,15 +491,15 @@ public class PrimitiveArray {
                             loc = i;
                         } else if ( minVal < extreem ) {
                             extreem = minVal;
-                            loc = i;                        
+                            loc = i;
                         }
                     }
                 }
-            }            
+            }
         }
         return loc;
-    }  
-    
+    }
+
     static public float getMin( float[] in ) {
         if ( in == null || (in.length == 0 )) {
             return Defs.NULL_FLOAT;
@@ -518,7 +518,7 @@ public class PrimitiveArray {
         if ( in == null || (in.length == 0 )) {
             return Defs.NULL_FLOAT;
         }
-        
+
         float result = Float.MIN_VALUE;
         for (int i=0;i<in.length;i++) {
             if ( result < in[i] ){
@@ -527,7 +527,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     /** Requires only one scan, so a little faster for large arrays than
      *calling to getMin and getMax individually.
      */
@@ -535,8 +535,8 @@ public class PrimitiveArray {
         if ( in == null || (in.length == 0 )) {
             return null;
         }
-        
-        float[] result = new float[] { in[0], in[0] };        
+
+        float[] result = new float[] { in[0], in[0] };
         for (int i=1;i<in.length;i++) {
             if ( result[0] > in[i] ){
                 result[0] = in[i];
@@ -547,7 +547,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     static public float[] toFloatArray( FloatArrayList in ) {
         if ( in == null ) {
             return null;
@@ -564,29 +564,29 @@ public class PrimitiveArray {
         if ( in == null ) {
             return null;
         }
-        
+
         float[] result = new float[ in.length ];
         for (int i=0;i<in.length;i++) {
             result[i] = (float) in[i];
         }
         return result;
     }
-    
+
     static public double[] toDoubleArray( float in[] ) {
         if ( in == null ) {
             return null;
         }
-        
+
         double[] result = new double[ in.length ];
         for (int i=0;i<in.length;i++) {
             result[i] = (double) in[i];
         }
         return result;
     }
-    
+
     /** doesn't make sense to center average over this does it? */
     static public float getAverage( FloatArrayList in, int avgMethod, double power, int numberMonomers ) {
-        float[] in2 = toFloatArray( in );            
+        float[] in2 = toFloatArray( in );
         if ( avgMethod == DistConstrList.DEFAULT_AVERAGING_METHOD_SUM ) {
             return getAverageSum( in2, power, numberMonomers );
         }
@@ -598,13 +598,13 @@ public class PrimitiveArray {
             return Defs.NULL_FLOAT;
         }
         General.showError("Unknown averaging method id: " + avgMethod);
-        return Defs.NULL_FLOAT;        
+        return Defs.NULL_FLOAT;
     }
-        
+
     /** Sum averaging like done for distances in Xplor's sum averaging.
      *Use the power -6.0 normally.
      */
-    static public float getAverageSum( float[] in, double power, int numberMonomers ) {        
+    static public float getAverageSum( float[] in, double power, int numberMonomers ) {
         double sum = 0; // There's no speed loss doing it on doubles as the pow function uses doubles.
         for (int i=0; i<in.length; i++) {
             sum += Math.pow( in[ i ], power);
@@ -612,12 +612,12 @@ public class PrimitiveArray {
         sum = sum / numberMonomers;
         return (float) Math.pow( sum, 1/power );
     }
-        
+
     /** Sum averaging like done for distances in Xplor's sum averaging.
      *Use the power -6.0 normally.
      *Name is a bit misleading because it can do any power obviously.
      */
-    static public float getAverageR6( float[] in, double power ) {        
+    static public float getAverageR6( float[] in, double power ) {
         double sum = 0; // There's no speed loss doing it on doubles as the pow function uses doubles.
         for (int i=0; i<in.length; i++) {
             sum += Math.pow( in[ i ], power);
@@ -625,8 +625,8 @@ public class PrimitiveArray {
         sum = sum / in.length;
         return (float) Math.pow( sum, 1/power );
     }
-        
-    
+
+
     /** Create a map for going from one list with n elements to a list where m
      *elements are deleted up shifting the remainder.
      * E.g.:
@@ -636,19 +636,19 @@ public class PrimitiveArray {
      *NOT TESTED!!!
      */
     static int[] createMapForCleanUp( int[] indexes_todelete, int size_original ) {
-        
+
         General.showError("code needs to be checked before usage");
-        
+
         // Next line can be remove.. its the assumption, right?
         //Arrays.sort( indexes );
-        
+
         int size_new = size_original - indexes_todelete.length;
         int[] map = new int[ size_new ];
         int index_old = 0;
         int offset = 0;
         for (int i=0;i<size_original;i++) {
             if ( i == indexes_todelete[index_old] ) {
-                index_old++;                
+                index_old++;
                 offset++;
                 // Copy remaining; no more elements to be deleted left.
                 if ( index_old == indexes_todelete.length ) {
@@ -691,7 +691,7 @@ public class PrimitiveArray {
         return result;
     }
 
-    
+
     public StringArrayList intersection( StringArrayList list_b ) {
         StringArrayList result = new StringArrayList();
         for (Iterator i=this.iterator(); i.hasNext(); ) {
@@ -699,16 +699,16 @@ public class PrimitiveArray {
             if ( list_b.contains(element) ) {
                 result.add(element);
             }
-        }        
+        }
         return result;
     }
-    
+
     /** Multiset semantics...
          *Input should be sorted for speed.
          *a-b gives the elements in a that are not in b.
      */
     public static IntArrayList difference( IntArrayList list_a, IntArrayList list_b ) {
-        
+
         IntArrayList result = new IntArrayList();
         for (int id_a=list_a.size()-1; id_a>=0; id_a--) { // reversed for speed
             int e_a = list_a.getQuick( id_a );
@@ -716,11 +716,11 @@ public class PrimitiveArray {
             if ( list_b.binarySearch( e_a ) < 0 ) { // wasn't present // requires sorted array
                 result.add( e_a );
             }
-        }               
+        }
         return result;
     }
-    
-    
+
+
     /** Materialize a list of strings from a byte array with cp850 (pretty much ascii).
      */
     /** convert from the raw data to text lines.
@@ -730,7 +730,7 @@ public class PrimitiveArray {
             General.showError("Can't do getLines from null ref of byte[]");
             return null;
         }
-        
+
         ByteArrayInputStream bais = new ByteArrayInputStream(content);
         //A stream that reads bytes from stream and converts them to characters.
         InputStreamReader isr = new InputStreamReader(bais);
@@ -740,7 +740,7 @@ public class PrimitiveArray {
         int line_count=0;
         String line = null;
         ArrayList lines = new ArrayList();
-        
+
         try {
             do {
                 line = br.readLine();
@@ -754,21 +754,21 @@ public class PrimitiveArray {
         } catch ( Exception e ) {
             e.printStackTrace();
             return null;
-        }        
-        //General.showDebug("Converted from the raw data: " + line_count + " text lines");                    
+        }
+        //General.showDebug("Converted from the raw data: " + line_count + " text lines");
         return lines;
     }
-    
-    
+
+
     /** A simple function that takes a copy home.
      */
-    
+
     public static int[] getElements( IntArrayList values ) {
         int[] result = new int[values.size()];
         System.arraycopy(values.elements(), 0, result, 0, values.size());
         return result;
     }
-    
+
     /** Reshuffle the values by the order as specified in order parameter. */
     public static boolean orderIntArrayListByIntArray( IntArrayList values, int[] order ) {
         if ( values == null ) {
@@ -796,7 +796,7 @@ public class PrimitiveArray {
         ArrayList l = new ArrayList();
         int[] valuesClone = new int[s]; // slightly cheaper than intArrayList
         for (int i=0;i<s;i++) {
-            l.add( new int[] {order[ values.get( i)], i } );            
+            l.add( new int[] {order[ values.get( i)], i } );
             valuesClone[ i ] = values.getQuick( i );
         }
         try {
@@ -806,12 +806,12 @@ public class PrimitiveArray {
             return false;
         }
 
-        // Set the order 
+        // Set the order
         for (int i=0;i<s;i++) {
             values.setQuick( i, valuesClone[ ((int[]) l.get(i))[1]] );
             //General.showDebug("Ordered value: " + values.getQuick(i) + " with order int: " + order[ values.getQuick(i) ] );
-        }        
-        
+        }
+
         return true;
     }
 
@@ -830,7 +830,7 @@ public class PrimitiveArray {
             General.showError( "Can't swap int values because row id 2 given: " + row_2 + " is beyond array length: " + s);
             return false;
         }
-        
+
         int tmp = a.getQuick( row_1 );
         a.setQuick(  row_1, a.getQuick(  row_2 ));
         a.setQuick(  row_2, tmp);
@@ -844,7 +844,7 @@ public class PrimitiveArray {
             General.showError( "Array to swap elements in is null");
             return false;
         }
-            
+
         if ( row_1 >= a.length ) {
             General.showError( "Can't swap int values because row id 1 given: " + row_1 + " is beyond array length: " + a.length);
             return false;
@@ -853,7 +853,7 @@ public class PrimitiveArray {
             General.showError( "Can't swap int values because row id 2 given: " + row_2 + " is beyond array length: " + a.length);
             return false;
         }
-        
+
         int tmp = a[ row_1 ];
         a[ row_1 ] = a[ row_2 ] ;
         a[ row_2 ] = tmp;
@@ -867,14 +867,14 @@ public class PrimitiveArray {
         ArrayList c = new ArrayList();
         for (; e.hasMoreElements() ;) {
           c.add( e.nextElement());
-        }        
+        }
         return c;
     }
-    
+
     /** Signature says it all
      */
     public static ArrayList toArrayList(Object primitiveArray) {
-        if ( primitiveArray instanceof float[] ) {            
+        if ( primitiveArray instanceof float[] ) {
             float[] ar = (float[]) primitiveArray;
             ArrayList al = new ArrayList( ar.length );
             for (int i=0;i<ar.length;i++) {
@@ -882,7 +882,7 @@ public class PrimitiveArray {
             }
             return al;
         }
-        if ( primitiveArray instanceof String[] ) {            
+        if ( primitiveArray instanceof String[] ) {
             String[] ar = (String[]) primitiveArray;
             ArrayList al = new ArrayList( ar.length );
             for (int i=0;i<ar.length;i++) {
@@ -893,7 +893,7 @@ public class PrimitiveArray {
         General.showError("have to code toArrayList in PrimitiveArray for type: " + primitiveArray.getClass().getName());
         return null;
     }
-    
+
     public static int[] getReverseIndex( int[] in) {
         int[] out = new int[in.length];
         for (int i=0;i<in.length;i++) {
@@ -901,14 +901,14 @@ public class PrimitiveArray {
         }
         return out;
     }
-        
+
     public static ArrayList asList ( int[] in ) {
         ArrayList out = new ArrayList();
         for (int i=0;i<in.length;i++) {
             out.add( new Integer(in[i]) );
         }
         return out;
-    }        
+    }
 
     public static String[] asStringArray ( ArrayList in ) {
         String[] out = new String[in.size()];
@@ -916,33 +916,33 @@ public class PrimitiveArray {
             out[i] = (String) in.get(i);
         }
         return out;
-    }        
+    }
 
     public static String toString( short[] in ) {
         ArrayList out = new ArrayList();
         for (int i=0;i<in.length;i++) {
             out.add( new Short(in[i]) );
-        }        
+        }
         return Strings.toString( out.toArray() );
     }
-    
+
     public static String toString( boolean[] in ) {
         ArrayList out = new ArrayList();
         for (int i=0;i<in.length;i++) {
             out.add( Boolean.valueOf(in[i]) );
-        }        
+        }
         return Strings.toString( out.toArray() );
     }
     /** Defaults to printing no eol char after each value */
     public static String toString( int[] in ) {
         return toString( in, false );
     }
-     
+
     public static String toString( int[] in, boolean useBrackets ) {
         boolean printEOLAfterEach = false;
         return toString( in, printEOLAfterEach, useBrackets );
     }
-    
+
     public static String toString( int[] in, boolean useBrackets, boolean printEOLAfterEach ) {
         if ( in == null ) {
             return null;
@@ -955,15 +955,15 @@ public class PrimitiveArray {
             } else {
                 out.add( new Integer(value) );
             }
-        }        
+        }
         return Strings.toString( out.toArray(), printEOLAfterEach, useBrackets );
     }
-    
+
     public static String toString( float[] in ) {
         ArrayList out = new ArrayList();
         for (int i=0;i<in.length;i++) {
             out.add( new Float(in[i]) );
-        }        
+        }
         return Strings.toString( out.toArray() );
     }
 
@@ -971,10 +971,10 @@ public class PrimitiveArray {
         ArrayList<Double> out = new ArrayList();
         for (int i=0;i<in.length;i++) {
             out.add( new Double(in[i]) );
-        }        
+        }
         return Strings.toString( out.toArray() );
     }
-    
+
     public static String toString( Object o ) {
         if (o instanceof int[] ) {
             return toString( (int[]) o);
@@ -993,16 +993,16 @@ public class PrimitiveArray {
         }
         return o.toString();
     }
-    
+
     public static String toString( IntArrayList in ) {
         return toString( in, true );
     }
-    
+
     public static String toString( IntArrayList in, boolean useBrackets ) {
         boolean printEOLAfterEach = false;
         return toString( in, printEOLAfterEach, useBrackets );
     }
-    
+
     public static String toString( IntArrayList in, boolean useBrackets, boolean printEOLAfterEach ) {
         int[] myElements = new int[in.size()];
         for (int i=myElements.length; --i >= 0; ) {
@@ -1010,7 +1010,7 @@ public class PrimitiveArray {
         }
         return toString( myElements, useBrackets, printEOLAfterEach );
     }
-    
+
     public static String toString( BooleanArrayList in ) {
 	boolean[] myElements = new boolean[in.size()];
 	for (int i=myElements.length; --i >= 0; ) {
@@ -1018,7 +1018,7 @@ public class PrimitiveArray {
         }
         return toString( myElements );
     }
-    
+
     public static String toString( Object[] in ) {
         StringBuffer sb = new StringBuffer();
         sb.append('[');
@@ -1033,19 +1033,19 @@ public class PrimitiveArray {
         }
         if ( in.length == 0 ) {
             sb.append("empty");
-        } else {            
+        } else {
             sb.deleteCharAt(sb.length()-1);
             sb.deleteCharAt(sb.length()-1);
         }
         sb.append(']');
-        return sb.toString(); 
+        return sb.toString();
     }
-    
-    
-    
+
+
+
     /**
      */
-    public static Object resizeArray( Object in, int size_new ) {        
+    public static Object resizeArray( Object in, int size_new ) {
         if ( in instanceof float[] ) {
             float[] out = (float[]) in;
             return resizeArray( out, size_new );
@@ -1084,10 +1084,10 @@ public class PrimitiveArray {
             return null;
         }
     }
-    
+
     /**
      */
-    public static boolean fillArrayNulls( Object in, int fromIndex, int toIndex ) {        
+    public static boolean fillArrayNulls( Object in, int fromIndex, int toIndex ) {
         if ( in instanceof float[] ) {
             Arrays.fill((float[]) in, fromIndex, toIndex, Defs.NULL_FLOAT);
         } else if ( in instanceof int[] ) {
@@ -1114,7 +1114,7 @@ public class PrimitiveArray {
         } else {
             General.showError("code error fillArrayNulls called with object of class: " + in.getClass().getName());
             return false;
-        }        
+        }
         return true;
     }
 
@@ -1129,56 +1129,56 @@ public class PrimitiveArray {
         return in;
     }
 
-    public static double[] resizeArray( double[] in, int size_new ) {        
+    public static double[] resizeArray( double[] in, int size_new ) {
         double[] out = new double[size_new];
         int copySize = Math.min( in.length, size_new );
         System.arraycopy( in, 0, out, 0, copySize);
         return out;
     }
 
-    public static float[] resizeArray( float[] in, int size_new ) {        
+    public static float[] resizeArray( float[] in, int size_new ) {
         float[] out = new float[size_new];
         int copySize = Math.min( in.length, size_new );
-        System.arraycopy( in, 0, out, 0, copySize);        
+        System.arraycopy( in, 0, out, 0, copySize);
         return out;
     }
 
-    public static short[] resizeArray( short[] in, int size_new ) {        
+    public static short[] resizeArray( short[] in, int size_new ) {
         short[] out = new short[size_new];
         int copySize = Math.min( in.length, size_new );
         System.arraycopy( in, 0, out, 0, copySize);
         return out;
     }
 
-    public static int[] resizeArray( int[] in, int size_new ) {        
+    public static int[] resizeArray( int[] in, int size_new ) {
         int[] out = new int[size_new];
         int copySize = Math.min( in.length, size_new );
         System.arraycopy( in, 0, out, 0, copySize);
         return out;
     }
 
-    public static boolean[] resizeArray( boolean[] in, int size_new ) {        
+    public static boolean[] resizeArray( boolean[] in, int size_new ) {
         boolean[] out = new boolean[size_new];
         int copySize = Math.min( in.length, size_new );
         System.arraycopy( in, 0, out, 0, copySize);
         return out;
     }
 
-    public static char[] resizeArray( char[] in, int size_new ) {        
+    public static char[] resizeArray( char[] in, int size_new ) {
         char[] out = new char[size_new];
         int copySize = Math.min( in.length, size_new );
         System.arraycopy( in, 0, out, 0, copySize);
         return out;
     }
 
-    public static String[] resizeArray( String[] in, int size_new ) {        
+    public static String[] resizeArray( String[] in, int size_new ) {
         String[] out = new String[size_new];
         int copySize = Math.min( in.length, size_new );
         System.arraycopy( in, 0, out, 0, copySize);
         return out;
     }
 
-    public static Object[] resizeArray( Object[] in, int size_new ) {        
+    public static Object[] resizeArray( Object[] in, int size_new ) {
         //General.showDebug("Using resizeArray on Object[]");
         Object[] out = new Object[size_new];
         int copySize = Math.min( in.length, size_new );
@@ -1186,7 +1186,7 @@ public class PrimitiveArray {
         return out;
     }
 
-    public static int[][] resizeArray( int[][] in, int size_new ) {        
+    public static int[][] resizeArray( int[][] in, int size_new ) {
         //General.showDebug("Using resizeArray on int[][]");
         int[][] out = new int[size_new][];
         int copySize = Math.min( in.length, size_new );
@@ -1194,27 +1194,27 @@ public class PrimitiveArray {
         return out;
     }
 
-    public static float[][] resizeArray( float[][] in, int size_new ) {        
+    public static float[][] resizeArray( float[][] in, int size_new ) {
         //General.showDebug("Using resizeArray on float[][]");
         float[][] out = new float[size_new][];
         int copySize = Math.min( in.length, size_new );
         System.arraycopy( in, 0, out, 0, copySize);
         return out;
     }
-    
+
     /** Inverts the array contents in place
      */
-    public static int[] invertArray( int[] in ) {        
+    public static int[] invertArray( int[] in ) {
         /** E.g. for array of 5 elements 2 swaps are needed.
          */
         int sizeSwaps = in.length / 2; // Truncating the half
         //l=4 -> j=1;  l=5 -> j=2
-        int j = (in.length + 1 )/ 2 - 1; 
+        int j = (in.length + 1 )/ 2 - 1;
         for (int i=sizeSwaps-1;i>=0;i--) {
             j++;;
             int temp = in[i];
             in[i] = in[j];
-            in[j] = temp;            
+            in[j] = temp;
         }
         return in;
     }
@@ -1228,8 +1228,8 @@ public class PrimitiveArray {
      * @param min List with elements to be deleted from the base.
      * @return Base minus min or base if either one is of length zero.
      */
-    
-    public static int[] minus( int[] base, int[] min ) {        
+
+    public static int[] minus( int[] base, int[] min ) {
         if ( min.length == 0 ) {
             return base;
         }
@@ -1240,7 +1240,7 @@ public class PrimitiveArray {
         int[] minCopy = new int[min.length];
         System.arraycopy( min, 0, minCopy, 0, min.length);
         int[] result = new int[base.length]; // will be resized later.
-        
+
         int idx = 0;
         for (int i=0;i<base.length;i++ ) {
             int element = base[i];
@@ -1268,7 +1268,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     /** Creates a int array where each element is the truncated value as in the array.
      */
     public static IntArrayList toIntArrayList(double[] values) {
@@ -1279,8 +1279,8 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
-    /** Convenience method 
+
+    /** Convenience method
      * Make it faster by using elements() from the colt api...*/
     public static int[] toIntArray(IntArrayList list) {
         int listSize = list.size();
@@ -1290,7 +1290,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     /** Convenience method */
     public static int[] toIntArray(BitSet selection) {
         int numberBitsSetToTrue = selection.cardinality();
@@ -1312,8 +1312,8 @@ public class PrimitiveArray {
     public static BitSet toBitSet(IntArrayList list ) {
         return toBitSet(list, -1);
     }
-    
-    /** Creates a bitset elements are set if the input array has the index. 
+
+    /** Creates a bitset elements are set if the input array has the index.
      *This operation is useful if the array list is densely populated.
      *The target size of the bitSet can be given as -1 to indicate it is
      *supposed to grow as needed.
@@ -1334,7 +1334,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     public static BitSet toBitSet(int[] list, int bitSetSize ) {
         return toBitSet(new IntArrayList(list), bitSetSize );
     }
@@ -1344,7 +1344,7 @@ public class PrimitiveArray {
     public static BitSet toBitSet(int[] list ) {
         return toBitSet(list, -1);
     }
-    
+
     /** Returns the number of set bits in the bitset.
      */
     public static int countSet( BitSet bs ) {
@@ -1353,10 +1353,10 @@ public class PrimitiveArray {
             if ( bs.get(r) ) {
                 result++;
             }
-        }        
+        }
         return result;
     }
-    
+
     public static String toString( BitSet bs ) {
         return toString( bs, true );
     }
@@ -1365,7 +1365,7 @@ public class PrimitiveArray {
      *showing the T/F values
      */
     public static String toString( BitSet bs, boolean showValues ) {
-    
+
         int count = bs.cardinality();
         StringBuffer sb = new StringBuffer(bs.size()+99);
         Parameters p = new Parameters(); // Printf parameters
@@ -1398,23 +1398,23 @@ public class PrimitiveArray {
         }
         return sb.toString();
     }
-    
-    
+
+
     /**
      * Returns the number of items over a threshold.
      */
     public static int countMakingCutoff( String text) {
         return Strings.countStrings(text,countMakingCutoffMatcher);
-    } 
-            
+    }
+
     /**
      * Returns the number of items over a threshold.
      */
-    public static int countMakingCutoff( float[] valueList, float cutoff, 
-            boolean smallerThanCutoff ) {  
+    public static int countMakingCutoff( float[] valueList, float cutoff,
+            boolean smallerThanCutoff ) {
         int count = 0;
         /**
-        General.showDebug("Doing countMakingCutoff with cutoff: " + cutoff + 
+        General.showDebug("Doing countMakingCutoff with cutoff: " + cutoff +
                 " smallerThanCutoff: " + smallerThanCutoff +
                 " on: " + toString(valueList));
          */
@@ -1422,24 +1422,24 @@ public class PrimitiveArray {
             for (int i=0;i<valueList.length;i++) {
                 if ( valueList[i] < cutoff ) {
                     count++;
-                } 
+                }
             }
             return count;
         }
-            
+
         for (int i=0;i<valueList.length;i++) {
             if ( valueList[i] > cutoff ) {
                 //General.showDebug("counted up to: " + count);
                 count++;
-            } 
+            }
         }
         return count;
     }
 
     /**
-     * Given a list (per restraints) of list of values(per model) and a cutoff return 
-     * a string that shows for 
-     * each value whether it made the cutoff anywhere in the restraints or not 
+     * Given a list (per restraints) of list of values(per model) and a cutoff return
+     * a string that shows for
+     * each value whether it made the cutoff anywhere in the restraints or not
      * by showing a * for that value.
      * @see Wattos.Soup.Constraint.DistConstrList#setTagTableRes
      * @param listObject Can be an ArrayList of float[] or a float[].
@@ -1447,24 +1447,24 @@ public class PrimitiveArray {
      * @param smallerThanCutoff False if looking for values that are larger than cutoff.
      * @return Descriptive text.
      */
-    public static String toStringMakingCutoff( Object listObject, float cutoff, 
+    public static String toStringMakingCutoff( Object listObject, float cutoff,
             boolean smallerThanCutoff ) {
-        
+
         float minVal = Float.MAX_VALUE;
         float maxVal = Float.MIN_VALUE;
 
-        int maxId = getMaxLocationMakingCutoff(listObject,cutoff,smallerThanCutoff,true);        
+        int maxId = getMaxLocationMakingCutoff(listObject,cutoff,smallerThanCutoff,true);
         if ( maxId == -2 ) {
             General.showError("Failed getMaxLocationMakingCutoff (with max) in toStringMakingCutoff");
             return null;
         }
-        
+
         int minId = getMaxLocationMakingCutoff(listObject,cutoff,smallerThanCutoff,false);
         if ( minId == -2 ) {
             General.showError("Failed getMaxLocationMakingCutoff (with min) in toStringMakingCutoff");
             return null;
         }
-        
+
         if ( minId == maxId ) {
             if ( smallerThanCutoff ) {
                 maxId = -1;
@@ -1472,7 +1472,7 @@ public class PrimitiveArray {
                 minId = -1;
             }
         }
-        
+
         int countModels = 0;
         boolean listIsArrayList = true;
         float[] valueList = null;
@@ -1488,17 +1488,17 @@ public class PrimitiveArray {
         } else {
             listIsArrayList = false;
             valueList = (float[]) listObject; // keep reference.
-            countModels = valueList.length;    
+            countModels = valueList.length;
         }
-        
+
         char[] s = new char[countModels];
         Arrays.fill(s,' ');
-        
+
         int n = 0; // modelnumber
         for (int i=0;i<countModels;i++) { // loop over models
             n++;
             if ( i==minId) {
-                s[i] = '-'; 
+                s[i] = '-';
             } else if ( i==maxId) {
                 s[i] = '+';
             } else {
@@ -1512,7 +1512,7 @@ public class PrimitiveArray {
                     minVal = Float.MAX_VALUE;
                     maxVal = Float.MIN_VALUE;
                     for (int j=0;j<al.size();j++) { // loop over restraints
-                        valueList = (float[]) al.get(j);                    
+                        valueList = (float[]) al.get(j);
                         if ( smallerThanCutoff ) {
                             if ( valueList[i] < minVal) {
                                 minVal = valueList[i];
@@ -1523,12 +1523,12 @@ public class PrimitiveArray {
                             }
                         }
                     }
-                    if ( ( smallerThanCutoff && ( minVal < cutoff)) || 
+                    if ( ( smallerThanCutoff && ( minVal < cutoff)) ||
                          (!smallerThanCutoff && ( maxVal > cutoff))) {
                         s[i] = CHARACTER_INDICATING_MAKING_CUTOFF;
                         continue;
                     }
-                } 
+                }
                 if ( n % 5 == 0 ) {
                     if ( n % 10 == 0 ) {
                         int r = n/10;
@@ -1545,7 +1545,7 @@ public class PrimitiveArray {
 
         return new String(s);
     }
-    
+
     /** NOT USED
     public static Object convertFloat2Int(Object columnIn, int dataType, String format) {
         int previousValue;
@@ -1555,9 +1555,9 @@ public class PrimitiveArray {
         int[] column = (int[]) columnIn;
         int sizeMax = column.length;
         String[] result = new String[sizeMax];
-        
+
         Parameters p = new Parameters(); // Printf parameters
-        
+
         // Do the last one first.
         currentValue =  column[sizeMax-1];
         // Deal with this later for STAR cases.
@@ -1569,7 +1569,7 @@ public class PrimitiveArray {
         result[sizeMax-1] = currentString;
         previousValue = currentValue;
         previousString = currentString;
-        
+
         // Do the rest.
         for (int r=sizeMax-2;r>-1;r--) {
             // Only do parse if previous string was different.
@@ -1590,7 +1590,7 @@ public class PrimitiveArray {
         return result;
     }
      */
-    
+
     /** See convertString2Float
      */
     public static Object convertFloat2String(Object columnIn, int dataType, String format) {
@@ -1608,9 +1608,9 @@ public class PrimitiveArray {
         if ( column.length == 0 ) {
             return result;
         }
-        
+
         Parameters p = new Parameters(); // Printf parameters
-        
+
         // Do the last one first.
         currentValue =  column[sizeMax-1];
 
@@ -1627,7 +1627,7 @@ public class PrimitiveArray {
         result[sizeMax-1] = currentString;
         previousValue = currentValue;
         previousString = currentString;
-        
+
         // Do the rest.
         for (int r=sizeMax-2;r>-1;r--) {
             // Only do parse if previous string was different.
@@ -1649,7 +1649,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     /** See convertString2Float
      */
     public static Object convertDouble2String(Object columnIn, int dataType, String format) {
@@ -1667,9 +1667,9 @@ public class PrimitiveArray {
         if ( column.length == 0 ) {
             return result;
         }
-        
+
         Parameters p = new Parameters(); // Printf parameters
-        
+
         // Do the last one first.
         currentValue =  column[sizeMax-1];
 
@@ -1686,7 +1686,7 @@ public class PrimitiveArray {
         result[sizeMax-1] = currentString;
         previousValue = currentValue;
         previousString = currentString;
-        
+
         // Do the rest.
         for (int r=sizeMax-2;r>-1;r--) {
             // Only do parse if previous string was different.
@@ -1708,7 +1708,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
 
     /**
      *Use 0 and 1 by default to represent the value so that MySQL can read it.<BR>
@@ -1719,7 +1719,7 @@ public class PrimitiveArray {
     public static Object convertBit2String(Object columnIn, int dataType, String format) {
         BitSet column = (BitSet) columnIn;
         int sizeMax = column.size();
-        String[] result = new String[sizeMax];   
+        String[] result = new String[sizeMax];
         String strTrue = "1";
         String strFalse = "0";
         if ( format == null ) {
@@ -1736,14 +1736,14 @@ public class PrimitiveArray {
         Arrays.fill(result, strFalse); // A bit faster
         if ( column.size() == 0 ) {
             return result;
-        }        
-        for (int i=column.nextSetBit(0); i>=0; i=column.nextSetBit(i+1))  { 
+        }
+        for (int i=column.nextSetBit(0); i>=0; i=column.nextSetBit(i+1))  {
             result[i] = strTrue;
         }
         return result;
     }
 
-    
+
     public static Object convertInt2String(Object columnIn, int dataType, String format) {
         int previousValue;
         String previousString;
@@ -1759,9 +1759,9 @@ public class PrimitiveArray {
         if ( column.length == 0 ) {
             return result;
         }
-        
+
         Parameters p = new Parameters(); // Printf parameters
-        
+
         // Do the last one first.
         currentValue =  column[sizeMax-1];
 
@@ -1778,7 +1778,7 @@ public class PrimitiveArray {
         result[sizeMax-1] = currentString;
         previousValue = currentValue;
         previousString = currentString;
-        
+
         // Do the rest.
         for (int r=sizeMax-2;r>-1;r--) {
             // Only do parse if previous string was different.
@@ -1801,7 +1801,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     /** See convertString2Float
      */
     public static Object convertString2String(Object columnIn, int dataType, String format) {
@@ -1823,9 +1823,9 @@ public class PrimitiveArray {
         if ( column.length == 0 ) {
             return result;
         }
-        
+
         Parameters p = new Parameters(); // Printf parameters
-        
+
         // Do the last one first.
         currentValue =  column[sizeMax-1];
 
@@ -1838,7 +1838,7 @@ public class PrimitiveArray {
         result[sizeMax-1] = currentString;
         previousValue = currentValue;
         previousString = currentString;
-        
+
         //boolean formatEqualsPercentQ = format.equals("%q");
         // Do the rest.
         for (int r=sizeMax-2;r>-1;r--) {
@@ -1861,7 +1861,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     /** Converts a whole column from string to float. In the case the
      *string is not a float, e.g. null or the "." string, the float will get a special null value as defined in the
      *database routines.
@@ -1880,7 +1880,7 @@ public class PrimitiveArray {
         if ( column.length == 0 ) {
             return result;
         }
-        
+
         // Do the last one first.
         currentString =  column[sizeMax-1];
         if ( Defs.isNullString( currentString ) ) {
@@ -1891,7 +1891,7 @@ public class PrimitiveArray {
         result[sizeMax-1] = currentValue;
         previousValue = currentValue;
         previousString = currentString;
-        
+
         // Do the rest.
         for (int r=sizeMax-2;r>-1;r--) {
             // Only do parse if previous string was different.
@@ -1909,7 +1909,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     /** Converts a whole column from string to double. In the case the
      *string is not a double, e.g. null or the "." string, the float will get a special null value as defined in the
      *database routines.
@@ -1928,7 +1928,7 @@ public class PrimitiveArray {
         if ( column.length == 0 ) {
             return result;
         }
-        
+
         // Do the last one first.
         currentString =  column[sizeMax-1];
         //General.showError("string: [" + currentString + "]");
@@ -1940,7 +1940,7 @@ public class PrimitiveArray {
         result[sizeMax-1] = currentValue;
         previousValue = currentValue;
         previousString = currentString;
-        
+
         // Do the rest.
         for (int r=sizeMax-2;r>-1;r--) {
             // Only do parse if previous string was different.
@@ -1958,7 +1958,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     /** Converts a whole column from string to bit. In the case the
      *string is not a bit, e.g. null or the "." string, the bit will get NO special null value as defined in the
      *database routines. It will simply default to java's default: false.
@@ -1977,7 +1977,7 @@ public class PrimitiveArray {
         if ( column.length == 0 ) {
             return result;
         }
-        
+
         // Do the last one first.
         currentString =  column[sizeMax-1];
         //General.showError("string: [" + currentString + "]");
@@ -1989,7 +1989,7 @@ public class PrimitiveArray {
         result.set(sizeMax-1, currentValue);
         previousValue = currentValue;
         previousString = currentString;
-        
+
         // Do the rest.
         for (int r=sizeMax-2;r>-1;r--) {
             // Only do parse if previous string was different.
@@ -2007,7 +2007,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
 
     /** See convertString2Float
      */
@@ -2042,7 +2042,7 @@ public class PrimitiveArray {
                 currentString =  column[r];
                 if ( Defs.isNullString( currentString )) {
                     result[r] = Defs.NULL_INT;
-                } else if ( currentString.equals( previousString ) ) { 
+                } else if ( currentString.equals( previousString ) ) {
                     result[r] = previousValue;
                 } else {
                     currentValue = Integer.parseInt( currentString );
@@ -2058,7 +2058,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     /** See convertString2Float
      */
     public static Object convertObject2String(Object columnIn ) {
@@ -2066,14 +2066,14 @@ public class PrimitiveArray {
             General.showError("argument is not a instanceof (Object[])");
             return null;
         }
-        
+
         Object[] column = (Object[]) columnIn;
         int sizeMax = column.length;
         String[] result = new String[sizeMax];
         if ( sizeMax == 0 ) {
             return result;
         }
-        
+
         // Do the rest.
         for (int r=0;r<sizeMax;r++) {
             if ( Defs.isNull( column[r] )) {
@@ -2084,20 +2084,20 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
 
     /** See convertString2Float
      */
     public static Object convertString2ArrayOfInt(Object columnIn, int dataType) {
         final String regexp = " ";  // Extend later on to capture csv values too.
-        String currentString;        
+        String currentString;
         String[] column = (String[]) columnIn;
         int[][] result = new int[column.length][];
         if ( column.length == 0 ) {
             return result;
         }
 
-        
+
         // Do the last one first.
         for (int r=column.length-1;r>=0;r--) {
             currentString = column[r];
@@ -2115,14 +2115,14 @@ public class PrimitiveArray {
      */
     public static Object convertString2ArrayOfFloat(Object columnIn, int dataType) {
         final String regexp = " ";  // Extend later on to capture csv values too.
-        String currentString;        
+        String currentString;
         String[] column = (String[]) columnIn;
         float[][] result = new float[column.length][];
         if ( column.length == 0 ) {
             return result;
         }
 
-        
+
         // Do the last one first.
         for (int r=column.length-1;r>=0;r--) {
             currentString = column[r];
@@ -2135,19 +2135,19 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     /** See convertString2Float
      */
     public static Object convertString2ArrayOfString(Object columnIn, int dataType) {
         final String regexp = " ";  // Extend later on to capture csv values too.
-        String currentString;        
+        String currentString;
         String[] column = (String[]) columnIn;
         String[][] result = new String[column.length][];
         if ( column.length == 0 ) {
             return result;
         }
 
-        
+
         // Do the last one first.
         for (int r=column.length-1;r>=0;r--) {
             currentString = column[r];
@@ -2159,7 +2159,7 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
 
     /** See convertString2Float
      */
@@ -2174,7 +2174,7 @@ public class PrimitiveArray {
         if ( column.length == 0 ) {
             return result;
         }
-        
+
         // Do the last one first.
         currentString =  column[sizeMax-1];
         if ( Defs.isNullString( currentString )) {
@@ -2185,7 +2185,7 @@ public class PrimitiveArray {
         result[sizeMax-1] = currentValue;
         previousValue = currentValue;
         previousString = currentString;
-        
+
         // Do the rest.
         for (int r=sizeMax-2;r>-1;r--) {
             // Only do parse if previous string was different.
@@ -2203,13 +2203,13 @@ public class PrimitiveArray {
         }
         return result;
     }
-    
+
     /** Will attempt to convert the data type of a certain column to the given
      * data type. Returns null on failure. Returns ArrayList with String[] and
      * StringSet objects.
      */
     public static Object convertString2StringNR(Object columnIn, int dataType) {
-        String[] column = (String[]) columnIn;        
+        String[] column = (String[]) columnIn;
         return StringSet.convertColumnString2StringNR( column );
     }
 
@@ -2227,14 +2227,14 @@ public class PrimitiveArray {
             General.showError("List input to sortTogether has only one list. Use a different algo." );
             return false;
         }
-            
+
         IntArrayList fList = (IntArrayList) lists[0];
         ArrayList sList = new ArrayList(); // Used to build up the memory.
         for (int i=0;i<fList.size();i++) {
             sList.add( new int[] { fList.getQuick(i), i });
         }
         Collections.sort( sList, new ComparatorIntArray() ); // will sort on first and then possibly on second int (which is the original position!).
-        
+
         Object[] listsCopy = (Object[]) Objects.deepCopy(lists);
         // Copy from the copy to the original list in the sorted order.
         int index = 0;
@@ -2245,15 +2245,15 @@ public class PrimitiveArray {
                 IntArrayList cList = (IntArrayList) listsCopy[j];
                 oList.setQuick(i, cList.getQuick(index));
             }
-        }        
+        }
         return true;
     }
-    
 
-        
-    
+
+
+
     /** Will return the reverse of the mapping given.
-     *E.g. 
+     *E.g.
      *0123456789
      *6 52 013 4
      *returns a list: 563920
@@ -2261,7 +2261,7 @@ public class PrimitiveArray {
     public static int[] invertFromToMap( int[] map, BitSet todo ) {
         return null; // todo.
     }
-        
+
     /** Sort the lists according to the given map
      *Input needs to be a list of IntArrayList.
      *Returns true for success only.
@@ -2284,7 +2284,7 @@ public class PrimitiveArray {
             return false;
         }
         try {
-            // Check length           
+            // Check length
             for (int j=0;j<lists.length;j++) {
                 IntArrayList oList = (IntArrayList) lists[j];
                 if ( oList.size() < orderMap.length ) {
@@ -2301,15 +2301,15 @@ public class PrimitiveArray {
                     newPos = orderMap[i];
                     oList.setQuick(newPos, cList.getQuick(i));
                 }
-            }        
+            }
         } catch ( Exception e ) {
             e.printStackTrace();
             return false;
         }
         return true;
     }
-    
-    
+
+
     /** set the bits in the results for those rids where the list equals the value
      */
     public static BitSet getRidsByValue( int[] list, int value) {
@@ -2319,9 +2319,9 @@ public class PrimitiveArray {
                 result.set(i);
             }
         }
-        return result;        
+        return result;
     }
-    
+
     /** Simple utility */
     public static boolean setValueByRids( FloatArrayList in, BitSet rids, float value ) {
         for (int r=rids.nextSetBit(0); r>=0; r=rids.nextSetBit(r+1)) {
@@ -2329,7 +2329,7 @@ public class PrimitiveArray {
         }
         return true;
     }
-    
+
     /** Simple utility */
     public static boolean setValueByRids( IntArrayList in, BitSet rids, int value ) {
         for (int r=rids.nextSetBit(0); r>=0; r=rids.nextSetBit(r+1)) {
@@ -2337,7 +2337,7 @@ public class PrimitiveArray {
         }
         return true;
     }
-    
+
     /** Simple utility */
     public static boolean setValueByArray( int[] in, BitSet rids ) {
         for (int i=in.length-1;i>=0;i--) {
@@ -2355,7 +2355,7 @@ public class PrimitiveArray {
         }
         return true;
     }
-    
+
     /** Simple utility */
     public static boolean setValueByRids( IntArrayList in, IntArrayList rids, int value ) {
         for (int r=rids.size()-1; r>=0; r--) {
@@ -2363,7 +2363,7 @@ public class PrimitiveArray {
         }
         return true;
     }
-    
+
     /** Simple utility */
     public static boolean setValueByRids( FloatArrayList in, IntArrayList rids, float value ) {
         for (int r=rids.size()-1; r>=0; r--) {
@@ -2371,7 +2371,7 @@ public class PrimitiveArray {
         }
         return true;
     }
-    
+
     /** Simple utility */
     public static boolean setValueByRids( float[] in, IntArrayList rids, float value ) {
         for (int r=rids.size()-1; r>=0; r--) {
@@ -2381,15 +2381,15 @@ public class PrimitiveArray {
     }
 
     public static int hashCode(int[] in) {
-        /** old method give duplicates for e.g.: 
+        /** old method give duplicates for e.g.:
 ERROR: Atom rids duplicate are: [160,207]
 ERROR: Atom rids previous  are: [161,176]
-         
+
         int hashCode = 1;
         for (int i=0;i<in.length;i++) {
           hashCode = 31*hashCode + in[i];
         }
-         */        
+         */
         return toString(in).hashCode();
     }
 
@@ -2405,120 +2405,120 @@ ERROR: Atom rids previous  are: [161,176]
         }
         return Strings.toStringArray( inList );
     }
-    
+
     /**
     * @param args the command line arguments
     */
     public static void main (String args[]) {
         General.verbosity = General.verbosityDebug;
-        if ( false ) {
-            int[] list = {0,1,2};
-            General.showOutput("List is: " + PrimitiveArray.toString(list));
-            PrimitiveArray.invertArray( list );
-            General.showOutput("List is: " + PrimitiveArray.toString(list));
-        }
-        if ( false ) {
-            int[] list1 = {0,1,2,2,3,4,4};
-            int[] list2 = {0,1,1,4,5};
-            
-            General.showOutput("List is: " + PrimitiveArray.toString(list1));
-            General.showOutput("List is: " + PrimitiveArray.toString(list2));
-            int[] list3 = minus( list1, list2 );
-            General.showOutput("Minus is:" + PrimitiveArray.toString(list3));
-        }
-        if ( false ) {
-            Object[] list = { "a", "b" };
-            General.showOutput("list is:" + PrimitiveArray.toString(list));
-        }
-        if ( false ) {
-            float v1 = 5.5f;
-            float[] list = {v1,v1,v1 };
-            General.showOutput("list is:" + PrimitiveArray.toString(list));
-            General.showOutput("Average regular     : " + getAverage( list ));
-            General.showOutput("Average by sum      : " + getAverageSum( list, -6.0, 1 ));
-            General.showOutput("Average by R6       : " + getAverageR6( list, -6.0 ));
-        }            
-        if ( false ) {
-            IntArrayList values = new IntArrayList();
-            values.setSize(4);
-            values.set(0,2);
-            values.set(1,1);
-            values.set(2,0);            
-            values.set(3,1);
-            int[] order = { 103, 102, 101 };
-            General.showOutput("values are  :" + PrimitiveArray.toString(values));
-            General.showOutput("order is    :" + PrimitiveArray.toString(order));
-            orderIntArrayListByIntArray( values, order );
-            General.showOutput("values are  :" + PrimitiveArray.toString(values));
-        }
-        if ( false ) {
-            IntArrayList a = new IntArrayList();
-            a.setSize(4);
-            a.set(0,1);
-            a.set(1,1);
-            a.set(2,0);            
-            a.set(3,1);
-            IntArrayList b = new IntArrayList();
-            b.setSize(4);
-            b.set(0,-1);
-            b.set(1,-2);
-            b.set(2,-3);            
-            b.set(3,-4);
-            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
-            General.showOutput("b values are  :" + PrimitiveArray.toString(b));
-            General.showOutput("has intersection:" + hasIntersection(a,b));
-        }
-        if ( false ) {
-            IntArrayList a = new IntArrayList();
-            a.setSize(4);
-            a.set(0,4);
-            a.set(1,3);
-            a.set(2,2);            
-            a.set(3,2);
-            IntArrayList b = new IntArrayList();
-            b.setSize(4);
-            b.set(0,-1);
-            b.set(1,-2);
-            b.set(2,-3);            
-            b.set(3,-4);
-            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
-            General.showOutput("b values are  :" + PrimitiveArray.toString(b));
-            General.showOutput("sorted together");
-            int[] mapOrder = new int[] { 3,2,0,1};
-            if ( ! PrimitiveArray.sortTogether( mapOrder, new Object[] { a, b } ) ) {
-                General.showError("Failed to sort IntArrayLists together");
-            }
-            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
-            General.showOutput("b values are  :" + PrimitiveArray.toString(b));
-        }
-        if ( false ) {
-            IntArrayList a = new IntArrayList();
-            a.setSize(4);
-            a.set(0,4);
-            a.set(1,3);
-            a.set(2,2);            
-            a.set(3,2);
-            IntArrayList b = new IntArrayList();
-            b.setSize(4);
-            b.set(0,-1);
-            b.set(1,-2);
-            b.set(2,-3);            
-            b.set(3,-4);
-            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
-            General.showOutput("b values are  :" + PrimitiveArray.toString(b));
-            General.showOutput("sorted together");
-            if ( ! PrimitiveArray.sortTogether( new Object[] { a, b } ) ) {
-                General.showError("Failed to sort IntArrayLists together");
-            }
-            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
-            General.showOutput("b values are  :" + PrimitiveArray.toString(b));
-        }
+//        if ( false ) {
+//            int[] list = {0,1,2};
+//            General.showOutput("List is: " + PrimitiveArray.toString(list));
+//            PrimitiveArray.invertArray( list );
+//            General.showOutput("List is: " + PrimitiveArray.toString(list));
+//        }
+//        if ( false ) {
+//            int[] list1 = {0,1,2,2,3,4,4};
+//            int[] list2 = {0,1,1,4,5};
+//
+//            General.showOutput("List is: " + PrimitiveArray.toString(list1));
+//            General.showOutput("List is: " + PrimitiveArray.toString(list2));
+//            int[] list3 = minus( list1, list2 );
+//            General.showOutput("Minus is:" + PrimitiveArray.toString(list3));
+//        }
+//        if ( false ) {
+//            Object[] list = { "a", "b" };
+//            General.showOutput("list is:" + PrimitiveArray.toString(list));
+//        }
+//        if ( false ) {
+//            float v1 = 5.5f;
+//            float[] list = {v1,v1,v1 };
+//            General.showOutput("list is:" + PrimitiveArray.toString(list));
+//            General.showOutput("Average regular     : " + getAverage( list ));
+//            General.showOutput("Average by sum      : " + getAverageSum( list, -6.0, 1 ));
+//            General.showOutput("Average by R6       : " + getAverageR6( list, -6.0 ));
+//        }
+//        if ( false ) {
+//            IntArrayList values = new IntArrayList();
+//            values.setSize(4);
+//            values.set(0,2);
+//            values.set(1,1);
+//            values.set(2,0);
+//            values.set(3,1);
+//            int[] order = { 103, 102, 101 };
+//            General.showOutput("values are  :" + PrimitiveArray.toString(values));
+//            General.showOutput("order is    :" + PrimitiveArray.toString(order));
+//            orderIntArrayListByIntArray( values, order );
+//            General.showOutput("values are  :" + PrimitiveArray.toString(values));
+//        }
+//        if ( false ) {
+//            IntArrayList a = new IntArrayList();
+//            a.setSize(4);
+//            a.set(0,1);
+//            a.set(1,1);
+//            a.set(2,0);
+//            a.set(3,1);
+//            IntArrayList b = new IntArrayList();
+//            b.setSize(4);
+//            b.set(0,-1);
+//            b.set(1,-2);
+//            b.set(2,-3);
+//            b.set(3,-4);
+//            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
+//            General.showOutput("b values are  :" + PrimitiveArray.toString(b));
+//            General.showOutput("has intersection:" + hasIntersection(a,b));
+//        }
+//        if ( false ) {
+//            IntArrayList a = new IntArrayList();
+//            a.setSize(4);
+//            a.set(0,4);
+//            a.set(1,3);
+//            a.set(2,2);
+//            a.set(3,2);
+//            IntArrayList b = new IntArrayList();
+//            b.setSize(4);
+//            b.set(0,-1);
+//            b.set(1,-2);
+//            b.set(2,-3);
+//            b.set(3,-4);
+//            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
+//            General.showOutput("b values are  :" + PrimitiveArray.toString(b));
+//            General.showOutput("sorted together");
+//            int[] mapOrder = new int[] { 3,2,0,1};
+//            if ( ! PrimitiveArray.sortTogether( mapOrder, new Object[] { a, b } ) ) {
+//                General.showError("Failed to sort IntArrayLists together");
+//            }
+//            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
+//            General.showOutput("b values are  :" + PrimitiveArray.toString(b));
+//        }
+//        if ( false ) {
+//            IntArrayList a = new IntArrayList();
+//            a.setSize(4);
+//            a.set(0,4);
+//            a.set(1,3);
+//            a.set(2,2);
+//            a.set(3,2);
+//            IntArrayList b = new IntArrayList();
+//            b.setSize(4);
+//            b.set(0,-1);
+//            b.set(1,-2);
+//            b.set(2,-3);
+//            b.set(3,-4);
+//            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
+//            General.showOutput("b values are  :" + PrimitiveArray.toString(b));
+//            General.showOutput("sorted together");
+//            if ( ! PrimitiveArray.sortTogether( new Object[] { a, b } ) ) {
+//                General.showError("Failed to sort IntArrayLists together");
+//            }
+//            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
+//            General.showOutput("b values are  :" + PrimitiveArray.toString(b));
+//        }
         if ( true ) {
             IntArrayList a = new IntArrayList();
             a.setSize(4);
             a.set(0,4);
             a.set(1,3);
-            a.set(2,2);            
+            a.set(2,2);
             a.set(3,2);
             General.showOutput("a values are  : " + PrimitiveArray.toString(a, false));
             if ( ! PrimitiveArray.removeDuplicatesBySort( a ) ) {
@@ -2526,34 +2526,34 @@ ERROR: Atom rids previous  are: [161,176]
             }
             General.showOutput("a values are  : " + PrimitiveArray.toString(a));
         }
-        if ( false ) {
-            int[] a = new int[] { 32, 37, 38, 39 };
-            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
-            General.showOutput("hash          :" + PrimitiveArray.hashCode(a));
-        }
-        if ( false ) {
-            String[] a = new String[] { "a b", "-c", "d" };
-            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
-            General.showOutput("a values are  :" + PrimitiveArray.toString(PrimitiveArray.stripDashedMembers(a)));
-        }
-        if ( false ) {
-            ArrayList lines = new ArrayList();
-            lines.add("test");
-            lines.add("testing");            
-            byte[] content = null;
-            General.showOutput("Result from fillContent: " + fillContent(lines));
-        }
-        if ( false ) {
-            // Benched clock time
-            // 210 ms on Windows XP PIV           3.0 GHz java 1.4.2_04-b05 (WHELK)
-            // 293 ms on Linux      PIV           2.7 GHz java 1.4.2_01-b06 (HALFBEAK)
-            //1449 ms on Solarix    UltraSPARC-II 0.4 GHz java 1.4.2_04-b05 (MANATEE)
-            // Looks like it is roughly proportional to CPU clock speed! The fastest 
-            // options to the JVM were choicen. E.g. -d64 over -d32 caused a time 
-            // taken reduction from 1917 ms with 32 bit.
-            byte[] junk = new byte[1000*1000*10];
-            General.showOutput("Result from getMD5Sum: " + getMD5SumString(junk).length());
-        }
+//        if ( false ) {
+//            int[] a = new int[] { 32, 37, 38, 39 };
+//            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
+//            General.showOutput("hash          :" + PrimitiveArray.hashCode(a));
+//        }
+//        if ( false ) {
+//            String[] a = new String[] { "a b", "-c", "d" };
+//            General.showOutput("a values are  :" + PrimitiveArray.toString(a));
+//            General.showOutput("a values are  :" + PrimitiveArray.toString(PrimitiveArray.stripDashedMembers(a)));
+//        }
+//        if ( false ) {
+//            ArrayList lines = new ArrayList();
+//            lines.add("test");
+//            lines.add("testing");
+//            byte[] content = null;
+//            General.showOutput("Result from fillContent: " + fillContent(lines));
+//        }
+//        if ( false ) {
+//            // Benched clock time
+//            // 210 ms on Windows XP PIV           3.0 GHz java 1.4.2_04-b05 (WHELK)
+//            // 293 ms on Linux      PIV           2.7 GHz java 1.4.2_01-b06 (HALFBEAK)
+//            //1449 ms on Solarix    UltraSPARC-II 0.4 GHz java 1.4.2_04-b05 (MANATEE)
+//            // Looks like it is roughly proportional to CPU clock speed! The fastest
+//            // options to the JVM were choicen. E.g. -d64 over -d32 caused a time
+//            // taken reduction from 1917 ms with 32 bit.
+//            byte[] junk = new byte[1000*1000*10];
+//            General.showOutput("Result from getMD5Sum: " + getMD5SumString(junk).length());
+//        }
     }
 
     public static void add(FloatArrayList fal, float[] l) {
@@ -2563,10 +2563,10 @@ ERROR: Atom rids previous  are: [161,176]
     }
 
     /** For each element returns the max in the result array.
-     *funny thing is that it will take into consideration if a float is 
+     *funny thing is that it will take into consideration if a float is
      *considered to be defined first.
      */
-    public static float[] getMax(float[] a, float[] b) {    
+    public static float[] getMax(float[] a, float[] b) {
         if ( a.length != b.length ) {
             General.showError("arrays need to be of same size but were not:");
             General.showError("a:" + toString(a));

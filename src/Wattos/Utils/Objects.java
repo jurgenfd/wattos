@@ -14,11 +14,11 @@ import Wattos.Soup.*;
  * @author Jurgen F. Doreleijers
  */
 public class Objects {
-    
+
     /** Creates a new instance of Objects */
     public Objects() {
     }
-    
+
     /** Make a deep copy the io intensive way for cases where pointers or so might get messed up.
      */
     public static Object deepCopy( Object object ) {
@@ -36,22 +36,22 @@ public class Objects {
         } catch ( Throwable t ) {
             General.showThrowable(t);
             return null;
-        }        
+        }
         return copy;
     }
-    
-    
+
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        if ( false ) {
-            Table t = new Table(2,3);
-            Table s = (Table) deepCopy(t);
-            s.setValueByColumn(1,"test");
-            General.showOutput("Table t: " + t);
-            General.showOutput("Table s: " + s);
-        }
+//        if ( false ) {
+//            Table t = new Table(2,3);
+//            Table s = (Table) deepCopy(t);
+//            s.setValueByColumn(1,"test");
+//            General.showOutput("Table t: " + t);
+//            General.showOutput("Table s: " + s);
+//        }
         if ( true ) {
             DBMS dbms = new DBMS();
             new Gumbo(dbms);
@@ -60,5 +60,5 @@ public class Objects {
         }
 
     }
-    
+
 }

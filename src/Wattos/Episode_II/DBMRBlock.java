@@ -1,4 +1,4 @@
-/* 
+/*
  * Episode_II.java
  *
  * Created on December 4, 2001, 11:46 AM
@@ -40,20 +40,20 @@ import Wattos.Utils.Strings;
 import com.braju.format.Format;
 import com.braju.format.Parameters;
 
-/** 
+/**
  * One block of lines as separated by annotation.
  * A small class just holding the content of one block in the DBMRFile.
  * The block data itself can now also contain non-text data in which case
  * the line count will be null.
  *
  * The block files are stored in a filesystem now whereas before they went into
- *CLOBs in the database. This allows me to be completely dbms implementation 
+ *CLOBs in the database. This allows me to be completely dbms implementation
  *independent.
  *
  * @author  Jurgen F. Doreleijers
- * @version 1.0 
+ * @version 1.0
  */
-public class DBMRBlock {    
+public class DBMRBlock {
     public static final String[] level = { "PROGRAM", "TYPE", "SUBTYPE", "FORMAT"};
     public static final int PROGRAM_ID   = 0;
     public static final int TYPE_ID      = 1;
@@ -64,12 +64,12 @@ public class DBMRBlock {
     public static final String other_prop_anno_id = "OTHER_PROP";
     public static final String OTHER_PROP_LOWER_ONLY = "LOWER_ONLY";
     public static final String[] FULL_ENTRY_TYPES = new String[] {"n/a", "entry", "full", "n/a"};
-    
-    
+
+
     static {
         other_prop_anno_allowed_types = new Properties();
-        
-        other_prop_anno_allowed_types.setProperty(OTHER_PROP_LOWER_ONLY,   "boolean");        
+
+        other_prop_anno_allowed_types.setProperty(OTHER_PROP_LOWER_ONLY,   "boolean");
         /** Examples of other types. */
         other_prop_anno_allowed_types.setProperty("BOGUS_S",      "string");
         other_prop_anno_allowed_types.setProperty("BOGUS_I",      "int");
@@ -90,14 +90,14 @@ public class DBMRBlock {
      *SUBTYPE
      *FORMAT
      *OTHER_PROP
-     */        
+     */
     public String[] type = {"n/a","n/a","n/a","n/a"};
 
     /** Intended to include a slew of additional info that varies from
      *type to type. E.g. for DYANA distance restraints, it needs to be noted
      *whether it's upper or lower bound being defined.
      */
-    public Properties other_prop;    
+    public Properties other_prop;
 
     /** Indicates the state of the text it is currently in. E.g.:
      *"Original", "First pass", "NMR-STAR version 3.0", etc.
@@ -105,47 +105,47 @@ public class DBMRBlock {
     public String text_type;
     /** Any modification noted or assumed */
     public Date date_modified;
-    
+
     /** The data making up a block.
      * Use the method isText to figure out what the data actually is.
      *Use the method getLines to get: ArrayList lines from content.
      *They will be materialized but not kept. Content is the master.
      */
     public byte[] content;
-    
+
     /** The name of the file without the extension and path */
     public int dbfs_id;
     /** The name of the file; excluding path but INCLUDING extension.
      * This will be the original filename in the beginning or e.g. 12345.str
-     * where 12345 is the block id. 
+     * where 12345 is the block id.
      * The extension is important to get right. Otherwise the released files
      * will get a bad extensions from the NMR Restraints Grid.
      * */
     public String fileName;
     /** Number of restraints or other items in block.*/
     public int item_count ;
-    
+
     public String md5Sum;
-     
+
     public void init( ) {
         mrblock_id          = Wattos.Utils.General.NULL_FOR_INTS;
         mrfile_id           = Wattos.Utils.General.NULL_FOR_INTS;
         position            = Wattos.Utils.General.NULL_FOR_INTS;
 //        String[] type       = {"n/a","n/a","n/a","n/a"};
         other_prop          = new Properties();
-        text_type           = "default";    
-        date_modified       = new Date();        
+        text_type           = "default";
+        date_modified       = new Date();
         content             = null;             // should be created when put in or retrieved from db.
         dbfs_id             = Defs.NULL_INT;    // should be changed when put in or retrieved from db.
         fileName            = "text.txt";       // should be changed at creation of class instance.
         item_count          = Defs.NULL_INT;    // should be changed at creation of class instance.
         md5Sum              = null;             // should be changed when put in or retrieved from db.
     }
-    
+
     /** Set type and the text lines of the block.
      * @param type The block type.
      */
-    public DBMRBlock(String[] type, Properties other_prop, 
+    public DBMRBlock(String[] type, Properties other_prop,
         byte[] content, int dbfs_id, String fileName, String md5Sum ) {
         init();
         this.type                   = type;
@@ -155,8 +155,8 @@ public class DBMRBlock {
         this.fileName               = fileName;
         this.md5Sum                 = md5Sum;
     }
-        
-    
+
+
     /** Simple initialization*/
     public DBMRBlock() {
         init();
@@ -178,7 +178,7 @@ public class DBMRBlock {
         String extension = InOut.getFilenameExtension(fileName);
         return InOut.fileNameExtensionCanBeText( extension );
     }
-    
+
     /** Textual representation of the block type.
      * @return The concatenation of the block type identifiers (format, subtype, type, and
      * program).
@@ -188,11 +188,11 @@ public class DBMRBlock {
         return Strings.concatenate(type,", ");
     }
 
-    
+
     /** Textual representation of the annotation. Uses sprintf java equivalent
      * from com.braju.Format.
      * @return The four lines which show the annotation as an annotator might have put in.
-     */    
+     */
     public String getAnnotationString()
     {
         String line;
@@ -209,14 +209,14 @@ public class DBMRBlock {
             line = Format.sprintf("%s%-15s%-15s = %s\n",
                 p.add( DBMRFile.PREFIX ).add( other_prop_anno_id ).add(key).add(value));
             annotation.append(line);
-        }                    
+        }
         return annotation.toString();
     }
 
-    
+
     /** Textual representation.
      * @return The concatenation of the lines
-     */    
+     */
     public String toString() {
         if ( ! isTextBlock() ) {
             return "DBMRBlock data can't currently be represented as text.";
@@ -224,7 +224,7 @@ public class DBMRBlock {
         if ( isEmpty() ) {
             return "DBMRBlock currently empty.";
         }
-        
+
         // Use a buffer for efficiency, the string can be ~1Mb.
         StringBuffer sb = new StringBuffer();
 
@@ -233,17 +233,17 @@ public class DBMRBlock {
             for (Iterator i=lines.iterator();i.hasNext();)
                 sb.append(i.next()+General.eol);
         } else {
-            String extension = InOut.getFilenameExtension(fileName);            
-            sb.append("No textual representation possible for data with file extension: " + extension );            
+            String extension = InOut.getFilenameExtension(fileName);
+            sb.append("No textual representation possible for data with file extension: " + extension );
         }
         return(sb.toString());
     }
-    
+
     /** From textual representation of single String to multiple lines (Strings).
-     */    
-    public void setStrings( String txt ) {        
+     */
+    public void setStrings( String txt ) {
         ArrayList lines = Strings.getLines( txt );
-        content = PrimitiveArray.fillContent(lines);   
+        content = PrimitiveArray.fillContent(lines);
         if ( content == null ) {
             General.showError("Failed to transfer strings to content -0-");
         }
@@ -251,12 +251,12 @@ public class DBMRBlock {
 
     /** Textual representation of type.
      * @return The concatenation of the four types
-     */    
+     */
     public String getType()
     {
         // Use a buffer for efficiency, the string can be ~1Mb.
         StringBuffer sb = new StringBuffer();
-        for (int i=0;i<type.length;i++) {         
+        for (int i=0;i<type.length;i++) {
             sb.append(type[i]+",");
         }
         // Remove the last comma in the string buffer
@@ -264,9 +264,9 @@ public class DBMRBlock {
         return sb.toString();
     }
 
-    
+
     /** Traditional setter.
-     */    
+     */
     public void setType( String[] new_type)
     {
         date_modified = new Date();
@@ -276,7 +276,7 @@ public class DBMRBlock {
     }
 
     /** Traditional setter ignoring null values in new type if present.
-     */    
+     */
     public void setTypeWithoutNulls( String[] new_type)
     {
         date_modified = new Date();
@@ -299,7 +299,7 @@ public class DBMRBlock {
     }
 
 
-    /** Checks whether this mrb has the same type as given. Special case of a 
+    /** Checks whether this mrb has the same type as given. Special case of a
      *null for a string matches every type, including null.
      */
     public boolean hasBlockType(String[] type_cmp) {
@@ -315,7 +315,7 @@ public class DBMRBlock {
                 type.length );
             return false;
         }
-            
+
         for (int i=0;i<type.length;i++) {
             if ( type_cmp[i] ==  null || type[i] == null ) {
                 // This is allowed and considered a match.
@@ -327,7 +327,7 @@ public class DBMRBlock {
         }
         return true;
     }
-        
+
     /** Checks whether the other mrb has the same type.
      * @param mrb The other DBMRBlock object to compare with.
      * @return <CODE>true</CODE> if the block is the same.
@@ -341,7 +341,7 @@ public class DBMRBlock {
                 type.length );
             return false;
         }
-            
+
         for (int i=0;i<type.length;i++) {
             if ( type[i] ==  null ) {
                 General.showError("in DBMRBlock.hasEqualType found:");
@@ -359,8 +359,8 @@ public class DBMRBlock {
         }
         return true;
     }
-    
-    
+
+
     /** Checks whether the other mrb has the same type
      * without comparing the program part.
      * @param mrb The other DBMRBlock object to compare with.
@@ -375,7 +375,7 @@ public class DBMRBlock {
                 mrb.type.length );
             return false;
         }
-            
+
         // Now compare only last three types in array.
         for (int i=1;i<type.length;i++) {
             if ( type[i] ==  null ) {
@@ -394,13 +394,13 @@ public class DBMRBlock {
         }
         return true;
     }
-    
+
     /** Returns true if the block type is any of the known ones.
      * @param classification The allowed types of blocks.
      * @return <CODE>true</CODE> if the block type matches any in the classification list.
      */
     public boolean hasValidBlockType(Classification classification) {
-        for (Iterator i=classification.mrb_list.iterator();i.hasNext();) 
+        for (Iterator i=classification.mrb_list.iterator();i.hasNext();)
         {
             DBMRBlock mrb = (DBMRBlock) i.next();
             /**
@@ -419,7 +419,7 @@ public class DBMRBlock {
      * @return <CODE>true</CODE> if the block props matches all as defined.
      */
     public boolean hasValidBlockOtherProp() {
-                
+
         if ( other_prop == null ) {
             return true;
         }
@@ -428,15 +428,15 @@ public class DBMRBlock {
             General.showError("(hasValidBlockOtherProp) too many chars for a varchar2");
             return false;
         }
-                        
+
         for (Enumeration e = other_prop.propertyNames(); e.hasMoreElements();) {
             String key      = (String) e.nextElement();
             String value    = (String) other_prop.getProperty(key);
-            
+
             boolean element_allowed = true;
-            
+
             if ( other_prop_anno_allowed_types.containsKey( key ) ) {
-                
+
                 String allowed_type = other_prop_anno_allowed_types.getProperty(key);
 
                 /** BOOLEAN checks here */
@@ -457,7 +457,7 @@ public class DBMRBlock {
             } else {
                 element_allowed = false;
             }
-            
+
             if ( ! element_allowed ) {
                 General.showError("element was not allowed");
                 return false;
@@ -466,7 +466,7 @@ public class DBMRBlock {
         return true; // no keys or all keys allowed.
     }
 
-    
+
     /**
      * Converts this block into STAR if a converter is available.
      * If not available or an error occurs, a null will be returned.
@@ -476,11 +476,11 @@ public class DBMRBlock {
      * @param pdb_id Only used for Amber conversions
      */
     public SaveFrameNode convert(Classification scheme, int pos, int star_version, String pdb_id  ) {
-        
+
         int program_id = getConverterProgramId(scheme);
-        
+
         SaveFrameNode save_frame_node  = null;
-        
+
         /** Catch the exceptions and errors that may arise from the parsers. The only
          *infrequently expected error is the TokenManagerErrors but all should be
          *caught to ensure proper handling.
@@ -496,7 +496,7 @@ public class DBMRBlock {
                     break;
                 case Classification.CONVERSION_CNS_DIPOLAR_NA_NA:
                     save_frame_node = convertCNSDipolarNaNa( pos, star_version  );
-                    break;                
+                    break;
                 case Classification.CONVERSION_DYANA_DISTANCE_NOE_NA:
                     save_frame_node = convertDYANADistanceNOE( pos, star_version  );
                     break;
@@ -545,19 +545,19 @@ public class DBMRBlock {
                 case Classification.NO_CONVERSION_PROGRAM_AVAILABLE_ID:
                     return null;
                 default:
-                    General.showError("code bug: wrong program_id (or amber file): " + program_id);                
+                    General.showError("code bug: wrong program_id (or amber file): " + program_id);
                     return null;
             }
         } catch ( Throwable t ) {
             General.showThrowable(t);
             save_frame_node  = null;
-        }    
+        }
         item_count = getItemCount(save_frame_node);
-        
+
         return save_frame_node;
     }
-    
-    
+
+
     private boolean amberPDBFilePresent(String pdb_id) {
         String amberUrl = StarOutAll.getAmberUrl(pdb_id);
         if ( amberUrl == null ) {
@@ -568,7 +568,7 @@ public class DBMRBlock {
         if ( f == null  ) {
             General.showError("Failed to create amberUrl file");
             return false;
-        }                
+        }
         return f.exists();
     }
 
@@ -576,7 +576,7 @@ public class DBMRBlock {
      *If not available or an error occurs, a null will be returned.
      */
      public SaveFrameNode convertAnyCommentNaNa( int pos, int star_version  ) {
-                               
+
         SaveFrameNode save_frame_node_comments = new SaveFrameNode("save_MR_file_comment_" + (pos+1));
         String text =  toString();
         if ( text.length() > 300000 ) { //
@@ -587,16 +587,16 @@ public class DBMRBlock {
         }
         String dummy_string_tableNamePrefix = null;
         NmrStar.addComment(save_frame_node_comments, star_version, dummy_string_tableNamePrefix, text);
-        
+
         return save_frame_node_comments;
-     } 
+     }
 
     /** Converts this type of block to STAR.
      *If not available or an error occurs, a null will be returned.
      */
      public SaveFrameNode convertCNSDistanceNOE( int pos, int star_version) {
-                      
- 
+
+
         // Initialize the class
         Wattos.Converters.Xplor.StarOutAll.init();
         StarFileNode star_file_node_constraints         = Wattos.Converters.Xplor.StarOutAll.convertToStarFileNode( toString(),
@@ -604,7 +604,7 @@ public class DBMRBlock {
         BlockNode block_node_constraints                = star_file_node_constraints.firstElement();
         SaveFrameNode save_frame_node_constraints       = (SaveFrameNode) block_node_constraints.firstElement();
         save_frame_node_constraints.setLabel( "save_CNS/XPLOR_distance_constraints_" + (pos+1));
-        
+
         return save_frame_node_constraints;
      }
 
@@ -612,8 +612,8 @@ public class DBMRBlock {
      *If not available or an error occurs, a null will be returned.
      */
      public SaveFrameNode convertCNSDihedralNaNa( int pos, int star_version  ) {
-                      
- 
+
+
         // Initialize the class
         Wattos.Converters.Xplor.StarOutAll.init();
         StarFileNode star_file_node_constraints         = Wattos.Converters.Xplor.StarOutAll.convertToStarFileNode( toString(),
@@ -621,16 +621,16 @@ public class DBMRBlock {
         BlockNode block_node_constraints                = star_file_node_constraints.firstElement();
         SaveFrameNode save_frame_node_constraints       = (SaveFrameNode) block_node_constraints.firstElement();
         save_frame_node_constraints.setLabel( "save_CNS/XPLOR_dihedral_" + (pos+1));
-        
+
         return save_frame_node_constraints;
      }
-     
+
     /** Converts this type of block to STAR.
      *If not available or an error occurs, a null will be returned.
      */
      public SaveFrameNode convertCNSDipolarNaNa( int pos, int star_version  ) {
-                      
- 
+
+
         // Initialize the class
         Wattos.Converters.Xplor.StarOutAll.init();
         StarFileNode star_file_node_constraints         = Wattos.Converters.Xplor.StarOutAll.convertToStarFileNode( toString(),
@@ -638,16 +638,16 @@ public class DBMRBlock {
         BlockNode block_node_constraints                = star_file_node_constraints.firstElement();
         SaveFrameNode save_frame_node_constraints       = (SaveFrameNode) block_node_constraints.firstElement();
         save_frame_node_constraints.setLabel( "save_CNS/XPLOR_dipolar_coupling_" + (pos+1));
-        
+
         return save_frame_node_constraints;
      }
-     
+
     /** Converts this type of block to STAR.
      *If not available or an error occurs, a null will be returned.
      */
      public SaveFrameNode convertDYANADistanceNOE( int pos, int star_version  ) {
-                      
- 
+
+
          /** Should the distances be interpreted as lower bounds?
           */
          boolean lower_only = false;
@@ -657,7 +657,7 @@ public class DBMRBlock {
                  lower_only = true;
              }
          }
-                          
+
         // Initialize the class
         Wattos.Converters.Dyana.StarOutAll.init();
         StarFileNode star_file_node_constraints         = Wattos.Converters.Dyana.StarOutAll.convertToStarFileNode( toString(),
@@ -665,7 +665,7 @@ public class DBMRBlock {
         BlockNode block_node_constraints                = star_file_node_constraints.firstElement();
         SaveFrameNode save_frame_node_constraints       = (SaveFrameNode) block_node_constraints.firstElement();
         save_frame_node_constraints.setLabel( "save_DYANA/DIANA_distance_constraints_" + (pos+1));
-        
+
         return save_frame_node_constraints;
      }
 
@@ -673,8 +673,8 @@ public class DBMRBlock {
      *If not available or an error occurs, a null will be returned.
      */
      public SaveFrameNode convertDYANADihedralNaNa( int pos, int star_version  ) {
-                      
- 
+
+
         // Initialize the class
         Wattos.Converters.Dyana.StarOutAll.init();
         StarFileNode star_file_node_constraints         = Wattos.Converters.Dyana.StarOutAll.convertToStarFileNode( toString(),
@@ -682,16 +682,16 @@ public class DBMRBlock {
         BlockNode block_node_constraints                = star_file_node_constraints.firstElement();
         SaveFrameNode save_frame_node_constraints       = (SaveFrameNode) block_node_constraints.firstElement();
         save_frame_node_constraints.setLabel( "save_DYANA/DIANA_dihedral_" + (pos+1));
-        
+
         return save_frame_node_constraints;
      }
-     
+
     /** Converts this type of block to STAR.
      *If not available or an error occurs, a null will be returned.
      */
      public SaveFrameNode convertDiscoverDistanceNOE( int pos, int star_version  ) {
-                      
- 
+
+
         // Initialize the class
         Wattos.Converters.Discover.StarOutAll.init();
         StarFileNode star_file_node_constraints         = Wattos.Converters.Discover.StarOutAll.convertToStarFileNode( toString(),
@@ -699,7 +699,7 @@ public class DBMRBlock {
         BlockNode block_node_constraints                = star_file_node_constraints.firstElement();
         SaveFrameNode save_frame_node_constraints       = (SaveFrameNode) block_node_constraints.firstElement();
         save_frame_node_constraints.setLabel( "save_Discover_distance_constraints_" + (pos+1));
-        
+
         return save_frame_node_constraints;
      }
 
@@ -707,25 +707,25 @@ public class DBMRBlock {
      *If not available or an error occurs, a null will be returned.
      */
      public SaveFrameNode convertDiscoverDihedralNaNa( int pos, int star_version  ) {
-                      
- 
+
+
         // Initialize the class
         Wattos.Converters.Discover.StarOutAll.init();
         StarFileNode star_file_node_constraints         = Wattos.Converters.Discover.StarOutAll.convertToStarFileNode( toString(),
-            Varia.DATA_TYPE_DIHEDRAL, star_version   ); 
+            Varia.DATA_TYPE_DIHEDRAL, star_version   );
         BlockNode block_node_constraints                = star_file_node_constraints.firstElement();
         SaveFrameNode save_frame_node_constraints       = (SaveFrameNode) block_node_constraints.firstElement();
         save_frame_node_constraints.setLabel( "save_Discover_dihedral_" + (pos+1));
-        
+
         return save_frame_node_constraints;
      }
-     
+
     /** Converts this type of block to STAR.
      *If not available or an error occurs, a null will be returned.
      */
      public SaveFrameNode convertEmbossDistanceNaNa( int pos, int star_version  ) {
-                      
- 
+
+
         // Initialize the class
         Wattos.Converters.Emboss.StarOutAll.init();
         StarFileNode star_file_node_constraints         = Wattos.Converters.Emboss.StarOutAll.convertToStarFileNode( toString(),
@@ -733,7 +733,7 @@ public class DBMRBlock {
         BlockNode block_node_constraints                = star_file_node_constraints.firstElement();
         SaveFrameNode save_frame_node_constraints       = (SaveFrameNode) block_node_constraints.firstElement();
         save_frame_node_constraints.setLabel( "save_Emboss_distance_constraints_" + (pos+1));
-        
+
         return save_frame_node_constraints;
      }
 
@@ -741,25 +741,25 @@ public class DBMRBlock {
      *If not available or an error occurs, a null will be returned.
      */
      public SaveFrameNode convertEmbossDihedralNaNa( int pos, int star_version  ) {
-                      
- 
+
+
         // Initialize the class
         Wattos.Converters.Emboss.StarOutAll.init();
         StarFileNode star_file_node_constraints         = Wattos.Converters.Emboss.StarOutAll.convertToStarFileNode( toString(),
-            Varia.DATA_TYPE_DIHEDRAL, star_version   ); 
+            Varia.DATA_TYPE_DIHEDRAL, star_version   );
         BlockNode block_node_constraints                = star_file_node_constraints.firstElement();
         SaveFrameNode save_frame_node_constraints       = (SaveFrameNode) block_node_constraints.firstElement();
         save_frame_node_constraints.setLabel( "save_Emboss_dihedral_" + (pos+1));
-        
+
         return save_frame_node_constraints;
      }
-     
+
     /** Converts this type of block to STAR.
      *If not available or an error occurs, a null will be returned.
      */
      public SaveFrameNode convertDYANADipolarNaNa( int pos, int star_version  ) {
-                      
- 
+
+
         // Initialize the class
         Wattos.Converters.Dyana.StarOutAll.init();
         StarFileNode star_file_node_constraints         = Wattos.Converters.Dyana.StarOutAll.convertToStarFileNode( toString(),
@@ -767,22 +767,22 @@ public class DBMRBlock {
         BlockNode block_node_constraints                = star_file_node_constraints.firstElement();
         SaveFrameNode save_frame_node_constraints       = (SaveFrameNode) block_node_constraints.firstElement();
         save_frame_node_constraints.setLabel( "save_DYANA/DIANA_dipolar_coupling_" + (pos+1));
-        
+
         return save_frame_node_constraints;
      }
-     
+
      /** Returns program id or -1 to signal none is available.
      */
     public int getConverterProgramId(Classification classification) {
-        
-        
+
+
         int index = 0;
-        
-        for (Iterator i=classification.mrb_list_converters.iterator();i.hasNext();) 
+
+        for (Iterator i=classification.mrb_list_converters.iterator();i.hasNext();)
         {
             DBMRBlock mrb = (DBMRBlock) i.next();
             if ( hasEqualType( mrb )) {
-                int program_id = ((Integer) classification.mrb_list_converters_map.get(index)).intValue();                
+                int program_id = ((Integer) classification.mrb_list_converters_map.get(index)).intValue();
                 return program_id;
             }
             index++;
@@ -792,19 +792,19 @@ public class DBMRBlock {
 
     /** Put text from lines into content */
     public boolean fillContent( ArrayList lines ) {
-        content = PrimitiveArray.fillContent(lines);   
+        content = PrimitiveArray.fillContent(lines);
         if ( content == null ) {
             General.showError("Failed to transfer strings to content -1-");
             return false;
         }
         return true;
-    } 
+    }
     /** Checks if the block contains only white space characters.
      * @return <CODE>false</CODE> if the block has at least one line that contains more
      * than just white space or the content as bytes isn't the null ref.
      */
     public boolean isEmpty() {
-    
+
         //General.showOutput("Checking emptyness of dbmrblock");
 
         if ( (content == null) || (content.length == 0) ) {
@@ -816,11 +816,11 @@ public class DBMRBlock {
             ArrayList lines = getLines();
             if ( lines == null ) {
                 General.showError("Failed to get text even though the block is marked by fileExtension as text");
-                return true; 
+                return true;
             }
             Iterator i=lines.iterator();
             //General.showOutput("Check: isEmpty");
-            while (i.hasNext()) {            
+            while (i.hasNext()) {
                 String line = (String) i.next();
                 if ( ! line.trim().equals("") ) {
                     return false;
@@ -828,21 +828,21 @@ public class DBMRBlock {
             }
             return true;
         }
-        
+
         return false;
     }
-    
-    
-    
+
+
+
     /** Looks at one line of annotation and sets the type level as specified in the
      * annotation.
      * @param line The text line with the annotation.
      * @return <CODE>true</CODE> if the line contains a valid annotation or if
      *the type level is other prop then it will return true even if the annotation
      *was not used. A warning will be issued about it.
-     */    
-    public boolean setSpecifier( String line ) { 
-        
+     */
+    public boolean setSpecifier( String line ) {
+
         int level_id = -1;
         String key, value;
         int beginIndex = DBMRFile.PREFIX.length();
@@ -865,25 +865,25 @@ public class DBMRBlock {
             General.showError("got unknown specifier: "+level_string);
             return false;
         }
-                
+
         /** It was a regular level thingie */
         if ( level_id != -1 ) {
             String info_string = st.nextToken();
             while (st.hasMoreTokens()) {
-                info_string = info_string + " " + st.nextToken();                
+                info_string = info_string + " " + st.nextToken();
             }
             // The leading space resulting from the lousy algorithm above needs trimming
             info_string.trim();
             type[level_id] = info_string;
             return true;
         }
-        
+
         /** Some other prop was defined */
         /** Strip the level_string and look at the assignment string only */
         String assignment = info.substring(level_string.length()).trim();
         //General.showDebug("assignment is: [" + assignment + "]");
         st = new StringTokenizer(assignment, "=");
-        
+
         if ( st.hasMoreTokens() ) {
             key = st.nextToken();
         } else {
@@ -891,7 +891,7 @@ public class DBMRBlock {
             General.showWarning("assignment ignored");
             return true;
         }
-            
+
         if ( st.hasMoreTokens() ) {
             value = st.nextToken();
         } else {
@@ -903,7 +903,7 @@ public class DBMRBlock {
             General.showError("Failed to set valid key,value pair for other_prop and value: " + value + " and key: " + key);
             return false;
         }
-        //General.showDebug("other_prop now: [" + other_prop.toString() + "]");        
+        //General.showDebug("other_prop now: [" + other_prop.toString() + "]");
         return true;
     }
 
@@ -913,21 +913,21 @@ public class DBMRBlock {
         if ( other_prop == null ) {
             other_prop = new Properties();
         }
-        other_prop.put(key.trim(), value.trim());        
+        other_prop.put(key.trim(), value.trim());
         if ( ! hasValidBlockOtherProp() ) {
             General.showError("other_prop set to invalid item; up to caller of routine: mrb.setOtherProp to fix this.");
             return false;
         }
         return true;
     }
-    
+
     /**
      * Converts this type of block to STAR.
      * If not available or an error occurs, a null will be returned.
      */
     public SaveFrameNode convertAMBERDihedralNaNa(int pos, int star_version, String pdb_id) {
-        
-        
+
+
         // Initialize the class
         Wattos.Converters.Amber.StarOutAll.init(pdb_id);
         StarFileNode star_file_node_constraints         = Wattos.Converters.Amber.StarOutAll.convertToStarFileNode( toString(),
@@ -935,15 +935,15 @@ public class DBMRBlock {
         BlockNode block_node_constraints                = star_file_node_constraints.firstElement();
         SaveFrameNode save_frame_node_constraints       = (SaveFrameNode) block_node_constraints.firstElement();
         save_frame_node_constraints.setLabel( "save_AMBER_dihedral_" + (pos+1));
-        
+
         return save_frame_node_constraints;
     }
-    
+
     /**
      * Converts this type of block to STAR.
      * If not available or an error occurs, a null will be returned.
      */
-    public SaveFrameNode convertAMBERDipolarNaNa(int pos, int star_version, String pdb_id) {                
+    public SaveFrameNode convertAMBERDipolarNaNa(int pos, int star_version, String pdb_id) {
         // Initialize the class
         Wattos.Converters.Amber.StarOutAll.init(pdb_id);
         StarFileNode star_file_node_constraints         = Wattos.Converters.Amber.StarOutAll.convertToStarFileNode( toString(),
@@ -951,16 +951,16 @@ public class DBMRBlock {
         BlockNode block_node_constraints                = star_file_node_constraints.firstElement();
         SaveFrameNode save_frame_node_constraints       = (SaveFrameNode) block_node_constraints.firstElement();
         save_frame_node_constraints.setLabel( "save_AMBER_dipolar_coupling_" + (pos+1));
-        
+
         return save_frame_node_constraints;
     }
-    
+
     /**
      * Converts this type of block to STAR.
      * If not available or an error occurs, a null will be returned.
      */
     public SaveFrameNode convertAMBERDistanceNOE(int pos, int star_version, String pdb_id ) {
-                
+
         // Initialize the class
         Wattos.Converters.Amber.StarOutAll.init(pdb_id);
         StarFileNode star_file_node_constraints         = Wattos.Converters.Amber.StarOutAll.convertToStarFileNode( toString(),
@@ -968,7 +968,7 @@ public class DBMRBlock {
         BlockNode block_node_constraints                = star_file_node_constraints.firstElement();
         SaveFrameNode save_frame_node_constraints       = (SaveFrameNode) block_node_constraints.firstElement();
         save_frame_node_constraints.setLabel( "save_AMBER_distance_constraints_" + (pos+1));
-        
+
         return save_frame_node_constraints;
     }
     /** Get the number of restraints or other items.
@@ -1007,7 +1007,7 @@ public class DBMRBlock {
                         }
     //                    General.showDebug("lastRow : " + lastRow);
     //                    General.showDebug("columnId: " + columnId);
-                        DataValueNode dvn = ltn.elementAt(lastRow).elementAt(columnId);                    
+                        DataValueNode dvn = ltn.elementAt(lastRow).elementAt(columnId);
                         String value = dvn.getValue();
                         int count = Integer.parseInt(value);
     //                    General.showDebug("Adding number of items: " + count);
@@ -1015,7 +1015,7 @@ public class DBMRBlock {
                      }
                 }
             } catch ( Throwable t ) {
-                General.showThrowable(t);            
+                General.showThrowable(t);
                 return Defs.NULL_INT;
             }
             //General.showDebug("Sum getItemCount is: " + sum);
@@ -1025,7 +1025,7 @@ public class DBMRBlock {
     /** Self test; doesn't do anything.
      * @param args Ignored.
      */
-    public static void main (String[] args) 
+    public static void main (String[] args)
     {
        General.verbosity = General.verbosityDebug;
        General.showOutput("Starting test of check routine." );
@@ -1045,19 +1045,19 @@ public class DBMRBlock {
             mrb1.setTypeWithoutNulls(s2);
             General.showOutput("After reassignment mrb 1 looks like this:["+mrb1.getType()+"]");
         }
-            
-        if ( false ) {
-            String[] s1 = {"a","b","c","d"};
-            Properties p = new Properties();
-            p.setProperty("test", "nothing");
-            DBMRBlock mrb1 = new DBMRBlock( s1, p, null, Defs.NULL_INT, "txt", null);
-            String t = "X\nY\n\n";
-            General.showOutput("mrb looks like this:["+ mrb1 +"]");
-            mrb1.setStrings( t );
-            General.showOutput("mrb looks like this:["+ mrb1 +"]");
-            General.showOutput("mrb props look like this:["+ mrb1.other_prop +"]");
-        }
+
+//        if ( false ) {
+//            String[] s1 = {"a","b","c","d"};
+//            Properties p = new Properties();
+//            p.setProperty("test", "nothing");
+//            DBMRBlock mrb1 = new DBMRBlock( s1, p, null, Defs.NULL_INT, "txt", null);
+//            String t = "X\nY\n\n";
+//            General.showOutput("mrb looks like this:["+ mrb1 +"]");
+//            mrb1.setStrings( t );
+//            General.showOutput("mrb looks like this:["+ mrb1 +"]");
+//            General.showOutput("mrb props look like this:["+ mrb1.other_prop +"]");
+//        }
         General.showOutput("Finished all selected check routines." );
-    }    
-    
+    }
+
 }

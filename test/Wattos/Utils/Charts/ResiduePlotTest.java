@@ -7,51 +7,54 @@
 
 package Wattos.Utils.Charts;
 
-import Wattos.Database.*;
-import Wattos.Utils.General;
-import Wattos.Utils.InOut;
-import Wattos.Utils.StringArrayList;
-import java.io.File;
-import java.io.IOException;
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.xy.*;
+import org.jfree.data.xy.DefaultTableXYDataset;
+import org.jfree.data.xy.XYSeries;
+
+import Wattos.Database.DBMS;
+import Wattos.Database.Relation;
+import Wattos.Utils.General;
+import Wattos.Utils.InOut;
+import Wattos.Utils.StringArrayList;
 
 /**
  *
  * @author jurgen
  */
 public class ResiduePlotTest extends TestCase {
-    
+
     String resNumbColName       = "Residue Number";
     String complColName         = "Completeness";
     String totalViolColName     = "Total distance violation (A)";
     String restrCountColName    = "Restraint Count";
-    
+
     static String columnNameMolNumb = "molNumb";
     static String columnNameResName = "resName";
     static String columnNameResNumb = "resNumb";
-    
+
     public ResiduePlotTest(String testName) {
         super(testName);
     }
-    
+
     public static Test suite() {
         TestSuite suite = new TestSuite(ResiduePlotTest.class);
         return suite;
     }
-    
-    
+
+
     public static Relation getTestRelation() {
         String complColName         = "Completeness";
         String totalViolColName     = "Total distance violation (A)";
         String restrCountColName    = "Restraint Count";
-        
+
         int numbResidues = 100;
         DBMS dbms = new DBMS();
         Relation r = null;
@@ -65,7 +68,7 @@ public class ResiduePlotTest extends TestCase {
         r.insertColumn(columnNameMolNumb,Relation.DATA_TYPE_INT,null);
         r.insertColumn(columnNameResName,Relation.DATA_TYPE_STRINGNR,null);
         r.insertColumn(columnNameResNumb,Relation.DATA_TYPE_INT,null);
-        
+
         r.insertColumn(complColName,Relation.DATA_TYPE_FLOAT,null);
         r.insertColumn(restrCountColName,Relation.DATA_TYPE_INT,null);
         r.insertColumn(totalViolColName,Relation.DATA_TYPE_FLOAT,null);
@@ -110,11 +113,11 @@ public class ResiduePlotTest extends TestCase {
         columnNameListValue.add(complColName);
         columnNameListValue.add(totalViolColName);
         StringArrayList seriesNameList = columnNameListValue;
-        
+
         DefaultTableXYDataset dataSet = ResiduePlot.createDatasetFromRelation(r,
                 columnNameListValue, seriesNameList );
         //ResiduePlot.run(dataSet);
-        
+
         JFreeChart chart = ResiduePlot.createChart(dataSet,r,
                 columnNameMolNumb,
                 columnNameResNumb,
@@ -136,16 +139,16 @@ public class ResiduePlotTest extends TestCase {
             }
         }
         //chart.setBackgroundPaint(Color.BLACK);
-        if ( false ) {
-            ResiduePlot.show(chart);
-        }
-        
+//        if ( false ) {
+//            ResiduePlot.show(chart);
+//        }
+
         if ( true ) {
             ChartPanel chartPanel = new ChartPanel(chart);
             String fileName = file_name_base_dc+".bin";
             if ( ! InOut.writeObject(chartPanel,fileName)) {
                 fail("Failed InOut.writeObject(chartPanel,fileName)");
-            }            
+            }
 //            chartPanel = (ChartPanel) InOut.readObject(fileName);
 //            if ( chartPanel == null ) {
 //                fail("Failed InOut.readObject(fileName)");
@@ -153,23 +156,23 @@ public class ResiduePlotTest extends TestCase {
             ResiduePlot.showPanel(chartPanel);
             General.sleep(1100);
         }
-        
-        if ( false ) {
-            int width = 1024;
-            int height = 768;
-            
-            String fileName = file_name_base_dc+".jpg";
-            try {
-                General.showOutput("Saving chart as JPEG");
-                ChartUtilities.saveChartAsJPEG(new File(fileName), chart, width, height);
-                //            General.showOutput("Saving chart as PDF");
-                //            fileName = file_name_base_dc+".pdf";
-                //            PdfGeneration.convertToPdf(chart, width, height, fileName);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+
+//        if ( false ) {
+//            int width = 1024;
+//            int height = 768;
+//
+//            String fileName = file_name_base_dc+".jpg";
+//            try {
+//                General.showOutput("Saving chart as JPEG");
+//                ChartUtilities.saveChartAsJPEG(new File(fileName), chart, width, height);
+//                //            General.showOutput("Saving chart as PDF");
+//                //            fileName = file_name_base_dc+".pdf";
+//                //            PdfGeneration.convertToPdf(chart, width, height, fileName);
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
+//        }
 //        General.sleep(111000);
     }
-    
+
 }

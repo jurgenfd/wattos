@@ -20,23 +20,23 @@ import java.util.jar.Attributes;
  */
 
 public class StarOutAll{
-    
+
     /** Using starlibj to produce star format of a saveframe.
      */
     static StarFileNode sfn = null;
     /** StarlibJ unparser.
-     */    
+     */
     static StarUnparser myUnparser = null;
 
     /** Input file name.
-     */    
+     */
     static String inputFile;
     /** Output file name.
-     */    
+     */
     static String outFile;
-        
+
     /** Main data resides in this vector. Vectors passed from DyanaParserAll by calling corresponding pop method
-     */    
+     */
     static Vector stack;
     /** All comments are collected in this vector.
      */
@@ -44,29 +44,29 @@ public class StarOutAll{
     /** All parse errors are collected in this vector.
      */
     static Vector errStack;
-    
-    /** Which type of data should be parsed? Default is distance. 
+
+    /** Which type of data should be parsed? Default is distance.
      */
     public static int data_type  = Varia.DATA_TYPE_DISTANCE;
-    
+
     /** Is it a lower bound definitions only?
      */
     public static boolean lower_only = false;
-    
+
     public static final String STAR_EMPTY = Wattos.Utils.NmrStar.STAR_EMPTY;
     /** Set to produce very verbose output.
-     */    
+     */
     static boolean DEBUG = false;
 
     /** The parser as defined by the JavaCC .jj file. Dummy stream.
-     */    
-    static DyanaParserAll parser = new DyanaParserAll(System.in);    
-    
+     */
+    static DyanaParserAll parser = new DyanaParserAll(System.in);
+
     /** Empty constructor.     */
     public StarOutAll() {
         init();
     }
-    
+
 
     /** Initialize this class global variables. Needs to be executed before
      *each run.
@@ -82,13 +82,13 @@ public class StarOutAll{
         stack = null;
         cmtStack = null;
         errStack = null;
-        
+
         data_type  = Varia.DATA_TYPE_DISTANCE;
-        
+
         parser.init();
         DyanaParserAll.ReInit( System.in );
     }
-    
+
     /** Does the conversion from a single text String to a StarFileNode.
      * Returns null if an error occurred. If input is a null reference the given
      * input file will be tried. If the input text is given a temporary file
@@ -101,10 +101,10 @@ public class StarOutAll{
      */
     static public StarFileNode convertToStarFileNode( String input,  int type,
         boolean lower_only_spec, int star_version) {
-        
+
         data_type =  type;
         lower_only = lower_only_spec;
-        
+
         File temp_file = null;
         if ( input != null ) {
             if ( inputFile == null ) {
@@ -117,10 +117,10 @@ public class StarOutAll{
                     return null;
                 }
             }
-            // Materialize the input as a real file. 
+            // Materialize the input as a real file.
             Strings.writeToFile( input, inputFile );
         }
-        
+
         // Check input file's existence
         File inputf = null;
         if ( temp_file == null ) {
@@ -128,7 +128,7 @@ public class StarOutAll{
         } else {
             inputf = temp_file;
         }
-        
+
         if ( ! inputf.exists() ) {
             General.showError("The input file: " + inputFile + " does not exist. ");
             General.showError( "Make sure it does. The current working directory is: " +
@@ -136,7 +136,7 @@ public class StarOutAll{
             showUsage();
         }
         inputf = null; // Not used anymore.
-        
+
         parser.parse(inputFile, data_type, lower_only);
         //pop result from DyanaParserAll
         stack    = parser.popResult();
@@ -146,7 +146,7 @@ public class StarOutAll{
 
         /** Gets results from DyanaParserAll generate the STAR structure in memory and
          * then unparses this out to a STAR file using starlibj.
-         */ 
+         */
         //Create Saveframe template first
         sfn = new StarFileNode();
         //initialize a BlockNode (for adding to StarFileNode)
@@ -160,12 +160,12 @@ public class StarOutAll{
         dyana_block.addElement(constraints);
         sfn.addElement(dyana_block);
         // Some debug statement:
-        //General.showOutput("Different method shows:\n" + Wattos.Utils.NmrStar.toString( sfn ));        
-        
+        //General.showOutput("Different method shows:\n" + Wattos.Utils.NmrStar.toString( sfn ));
+
         return sfn;
     }
-    
-    
+
+
     /** Does the conversion from file to file.
      * If input is a null reference the input file from inputFile will be tried.
      * @param text A textual representation of the input. If a null reference the input file
@@ -173,8 +173,8 @@ public class StarOutAll{
      * @param type Type of data, e.g. distance, dihedral, etc...
      * @return Returns <CODE>false</CODE> if an error occurred.
      */
-    public static boolean convertStar( String text, int type, boolean lower_only, int star_version ) {        
-        
+    public static boolean convertStar( String text, int type, boolean lower_only, int star_version ) {
+
         File outputf = new File( outFile );
         if ( outputf.exists() ) {
             General.showWarning("The file will be deleted.");
@@ -183,7 +183,7 @@ public class StarOutAll{
         outputf = null; // Not used anymore.
 
         StarFileNode sfn = convertToStarFileNode( text, type, lower_only, star_version );
-        try{            
+        try{
             // Now output the result to standard output:
             myUnparser = new StarUnparser(new java.io.FileOutputStream(outFile));
             myUnparser.setFormatting( true );
@@ -196,8 +196,8 @@ public class StarOutAll{
 
         return true;
     }
-        
-    
+
+
     /** Prints a message showing how to use the main of this program.
      */
     public static void showUsage() {
@@ -206,15 +206,15 @@ public class StarOutAll{
         General.showError( "DATA_TYPE_DIHEDRAL: " + Varia.DATA_TYPE_DIHEDRAL);
         System.exit(1);
     }
-                   
-    
+
+
     /** Save all the data in an in-memory structure of the STAR file to be generated.
      * @param save_frame_node_constraint A reference to the saveframe node of the constraints to which the data should
      * be added.
      * @return <CODE>true</CODE> for success.
      */
     public static boolean saveData(SaveFrameNode save_frame_node_constraint, int star_version ) {
-        
+
         Parameters p = new Parameters(); // Printf parameters
         // Print the filename without path and the characteristics of the parse
         File iFile = new File( inputFile );
@@ -226,7 +226,7 @@ public class StarOutAll{
         General.showOutput( Format.sprintf("%-20s %4d %4d %4d" + ls, p));
         if ( errStack.size() > 0 ) {
             General.showError("please check the input. An error was recorded.");
-        }        
+        }
 
         // Number of items in saveframe
         int item_count_sf = 0;
@@ -265,7 +265,7 @@ public class StarOutAll{
                     variable_names_comment[id++] = "commentId";
                     variable_names_comment[id++] = "comment";
                     variable_names_comment[id++] = "beginLine";
-                    variable_names_comment[id++] = "beginColumn"; 
+                    variable_names_comment[id++] = "beginColumn";
                     variable_names_comment[id++] = "endLine";
                     variable_names_comment[id++] = "endColumn";
                     break;
@@ -273,7 +273,7 @@ public class StarOutAll{
                 case NmrStar.STAR_VERSION_3_0: {
                     variable_names_comment[id++] = "commentId";
                     variable_names_comment[id++] = "beginLine";
-                    variable_names_comment[id++] = "beginColumn"; 
+                    variable_names_comment[id++] = "beginColumn";
                     variable_names_comment[id++] = "endLine";
                     variable_names_comment[id++] = "endColumn";
                     variable_names_comment[id++] = "comment";
@@ -282,7 +282,7 @@ public class StarOutAll{
                 case NmrStar.STAR_VERSION_3_1: {
                     variable_names_comment[id++] = "commentId";
                     variable_names_comment[id++] = "beginLine";
-                    variable_names_comment[id++] = "beginColumn"; 
+                    variable_names_comment[id++] = "beginColumn";
                     variable_names_comment[id++] = "endLine";
                     variable_names_comment[id++] = "endColumn";
 //                    variable_names_comment[id++] = "entryId";
@@ -292,9 +292,9 @@ public class StarOutAll{
                 }
                 default: {
                     General.showError("code bug Converters.XXX.saveData Unknown NMR-STAR format: " + star_version );
-                }                            
-            }                                                            
-            
+                }
+            }
+
             LoopTableNode loop_table_node_comment = dataloopnode_comment.getVals();
             for (int i = 0; i < cmtStack.size(); i++) {
                 Comment cmtTemp = (Comment) (cmtStack.elementAt(i));
@@ -307,10 +307,10 @@ public class StarOutAll{
                     }
                     looprownode_comment.addElement(new DataValueNode( value ));
                 }
-                loop_table_node_comment.addElement( looprownode_comment );        
-            }            
+                loop_table_node_comment.addElement( looprownode_comment );
+            }
         }
-        
+
         // Add parse errors
         if (errStack.size() != 0) {
             NmrStar.addConstraintParseErrors(   save_frame_node_constraint, star_version, tableNamePrefix);
@@ -323,7 +323,7 @@ public class StarOutAll{
                     variable_names_parse_error[id++] = "errorId";
                     variable_names_parse_error[id++] = "error";
                     variable_names_parse_error[id++] = "beginLine";
-                    variable_names_parse_error[id++] = "beginColumn"; 
+                    variable_names_parse_error[id++] = "beginColumn";
                     variable_names_parse_error[id++] = "endLine";
                     variable_names_parse_error[id++] = "endColumn";
                     break;
@@ -331,7 +331,7 @@ public class StarOutAll{
                 case NmrStar.STAR_VERSION_3_0: {
                     variable_names_parse_error[id++] = "errorId";
                     variable_names_parse_error[id++] = "beginLine";
-                    variable_names_parse_error[id++] = "beginColumn"; 
+                    variable_names_parse_error[id++] = "beginColumn";
                     variable_names_parse_error[id++] = "endLine";
                     variable_names_parse_error[id++] = "endColumn";
                     variable_names_parse_error[id++] = "error";
@@ -340,7 +340,7 @@ public class StarOutAll{
                 case NmrStar.STAR_VERSION_3_1: {
                     variable_names_parse_error[id++] = "errorId";
                     variable_names_parse_error[id++] = "beginLine";
-                    variable_names_parse_error[id++] = "beginColumn"; 
+                    variable_names_parse_error[id++] = "beginColumn";
                     variable_names_parse_error[id++] = "endLine";
                     variable_names_parse_error[id++] = "endColumn";
 //                    variable_names_parse_error[id++] = "entryId";
@@ -350,8 +350,8 @@ public class StarOutAll{
                 }
                 default: {
                     General.showError("code bug Converters.Discover.saveData Unknown NMR-STAR format: " + star_version );
-                }                            
-            }                                                            
+                }
+            }
             LoopTableNode loop_table_node_parse_error = dataloopnode_parse_error.getVals();
             for (int i = 0; i < errStack.size(); i++) {
                 ParseError errTemp = (ParseError) (errStack.elementAt(i));
@@ -364,19 +364,19 @@ public class StarOutAll{
                     }
                     looprownode_parse_error.addElement(new DataValueNode( value ));
                 }
-                loop_table_node_parse_error.addElement( looprownode_parse_error );        
+                loop_table_node_parse_error.addElement( looprownode_parse_error );
             }
-        }                
+        }
         return true;
     }
-    
-    
+
+
     /** Save the dihedral angle data in an in-memory structure of the STAR file to be generated.
      * @param save_frame_node_constraint A reference to the saveframe node of the constraints to which the data should
      * be added.
      */
     public static void saveDataDihedral(SaveFrameNode save_frame_node_constraint, int star_version) {
-        
+
         VectorCheckType vct = save_frame_node_constraint.searchForType(NmrStar.dataLoopNodeClass, DataValueNode.DONT_CARE);
         if ( vct.size() !=  1 ) {
             General.showError("didn't find exactly 1 table in saveframe node. Found: " + vct.size() );
@@ -403,7 +403,7 @@ public class StarOutAll{
                 case NmrStar.STAR_VERSION_3_0: {
                     int values_per_atom = 5;
                     int empties = atom_count*values_per_atom;
-                    for (int j = 0; j < empties; j++) {                
+                    for (int j = 0; j < empties; j++) {
                         looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY ));
                     }
                     break;
@@ -411,7 +411,7 @@ public class StarOutAll{
                 case NmrStar.STAR_VERSION_3_1: {
                     int values_per_atom = 8;
                     int empties = atom_count*values_per_atom;
-                    for (int j = 0; j < empties; j++) {                
+                    for (int j = 0; j < empties; j++) {
                         looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY ));
                     }
                     break;
@@ -427,12 +427,12 @@ public class StarOutAll{
                 looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "upper" ) ));
                 looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY ));
             }
-            
+
             // Store info on all 4 atoms
-            for (int j = 0; j < atom_count; j++) {                
+            for (int j = 0; j < atom_count; j++) {
                 ArrayList atom_list = (ArrayList) treeNode.atoms.get(j);
                 AtomNode atom = (AtomNode) atom_list.get(0);
-                for (int k = 0; k < AtomNode.variable_names_atom.length; k++) {                
+                for (int k = 0; k < AtomNode.variable_names_atom.length; k++) {
                     String value = NmrStar.getPossibleValue( atom.info.getValue(AtomNode.variable_names_atom[k]) );
                     looprownode_constraint.addElement(new DataValueNode( value ));
                 }
@@ -445,19 +445,19 @@ public class StarOutAll{
 //                loop_table_node_constraint.addElement( looprownode_constraint );
 //            } else {
 //                looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY ));
-//                looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY ));                
+//                looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY ));
 //            }
-            loop_table_node_constraint.addElement( looprownode_constraint );        
-            
-        }        
+            loop_table_node_constraint.addElement( looprownode_constraint );
+
+        }
     }
-    
+
     /** Residual dipolar coupling section.
      * @param save_frame_node_constraint A reference to the saveframe node of the constraints to which the data should
      * be added.
-     */    
+     */
     public static void saveDataDipolarCoupling(SaveFrameNode save_frame_node_constraint, int star_version) {
-        
+
         VectorCheckType vct = save_frame_node_constraint.searchForType(NmrStar.dataLoopNodeClass, DataValueNode.DONT_CARE);
         if ( vct.size() !=  1 ) {
             General.showError("didn't find exactly 1 table in saveframe node. Found: " + vct.size() );
@@ -482,7 +482,7 @@ public class StarOutAll{
                 case NmrStar.STAR_VERSION_3_0: {
                     int values_per_atom = 5;
                     int empties = atom_count*values_per_atom;
-                    for (int j = 0; j < empties; j++) {                
+                    for (int j = 0; j < empties; j++) {
                         looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY ));
                     }
                     break;
@@ -490,7 +490,7 @@ public class StarOutAll{
                 case NmrStar.STAR_VERSION_3_1: {
                     int values_per_atom = 7;
                     int empties = atom_count*values_per_atom;
-                    for (int j = 0; j < empties; j++) {                
+                    for (int j = 0; j < empties; j++) {
                         looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY ));
                     }
                     break;
@@ -504,14 +504,14 @@ public class StarOutAll{
             switch ( star_version ) {
                 case NmrStar.STAR_VERSION_2_1_1: {
                     // Store info on both atoms
-                    for (int j = 0; j < atom_count; j++) {                
+                    for (int j = 0; j < atom_count; j++) {
                         AtomNode atom = (AtomNode) ((ArrayList) treeNode.atoms.get(j)).get(0);
-                        for (int k = 0; k < AtomNode.variable_names_atom.length; k++) {                
+                        for (int k = 0; k < AtomNode.variable_names_atom.length; k++) {
                             String value = NmrStar.getPossibleValue( atom.info.getValue(AtomNode.variable_names_atom[k]) );
                             looprownode_constraint.addElement(new DataValueNode( value ));
                         }
                     }
-                    
+
                     looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "value" ) ));
                     looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "error" ) ));
                     looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "lower" ) ));
@@ -520,14 +520,14 @@ public class StarOutAll{
                 }
                 case NmrStar.STAR_VERSION_3_0: {
                     // Store info on both atoms
-                    for (int j = 0; j < atom_count; j++) {                
+                    for (int j = 0; j < atom_count; j++) {
                         AtomNode atom = (AtomNode) ((ArrayList) treeNode.atoms.get(j)).get(0);
-                        for (int k = 0; k < AtomNode.variable_names_atom.length; k++) {                
+                        for (int k = 0; k < AtomNode.variable_names_atom.length; k++) {
                             String value = NmrStar.getPossibleValue( atom.info.getValue(AtomNode.variable_names_atom[k]) );
                             looprownode_constraint.addElement(new DataValueNode( value ));
                         }
                     }
-                    
+
                     looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "value" ) ));
                     looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "lower" ) ));
                     looprownode_constraint.addElement(new DataValueNode( treeNode.entry.getValue( "upper" ) ));
@@ -543,15 +543,15 @@ public class StarOutAll{
                     looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY )); // resonances
                     looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY ));
                     // Store info on both atoms
-                    for (int j = 0; j < atom_count; j++) {                
+                    for (int j = 0; j < atom_count; j++) {
                         AtomNode atom = (AtomNode) ((ArrayList) treeNode.atoms.get(j)).get(0);
-                        for (int k = 0; k < AtomNode.variable_names_atom.length; k++) {                
+                        for (int k = 0; k < AtomNode.variable_names_atom.length; k++) {
                             String value = NmrStar.getPossibleValue( atom.info.getValue(AtomNode.variable_names_atom[k]) );
                             looprownode_constraint.addElement(new DataValueNode( value ));
                         }
                     }
 //                    looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY )); // tailies
-//                    looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY )); 
+//                    looprownode_constraint.addElement(new DataValueNode( STAR_EMPTY ));
                     break;
                 }
                 default: {
@@ -559,25 +559,25 @@ public class StarOutAll{
                     return;
                 }
             }
-            loop_table_node_constraint.addElement( looprownode_constraint );        
-        }        
+            loop_table_node_constraint.addElement( looprownode_constraint );
+        }
     }
-    
 
-    /** Save the distance data in an in-memory structure of the STAR file to be generated. 
+
+    /** Save the distance data in an in-memory structure of the STAR file to be generated.
      *Admittedly , this code is a bit of a mess.
      * @param save_frame_node_constraint A reference to the saveframe node of the constraints to which the data should
      * be added.
      */
     public static void saveDataDistance(SaveFrameNode save_frame_node_constraint, int star_version) {
-        
-        
+
+
         String peak, volume, weight, ppm1, ppm2;
         int atom_count, atom_list_count;
         LoopRowNode looprownode_logic;
 
         int pos = 0;
-            
+
         VectorCheckType vct = save_frame_node_constraint.searchForType(NmrStar.dataLoopNodeClass, DataValueNode.DONT_CARE);
         if ( vct.size() !=  3 ) {
             General.showError("didn't find exactly 3 tables in saveframe node. Found: " + vct.size() );
@@ -587,16 +587,16 @@ public class StarOutAll{
         DataLoopNode dataloopnode_logic     = (DataLoopNode) vct.elementAt(pos++);
         DataLoopNode dataloopnode_atom      = (DataLoopNode) vct.elementAt(pos++);
         DataLoopNode dataloopnode_distance  = (DataLoopNode) vct.elementAt(pos++);
-        
+
         LoopTableNode loop_table_node_logic     = dataloopnode_logic.getVals();
         LoopTableNode loop_table_node_atom      = dataloopnode_atom.getVals();
         LoopTableNode loop_table_node_distance  = dataloopnode_distance.getVals();
-                            
+
         for (int i = 0; i < stack.size(); i++) {
-            
+
             // LOGIC LOOP
             LogicalNode treeNode = (LogicalNode)(stack.elementAt(i));
-            Attributes opt_info = (Attributes) treeNode.opt_info.get( "opt_info" );            
+            Attributes opt_info = (Attributes) treeNode.opt_info.get( "opt_info" );
             if ( opt_info != null ) {
                 peak     = NmrStar.getPossibleValue( opt_info.getValue( "peak" ) );
                 weight   = NmrStar.getPossibleValue( opt_info.getValue( "weight" ) );
@@ -613,10 +613,10 @@ public class StarOutAll{
             // Number of nodes is 1 for logic only node (1) and 1 for first
             // atom pair (2).
             // This is only valid if there are ARIA type of restraints.
-//            number_nodes = treeNode.atomsOR.size() / 2 + 2; 
+//            number_nodes = treeNode.atomsOR.size() / 2 + 2;
             //General.showOutput("number_nodes: " + number_nodes);
 
-                looprownode_logic       = new LoopRowNode();            
+                looprownode_logic       = new LoopRowNode();
                 looprownode_logic.addElement(   new DataValueNode( treeNode.entry.getValue( "treeId" ) ));
                 looprownode_logic.addElement(   new DataValueNode( treeNode.entry.getValue( "treeNodeId" )));
                 looprownode_logic.addElement(   new DataValueNode( STAR_EMPTY ));
@@ -634,11 +634,11 @@ public class StarOutAll{
                 //General.showOutput("i =" + i + " j =" + j );
                 ArrayList atom_list = (ArrayList) treeNode.atoms.get(j);
                 atom_count = atom_list.size();
-                for (int k = 0; k < atom_count; k++) {                
+                for (int k = 0; k < atom_count; k++) {
 //                    General.showOutput("i =" + i + " j =" + j + " k =" + k);
 
                     LoopRowNode looprownode_atom        = new LoopRowNode();
-                    AtomNode atom = (AtomNode) (atom_list.get(k));                
+                    AtomNode atom = (AtomNode) (atom_list.get(k));
                     String segi = NmrStar.getPossibleValue( atom.info.getValue( "segi" ) );
                     String resi = NmrStar.getPossibleValue( atom.info.getValue( "resi" ) );
                     String resn = NmrStar.getPossibleValue( atom.info.getValue( "resn" ) );
@@ -680,7 +680,7 @@ public class StarOutAll{
                             looprownode_atom.addElement(    new DataValueNode( treeNode.entry.getValue( "treeId" ) ));
                             looprownode_atom.addElement(    new DataValueNode( "1" ));
                             looprownode_atom.addElement(    new DataValueNode( Integer.toString(j+1) ));
-                            for (int tt=0;tt<8;tt++) {                            
+                            for (int tt=0;tt<8;tt++) {
                                 looprownode_atom.addElement(    new DataValueNode( STAR_EMPTY ));
                             }
                             looprownode_atom.addElement(    new DataValueNode( segi ));
@@ -693,13 +693,13 @@ public class StarOutAll{
                         }
                         default: {
                             General.showError("code bug Converters.dyana.saveDataDistance. Unknown nmr-star format: " + star_version );
-                        }                            
+                        }
                     }
                     loop_table_node_atom.addElement(        looprownode_atom );
-                }                        
+                }
             }
-            // DISTANCE LOOP 
-            LoopRowNode looprownode_distance    = new LoopRowNode();            
+            // DISTANCE LOOP
+            LoopRowNode looprownode_distance    = new LoopRowNode();
             switch ( star_version ) {
                 case NmrStar.STAR_VERSION_2_1_1: {
                     looprownode_distance.addElement(    new DataValueNode( treeNode.entry.getValue( "treeId" ) ));
@@ -711,7 +711,7 @@ public class StarOutAll{
                     looprownode_distance.addElement(    new DataValueNode( ppm1 ));
                     looprownode_distance.addElement(    new DataValueNode( ppm2 ));
                     looprownode_distance.addElement(    new DataValueNode( STAR_EMPTY ));
-                    // It would be more logical if this decision was elsewhere... 
+                    // It would be more logical if this decision was elsewhere...
                     if ( lower_only ) {
                         looprownode_distance.addElement(    new DataValueNode( treeNode.entry.getValue( "upper" )  ));
                         looprownode_distance.addElement(    new DataValueNode( STAR_EMPTY ));
@@ -730,7 +730,7 @@ public class StarOutAll{
                     looprownode_distance.addElement(    new DataValueNode( STAR_EMPTY ));
                     looprownode_distance.addElement(    new DataValueNode( STAR_EMPTY ));
                     looprownode_distance.addElement(    new DataValueNode( STAR_EMPTY ));
-                    // It would be more logical if this decision was elsewhere... 
+                    // It would be more logical if this decision was elsewhere...
                     if ( lower_only ) {
                         looprownode_distance.addElement(    new DataValueNode( treeNode.entry.getValue( "upper" )  ));
                         looprownode_distance.addElement(    new DataValueNode( STAR_EMPTY ));
@@ -738,7 +738,7 @@ public class StarOutAll{
                         looprownode_distance.addElement(    new DataValueNode( STAR_EMPTY ));
                         looprownode_distance.addElement(    new DataValueNode( treeNode.entry.getValue( "upper" )  ));
                     }
-                    looprownode_distance.addElement(    new DataValueNode( weight ));                        
+                    looprownode_distance.addElement(    new DataValueNode( weight ));
                     looprownode_distance.addElement(    new DataValueNode( ppm1 ));
                     looprownode_distance.addElement(    new DataValueNode( ppm2 ));
                     break;
@@ -753,7 +753,7 @@ public class StarOutAll{
                     looprownode_distance.addElement(    new DataValueNode( STAR_EMPTY ));
                     looprownode_distance.addElement(    new DataValueNode( STAR_EMPTY ));
                     looprownode_distance.addElement(    new DataValueNode( STAR_EMPTY ));
-                    // It would be more logical if this decision was elsewhere... 
+                    // It would be more logical if this decision was elsewhere...
                     if ( lower_only ) {
                         looprownode_distance.addElement(    new DataValueNode( treeNode.entry.getValue( "upper" )  ));
                         looprownode_distance.addElement(    new DataValueNode( STAR_EMPTY ));
@@ -761,7 +761,7 @@ public class StarOutAll{
                         looprownode_distance.addElement(    new DataValueNode( STAR_EMPTY ));
                         looprownode_distance.addElement(    new DataValueNode( treeNode.entry.getValue( "upper" )  ));
                     }
-//                    looprownode_distance.addElement(    new DataValueNode( weight ));                        
+//                    looprownode_distance.addElement(    new DataValueNode( weight ));
 //                    looprownode_distance.addElement(    new DataValueNode( ppm1 ));
 //                    looprownode_distance.addElement(    new DataValueNode( ppm2 ));
 //                    looprownode_distance.addElement(    new DataValueNode( STAR_EMPTY ));
@@ -770,14 +770,14 @@ public class StarOutAll{
                 }
                 default: {
                     General.showError("code bug Converters.. Unknown nmr-star format: " + star_version );
-                }                            
+                }
             }
-            
-            loop_table_node_distance.addElement(    looprownode_distance );            
-        }        
+
+            loop_table_node_distance.addElement(    looprownode_distance );
+        }
     }
 
-    
+
     //main
     /** The main to call for the conversion giving input and output files on the command
      * line.
@@ -786,31 +786,31 @@ public class StarOutAll{
      * Third argument : data type (e.g. 1 for distances)
      *
      * <PRE>Usage:java Wattos.Converters.Dyana.StarOutAll <input_file> <output_file> <[1-3]></PRE>
-     */    
+     */
     public static void main(String[] args) {
-        
+
         // Some debug info
         if ( DEBUG )
             General.showEnvironment();
-        
+
         //check for arguments, require one Dyana template file (.config file) followed by
         //the Dyana file block to be processed
         if (args.length != 4) {
             showUsage();
         }
-        
+
         init();
         inputFile  = args[0];
         outFile    = args[1];
         data_type  = (new Integer( args[2])).intValue();
         int star_version = (new Integer( args[3])).intValue();
-        
+
         // Testing
-        if ( false ) {
-            inputFile  = "test.txt";
-            outFile    = "test.str";
-            data_type  = Varia.DATA_TYPE_DISTANCE;
-        }
+//        if ( false ) {
+//            inputFile  = "test.txt";
+//            outFile    = "test.str";
+//            data_type  = Varia.DATA_TYPE_DISTANCE;
+//        }
         convertStar( null, data_type, false, star_version );
     }
 }

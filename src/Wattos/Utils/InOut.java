@@ -20,7 +20,7 @@ import java.util.regex.*;
 /**
  * I/O related methods including file copy, file filters, environment settings, conversions between writer/reader and
  * in/out streams etc.
- * 
+ *
  * @author Jurgen F. Doreleijers
  * @version 0.1
  */
@@ -70,7 +70,7 @@ public class InOut {
     }
 
     /**
-     * 
+     *
      * @return true for error
      */
     public static boolean chmod(File f, String mod) {
@@ -231,13 +231,13 @@ public class InOut {
      * notation: see <CODE>java.net.URL</CODE> or <scheme>://<authority><path>?<query>#<fragment> as in:
      * http://archive.ncsa.uiuc.edu:80/SDG/Software/Mosaic/Demo/url-primer.html?i=j#FAQ scheme http authority
      * archive.ncsa.uiuc.edu:80 path /SDG/Software/Mosaic/Demo/url-primer.html query i=j fragment FAQ
-     * 
+     *
      * or by pathname as in : /share/jurgen/handy.txt toURI : file:///share/jurgen/handy.txt or
      * file://S:\jurgen\handy.txt uri.toURL : same just recommended by API to go through URI for abstract pathnames.
      * abstract meaning without scheme (e.g. ftp).
-     * 
+     *
      *See method getUrlFileFromName to see how the canonicalization is done.
-     * 
+     *
      * @param prompt
      *            What should the user be asked for.
      * @return null in case of failure
@@ -392,7 +392,7 @@ public class InOut {
 
     /**
      * Works for .Z and .gz files
-     * 
+     *
      * @param in
      * @param out
      * @return
@@ -783,7 +783,7 @@ public class InOut {
 
     /**
      * Checks age for an existing file.
-     * 
+     *
      * @param d
      *            Directory in which the file will be that is to be checked.
      * @param name
@@ -820,7 +820,7 @@ public class InOut {
     public static class GifFilenameFilter implements FilenameFilter {
         /**
          * Checks if the file is a gif file.
-         * 
+         *
          * @return <CODE>true</CODE> if the file has a filename extension of "gif".
          * @param d
          *            Directory where the file resides.
@@ -838,7 +838,7 @@ public class InOut {
     public static class PDBIdDirFilenameFilter implements FilenameFilter {
         /**
          * Checks if the file is a pdb file.
-         * 
+         *
          * @return <CODE>true</CODE> if the file has a filename where the base could be a pdb code. The directory should
          *         also exist.
          * @param d
@@ -853,7 +853,7 @@ public class InOut {
 
     /**
      * Finds files that match a regular expression. Adapted from Jodd project.
-     * 
+     *
      * @see <A HREF="http://jodd.sourceforge.net">Jodd project< /A>
      */
     public static class RegExpFilenameFilter implements FilenameFilter {
@@ -880,7 +880,7 @@ public class InOut {
 
     /**
      * Returns gif files that have a timestamp as recent as X days.
-     * 
+     *
      * @see #accept
      */
     public static class Gif_NewerThanXDays_FilenameFilter implements FilenameFilter {
@@ -891,7 +891,7 @@ public class InOut {
 
         /**
          * Constructor with initialization value.
-         * 
+         *
          * @param x
          *            see x
          */
@@ -901,7 +901,7 @@ public class InOut {
 
         /**
          * Checks if the file is a gif file.
-         * 
+         *
          * @return <CODE>true</CODE> if all of the below is satisfied: <LI>file exists <LI>has extension gif <LI>is
          *         newer than x number of days
          * @param d
@@ -923,7 +923,7 @@ public class InOut {
 
     /**
      * Returns directories of PDB ids that have a timestamp as recent as X days.
-     * 
+     *
      * @see #accept
      */
     public static class PDBIdDir_NewerThanXDays_FilenameFilter implements FilenameFilter {
@@ -935,7 +935,7 @@ public class InOut {
         // Constructor with initialization value
         /**
          * Constructor with initialization value.
-         * 
+         *
          * @param x
          *            see x
          */
@@ -963,7 +963,7 @@ public class InOut {
     /**
      * Extracts the file content from starting to end lines given as parameters. A negative value for end will be taken
      * as no limit on the end.
-     * 
+     *
      * @param file_name
      *            file to be analyzed.
      * @return the file name extentsion. E.g. mr for a file named: "/tmp/1brv.mr".
@@ -1012,7 +1012,7 @@ public class InOut {
 
     /**
      * Convenience method.
-     * 
+     *
      * @see #getLines
      */
     public static ArrayList getLineList(String file_name, int start, int end) {
@@ -1069,7 +1069,7 @@ public class InOut {
 
     /**
      * Extracts the filename extensions with multiple dots if present. Returns empty string if there is no extension.
-     * 
+     *
      * @param file
      *            the file to be analyzed.
      * @return the file name extentsion. E.g. mr for a file named: "/tmp/1brv.mr".
@@ -1101,7 +1101,7 @@ public class InOut {
 
     /**
      * Extracts the filename base. Deals with multiple dots by recursion.
-     * 
+     *
      * @param file_name
      *            the file to be analyzed.
      * @return the file name base. E.g.: /tmp/1brv.mr.gz -> 1brv
@@ -1146,7 +1146,7 @@ public class InOut {
 
     /**
      * Copy files.
-     * 
+     *
      * @param recursively
      *            If true recurse into directories and copy all files found. The directory structure is recreated. The
      *            base name c: or / on unix can't be given as in. The code hasn't been extensively checked.
@@ -1327,7 +1327,7 @@ public class InOut {
 
     /**
      * Convenience method
-     * 
+     *
      * @see #writeTextToFile(File, char[], boolean, boolean)
      */
     public static boolean writeTextToFile(File file, String s, boolean force, boolean interactive) {
@@ -1433,7 +1433,7 @@ public class InOut {
 
     /**
      * Self test; tests the method: <CODE>getFilenameExtension</CODE>
-     * 
+     *
      * @param args
      *            ignored.
      */
@@ -1442,114 +1442,114 @@ public class InOut {
         General.verbosity = General.verbosityDebug;
         General.showOutput("Doing tests");
 
-        if (false) {
-            File file = new File("testing" + File.separator + "test.gif");
-            General.showOutput("Extension of file: [" + file + "] is: [" + getFilenameExtension(file) + "]");
-        }
-        if (false) {
-            int max_age_in_days = 7;
-            String filename = args[0];
-            File d = new File(".");
-            General.showOutput("File: [" + filename + "]");
-            if (FileNewerThanXDays(d, filename, max_age_in_days)) {
-                General.showOutput("Newer than [" + max_age_in_days + "] days");
-            } else {
-                General.showOutput("Older than [" + max_age_in_days + "] days");
-            }
-        }
-        if (false) {
-            int max_age_in_days = 7;
-            String dirname = args[0];
-            File d = new File(dirname);
-            General.showOutput("dir: [" + d + "]");
-            String[] gif_file_names = d.list(new Gif_NewerThanXDays_FilenameFilter(max_age_in_days));
-            for (int i = 0; i < gif_file_names.length; i++)
-                General.showOutput("Young giffies: [" + gif_file_names[i] + "]");
-        }
-
-        if (false) {
-            String fn = "/test/testing.txt";
-            General.showOutput("fn: [" + fn + "]");
-            General.showOutput("fn: [" + changeFileNameExtension(fn, "t") + "]");
-        }
-
-        if (false) {
-            // String fn = "S:\\jurgen\\tmp\\test\\..\\handy.txt.gz"; // on windows
-            // String fn = "/share/jurgen/tmp/test/../handy.txt"; // on unix
-
-            String fn = "http://archive.ncsa.uiuc.edu:80/SDG/Software/Mosaic/Demo/url-primer.html"; // on windows
-
-            General.showOutput("file name: [" + fn + "]");
-            URL url = getUrlFileFromName(fn);
-            General.showOutput("url      : [" + url + "]");
-            BufferedInputStream bis = getBufferedInputStream(url);
-            General.showDebug("BIS is: " + bis);
-            General.showOutput("url exists: " + availableUrl(url));
-        }
-        if (false) {
-            File in = new File(args[0]);
-            File out = new File(args[1]);
-            General.showOutput("Testing copy from: " + in + " to: " + out);
-            copyFiles(in, out, true, false, false);
-            General.showOutput("Done with copy");
-        }
-        if (false) {
-            File in = new File("S:\\test_dir\\test.txt");
-            General.showOutput("Testing adding of number in: " + in);
-            General.showOutput("Result: " + addFileNumberBeforeExtension(in.toString(), 99, true, 3));
-        }
-        if (false) {
-            // File topDir = new File( "M:\\bfiles\\jurgen" );
-            // File topDir = new File( "M:\\bfiles\\jurgen" );
-            File topDir = new File("C:\\temp\\t1");
-            General.showOutput("Testing recursive empty dir delete of: " + topDir);
-            boolean status = removeEmptySubDirs(topDir);
-            if (status) {
-                General.showOutput("Succeeded in delete");
-            } else {
-                General.showError("Failed in delete");
-            }
-        }
-        if (false) {
-            File in = new File("test.txt");
-            General.showOutput("Testing replace in: " + in);
-            Properties subs = new Properties();
-            subs.setProperty("WATTOSROOT", "nieuw");
-            boolean status = replaceMultiInFile(in, subs);
-            if (status) {
-                General.showOutput("Done with replace");
-            } else {
-                General.showOutput("Failed on replace");
-            }
-        }
-        if (false) {
-            File dir = new File("M:\\bfiles");
-            String regexp = "wa.*";
-            General.showOutput("Reg exp files: " + regexp);
-            General.showOutput("Dir: " + dir);
-            if (!dir.isDirectory()) {
-                General.showError("Given File instance isn't a directory.");
-                System.exit(1);
-            }
-            RegExpFilenameFilter ff = new RegExpFilenameFilter(regexp);
-            String[] list = dir.list(ff);
-
-            General.showOutput("Found files: " + Strings.toString(list));
-            General.showOutput("Found number of files: " + list.length);
-        }
-        if (false) {
-            Properties p = getEnvVars();
-            General.showOutput("the current environment settings are : " + Strings.toString(p));
-        }
-        if (true) {
-            General.showOutput("the current system settings are : " + Strings.toString(System.getProperties()));
-        }
-        if (false) {
-            String fn = "http://localhost:8084/NRG/servlet/MRGridServlet?db_username=wattos";
-            // String fn = "/test/testing.txt.t";
-            General.showOutput("fn: [" + fn + "]");
-            General.showOutput("fn: [" + getFilenameBase(fn) + "]");
-        }
+//        if (false) {
+//            File file = new File("testing" + File.separator + "test.gif");
+//            General.showOutput("Extension of file: [" + file + "] is: [" + getFilenameExtension(file) + "]");
+//        }
+//        if (false) {
+//            int max_age_in_days = 7;
+//            String filename = args[0];
+//            File d = new File(".");
+//            General.showOutput("File: [" + filename + "]");
+//            if (FileNewerThanXDays(d, filename, max_age_in_days)) {
+//                General.showOutput("Newer than [" + max_age_in_days + "] days");
+//            } else {
+//                General.showOutput("Older than [" + max_age_in_days + "] days");
+//            }
+//        }
+//        if (false) {
+//            int max_age_in_days = 7;
+//            String dirname = args[0];
+//            File d = new File(dirname);
+//            General.showOutput("dir: [" + d + "]");
+//            String[] gif_file_names = d.list(new Gif_NewerThanXDays_FilenameFilter(max_age_in_days));
+//            for (int i = 0; i < gif_file_names.length; i++)
+//                General.showOutput("Young giffies: [" + gif_file_names[i] + "]");
+//        }
+//
+//        if (false) {
+//            String fn = "/test/testing.txt";
+//            General.showOutput("fn: [" + fn + "]");
+//            General.showOutput("fn: [" + changeFileNameExtension(fn, "t") + "]");
+//        }
+//
+//        if (false) {
+//            // String fn = "S:\\jurgen\\tmp\\test\\..\\handy.txt.gz"; // on windows
+//            // String fn = "/share/jurgen/tmp/test/../handy.txt"; // on unix
+//
+//            String fn = "http://archive.ncsa.uiuc.edu:80/SDG/Software/Mosaic/Demo/url-primer.html"; // on windows
+//
+//            General.showOutput("file name: [" + fn + "]");
+//            URL url = getUrlFileFromName(fn);
+//            General.showOutput("url      : [" + url + "]");
+//            BufferedInputStream bis = getBufferedInputStream(url);
+//            General.showDebug("BIS is: " + bis);
+//            General.showOutput("url exists: " + availableUrl(url));
+//        }
+//        if (false) {
+//            File in = new File(args[0]);
+//            File out = new File(args[1]);
+//            General.showOutput("Testing copy from: " + in + " to: " + out);
+//            copyFiles(in, out, true, false, false);
+//            General.showOutput("Done with copy");
+//        }
+//        if (false) {
+//            File in = new File("S:\\test_dir\\test.txt");
+//            General.showOutput("Testing adding of number in: " + in);
+//            General.showOutput("Result: " + addFileNumberBeforeExtension(in.toString(), 99, true, 3));
+//        }
+//        if (false) {
+//            // File topDir = new File( "M:\\bfiles\\jurgen" );
+//            // File topDir = new File( "M:\\bfiles\\jurgen" );
+//            File topDir = new File("C:\\temp\\t1");
+//            General.showOutput("Testing recursive empty dir delete of: " + topDir);
+//            boolean status = removeEmptySubDirs(topDir);
+//            if (status) {
+//                General.showOutput("Succeeded in delete");
+//            } else {
+//                General.showError("Failed in delete");
+//            }
+//        }
+//        if (false) {
+//            File in = new File("test.txt");
+//            General.showOutput("Testing replace in: " + in);
+//            Properties subs = new Properties();
+//            subs.setProperty("WATTOSROOT", "nieuw");
+//            boolean status = replaceMultiInFile(in, subs);
+//            if (status) {
+//                General.showOutput("Done with replace");
+//            } else {
+//                General.showOutput("Failed on replace");
+//            }
+//        }
+//        if (false) {
+//            File dir = new File("M:\\bfiles");
+//            String regexp = "wa.*";
+//            General.showOutput("Reg exp files: " + regexp);
+//            General.showOutput("Dir: " + dir);
+//            if (!dir.isDirectory()) {
+//                General.showError("Given File instance isn't a directory.");
+//                System.exit(1);
+//            }
+//            RegExpFilenameFilter ff = new RegExpFilenameFilter(regexp);
+//            String[] list = dir.list(ff);
+//
+//            General.showOutput("Found files: " + Strings.toString(list));
+//            General.showOutput("Found number of files: " + list.length);
+//        }
+//        if (false) {
+//            Properties p = getEnvVars();
+//            General.showOutput("the current environment settings are : " + Strings.toString(p));
+//        }
+//        if (true) {
+//            General.showOutput("the current system settings are : " + Strings.toString(System.getProperties()));
+//        }
+//        if (false) {
+//            String fn = "http://localhost:8084/NRG/servlet/MRGridServlet?db_username=wattos";
+//            // String fn = "/test/testing.txt.t";
+//            General.showOutput("fn: [" + fn + "]");
+//            General.showOutput("fn: [" + getFilenameBase(fn) + "]");
+//        }
         if (true) {
             File f = new File("S:\\jurgen\\CloneWars\\DOCR1000\\_tmp_unb_\\sql", "entry_main.csv");
             General.showOutput("f : [" + f + "]");
@@ -1559,7 +1559,7 @@ public class InOut {
 
     /**
      * Extracts the filename itself.
-     * 
+     *
      * @param file_name
      *            the file to be analyzed.
      * @return the file name base. E.g.: /tmp/1brv.mr.gz -> 1brv.mr.gz

@@ -31,7 +31,7 @@ public class NMRSTAREntry {
     static final int    MAX_NON_PDB_HITS_PER_DB             = 5;
     static final boolean SELECT_PDB_HITS_BY_ALPHANUMERICAL_SORTING = true;
     static final int MAX_LENGTH_MOL_NAME = 120;
-    
+
     static {
         try {
             starlibj_package_class_SaveFrameNode = Class.forName( StarValidity.pkgName()+".SaveFrameNode");
@@ -43,16 +43,16 @@ public class NMRSTAREntry {
     }
 
     SaveFrameNode t;
-    
+
     /** Creates a new instance of NMRSTAREntry */
     public NMRSTAREntry() {
         General.showError("do not instantiate the NMRSTAREntry Class");
     }
 
-    /** Returns a list of saveframes of specified category 
+    /** Returns a list of saveframes of specified category
      */
     public static VectorCheckType getSaveFramesByCategory( StarNode snInput, String category ) {
-        
+
         VectorCheckType list = snInput.searchForTypeByTagValue( starlibj_package_class_SaveFrameNode,
             NMRSTARDefinitions.SF_CATEGORY_TAG, category );
         if ( list.size() < 1 ) {
@@ -76,27 +76,27 @@ public class NMRSTAREntry {
         return sfn;
     }
 
-    
+
     public static String getAccessionNumber( StarFileNode sfnInput ) {
         SaveFrameNode sfn = getFirstSaveFrameByCategory( sfnInput,
             NMRSTARDefinitions.ENTRY_INFORMATION_VAL );
-        String number_str = getTagValue(sfn, NMRSTARDefinitions.ACCESSION_NUM_VAL );        
+        String number_str = getTagValue(sfn, NMRSTARDefinitions.ACCESSION_NUM_VAL );
         //General.showDebug("found accession number: " + number_str);
         return number_str;
     }
-    
+
     /** Returns just the value of the deepest tag with the given name.
      * Returns null in case of error.
      */
-    public static String getTagValue( StarNode sn, String tagName ) { 
+    public static String getTagValue( StarNode sn, String tagName ) {
         VectorCheckType list = sn.searchByName( tagName );
         if ( list == null || list.size()==0 ) {
             return null;
         }
-        DataItemNode sn_tag = (DataItemNode) list.firstElement();            
+        DataItemNode sn_tag = (DataItemNode) list.firstElement();
         return sn_tag.getValue();
     }
-        
+
     /** Returns a list of polymer sequences. Depending on the option doAll; all or
      *just the proteins sequences will be returned.
      *Returns null if no saveframes with polymers could be found.
@@ -104,13 +104,13 @@ public class NMRSTAREntry {
      *wasn't set.
      */
     public static ArrayList getPolymerSequences( StarFileNode sfnInput, boolean doAll ) {
-        
+
         ArrayList result_list = new ArrayList();
 
         VectorCheckType saveframe_list = sfnInput.searchForTypeByName( starlibj_package_class_SaveFrameNode,
             NMRSTARDefinitions.RESIDUE_SEQUENCE_TAG );
         if ( saveframe_list.size() < 1 ) {
-            General.showWarning("no saveframes with tag: [" + NMRSTARDefinitions.RESIDUE_SEQUENCE_TAG + "] found." );            
+            General.showWarning("no saveframes with tag: [" + NMRSTARDefinitions.RESIDUE_SEQUENCE_TAG + "] found." );
             return null;
         }
 
@@ -119,28 +119,28 @@ public class NMRSTAREntry {
             //General.showDebug("found polymer: " + i);
             // Do specific stuff if the standard "do only proteins" is selected
             SaveFrameNode saveframenode = (SaveFrameNode) saveframe_list.elementAt(i);
-            
-            String mol_class = getTagValue( saveframenode, 
+
+            String mol_class = getTagValue( saveframenode,
                 NMRSTARDefinitions.POLYMER_CLASS_TAG );
             if ( mol_class == null ) {
                 General.showError("failed to find the polymer class." );
                 continue;
             }
-            
-            String mol_name_common = getTagValue( saveframenode, 
+
+            String mol_name_common = getTagValue( saveframenode,
                 NMRSTARDefinitions.MOLECULE_NAME_TAG );
             if ( mol_name_common == null ) {
                 General.showWarning("failed to find the common name for the molecule." );
                 mol_name_common = "";
             }
-            
-            String sequence = getTagValue( saveframenode, 
+
+            String sequence = getTagValue( saveframenode,
                 NMRSTARDefinitions.RESIDUE_SEQUENCE_TAG );
             if ( sequence == null ) {
                 General.showError("failed to find the sequence for the molecule." );
                 continue;
             }
-            
+
             // Get just the saveframe name with the 'save_'
             String saveframe_name = saveframenode.getLabel().substring(5);
             if ( saveframe_name == null ) {
@@ -158,9 +158,9 @@ public class NMRSTAREntry {
             }
 
             // Construct orfs and all
-            Orf orf = new Orf();            
+            Orf orf = new Orf();
             OrfId orf_id = new OrfId();
-            orf.orf_id_list.orfIdList.add( orf_id );            
+            orf.orf_id_list.orfIdList.add( orf_id );
             result_list.add( orf );
 
             // Populate them.
@@ -171,10 +171,10 @@ public class NMRSTAREntry {
         }
         return result_list;
     }
-    
-    
+
+
     public static void movePdbHitsToFront( Table sequence_table ) {
-        
+
         int nrows = sequence_table.sizeRows();
         int position_next_PdbHit = 0;
         for (int r=0; r < nrows; r++) {
@@ -190,12 +190,12 @@ public class NMRSTAREntry {
             }
         }
     }
-    
+
     /** Delete last hits for non-pdb entries. Could be faster if the test isOkHit
      *would be done before splitting the entries.
-     */    
+     */
     public static void deleteSurplus( BlastMatchList bml ) {
-    
+
         StringIntMap db_count = new StringIntMap();
         StringIntMap pdb_count = new StringIntMap();
         for (int i=0;i<bml.match_list.size();) {
@@ -207,7 +207,7 @@ public class NMRSTAREntry {
                 bml.match_list.remove(i);
                 // Don't increase i.
                 continue;
-            }                
+            }
             if ( orfId.orf_db_name.equalsIgnoreCase("PDB") ) {
                 if ( ! pdb_count.containsKey( orfId.orf_db_id )) {
                     pdb_count.addString( orfId.orf_db_id, 0);
@@ -215,7 +215,7 @@ public class NMRSTAREntry {
                 int pdb_hits_count = pdb_count.getInt( orfId.orf_db_id);
                 if ( SELECT_PDB_HITS_BY_ALPHANUMERICAL_SORTING ) {
                     // Keep all.
-//                        General.showDebug("Keeping pdb hit (A):" + i );                        
+//                        General.showDebug("Keeping pdb hit (A):" + i );
                         pdb_count.addString( orfId.orf_db_id, pdb_hits_count+1);
                         i++;
                         continue;
@@ -229,18 +229,18 @@ public class NMRSTAREntry {
                         //General.showDebug("Removed row because same pdb hit already occured for id:" + orfId.orf_db_id);
                         bml.match_list.remove(i);
                         continue;
-                    }                    
+                    }
                 }
             } else {
                 if ( ! db_count.containsKey( orfId.orf_db_name )) {
                     db_count.addString( orfId.orf_db_name, 0 );
                 }
-                int db_hits_count = db_count.getInt( orfId.orf_db_name);                
+                int db_hits_count = db_count.getInt( orfId.orf_db_name);
                 if ( db_hits_count < MAX_NON_PDB_HITS_PER_DB ) {
-                    //General.showDebug("Keeping row although non pdb hit:" + i );                    
+                    //General.showDebug("Keeping row although non pdb hit:" + i );
                     db_count.addString( orfId.orf_db_name, db_hits_count+1);
-                    //General.showDebug("Now have number of non pdb hits for db name: " + orfId.orf_db_name + " : " + 
-                    //  db_count.getInt( orfId.orf_db_name));  
+                    //General.showDebug("Now have number of non pdb hits for db name: " + orfId.orf_db_name + " : " +
+                    //  db_count.getInt( orfId.orf_db_name));
                     i++;
                 } else {
 //                    General.showDebug("Removed row because too many non pdb hits found: " + db_hits_count + " but only allowed: " + MAX_NON_PDB_HITS_PER_DB);
@@ -254,9 +254,9 @@ public class NMRSTAREntry {
 //        General.showDebug("pdb hits                         :\n" + Strings.toString( pdb_count) );
 //        General.showDebug("non-pdb hits                     :\n" + Strings.toString( db_count) );
     }
-        
+
     /** Delete hits to same pdb entry.
-     */    
+     */
     public static void deleteSurplusPdb( BlastMatchList bml ) {
         for (int i=1;i<bml.match_list.size();) {
             BlastMatch bm = (BlastMatch) bml.match_list.get(i);
@@ -266,7 +266,7 @@ public class NMRSTAREntry {
 
 //            General.showDebug("comparing pdb hit:" + orfId.orf_db_name      + ", " + orfId.orf_db_id);
 //            General.showDebug("with      pdb hit:" + orfId_prev.orf_db_name + ", " + orfId_prev.orf_db_id);
-            if ( orfId.orf_db_name.equalsIgnoreCase("PDB") && 
+            if ( orfId.orf_db_name.equalsIgnoreCase("PDB") &&
                  orfId_prev.orf_db_name.equalsIgnoreCase("PDB") &&
                  orfId.orf_db_id.equalsIgnoreCase( orfId_prev.orf_db_id ) ) {
 //                General.showDebug("removed duplicate pdb hit:" + i);
@@ -275,46 +275,46 @@ public class NMRSTAREntry {
             } else {
                 i++;
             }
-        }        
+        }
     }
-        
+
     /** Checks if hit fullfills criteria
      */
     public static boolean isOkHit( BlastMatch bm, int query_orf_length ) {
-                
+
 //        OrfId subject_first_orf_id = (OrfId)  bm.subject_orf_id_list.orfIdList.get(0);
 
         float percentage_match_length_over_query_length     = (100.0f * bm.match_size)        / query_orf_length;
         float percentage_identity                           = (100.0f * bm.number_identities) / bm.match_size;
 
         // Add if they fullfill requirements.
-        if ((percentage_match_length_over_query_length  >= BMRBHomologyUpdate.MIN_PERCENTAGE_MATCH_LENGTH_QUERY_LENGTH) && 
+        if ((percentage_match_length_over_query_length  >= BMRBHomologyUpdate.MIN_PERCENTAGE_MATCH_LENGTH_QUERY_LENGTH) &&
             (percentage_identity                        >= BMRBHomologyUpdate.MIN_PERCENTAGE_IDENTITY)) {
-//            General.showDebug("hit was kept.");          
+//            General.showDebug("hit was kept.");
             return true;
         }
         // Report
-        if ( false ) {
-            General.showDebug("hit was filtered out for: ");
-            General.showDebug("blast_match.match_size                   : " + bm.match_size);
-            General.showDebug("query_orf_length                         : " + query_orf_length);
-            General.showDebug("percentage_match_length_over_query_length: " + percentage_match_length_over_query_length);
-            General.showDebug("percentage_identity                      : " + percentage_identity);
-        }
+//        if ( false ) {
+//            General.showDebug("hit was filtered out for: ");
+//            General.showDebug("blast_match.match_size                   : " + bm.match_size);
+//            General.showDebug("query_orf_length                         : " + query_orf_length);
+//            General.showDebug("percentage_match_length_over_query_length: " + percentage_match_length_over_query_length);
+//            General.showDebug("percentage_identity                      : " + percentage_identity);
+//        }
         return false;
     }
-    
-    
+
+
     /** Translate hits in gi to original db and splits the matches on multiple subject
      *ids. Maintain the order in which they were listed in the blast output.
      */
     public static boolean modifyBlastMatchForBMRB( BlastMatchList blastmatch_list ) {
-        
-        
-        
+
+
+
         /** reformat the subject orf id
          */
-        for (int i=0; i < blastmatch_list.match_list.size(); i++) {            
+        for (int i=0; i < blastmatch_list.match_list.size(); i++) {
             BlastMatch bm = (BlastMatch) blastmatch_list.match_list.get(i);
             for (int j=0;j<bm.subject_orf_id_list.orfIdList.size();j++) {
                 OrfId orfId = (OrfId) bm.subject_orf_id_list.orfIdList.get(j);
@@ -322,7 +322,7 @@ public class NMRSTAREntry {
                 if ( orfId.orf_db_name.equals("bmrb")) {
                      orfId.orf_db_name = orfId.orf_db_name.toUpperCase();
                 }
-                
+
                 if ( orfId.orf_db_name.equals("gi") ) {
                     boolean status = reformatOrfIdForBMRB( orfId );
                     if ( ! status ) {
@@ -333,12 +333,12 @@ public class NMRSTAREntry {
             }
         }
         /** split for multiple subject orf ids so each match has only 1 subject
-         *orf id. 
+         *orf id.
          */
-        for (int i=0; i < blastmatch_list.match_list.size(); i++) {            
+        for (int i=0; i < blastmatch_list.match_list.size(); i++) {
             BlastMatch bm = (BlastMatch) blastmatch_list.match_list.get(i);
             for (int j=(bm.subject_orf_id_list.orfIdList.size()-1);  j>0; ) {
-                // Create a new blastmatch and add it to the list. This is rather wastefull but makes 
+                // Create a new blastmatch and add it to the list. This is rather wastefull but makes
                 // for short simple code.
                 BlastMatch bm_new = (BlastMatch) Objects.deepCopy( bm );
                 // Remove all and then add j. This could be speed improved.
@@ -354,18 +354,18 @@ public class NMRSTAREntry {
         return true;
     }
 
-    /** Translate 
+    /** Translate
      */
-    public static boolean reformatOrfIdForBMRB( OrfId orfId  ) {        
-        
+    public static boolean reformatOrfIdForBMRB( OrfId orfId  ) {
+
         // Translate the database name always.
         orfId.orf_db_name = DatabaseDefinitions.getBmrbFromNrDb( orfId.orf_db_name );
-        
+
         // Only do the hits for the nr database.
         if ( ! orfId.orf_db_name.equals(("GI") )) {
             return true;
         }
-        
+
         String[] parts = orfId.molecule_name.split("\\|");
         if ( parts.length < 3 ) {
             General.showError("in reformatOrfIdForBMRB.");
@@ -375,46 +375,46 @@ public class NMRSTAREntry {
         }
         orfId.orf_db_name   = parts[0];
         orfId.orf_db_id     = parts[1];
-        orfId.orf_db_subid  = "";        
+        orfId.orf_db_subid  = "";
         orfId.molecule_name = parts[2].trim();
-                
+
         if ( ( orfId.orf_db_id.length() == 0 ) &&
              ( orfId.orf_db_name.equalsIgnoreCase("PIR") ||
                orfId.orf_db_name.equalsIgnoreCase("PRF") ) ) {
             orfId.orf_db_id = Strings.getFirstWord( orfId.molecule_name );
             orfId.molecule_name = Strings.stripFirstWord( orfId.molecule_name );
-        }        
-        
+        }
+
         orfId.toBmrbStyle();
         // No time to investigate why the trailing gi remains...
         //if ( orfId.molecule_name.endsWith("gi") ) {
         //    orfId.molecule_name = orfId.molecule_name.substring(0,orfId.molecule_name.length()-2).trim();
         //}
-        
+
         return true;
     }
-    
-    /** Translate 
+
+    /** Translate
      */
-    public static boolean reformatOrfIdForBMRB( OrfIdList orfIdList  ) {        
+    public static boolean reformatOrfIdForBMRB( OrfIdList orfIdList  ) {
         for (int i=0;i<orfIdList.orfIdList.size();i++) {
             OrfId orfId = (OrfId) orfIdList.orfIdList.get(i);
             boolean status = reformatOrfIdForBMRB( orfId );
             if ( ! status ) {
                 return false;
             }
-        }        
+        }
         return true;
     }
-    
+
     /** Sets the required info in the starfilenode depending on input. Return false
      *if the set failed.
      */
-    public static boolean setSequenceHomologyData( StarFileNode sfnInput, 
-        String bmrb_id, String saveframe_name, 
+    public static boolean setSequenceHomologyData( StarFileNode sfnInput,
+        String bmrb_id, String saveframe_name,
         Table sequence_table, BlastMatchList blastmatch_list ) {
-        
-            
+
+
         //General.showDebug("Table now: [" + blastmatch_list.toString() + "]");
         // For hits in gi reformat the info.
         modifyBlastMatchForBMRB( blastmatch_list );
@@ -423,7 +423,7 @@ public class NMRSTAREntry {
         // Delete surplus of rows.
         deleteSurplus( blastmatch_list );
         //General.showDebug("Truncated to: [" + blastmatch_list.toString() + "]");
-        
+
         // Sort the list for BMRB use according to code in BlastMatch.compareTo method.
         Collections.sort( blastmatch_list.match_list );
         //General.showDebug("Sorted to: [" + blastmatch_list.toString() + "]");
@@ -433,7 +433,7 @@ public class NMRSTAREntry {
             deleteSurplusPdb( blastmatch_list );
 //            General.showDebug("PDB Tr.to: [" + blastmatch_list.toString() + "]");
         }
-        
+
         Table sequence_table_new = createNMR_STAR_SequenceHomologyTableNative( blastmatch_list );
         if ( sequence_table_new == null ) {
             General.showError("For BMRB id: " + bmrb_id);
@@ -441,7 +441,7 @@ public class NMRSTAREntry {
             return false;
         }
 //        General.showDebug("Created table: [" + sequence_table_new + "]");
-        
+
 
         // Check if an update needs to be done.
         boolean doUpdate = true;
@@ -464,17 +464,17 @@ public class NMRSTAREntry {
             General.showError("For BMRB id: " + bmrb_id);
             General.showError("no saveframes with name: [" + saveframe_name + "] found." );
             return false;
-        }            
+        }
         SaveFrameNode saveframenode = (SaveFrameNode) saveframe_list.elementAt(0);
 
-        // Store the 2 pieces of info and remove the 3 pieces of info from the saveframe.        
+        // Store the 2 pieces of info and remove the 3 pieces of info from the saveframe.
         // Query date
         VectorCheckType query_date_sn_list = saveframenode.searchByName( NMRSTARDefinitions.HOMOLOGY_QUERY_DATE );
 //        String query_date_value = null;
         if ( query_date_sn_list.size() < 1 ) {
             General.showDebug("For BMRB id: " + bmrb_id);
             General.showDebug("no tag with name: [" + NMRSTARDefinitions.HOMOLOGY_QUERY_DATE + "] found." );
-        } else { 
+        } else {
             for (int i=0;i<query_date_sn_list.size();i++) {
                 if ( i > 0 ) {
                     General.showWarning("For BMRB id: " + bmrb_id);
@@ -497,7 +497,7 @@ public class NMRSTAREntry {
             rev_date_value = rev_date_sn.getValue();
             saveframenode.removeElement( rev_date_sn );
         }
-       
+
         // Loop
         VectorCheckType dataloopnode_list = saveframenode.searchForTypeByName( starlibj_package_class_DataLoopNode,
             NMRSTARDefinitions.HOMOLOGY_DB_NAME );
@@ -505,10 +505,10 @@ public class NMRSTAREntry {
         if ( dataloopnode_list.size() > 0 ) {
             saveframenode.removeElement( dataloopnode_list.elementAt(0) );
         }
-                
+
         // Insert query date
         DataItemNode query_date_sn = new DataItemNode( NMRSTARDefinitions.HOMOLOGY_QUERY_DATE, Dates.getDateBMRBStyle() );
-        saveframenode.addElement( query_date_sn ); 
+        saveframenode.addElement( query_date_sn );
 
         // Insert rev date
         if ( doUpdate || ( rev_date_value == null ) ) {
@@ -516,24 +516,24 @@ public class NMRSTAREntry {
         }
         DataItemNode rev_date_sn = new DataItemNode( NMRSTARDefinitions.HOMOLOGY_REV_DATE, rev_date_value);
         saveframenode.addElement( rev_date_sn );
-        
+
         //Then insert the loop if needed. Always deleting old table!
         if ( sequence_table_new.sizeRows() > 0 ) {
             //General.showDebug("New table to be inserted:\n" + sequence_table_new);
-            DataLoopNode dataloopnode = NmrStar.toSTAR( sequence_table_new ); 
-            saveframenode.addElement( dataloopnode );            
+            DataLoopNode dataloopnode = NmrStar.toSTAR( sequence_table_new );
+            saveframenode.addElement( dataloopnode );
         } else {
             //General.showWarning("New table to be inserted is empty:\n" + sequence_table_new);
         }
         return true;
     }
-        
+
     /** Returns a table with the matches found. Returns empty table if
      *none where found for the given saveframe name. Returns null to indicate an error.
      */
-    public static Table getSequenceHomologyData( StarFileNode sfnInput,    
+    public static Table getSequenceHomologyData( StarFileNode sfnInput,
         String bmrb_id, String saveframe_name ) {
-        
+
         VectorCheckType saveframe_list = sfnInput.searchByName( "save_" + saveframe_name );
         if ( saveframe_list.size() < 1 ) {
             General.showError("For BMRB id: " + bmrb_id);
@@ -547,12 +547,12 @@ public class NMRSTAREntry {
         }
 
         /** Create empty table with correct labels and all.
-         */        
+         */
         Table table = NMRSTARDefinitions.createHomologySequenceTable();
-        
+
         /** Get the info for the table for real
          */
-        SaveFrameNode saveframenode = (SaveFrameNode) saveframe_list.elementAt(0);        
+        SaveFrameNode saveframenode = (SaveFrameNode) saveframe_list.elementAt(0);
         VectorCheckType dataloopnode_list = saveframenode.searchForTypeByName( starlibj_package_class_DataLoopNode,
             NMRSTARDefinitions.HOMOLOGY_DB_NAME );
         if ( dataloopnode_list.size() < 1 ) {
@@ -569,8 +569,8 @@ public class NMRSTAREntry {
         DataLoopNode        sequence_homology_loop  = (DataLoopNode) dataloopnode_list.elementAt(0);
 //        LoopNameListNode    lnln                    = (LoopNameListNode) sequence_homology_loop.getNames().elementAt(0);
         LoopTableNode       ltn                     = sequence_homology_loop.getVals();
-        
-        int nrows = ltn.size();        
+
+        int nrows = ltn.size();
         int ncols = ltn.elementAt(0).size();
         if ( ncols != table.sizeColumns() ) {
             General.showError("For BMRB id: " + bmrb_id);
@@ -586,32 +586,32 @@ public class NMRSTAREntry {
                 table.setValue(r,c, ltn.elementAt(r).elementAt(c).getValue());
             }
         }
-        
-        return table;        
+
+        return table;
     }
 
-    /** The info as in NMR-STAR v2.1.1; 
+    /** The info as in NMR-STAR v2.1.1;
      *The routine also filters according to BMRB standards.
      */
     public static Table createNMR_STAR_SequenceHomologyTableNative( BlastMatchList blastmatch_list ) {
 
         String[] label = { NMRSTARDefinitions.HOMOLOGY_DB_NAME,
-                NMRSTARDefinitions.HOMOLOGY_DB_CODE,                
-                NMRSTARDefinitions.HOMOLOGY_DB_MOL_NAME,            
-                NMRSTARDefinitions.HOMOLOGY_SEQUENCE_PERCENTAGE,   
+                NMRSTARDefinitions.HOMOLOGY_DB_CODE,
+                NMRSTARDefinitions.HOMOLOGY_DB_MOL_NAME,
+                NMRSTARDefinitions.HOMOLOGY_SEQUENCE_PERCENTAGE,
                 NMRSTARDefinitions.HOMOLOGY_SEQUENCE_SUBJECT_LENGTH,
-                NMRSTARDefinitions.HOMOLOGY_SEQUENCE_IDENTITY,      
-                NMRSTARDefinitions.HOMOLOGY_SEQUENCE_POSIVTIVE,     
-                NMRSTARDefinitions.HOMOLOGY_SEQUENCE_EVALUE };          
+                NMRSTARDefinitions.HOMOLOGY_SEQUENCE_IDENTITY,
+                NMRSTARDefinitions.HOMOLOGY_SEQUENCE_POSIVTIVE,
+                NMRSTARDefinitions.HOMOLOGY_SEQUENCE_EVALUE };
         int nrows = blastmatch_list.match_list.size();
         int ncols = 8;
         Table t = new Table( 0, ncols);
         for ( int c=0;c<ncols;c++ ) {
             t.setLabel(c, label[c].substring(1));
         }
-        
+
 //        OrfId orf_id = (OrfId) blastmatch_list.query_orf_id_list.orfIdList.get(0);
-        
+
         for ( int r=0;r<nrows;r++ ) {
 //            General.showDebug("Blast now here index: " + r);
             BlastMatch blast_match = (BlastMatch) blastmatch_list.match_list.get(r);
@@ -620,8 +620,8 @@ public class NMRSTAREntry {
                 return null;
             }
             OrfId subject_first_orf_id = (OrfId)  blast_match.subject_orf_id_list.orfIdList.get(0);
-                                
-            String queryToSubmittedPercentage = calc_QueryToSubmittedPercentage(                
+
+            String queryToSubmittedPercentage = calc_QueryToSubmittedPercentage(
                 blastmatch_list.query_orf_length, blast_match.subject_orf_length );
             String identity = calc_Percentage(blast_match.number_identities, blast_match.match_size);
             String positive = calc_Percentage(blast_match.number_positives,  blast_match.match_size);
@@ -643,21 +643,21 @@ public class NMRSTAREntry {
             t.setValue(row_id,4, Integer.toString( blast_match.subject_orf_length ));
             t.setValue(row_id,5, identity);
             t.setValue(row_id,6, positive);
-            t.setValue(row_id,7, expect);                
-        }                
+            t.setValue(row_id,7, expect);
+        }
         return t;
     }
-    
-    
+
+
     public static String calc_QueryToSubmittedPercentage( int query_length, int subject_length ) {
         if ( subject_length == 0 ) {
             return "NaN";
         }
         Parameters p = new Parameters(); // Printf parameters
-        p.add( 100.0 * query_length / subject_length );        
+        p.add( 100.0 * query_length / subject_length );
         return Format.sprintf("%.2f", p);
     }
-    
+
     public static String calc_Percentage( int teller, int denominator ) {
         if ( denominator == 0 ) {
             return "NaN";
@@ -673,7 +673,7 @@ public class NMRSTAREntry {
     public static String calc_Expect( double expect ) {
         String str = null;
         Parameters p = new Parameters(); // Printf parameters
-        p.add( expect );                
+        p.add( expect );
         /** Excerpt from blast source code:
 
 /*---------------------------------------------------------------------------
@@ -695,28 +695,28 @@ Boolean print_score_eonly(FloatHi evalue, CharPtr buf)
     return TRUE;
   }
   return FALSE;
-}         
+}
          */
         if ( expect < 1.0e-180 ) {
             str = "0.0";
-        } else if (expect< 1.0e-99 ) { 
+        } else if (expect< 1.0e-99 ) {
             str = Format.sprintf("%2.0e", p);
-        } else if (expect< 0.0009 ) { 
+        } else if (expect< 0.0009 ) {
             str = Format.sprintf("%3.0e", p);
-        } else if (expect< 0.1 ) { 
+        } else if (expect< 0.1 ) {
             str = Format.sprintf("%4.3f", p);
-        } else if (expect< 1.0 ) { 
+        } else if (expect< 1.0 ) {
             str = Format.sprintf("%3.2f", p);
-        } else if (expect< 10.0 ) { 
+        } else if (expect< 10.0 ) {
             str = Format.sprintf("%2.1f", p);
-        } else { 
+        } else {
             str = Format.sprintf("%5.0f", p);
         }
         // For the cases where the exponent is included, we prefere 9e-28 over 9.0E-28. It's actually
-        // a stray from the normal sprintf implementation 
+        // a stray from the normal sprintf implementation
         // This can easily be speeded up by replacing the regular expression by a find& replace manually.
         str = str.replaceFirst("\\.e", "e");
         return str.trim();
     }
-    
+
 }

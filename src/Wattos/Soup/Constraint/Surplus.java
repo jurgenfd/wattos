@@ -24,25 +24,25 @@ import cern.colt.list.*;
 public class Surplus {
 
     /** Default percentage (currently 5 %) to allow a couple more constraint not to be redundant.
-     *For entry 1brv this brings the number or intra residual restraints from 
+     *For entry 1brv this brings the number or intra residual restraints from
      *26 (0%) to 18 (5%) out of 74.
      */
-    public static final float THRESHOLD_REDUNDANCY_DEFAULT = 5f; 
-     
+    public static final float THRESHOLD_REDUNDANCY_DEFAULT = 5f;
+
     UserInterface ui;
     DistConstr dc;
     DistConstrList dcList;
     Gumbo gumbo;
     PrintWriter printWriter = null;
-        
+
     /** convenience variables that are arrays in distance constraints */
     public float[] upp_theo;
     public float[] low_theo;
 
-    public String tagNameSurplusSf_category;    
-//    public String tagNameSurplusEntry_ID;    
-//    public String tagNameSurplusDC_surplus_ID;    
-    public String tagNameSurplusRedundancy_threshold_pct;    
+    public String tagNameSurplusSf_category;
+//    public String tagNameSurplusEntry_ID;
+//    public String tagNameSurplusDC_surplus_ID;
+    public String tagNameSurplusRedundancy_threshold_pct;
     public String tagNameSurplusUpdate_original_restraints;
     public String tagNameSurplusOnly_filter_fixed;
     public String tagNameSurplusAveraging_method;
@@ -57,14 +57,14 @@ public class Surplus {
     public String tagNameSurplusRestraint_nonsurplus_count;
     public String tagNameSurplusDetails;
     public StarDictionary starDict;
-    
+
     public static String explanation = null;
     static {
         int i=1;
         explanation = "\n" +
                 "A detailed methodology description is available at:\n" +
-                Globals.wattos_home_page+"/doc/Wattos/Soup/Constraint/dc_surplus.html\n" +                
-                "\n" +                
+                Globals.wattos_home_page+"/doc/Wattos/Soup/Constraint/dc_surplus.html\n" +
+                "\n" +
                 "Description of the tags in this list:\n" +
                 "*  "+i+++" * Administrative tag\n" +
                 "*  "+i+++" * Administrative tag\n" +
@@ -84,15 +84,15 @@ public class Surplus {
                 "*  "+i+++" * Redundant intraresidual restraints.               Set R\n" +
                 "*  "+i+++" * This tag";
     }
-    
+
     /** Creates a new instance of Surplus */
     public Surplus(UserInterface ui) {
         this.ui = ui;
-        dc = ui.constr.dc;   
-        dcList = ui.constr.dcList;   
+        dc = ui.constr.dc;
+        dcList = ui.constr.dcList;
         gumbo = ui.gumbo;
         starDict = ui.wattosLib.starDictionary;
-        
+
         if ( ! dc.mainRelation.containsColumn( DistConstr.DEFAULT_UPP_THEO ) ) {
             if ( ! dc.mainRelation.insertColumn(-1, DistConstr.DEFAULT_UPP_THEO, RelationSet.DATA_TYPE_FLOAT, null)) {
                 General.showError("Failed to insert new column into dc for upper limits theo");
@@ -104,11 +104,11 @@ public class Surplus {
             }
         }
         if (!resetConvenienceVariables()) {
-            General.showError("Failed to resetConvenienceVariables; proceed at your own risk.");            
+            General.showError("Failed to resetConvenienceVariables; proceed at your own risk.");
         }
     }
-    
-    
+
+
     /** Will mark a selection of double constraints like: HA-HA and many other types.
      * See documentation in dc_surplus.html
      */
@@ -117,19 +117,19 @@ public class Surplus {
             return true;
         }
         BitSet stillTodo = (BitSet) todo.clone();
-        
+
         if ( ! setSelectionDoubles_Type_1(stillTodo, verbosity) ) {
             General.showError("Failed to set doubles of type 1");
             return false;
         }
         stillTodo.xor( dc.mainRelation.getColumnBit( "DSet" ) );
-        
+
         if ( ! setSelectionDoubles_Type_2(stillTodo, verbosity) ) {
             General.showError("Failed to set doubles of type 2");
             return false;
         }
         stillTodo.xor( dc.mainRelation.getColumnBit( "DSet" ) );
-        
+
 //        General.showWarning("Skipping setSelectionDoubles_Type_3");
         if ( ! setSelectionDoubles_Type_3(stillTodo, verbosity) ) {
             General.showError("Failed to set doubles of type 3");
@@ -138,12 +138,12 @@ public class Surplus {
         stillTodo.xor( dc.mainRelation.getColumnBit( "DSet" ) );
         return true;
     }
-    
+
     /** Will return a selection of double constraints like:
      * HA-HA. Note that also restraints like HA,HB2-HA are considered double.
      */
     private boolean setSelectionDoubles_Type_1(BitSet todo, boolean verbosity) {
-        
+
         if ( todo.cardinality() == 0 ) {
             return true;
         }
@@ -152,11 +152,11 @@ public class Surplus {
             General.showDebug("Getting a selection of constraints that are double with the remaining" );
         }
         BitSet DSet =  dc.mainRelation.getColumnBit( "DSet" );
-        
+
         IndexSortedInt indexMembAtom = (IndexSortedInt) dc.distConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_MEMB_ID,                                    Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexNodeMemb = (IndexSortedInt) dc.distConstrMemb.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_NODE_ID,                                    Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexMainNode = (IndexSortedInt) dc.distConstrNode.getIndex(Constr.DEFAULT_ATTRIBUTE_SET_DC[ RelationSet.RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_SORTED);
-        
+
         if ( indexMembAtom == null ||
             indexNodeMemb == null ||
             indexMainNode == null ) {
@@ -193,20 +193,20 @@ public class Surplus {
                 int currentDCMembId  = dcMembs.get(0);
                 int currentDCMembIdJ = dcMembs.get(1);
                 //General.showDebug("Working from member with RID: " + currentDCMembId);
-                
+
                 IntArrayList atomRids = dc.distConstrAtom.getValueListBySortedIntIndex(
                     indexMembAtom,
                     currentDCMembId,
                     Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[     RelationSet.RELATION_ID_COLUMN_NAME ],
                     null );
-                
+
                 //General.showDebug("Found the following rids of atoms in member: " + PrimitiveArray.toString( atomRids ));
                 if ( atomRids.size() < 1 ) {
-                    General.showError("Didn't find a single atom for member I in constraint: " + dc.toString( currentDCId, false, true ));                    
+                    General.showError("Didn't find a single atom for member I in constraint: " + dc.toString( currentDCId, false, true ));
                     return false;
                 }
                 //General.showDebug("Working from member with RID: " + currentDCMembIdJ);
-                
+
                 // Very important optimalization to use a cached index even though the relation changes
                 // the index is only supposed to pick up the old/unchanged dc atom record and it will!
                 // Speeds up by a factor of 2 overall! If not used the index will be regenerated for each
@@ -218,7 +218,7 @@ public class Surplus {
                 null );
                 //General.showDebug("Found the following rids of atoms in member J: " + PrimitiveArray.toString( atomRidsJ ));
                 if ( atomRidsJ.size() < 1 ) {
-                    General.showError("Didn't find a single atom for member J in constraint: " + dc.toString( currentDCId, false, true ));                    
+                    General.showError("Didn't find a single atom for member J in constraint: " + dc.toString( currentDCId, false, true ));
                     return false;
                 }
                 if ( PrimitiveArray.hasIntersection(atomRids, atomRidsJ) ) {
@@ -238,7 +238,7 @@ public class Surplus {
         } // end of loop per constraint
         return true;
     }
-    
+
     /** Will note and simplify double constraints.
      * In different nodes of the same constraint.
      * Example:
@@ -263,7 +263,7 @@ public class Surplus {
         }
 //        boolean constraintToBeSkipped = false;
         IntArrayList dcNodesToBeRemoved = new IntArrayList( todo.length()*3 ); // 3 is a conservative estimate, might be more.
-        
+
         //General.showDebug("Starting routine: setSelectionDoubles_Type_2");
         IndexSortedInt indexMembAtom = (IndexSortedInt) dc.distConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_MEMB_ID,                                    Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexNodeMemb = (IndexSortedInt) dc.distConstrMemb.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_NODE_ID,                                    Index.INDEX_TYPE_SORTED);
@@ -280,14 +280,14 @@ public class Surplus {
             Integer currentDCIdInteger = new Integer(currentDCId);
 //            int currentDCListId = dc.dcListIdMain[   currentDCId ];
 //            int currentEntryId  = dc.entryIdMain[    currentDCId ];
-            
+
             IntArrayList dcNodes = (IntArrayList) indexMainNode.getRidList(  currentDCIdInteger, Index.LIST_TYPE_INT_ARRAY_LIST, null);
             ArrayList contributions = dc.getContributions(currentDCId, indexMembAtom, indexNodeMemb, indexMainNode, false);
             if ( contributions == null ) {
                 General.showCodeBug("getContributions failed in setSelectionDoubles_Type_2");
                 return false;
             }
-            
+
             DistConstr.showContributions( contributions );
             //General.showDebug("Doing rewrite to standardized and compact form of contributions");
             DCContributionMatrix dCContributionMatrix = new DCContributionMatrix( contributions, gumbo );
@@ -304,7 +304,7 @@ public class Surplus {
             }
             dcNodesToBeRemoved.addAllOf( dcNodes );
         } // end of loop per constraint
-        
+
         // Remove old nodes by the bunch so we save time; mainly because index doesn't need to be regenerated for each constraints.
         int dcNodeSizeOld = dc.distConstrNode.sizeRows;
         if ( ! dc.distConstrNode.removeRowsCascading(dcNodesToBeRemoved, false)) {
@@ -318,8 +318,8 @@ public class Surplus {
         //General.showDebug("Cascading remove of rows numbered:: " + (dcNodeSizeOld - distConstrNode.sizeRows) );
         return true;
     }
-    
-    
+
+
     /** Look for identical constraints and retain only the tightest of bounds
      * Will combine a constraint HA-HB with c_low, c_high (see definitions in dc_surplus.html)
      * of 3, 5 Ang. with a constraint HA-HB with c_low, c_high of 4, 6 to a constraint having the tightest bounds
@@ -327,14 +327,14 @@ public class Surplus {
      * Will not combine doubles that aren't exact matches on the atoms involved.
      *
      * A bug in the design of the algorithm is that it will combine restraints:
-     * (HA,HX)-HB and HA-(HB,HX); so it doesn't matter where in the restraint 
+     * (HA,HX)-HB and HA-(HB,HX); so it doesn't matter where in the restraint
      * the atoms are located.
      * Method is private because it assumes the constraints are already 'sorted'.
      * Method marks the doubles in the bitset DSet.
      * Method will 'reorder' the constraints because they might not be when going into the method.
      */
     private boolean setSelectionDoubles_Type_3(BitSet todo, boolean verbosity) {
-        
+
         if ( todo.cardinality() == 0 ) {
             return true;
         }
@@ -345,16 +345,16 @@ public class Surplus {
         if ( ! resetConvenienceVariables()) {
             General.showError("Failed to resetConvenienceVariables in setSelectionDoubles_Type_3.");
             return false;
-        }           
-            
+        }
+
         int countRedundant = 0;
-        
+
         BitSet DSet =  dc.mainRelation.getColumnBit( "DSet" );
         if ( DSet == null ) {
             General.showError("Failed to get DSet column on the distance constraints.");
             return false;
         }
-       
+
         int[] orderMap = dc.mainRelation.getRowOrderMap( Relation.DEFAULT_ATTRIBUTE_ORDER_ID, todo );
         if ( orderMap == null ) {
             General.showError("Failed to get the row order sorted out; so giving up on setSelectionDoubles_Type_3.");
@@ -365,7 +365,7 @@ public class Surplus {
             return false;
         }
 //        General.showDebug("*** Row order map on constraints is: " + PrimitiveArray.toString( orderMap ));
-        
+
         // Go through the ordered constraints and only for those that have the same atoms collapse
         // the constraints by marking the encountered constraint as double and using it's
         // bound(s) if they're more restrictive.
@@ -390,21 +390,21 @@ public class Surplus {
             if ( compare == 0 ) {
                 if ( DSet.get( dcRid ) ) {
                     General.showError("Constraint was already set as redundant before this routine: " + dcRid );
-                    return false;                    
+                    return false;
                 }
 //                General.showDebug("Collapsing restraints together (B): " + dcRid + " with previous (A): " + dcRidPrev);
 //                General.showDebug(dc.toString(dcRid));
-//                General.showDebug(dc.toString(dcRidPrev));                
+//                General.showDebug(dc.toString(dcRidPrev));
                 DSet.set( dcRid ); // Mark as redundant.
                 // Update the previous constraint with the most restrictive bound if needed.
                 // The target will be nilled if it's out of bounds.
-                float lowBound = DistConstr.getStrictLowBound( dc.lowBound[ dcFirstNonLogicalNodeRidPrev ], 
+                float lowBound = DistConstr.getStrictLowBound( dc.lowBound[ dcFirstNonLogicalNodeRidPrev ],
                                                        dc.lowBound[ dcFirstNonLogicalNodeRid     ] );
-                float uppBound = DistConstr.getStrictUppBound( dc.uppBound[ dcFirstNonLogicalNodeRidPrev ], 
+                float uppBound = DistConstr.getStrictUppBound( dc.uppBound[ dcFirstNonLogicalNodeRidPrev ],
                                                        dc.uppBound[ dcFirstNonLogicalNodeRid     ] );
                 float target = dc.target[dcFirstNonLogicalNodeRidPrev];
-                
-                if ( (target < lowBound) || 
+
+                if ( (target < lowBound) ||
                      (target > uppBound) ) {
                     target = Defs.NULL_FLOAT;
                 }
@@ -418,39 +418,39 @@ public class Surplus {
                 countRedundant++;
             } else { // end of identity found.
                 dcRidPrev = dcRid;
-                dcNonLogicalNodeSetPrev      = dcNonLogicalNodeSet;  
+                dcNonLogicalNodeSetPrev      = dcNonLogicalNodeSet;
                 dcFirstNonLogicalNodeRidPrev = dcFirstNonLogicalNodeRid;
             }
         }
         General.showDebug("Found redundant in setSelectionDoubles_Type_3: " + countRedundant );
         return true;
     }
-    
+
     /** Will mark a selection of constraints that are impossible OR fixed OR redundant with the molecular topology.
      * See documentation.
      * Skips constraints for which not all atoms are known.
      *If updateOriginal is set then the redundant bounds will be reset to absent.
      */
     private boolean setSelectionImpFixRed(
-            BitSet todo, 
+            BitSet todo,
             float thresholdRedundancy,
-            boolean onlyFilterFixed, 
+            boolean onlyFilterFixed,
             int avg_method,
-            int numberMonomers,            
-            boolean verbosity, 
+            int numberMonomers,
+            boolean verbosity,
             boolean updateOriginal) {
-        
+
         General.showDebug("Now in setSelectionImpFixRed");
-        
+
         if ( todo.cardinality() == 0 ) {
             return true;
         }
 //        boolean constraintToBeSkipped;
-        
+
         BitSet ISet = dc.mainRelation.getColumnBit( "ISet" );
         BitSet FSet = dc.mainRelation.getColumnBit( "FSet" );
         BitSet RSet = dc.mainRelation.getColumnBit( "RSet" );
-        
+
         // Split up the distances per entry as we will use a different theoretical
         // maximum distance for each.
         String columnLabelEntry = Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[    RelationSet.RELATION_ID_COLUMN_NAME ];
@@ -460,14 +460,14 @@ public class Surplus {
             General.showError("Failed to get any a non-empty set of unique entries for the constraints to do");
             return false;
         }
-        
+
         IndexSortedInt indexEntryMain  = (IndexSortedInt)             dc.mainRelation.getIndex(columnLabelEntry, Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexEntryModel = (IndexSortedInt) gumbo.model.mainRelation.getIndex(columnLabelEntry, Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexModelAtom  = (IndexSortedInt)  gumbo.atom.mainRelation.getIndex(columnLabelModel, Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexMembAtom   = (IndexSortedInt) dc.distConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_MEMB_ID,                                    Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexNodeMemb   = (IndexSortedInt) dc.distConstrMemb.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_NODE_ID,                                    Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexMainNode   = (IndexSortedInt) dc.distConstrNode.getIndex(Constr.DEFAULT_ATTRIBUTE_SET_DC[ RelationSet.RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_SORTED);
-        
+
         if ( indexEntryMain == null ||
         indexEntryModel == null ||
         indexModelAtom == null ||
@@ -477,7 +477,7 @@ public class Surplus {
             General.showCodeBug("Failed to get all indexes.");
             return false;
         }
-        
+
         /** Usually this loop will only execute once */
         for ( int uniqueEntryDcRid = uniqueEntryDcRidSet.nextSetBit(0); uniqueEntryDcRid>=0; uniqueEntryDcRid = uniqueEntryDcRidSet.nextSetBit( uniqueEntryDcRid + 1)) {
             int currentEntryRid = dc.entryIdMain[ uniqueEntryDcRid ];
@@ -492,7 +492,7 @@ public class Surplus {
                 General.showError("Failed to get a non-empty set of unique distance constraints in 1 entry after doing -AND- with the todo set.");
                 return false;
             }
-            
+
             /** Get an estimate for the largest possible distance within one model.
              * This could be wrong in pathological cases like a misfolded/collapsed model
              * but if the model is somewhat reasonable this gives a nice upper limit estimate.
@@ -519,7 +519,7 @@ public class Surplus {
                 }
             }
 //            General.showDebug("Using an estimated maximum diameter of the model of: " + diameter );
-            
+
             // FOR EACH CONSTRAINT in ENTRY
             boolean atomFound = true; // signals at least one atom could not be found when 'false'
             for (int currentDCId = dcConstrTodo.nextSetBit(0);currentDCId>=0;currentDCId = dcConstrTodo.nextSetBit(currentDCId+1)) {
@@ -527,12 +527,12 @@ public class Surplus {
 //                General.showDebug(dc.toString(currentDCId));
                 Integer currentDCIdInteger = new Integer(currentDCId);
 //                int currentDCListId= dc.dcListIdMain[    currentDCId ];
-               
+
                 if ( Defs.isNull( avg_method ) ) {
                     General.showError("No averaging method set; assuming default averaging method and monomer count: " + DistConstrList.DEFAULT_AVERAGING_METHOD_NAMES[ DistConstrList.DEFAULT_AVERAGING_METHOD ]);
                     return false;
                 }
-                
+
                 IntArrayList dcNodes = (IntArrayList) indexMainNode.getRidList(  currentDCIdInteger, Index.LIST_TYPE_INT_ARRAY_LIST, null);
                 if ( dcNodes == null || dcNodes.size() < 1 ) {
                     General.showError("Failed to get a list of dc nodes.");
@@ -543,7 +543,7 @@ public class Surplus {
                 ArrayList atomsInvolved = new ArrayList();
                 // FOR EACH NODE
                 for ( int currentDCNodeBatchId=0;currentDCNodeBatchId<dcNodesSize; currentDCNodeBatchId++) {
-                    int currentDCNodeId = dcNodes.getQuick( currentDCNodeBatchId ); 
+                    int currentDCNodeId = dcNodes.getQuick( currentDCNodeBatchId );
                     int logOp = dc.logicalOp[currentDCNodeId];
                     if ( ! Defs.isNull( logOp ) ) {
                         if ( logOp != DistConstr.DEFAULT_LOGICAL_OPERATION_ID_OR ) {
@@ -560,7 +560,7 @@ public class Surplus {
                         return false;
                     }
                     //General.showDebug("Found the following rids of members in constraint node (" + currentDCNodeId + "): " + PrimitiveArray.toString( dcMembs ));
-                    
+
                     IntArrayList dcAtomsA = (IntArrayList) indexMembAtom.getRidList(  new Integer(dcMembs.get(0)),
                     Index.LIST_TYPE_INT_ARRAY_LIST, null);
                     IntArrayList dcAtomsB = (IntArrayList) indexMembAtom.getRidList(  new Integer(dcMembs.get(1)),
@@ -609,7 +609,7 @@ public class Surplus {
                     General.showWarning("Failed to find all atoms in constraint: " + currentDCId + "That should have been recorded before. Skipping constraint.");
                     continue; // continue with other constraints.
                 }
-                
+
                 float lowTheo = Defs.NULL_FLOAT;
                 float uppTheo = Defs.NULL_FLOAT;
                 boolean lowTheoExists = true;
@@ -631,9 +631,9 @@ public class Surplus {
                     }
                 }
 //                General.showDebug("**** Found theo dist low: " + lowTheo + ", upp: " + uppTheo + " and they exist: " + lowTheoExists + ", and " + uppTheoExists);
-                
+
                 // cache the values
-                int firstWithDistDCNodeId = dcNodes.getQuick(0); 
+                int firstWithDistDCNodeId = dcNodes.getQuick(0);
                 int logOp = dc.logicalOp[firstWithDistDCNodeId];
                 if ( ! Defs.isNull( logOp ) ) { // It's a logical node instead of a node with distance info.
                     if ( dcNodes.size() < 3 ) {
@@ -642,24 +642,24 @@ public class Surplus {
                     }
                     firstWithDistDCNodeId = dcNodes.getQuick(1); // And the assumption is that they are all the same for OR-ed constraints.
                 }
-                
+
                 float lowCons = dc.lowBound[firstWithDistDCNodeId];
                 float tarCons = dc.target[  firstWithDistDCNodeId];
                 float uppCons = dc.uppBound[firstWithDistDCNodeId];
 
 //                General.showDebug("**** Found first const dist low: " + lowCons + " target: " + tarCons + ", upp: " + uppCons);
-                
+
                 boolean lowConsExists = true;
                 boolean uppConsExists = true;
                 boolean tarConsExists = true;  // Simplifies the code for now.
                 if ( Defs.isNull( lowCons )) lowConsExists = false;
-                if ( Defs.isNull( uppCons )) uppConsExists = false; 
+                if ( Defs.isNull( uppCons )) uppConsExists = false;
                 if ( Defs.isNull( tarCons )) tarConsExists = false;
                 if ( lowCons <= RedundantLib.LOWER_DISTANCE_MINIMUM ) {
 //                    General.showDebug("Found constraint distance below or equal to RedundantLib.LOWER_DISTANCE_MINIMUM; ignoring lower limit.");
                     lowConsExists = false;
                 }
-                
+
                 // No harm in executing the next 3 ifs when the cons don't exist.
                 if ( lowConsExists && (lowCons <= Chemistry.smallestBondEver )) {
 //                    General.showDebug("-T- lowCons <= Chemistry.smallestBondEver");
@@ -676,7 +676,7 @@ public class Surplus {
 //                    General.showDebug("-T- uppCons > diameter");
                     uppConsExists = false;
                 }
-                
+
                 // IMPOSSIBLE CHECKS (one violation enough to qualify)
                 // some checks are left to the compiler to optimize...for now.
                 boolean isImpossible = false;
@@ -712,38 +712,38 @@ public class Surplus {
                     }
                     continue;
                 }
-                
+
                 // FIXED CHECKS
                 if ( lowTheoExists && uppTheoExists && ( lowTheo == uppTheo )) { // Exact comparsion should work as they're read from same ascii values. but check...
 //                    General.showDebug("Found a fixed constraint.");
                     FSet.set( currentDCId );
                     continue;
                 }
-                
+
                 // REDUNDANCY CHECKS
                 /** Needs to be redundant on all accounts in contrast to the impossible checks.*/
                 boolean lowRedundant = ! lowConsExists; // consider a distance redundant if it doesn't exist.
                 boolean uppRedundant = ! uppConsExists;
-                boolean tarRedundant = ! tarConsExists; 
+                boolean tarRedundant = ! tarConsExists;
                 float lowTheoCorrection = lowTheo * thresholdRedundancy / 100f;
                 float uppTheoCorrection = uppTheo * thresholdRedundancy / 100f;
 //                General.showDebug("lowTheoCorrection, uppTheoCorrection: " + lowTheoCorrection + ", " + uppTheoCorrection );
-                if ( lowConsExists && lowTheoExists && (lowCons <= ( lowTheo - lowTheoCorrection) ) ) {                    
+                if ( lowConsExists && lowTheoExists && (lowCons <= ( lowTheo - lowTheoCorrection) ) ) {
                     lowRedundant = true;
                 }
                 if ( uppConsExists && uppTheoExists && (uppCons >= ( uppTheo + uppTheoCorrection) ) ) {
                     uppRedundant = true;
                 }
                 // Next if is about considering the target constraint as redundant; this might need updating?
-                if ( tarConsExists && ( 
+                if ( tarConsExists && (
                     ( uppTheoExists && (tarCons > (uppTheo + uppTheoCorrection))) ||
                     ( lowTheoExists && (tarCons < lowTheo))
                     )) {
                     tarRedundant = true;
-                } 
-                
+                }
+
 //                General.showDebug("lowRedundant, uppRedundant, tarRedundant: " + lowRedundant + ", " + uppRedundant + ", " + tarRedundant );
-                
+
                 if ( lowRedundant && uppRedundant && tarRedundant && (!onlyFilterFixed) ) {
 //                    General.showDebug("Redundant distance found.");
                     RSet.set( currentDCId );
@@ -765,40 +765,40 @@ public class Surplus {
         }
         return true;
     }
-    
-    
+
+
     /** Will combine different categories of distance constraints as surplus.
      * Will only operate on constraints todo. Will simplify constraints
      * if usefull. E.g. HA-(HB2 or HB2) will become HA-HB2.
      * See package.html documentation!
      * Notes:
-     *that it will only write dc lists if requested. 
+     *that it will only write dc lists if requested.
      *only the dcs that are the same entry as the first dc will be written.
-     *returns the surplus selection which doesn't exist anymore if selected 
+     *returns the surplus selection which doesn't exist anymore if selected
      *to remove it by the parameter to this method.
      *If updateOriginal is set then the redundant bounds will be reset to absent.
      */
     public BitSet getSelectionSurplus(
-            BitSet todo, 
-            float thresholdRedundancy, 
-            boolean updateOriginal, 
-            boolean onlyFilterFixed,    
+            BitSet todo,
+            float thresholdRedundancy,
+            boolean updateOriginal,
+            boolean onlyFilterFixed,
             int avg_method,
-            int monomers,     
-            String file_name_base, 
+            int monomers,
+            String file_name_base,
             boolean append,
-            boolean writeNonRedundant, 
+            boolean writeNonRedundant,
             boolean writeRedundant,
             boolean removeSurplus
             ) {
-                
+
         boolean verbosity = ( General.verbosity >= General.verbosityOutput );
-        
+
         if ( ! initConvenienceVariablesStar()) {
             General.showError("Failed: Surplus.initConvenienceVariablesStar");
             return null;
         }
-        
+
         if ( todo.cardinality() < 1 ) {
             General.showWarning("No constraints to check so no checks done");
             return (BitSet) todo.clone();
@@ -806,22 +806,22 @@ public class Surplus {
         // Store the selections that can get changed by this code.
         BitSet atomSelectedSave     = (BitSet) gumbo.atom.selected.clone();
         BitSet entrySelectedSave    = (BitSet) gumbo.entry.selected.clone();
-        BitSet molSelectedSave      = (BitSet) gumbo.mol.selected.clone(); 
-        
+        BitSet molSelectedSave      = (BitSet) gumbo.mol.selected.clone();
+
         BitSet dcSelectedSave       = (BitSet) dc.selected.clone();
         BitSet dcListSelectedSave   = (BitSet) dcList.selected.clone();
-        
+
         PrintWriter printWriter = null;
         String summary_file_name      = file_name_base + "_summary.txt";
         String summaryFileNameSurplus = file_name_base + "_summary.str";
         try { // Make sure anything in the printWriter is written and the writer is closed
             General.showOutput("Writing surplus results to text file: " + summary_file_name);
-            printWriter = InOut.getPrintWriter( summary_file_name, append );            
+            printWriter = InOut.getPrintWriter( summary_file_name, append );
             if ( printWriter == null ) {
                 General.showError("Failed to write to surplus check summary file with name: " + summary_file_name );
                 return null;
             }
-            
+
             /** Create the sets anew */
             String[] dcSetNames = {
                 "USet", // universe
@@ -868,14 +868,14 @@ public class Surplus {
             StringBuffer sb_summary = new StringBuffer();
             USet.or( todo ); // All to be checked.
 
-            String msg = "Found number of todo constraints:                       " + USet.cardinality();            
+            String msg = "Found number of todo constraints:                       " + USet.cardinality();
             //General.showOutput("Constraints (U): " + PrimitiveArray.toString( USet ));
             sb_summary.append( msg + General.eol );
             if ( verbosity ) {
                 printWriter.println( msg );
             }
-            
-// EXCEPTIONAL            
+
+// EXCEPTIONAL
             ESet.or( todo );
             NSet.or( todo ); // Nset will continue to shrink as other sets are subtracted from it.
             ESet.and( dc.hasUnLinkedAtom );
@@ -891,8 +891,8 @@ public class Surplus {
                     printWriter.println( out );
                 }
             }
-            
-// DOUBLES            
+
+// DOUBLES
             boolean status = setSelectionDoubles(NSet, verbosity);
 //            General.showWarning("Not selecting doubles");
 //            boolean status = true;
@@ -910,15 +910,15 @@ public class Surplus {
                 }
             }
             NSet.xor( DSet );
-            
+
 // IMPOSSIBLES, FIXED AND REDUNDANT
             status = setSelectionImpFixRed(
-                NSet, 
-                thresholdRedundancy, 
-                onlyFilterFixed, 
+                NSet,
+                thresholdRedundancy,
+                onlyFilterFixed,
                 avg_method,
-                monomers,                            
-                verbosity, 
+                monomers,
+                verbosity,
                 updateOriginal
              );
             //status = true;
@@ -970,7 +970,7 @@ public class Surplus {
             if ( verbosity ) {
                 printWriter.println( msg );
             }
-            
+
             // Write STAR file
             DataBlock db = new DataBlock();
             if ( db == null ) {
@@ -984,8 +984,8 @@ public class Surplus {
                 General.showError( "Failed to getSFTemplate.");
                 return null;
             }
-            db.add(sF);                
-            int rowIdx = 0;        
+            db.add(sF);
+            int rowIdx = 0;
             // INTRO
 
             TagTable tT = (TagTable) sF.get(0);
@@ -998,11 +998,11 @@ public class Surplus {
             printWriter.println("Averaging method                                               : " + DistConstrList.DEFAULT_AVERAGING_METHOD_NAMES[avg_method] );
             printWriter.println("Number of monomers (only important for sum averaging)          : " + monomers    );
             printWriter.println("File name base (for this and other files)                      : " + file_name_base   );
-            printWriter.println("Appending to summary file                                      : " + append );                
-            printWriter.println("Write nonsurplus constraints                                   : " + writeNonRedundant );                
-            printWriter.println("Write surplus constraints                                      : " + writeRedundant );                
-            printWriter.println("Remove surplus constraints                                     : " + removeSurplus );                
-            
+            printWriter.println("Appending to summary file                                      : " + append );
+            printWriter.println("Write nonsurplus constraints                                   : " + writeNonRedundant );
+            printWriter.println("Write surplus constraints                                      : " + writeRedundant );
+            printWriter.println("Remove surplus constraints                                     : " + removeSurplus );
+
             tT.setValue(rowIdx, tagNameSurplusRedundancy_threshold_pct      , thresholdRedundancy);
             tT.setValue(rowIdx, tagNameSurplusUpdate_original_restraints    , updateOriginal);
             tT.setValue(rowIdx, tagNameSurplusOnly_filter_fixed             , onlyFilterFixed);
@@ -1026,8 +1026,8 @@ public class Surplus {
             if ( ! db.toSTAR(summaryFileNameSurplus)) {
                 General.showError("Failed to write the file.");
                 return null;
-            }        
-            
+            }
+
 
             ArrayList setsToWrite    = new ArrayList();
             ArrayList filesToWrite    = new ArrayList();
@@ -1036,31 +1036,31 @@ public class Surplus {
             }
             if ( writeRedundant ) {
                 setsToWrite.add( "SSet" ); filesToWrite.add( "red" );
-            }            
+            }
             // find first entry and store variable in class instance.
             int currentEntryId = dc.gumbo.entry.selected.nextSetBit(0);
             if ( currentEntryId < 0 ) {
                 General.showError("No entries selected");
                 return null;
             }
-            
+
             gumbo.entry.selected.clear();
             gumbo.mol.selected.clear();
             gumbo.atom.selected.clear();
             gumbo.entry.selected.set(currentEntryId);   // only use the current entry
 
-            for (int setId=0;setId<setsToWrite.size();setId++) {                
-                String setName = (String) setsToWrite.get(setId);      
-                BitSet setToWrite = dc.mainRelation.getColumnBit(setName);           
+            for (int setId=0;setId<setsToWrite.size();setId++) {
+                String setName = (String) setsToWrite.get(setId);
+                BitSet setToWrite = dc.mainRelation.getColumnBit(setName);
                 String fileName = file_name_base + "_"+filesToWrite.get(setId)+".str";
                 dc.selected.clear();
                 dc.selected.or(setToWrite);
                 if ( dc.selected.cardinality() > 0 ) {
-                    General.showOutput("Writing the set: " + setName + " to file: " + fileName 
+                    General.showOutput("Writing the set: " + setName + " to file: " + fileName
                         + " with number of dcs: " + dc.selected.cardinality());
                     gumbo.entry.writeNmrStarFormattedFileSet(fileName,null,ui);
                 } else {
-                    General.showOutput("Not writing set: " + setName + " to file: " + fileName 
+                    General.showOutput("Not writing set: " + setName + " to file: " + fileName
                         + " because there are no dcs in it");
                     File oldDump = new File( fileName );
                     if ( oldDump.exists() && oldDump.isFile() && oldDump.canRead() ) {
@@ -1068,10 +1068,10 @@ public class Surplus {
                         if ( ! oldDump.delete() ) {
                             General.showWarning("Failed to remove old dump");
                         }
-                    }                     
-                }                    
+                    }
+                }
             }
-                                    
+
             if ( removeSurplus && (SSet != null) ) {
                 boolean updateLinkedLists = false;
                 //General.showOutput(dc.mainRelation.toString());
@@ -1081,16 +1081,16 @@ public class Surplus {
                 } else {
                     General.showDebug( "Removed surplus: "       + SSet.cardinality());
                 }
-                dcSelectedSave.andNot(SSet); // in the saved set of selected dc clear those that get nilled here.                
+                dcSelectedSave.andNot(SSet); // in the saved set of selected dc clear those that get nilled here.
             }
-            
-            // Always show the summary 
+
+            // Always show the summary
             printWriter.println();
             printWriter.println();
             printWriter.println();
             printWriter.println( "SUMMARY:" );
-            printWriter.println( sb_summary.toString() );        
-            
+            printWriter.println( sb_summary.toString() );
+
             return SSet;
         } catch ( Throwable t ) {
             General.showThrowable(t);
@@ -1104,7 +1104,7 @@ public class Surplus {
             gumbo.entry.selected.clear();
             dc.selected.clear();
             dcList.selected.clear();
-            
+
             gumbo.atom.selected.or(     atomSelectedSave);
             gumbo.entry.selected.or(    entrySelectedSave);
             gumbo.mol.selected.or(      molSelectedSave);
@@ -1113,7 +1113,7 @@ public class Surplus {
         }
     }
 
-    
+
     /** Calculate the theoretically possible lower and upper bound distances given the atoms involved
      * rids and the averaging method and the maximum distance in the model.
      * The ArrayList contain elements of type:  IntArrayList[2] for each node.
@@ -1126,7 +1126,7 @@ public class Surplus {
      *TODO: disable the code dealing with the element specific radii. It's not being used.
      */
     private float[] calcDistanceTheo(ArrayList atomsInvolved, int avg_method, int numberMonomers, float diameter) {
-        
+
         if ( atomsInvolved == null ) {
             General.showError("Sets of atomsInvolved involved in distance can't be null");
             return null;
@@ -1134,11 +1134,11 @@ public class Surplus {
         if ( atomsInvolved.size() == 0 ) {
             General.showError("Sets of atomsInvolved involved in distance can't be of zero size");
             return null;
-        }    
-                
+        }
+
         FloatArrayList minDistances = new FloatArrayList();
         FloatArrayList maxDistances = new FloatArrayList();
-        
+
         /** Use a lookup with pseudo atoms as needed with center averaging. */
         if (avg_method == DistConstrList.DEFAULT_AVERAGING_METHOD_CENTER) {
             if ( atomsInvolved.size() > 1 ) {
@@ -1168,13 +1168,13 @@ public class Surplus {
                     atomsInMemberList = atomsInMemberListB;
                 }
                 //General.showDebug("Atoms in member: \n" + ui.gumbo.atom.toString( PrimitiveArray.toBitSet( atomsInMemberList, -1)));
-                
-                int atomRid = atomsInMemberList.getQuick(0);                
+
+                int atomRid = atomsInMemberList.getQuick(0);
                 resiRid            = gumbo.atom.resId[     atomRid ];
                 resiName           = gumbo.res.nameList[  resiRid ];
-                if ( atomsInMemberList.size() == 1 ) {                
+                if ( atomsInMemberList.size() == 1 ) {
                     atomName           = gumbo.atom.nameList[  atomRid ];
-                    int elementId      = gumbo.atom.elementId[ atomRid ];                    
+                    int elementId      = gumbo.atom.elementId[ atomRid ];
                     if ( Defs.isNull(elementId) || (elementId<1) || (elementId>=Chemistry.elementCount)) {
                         //General.showDebug("Failed to get element id for atom : " + gumbo.atom.toString( atomRid ) + " assuming smallest known: H ");
                     } else {
@@ -1189,7 +1189,7 @@ public class Surplus {
                         General.showError("Atoms in member: " + ui.gumbo.atom.toString( PrimitiveArray.toBitSet( atomsInMemberList, -1)));
                         return null;
                     }
-                    
+
                 }
                 if ( i == 0 ) {
 //                    radiusA = radius;
@@ -1201,7 +1201,7 @@ public class Surplus {
                     atomNameB = atomName;
                     resiRidB = resiRid;
                     // no resiname b needed.
-                }                
+                }
             }
             //General.showDebug("");
             float[] bnds = null;
@@ -1210,7 +1210,7 @@ public class Surplus {
                 // look for bounds but will be null if not present.
                 bnds = (float[]) ui.wattosLib.redundantLib.bounds.get( resiNameA, atomNameA, atomNameB );
                 if ( bnds == null ) {
-                    General.showWarning("Failed to find intra residual distance in redundancy library between atoms: " + 
+                    General.showWarning("Failed to find intra residual distance in redundancy library between atoms: " +
                         atomNameA + " and " + atomNameB + " in residue type: " + resiNameA);
                     General.showDebug("Will use the sum of radii and the molecules' diameter as estimates for the lower and upper bounds respectively");
                     /**
@@ -1231,10 +1231,10 @@ public class Surplus {
                 bnds[1] = diameter; // upper bound
             }
             //General.showDebug("result is: " + PrimitiveArray.toString( bnds ));
-            return bnds;            
-        }                    
-        
-        
+            return bnds;
+        }
+
+
         // In the case of anything but center averaging...
         // for each node
         float[] result = new float[2];
@@ -1276,8 +1276,8 @@ public class Surplus {
                         // look for bounds but will be null if not present.
                         bnds = (float[]) ui.wattosLib.redundantLib.bounds.get( resiNameA, atomNameA, atomNameB );
                         if ( bnds == null ) {
-                            General.showWarning("Failed to find intra residual distance between atoms: " + 
-                                gumbo.atom.toString( atomRidA ) + " and " + 
+                            General.showWarning("Failed to find intra residual distance between atoms: " +
+                                gumbo.atom.toString( atomRidA ) + " and " +
                                 gumbo.atom.toString( atomRidB ) );
                             //General.showDebug("Will use the sum of radii and the molecules' diameter as estimates for the lower and upper bounds respectively");
                         }
@@ -1304,26 +1304,26 @@ public class Surplus {
         if ( Defs.isNull( result[ 1 ] ) ) {
             General.showError("Failed to get the theoretical max. averaged distance from: " + PrimitiveArray.toString( maxDistances));
             return null;
-        } 
+        }
         //General.showDebug("result is: " + PrimitiveArray.toString( result ));
         return result;
     }
-        
-        
 
-    public boolean resetConvenienceVariables() {        
+
+
+    public boolean resetConvenienceVariables() {
         upp_theo = dc.mainRelation.getColumnFloat(DistConstr.DEFAULT_UPP_THEO);
-        low_theo = dc.mainRelation.getColumnFloat(DistConstr.DEFAULT_LOW_THEO);        
+        low_theo = dc.mainRelation.getColumnFloat(DistConstr.DEFAULT_LOW_THEO);
 
-        if ( 
+        if (
             upp_theo          == null ||
             low_theo          == null
         ) {
             return false;
         }
         return true;
-    }    
-    
+    }
+
     /** Returns a template with the star formatted output template
      */
     private SaveFrame getSFTemplate() {
@@ -1342,13 +1342,13 @@ public class Surplus {
             DBMS dbms = new DBMS(); // Use a temporary dbms for this because we don't
             // want to hold on to this data for ever.
             tT                      = new TagTable("Distance_constraint_surplus_list", dbms);
-            tT.isFree               = true;            
+            tT.isFree               = true;
             tT.getNewRowId(); // Sets first row bit in used to true.
             String cat = "distance_constraint_surplus";
             namesAndValues.put( tagNameSurplusSf_category, cat);
 //            namesAndValues.put( tagNameSurplusEntry_ID, new Integer(1));
 //            namesAndValues.put( tagNameSurplusDC_surplus_ID, new Integer(1));
-            
+
             starDict.putFromDict( namesAndTypes, order, tagNameSurplusSf_category                   );
 //            starDict.putFromDict( namesAndTypes, order, tagNameSurplusEntry_ID                      );
 //            starDict.putFromDict( namesAndTypes, order, tagNameSurplusDC_surplus_ID                 );
@@ -1365,20 +1365,20 @@ public class Surplus {
             starDict.putFromDict( namesAndTypes, order, tagNameSurplusRestraint_impossible_count    );
             starDict.putFromDict( namesAndTypes, order, tagNameSurplusRestraint_fixed_count         );
             starDict.putFromDict( namesAndTypes, order, tagNameSurplusRestraint_redundant_count     );
-            starDict.putFromDict( namesAndTypes, order, tagNameSurplusDetails                       );                        
-            
+            starDict.putFromDict( namesAndTypes, order, tagNameSurplusDetails                       );
+
             // Append columns after order id column.
             if ( ! tT.insertColumnSet(1, namesAndTypes, order, namesAndValues, null)) {
                 General.showError("Failed to tT.insertColumnSet");
                 return null;
             }
-            sF.add( tT );            
+            sF.add( tT );
         } catch ( Exception e ) {
             General.showThrowable(e);
             return null;
         }
         return sF;
-    }    
+    }
     /**
      * @return <CODE>true</CODE> for success
      */
@@ -1400,9 +1400,9 @@ public class Surplus {
             tagNameSurplusRestraint_fixed_count          = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.Restraint_fixed_count         ");
             tagNameSurplusRestraint_redundant_count      = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.Restraint_redundant_count     ");
             tagNameSurplusRestraint_surplus_count        = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.Restraint_surplus_count       ");
-            tagNameSurplusRestraint_nonsurplus_count     = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.Restraint_nonsurplus_count    ");                                                                                                       
-            tagNameSurplusDetails                        = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.Details                       ");                                                                                                       
-            
+            tagNameSurplusRestraint_nonsurplus_count     = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.Restraint_nonsurplus_count    ");
+            tagNameSurplusDetails                        = starDict.getTagName( "distance_constraint_surplus","_Distance_constraint_surplus.Details                       ");
+
         } catch ( Exception e ) {
             General.showThrowable(e);
             General.showError("Failed to get all the tag names from dictionary compare code with dictionary");
@@ -1425,36 +1425,36 @@ public class Surplus {
             tagNameSurplusRestraint_redundant_count      == null ||
             tagNameSurplusRestraint_surplus_count        == null ||
             tagNameSurplusDetails                        == null ||
-            tagNameSurplusRestraint_nonsurplus_count     == null                 
+            tagNameSurplusRestraint_nonsurplus_count     == null
                 ) {
             General.showError("Failed to get all the tag names from dictionary, compare code with dictionary.");
             return false;
         }
         /** debug */
-        if ( false ) {
-            String[] tagNames = {
-                tagNameSurplusSf_category,                   
-//                tagNameSurplusEntry_ID,                      
-//                tagNameSurplusDC_surplus_ID,                 
-                tagNameSurplusRedundancy_threshold_pct,      
-                tagNameSurplusUpdate_original_restraints,    
-                tagNameSurplusOnly_filter_fixed,             
-                tagNameSurplusAveraging_method,              
-                tagNameSurplusNumber_of_monomers_sum_average,
-                tagNameSurplusRestraint_count,               
-                tagNameSurplusRestraint_exceptional_count,   
-                tagNameSurplusRestraint_double_count,        
-                tagNameSurplusRestraint_impossible_count,    
-                tagNameSurplusRestraint_fixed_count,         
-                tagNameSurplusRestraint_redundant_count,     
-                tagNameSurplusRestraint_surplus_count,       
-                tagNameSurplusRestraint_nonsurplus_count,
-                tagNameSurplusDetails
-            };
-            General.showDebug("Tagnames:\n"+Strings.toString(tagNames,true));
-        }
-        
-        
+//        if ( false ) {
+//            String[] tagNames = {
+//                tagNameSurplusSf_category,
+////                tagNameSurplusEntry_ID,
+////                tagNameSurplusDC_surplus_ID,
+//                tagNameSurplusRedundancy_threshold_pct,
+//                tagNameSurplusUpdate_original_restraints,
+//                tagNameSurplusOnly_filter_fixed,
+//                tagNameSurplusAveraging_method,
+//                tagNameSurplusNumber_of_monomers_sum_average,
+//                tagNameSurplusRestraint_count,
+//                tagNameSurplusRestraint_exceptional_count,
+//                tagNameSurplusRestraint_double_count,
+//                tagNameSurplusRestraint_impossible_count,
+//                tagNameSurplusRestraint_fixed_count,
+//                tagNameSurplusRestraint_redundant_count,
+//                tagNameSurplusRestraint_surplus_count,
+//                tagNameSurplusRestraint_nonsurplus_count,
+//                tagNameSurplusDetails
+//            };
+//            General.showDebug("Tagnames:\n"+Strings.toString(tagNames,true));
+//        }
+
+
         return true;
     }
     }
