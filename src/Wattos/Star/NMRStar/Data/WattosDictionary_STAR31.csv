@@ -57,7 +57,7 @@ res_main,_pdbx_nonpoly_scheme.mon_id,STRINGNR,,chem_comp,_pdbx_nonpoly_scheme.mo
 res_main,_pdbx_nonpoly_scheme.ndb_seq_num,STRINGNR,,chem_comp,_pdbx_nonpoly_scheme.ndb_seq_num,_pdbx_nonpoly_scheme.ndb_seq_num,,,X
 atom_main,_Conformer_family_coord_set.Sf_category,STRING,,conformer_family_coord_set,_Conformer_family_coord_set.Sf_category,,,,X
 atom_main,_Atom_site.Conformer_family_coord_set_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Conformer_family_coord_set_ID,,,,X
-atom_main,_Atom_site.Model_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Model_ID,_atom_site.pdbx_PDB_model_num,not mandatory?,,X
+atom_main,_Atom_site.Model_ID,INTEGER,,conformer_family_coord_set,_Atom_site.PDB_model_num,_atom_site.pdbx_PDB_model_num,not mandatory?,,X
 atom_main,_Atom_site.Assembly_atom_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Assembly_atom_ID,,,,X
 atom_main,_Atom_site.ID,INTEGER,,conformer_family_coord_set,_Atom_site.ID,_atom_site.id,,,X
 atom_main,_Atom_site.Label_entity_assembly_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Label_entity_assembly_ID,,,,X
@@ -68,10 +68,12 @@ atom_main,_Atom_site.Label_seq_ID,STRINGNR,,conformer_family_coord_set,_Atom_sit
 atom_main,_Atom_site.Label_comp_ID,STRINGNR,,conformer_family_coord_set,_Atom_site.Label_comp_ID,_atom_site.label_comp_id,,,X
 atom_main,_Atom_site.PDB_ins_code,STRINGNR,,conformer_family_coord_set,_Atom_site.PDB_ins_code,_atom_site.pdbx_PDB_ins_code,,,X
 atom_main,name,STRINGNR,,conformer_family_coord_set,_Atom_site.Label_atom_ID,_atom_site.label_atom_id,,,X
-atom_main,auth_mol_name,STRINGNR,,conformer_family_coord_set,_Atom_site.Auth_asym_ID,_atom_site.auth_asym_id,,,X
-atom_main,auth_res_id,STRINGNR,,conformer_family_coord_set,_Atom_site.Auth_seq_ID,_atom_site.auth_seq_id,,,X
-atom_main,auth_res_name,STRINGNR,,conformer_family_coord_set,_Atom_site.Auth_comp_ID,_atom_site.auth_comp_id,,,X
-atom_main,auth_atom_name,STRINGNR,,conformer_family_coord_set,_Atom_site.Auth_atom_ID,_atom_site.auth_atom_id,,,X
+atom_main,auth_mol_name,STRINGNR,,conformer_family_coord_set,_Atom_site.PDB_strand_ID,_atom_site.auth_asym_id,,,X
+atom_main,auth_res_id,STRINGNR,,conformer_family_coord_set,_Atom_site.PDB_residue_no,_atom_site.auth_seq_id,,,X
+atom_main,auth_res_name,STRINGNR,,conformer_family_coord_set,_Atom_site.PDB_residue_name,_atom_site.auth_comp_id,,,X
+atom_main,auth_atom_name,STRINGNR,,conformer_family_coord_set,_Atom_site.PDB_atom_name,_atom_site.auth_atom_id,,,X
+atom_main,auth_alt_id,STRINGNR,,conformer_family_coord_set,_Atom_site.Auth_alt_ID,_atom_site.pdbx_auth_alt_id,,,X
+atom_main,auth_atom_name2,STRINGNR,,conformer_family_coord_set,_Atom_site.Auth_atom_name,_atom_site.pdbx_auth_atom_name,,,X
 atom_main,element_id,STRINGNR,,conformer_family_coord_set,_Atom_site.Type_symbol,_atom_site.type_symbol,,,X
 atom_main,coor_x,FLOAT,%.3f,conformer_family_coord_set,_Atom_site.Cartn_x,_atom_site.Cartn_x,,,X
 atom_main,coor_y,FLOAT,%.3f,conformer_family_coord_set,_Atom_site.Cartn_y,_atom_site.Cartn_y,,,X
