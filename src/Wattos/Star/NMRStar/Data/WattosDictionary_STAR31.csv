@@ -57,7 +57,7 @@ res_main,_pdbx_nonpoly_scheme.mon_id,STRINGNR,,chem_comp,_pdbx_nonpoly_scheme.mo
 res_main,_pdbx_nonpoly_scheme.ndb_seq_num,STRINGNR,,chem_comp,_pdbx_nonpoly_scheme.ndb_seq_num,_pdbx_nonpoly_scheme.ndb_seq_num,,,X
 atom_main,_Conformer_family_coord_set.Sf_category,STRING,,conformer_family_coord_set,_Conformer_family_coord_set.Sf_category,,,,X
 atom_main,_Atom_site.Conformer_family_coord_set_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Conformer_family_coord_set_ID,,,,X
-atom_main,_Atom_site.Model_ID,INTEGER,,conformer_family_coord_set,_Atom_site.PDB_model_num,_atom_site.pdbx_PDB_model_num,not mandatory?,,X
+atom_main,_Atom_site.Model_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Model_ID,_atom_site.pdbx_PDB_model_num,not mandatory?,,X
 atom_main,_Atom_site.Assembly_atom_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Assembly_atom_ID,,,,X
 atom_main,_Atom_site.ID,INTEGER,,conformer_family_coord_set,_Atom_site.ID,_atom_site.id,,,X
 atom_main,_Atom_site.Label_entity_assembly_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Label_entity_assembly_ID,,,,X
