@@ -61,7 +61,7 @@ atom_main,_Atom_site.Model_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Mod
 atom_main,_Atom_site.Assembly_atom_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Assembly_atom_ID,,,,X
 atom_main,_Atom_site.ID,INTEGER,,conformer_family_coord_set,_Atom_site.ID,_atom_site.id,,,X
 atom_main,_Atom_site.Label_entity_assembly_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Label_entity_assembly_ID,,,,X
-atom_main,_Atom_site.Label_asym_ID,STRINGNR,,conformer_family_coord_set,_Atom_site.Label_asym_ID,_atom_site.label_asym_id,,,X
+atom_main,_Atom_site.Label_asym_ID,STRINGNR,,conformer_family_coord_set,_Atom_site.PDBX_label_asym_ID,_atom_site.label_asym_id,,,X
 atom_main,_Atom_site.Label_entity_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Label_entity_ID,_atom_site.label_entity_id,,,X
 atom_main,_Atom_site.Label_comp_index_ID,INTEGER,,conformer_family_coord_set,_Atom_site.Label_comp_index_ID,_atom_site.label_seq_id,,,X
 atom_main,_Atom_site.Label_seq_ID,STRINGNR,,conformer_family_coord_set,_Atom_site.Label_seq_ID,,,,X
