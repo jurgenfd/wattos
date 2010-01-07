@@ -28,53 +28,55 @@ import Wattos.Utils.StringArrayList;
  * @author Jurgen F. Doreleijers
  */
 public class ValidatorDictionary implements Serializable {
-        
-    private static final long serialVersionUID = -1207795172754062330L;  
-    
+
+    private static final long serialVersionUID = -1207795172754062330L;
+
     public DBMS dbms = new DBMS();
     // TODO remove the next dependency on STARLIB if we don't want to serialize it with the rest of UserInterface.
     public TagTable tagTt = null;
     /** Local resource */
 //    static final String FILE_LOCATION = "Data/validict.3.str";
     /** From ftp://ftp.bmrb.wisc.edu/pub/software/bmrb/validator/validict.20080404.1.str */
-    static final String FILE_LOCATION = "Data/validict.20080404.1.str";
-        
+//    static final String FILE_LOCATION = "Data/validict.20080404.1.str";
+    /** From grunt:/raid/docr/workspace/validict.20100106.1.str */
+    static final String FILE_LOCATION = "Data/validict.20100106.1.str";
+
     static final String TAGCAT  = "_TAGCAT";
     static final String TAGNAME = "_TAGNAME";
     public String NMR_STAR_version = null;
     public ValidatorDictionary() {
     }
-    
+
     /** Read the possible star names.
      *Uses standard location if argument is null;
      * @param file_location Url for file with the comma separated info.
      * @return <CODE>true</CODE> if all operations are successful.
      */
-    public boolean readFile(String file_location) {            
+    public boolean readFile(String file_location) {
         if ( file_location == null ) {
             file_location = FILE_LOCATION;
 //            General.showDebug("Reading Star dictionary from local resource : " + file_location);
         }
         StarFileReader sfr = new StarFileReader(dbms);
-        InputStream file_is = getClass().getResourceAsStream(file_location);        
+        InputStream file_is = getClass().getResourceAsStream(file_location);
         StarNode sn = sfr.parse(new BufferedInputStream(file_is));
         if ( sn == null ) {
             General.showError("parse unsuccessful");
             return false;
         }
 //        General.showDebug("Read sn: " + sn.toString());
-        
+
         DataBlock db = (DataBlock) sn.datanodes.get(0);
         SaveFrame sF = db.getSaveFrameByName("TAGS", true);
-        
+
         tagTt = sF.getTagTable(StarGeneral.WILDCARD, true);
 
-//        General.showDebug("Read number of star tag names from Validator STAR dictionary: " + 
+//        General.showDebug("Read number of star tag names from Validator STAR dictionary: " +
 //                tagTt.sizeRows);
         // Get version
-        //"3.0.8.100"        
-        SaveFrame sFVersion = db.getSaveFrameByName("INFO", true);        
-        TagTable tagTtVersion = sFVersion.getTagTable(StarGeneral.WILDCARD, true);        
+        //"3.0.8.100"
+        SaveFrame sFVersion = db.getSaveFrameByName("INFO", true);
+        TagTable tagTtVersion = sFVersion.getTagTable(StarGeneral.WILDCARD, true);
         NMR_STAR_version = tagTtVersion.getValueString(0, "_VERSION");;
 //        General.showDebug("Dictionary looks like: ");
 //        General.showDebug(sn.toSTAR().substring(0,1000));
@@ -108,13 +110,13 @@ public class ValidatorDictionary implements Serializable {
             StringArrayList salE = new StringArrayList();
             for (int j = E.nextSetBit(0); j >= 0; j=E.nextSetBit(j+1)) {
                 salE.add( tagTt.getValueString(j, TAGNAME) );
-            }            
+            }
             if ( ! tT.reorderSomeColumns(salE)) {
                 General.showError("Failed to tT.reorderSomeColumns(salE) in ValidatorDictionary.sortTagNames");
                 return false;
             }
         }
-        return true;        
+        return true;
     }
 
     /** Tries all tagnames (usually just 1) in table for tagcat
@@ -122,7 +124,7 @@ public class ValidatorDictionary implements Serializable {
      * This assumes all tagnames are unique.
      * @param tt
      * @return
-     */ 
+     */
     public String getTagCat(TagTable tt) {
         for (int i=0;i<tt.sizeColumns();i++) {
             String label = tt.getColumnLabel(i);
@@ -132,10 +134,10 @@ public class ValidatorDictionary implements Serializable {
             if ( matchRid < 0 ) {
 //                General.showDebug("column not present: " + label);
                 continue;
-            }            
+            }
             return tagTt.getValueString(matchRid, TAGCAT);
         }
         return null;
     }
-    
+
 }
