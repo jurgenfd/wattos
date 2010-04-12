@@ -18,6 +18,7 @@ coordinate,initial,n/a,MR_file_coordinate_initial,-,-,Y,X,X,X,X,X,X,-,X,X,X,X,X,
 coordinate,ensemble,n/a,MR_file_coordinate_initial,-,-,Y,X,X,X,X,X,X,-,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,-,-,X,-,-,-,-,-,-
 coupling constant,n/a,n/a,coupling_constants,Y,-,-,X,X,X,X,X,X,-,X,X,-,X,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,X,-,-,-,-
 dihedral angle,n/a,n/a,torsion_angle_constraints,Y,-,-,X,X,X,X,X,X,-,X,2,402,X,202,X,102,X,X,X,X,-,-,302,X,X,X,X,X,-,-,-,X,X,X,-,-,-
+dihedral combo,ambi,n/a,torsion_angle_constraints,Y,-,-,X,X,X,X,X,X,-,X,2,402,X,202,X,102,X,X,X,X,-,-,302,X,X,X,X,X,-,-,-,X,X,X,-,-,-
 dipolar coupling,n/a,n/a,dipolar_coupling_constraints,Y,-,-,X,X,X,X,X,X,-,X,3,403,-,X,-,103,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,X,-,-,X,-
 distance,disulfide bond,ambi,distance_constraints,Y,-,-,X,X,X,X,X,X,-,X,1,401,-,201,X,101,-,-,-,-,-,-,-,X,-,-,-,-,-,-,-,X,X,X,-,-,-
 distance,disulfide bond,simple,distance_constraints,Y,-,-,X,X,X,X,X,X,-,X,1,401,X,201,X,101,X,X,X,X,X,X,301,X,X,X,X,X,-,-,-,X,X,X,-,X,-
