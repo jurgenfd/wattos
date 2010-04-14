@@ -16,9 +16,9 @@
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 
     <!-- Set the below to development 0 or production 1-->
-    <property name="isProduction" value="1" />
-	
-	
+    <property name="isProduction" value="0" />
+
+
 	<target name="init" description="init">
 		<tstamp>
 			<format property="wattos_version" pattern="yyyyMMdd-HHmm" />
@@ -49,7 +49,7 @@
 	            <property name="home.web.machine.looped" value="${home.web.machine.looped.dev}" />
 	            <property name="home.web.port" value="${home.web.port.dev}" />
 	            <property name="home.web.dir" value="${home.web.dir.dev}" />
-	            <property name="home.web.user" value="${home.web.user.dev}" />        
+	            <property name="home.web.user" value="${home.web.user.dev}" />
 	        </else>
 	    </if>
 	    <echo message="servlet.web.machine    : ${servlet.web.machine}" />
@@ -68,18 +68,17 @@
 	    <property name="home.web.usermachine" value="${home.web.user}@${home.web.machine}" />
 	</target>
 
-	<!-- Is done automatically by ant build but can be used externally. 
+	<!-- Is done automatically by ant build but can be used externally.
 	NB the debug settings.
 	-->
 	<target name="compile" description="compile" depends="init">
-		<echo>This compile is incomplete because the resulting jar doesn't run fine on tang. USE AT YOUR OWN RISK
-    	For now we depended on automatic features in eclipse.</echo>
 		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" debuglevel="lines,vars,source">
 			<classpath>
 				<path path="${javac.classpath}" />
 			</classpath>
 		</javac>
 		<copy todir="${build.dir}">
+			<fileset dir="${src.dir}" includes="**/*.H" /> <!--For Wattos/Soup/Data/TOPOLOGY.H-->
 			<fileset dir="${src.dir}" includes="**/*.csv" />
 			<fileset dir="${src.dir}" includes="**/*.str" />
 		</copy>
@@ -138,19 +137,19 @@
     ====================
     JAR BUILDING SECTION
     ====================
-    Use: 
+    Use:
     	for resigning all jars. They need to be the same for WebApps such as Sjors.
     -->
 	<target name="jar" depends="init" description="Build JAR.">
 		<jar destfile="${jar.name}" basedir="${build.dir}" />
 		<!--
-        <signjar    
-                    alias="business" 
-                    storepass="secret" 
+        <signjar
+                    alias="business"
+                    storepass="secret"
                     keypass="test123"
-                    keystore="${keystore}">            
-            <fileset dir="lib" 
-                    includes="Wattos.jar" />            
+                    keystore="${keystore}">
+            <fileset dir="lib"
+                    includes="Wattos.jar" />
         </signjar>
         -->
 	</target>
@@ -169,17 +168,17 @@
         <for list="FilterSTAR.wcf" param="fn">
         <for list="ReadEntryMmCIF.wcf" param="fn">
         <for list="CheckSurplus.wcf" param="fn">
-        <for list="WriteSQLDump.wcf" param="fn">  
+        <for list="WriteSQLDump.wcf" param="fn">
         <for list="AddMissingAtoms.wcf" param="fn">
         <for list="WriteEntryPDB.wcf" param="fn">
-        <for list="CheckAssignment.wcf" param="fn">       
-        <for list="CheckAtomNomenclature.wcf" param="fn">       
-        <for list="CalcDistConstrViolation.wcf" param="fn">       
-        <for list="CalcDihConstrViolation.wcf" param="fn">       
+        <for list="CheckAssignment.wcf" param="fn">
+        <for list="CheckAtomNomenclature.wcf" param="fn">
+        <for list="CalcDistConstrViolation.wcf" param="fn">
+        <for list="CalcDihConstrViolation.wcf" param="fn">
         <for list="ReadEntryMmCIF.wcf" param="fn">
         <for list="WriteEntryXplor.wcf" param="fn">
-        
-        <for list="CalcDistConstrViolation.wcf,CalcDistance.wcf,CheckAssignment.wcf,CheckCompleteness.wcf,CheckSurplus.wcf,FilterSTAR.wcf,GetCoplanarBases.wcf,GetHydrogenBonds.wcf,ReadEntryPDB.wcf,QuitBeforeBegun.wcf,SetAtomNomenclatureToIUPAC.wcf,ShowClassification.wcf,Sleep.wcf,WriteEntryXplor.wcf" param="fn">        
+
+        <for list="CalcDistConstrViolation.wcf,CalcDistance.wcf,CheckAssignment.wcf,CheckCompleteness.wcf,CheckSurplus.wcf,FilterSTAR.wcf,GetCoplanarBases.wcf,GetHydrogenBonds.wcf,ReadEntryPDB.wcf,QuitBeforeBegun.wcf,SetAtomNomenclatureToIUPAC.wcf,ShowClassification.wcf,Sleep.wcf,WriteEntryXplor.wcf" param="fn">
             <replace file="${tmp.local.dir}/@{fn}.log" token="ERROR" value="ERROR" summary="true"/>
     -->
 	<target name="macro_tests" depends="init" description="">
@@ -212,7 +211,7 @@
 				<!--
              <loadfile property="contentLogFile"
                     srcFile="${tmp.local.dir}/@{fn}.log"/>
-             <echo message="${contentLogFile}"/> 
+             <echo message="${contentLogFile}"/>
                -->
 			</sequential>
 		</for>
@@ -222,13 +221,13 @@
 		<echo message="${error_list}" />
 	</target>
 	<target name="set_version" >
-		<replaceregexp file="${src.dir}/Wattos/CloneWars/UserInterface.java" 
+		<replaceregexp file="${src.dir}/Wattos/CloneWars/UserInterface.java"
 			match="String WATTOS_VERSION=(.*)" replace='String WATTOS_VERSION="${wattos_version}";' byline="true" />
 	</target>
 	<!--
     ======================
     JAVADOC SECTION
-    ======================  
+    ======================
     Can't use "linksource" as there's a bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4511110
     trying with javadoc 1.5 as set in wattos.properties: platform.javadoc
     -->
@@ -269,10 +268,10 @@
 		</copy>
 	</target>
 
-	<!-- 
+	<!--
     ======================
     HOME SECTION
-    ======================  
+    ======================
     -->
 	<target name="home" depends="init,jar,home-cp,home-doc-cp" description="Creates the Wattos home page with javadoc files." />
 	<target name="home-clean" depends="init" description="Fails to create new dirs so disabled until debugged.">
@@ -295,12 +294,12 @@
 		</scp>
 	</target>
 
-	<!-- 
+	<!--
     ======================
     SERVLET SECTION
-    ======================  
+    ======================
     -->
-	
+
     <target name="servlet-wattos-new-install" depends="init">
         <echo message="Ensure that the tomcat and apache are already setup. As well as the production staging area." />
 
@@ -308,11 +307,11 @@
             <fileset dir="build" />
         </copy>
         <!-- The Wattos code changes every now and then so it needs to be included live. Every now and then.
-        ISN'T THIS EXACTLY THE SAME AS THE ABOVE?    
+        ISN'T THIS EXACTLY THE SAME AS THE ABOVE?
         <copy todir="${wattos.production.local.dir}/WEB-INF/classes">
-            <fileset dir="${WS}/wattos/build"/>                     
+            <fileset dir="${WS}/wattos/build"/>
         </copy>
-        -->           
+        -->
 
         <zip destfile="${wattos.war.file}">
             <fileset dir="${wattos.production.local.dir}" />
@@ -320,12 +319,12 @@
         <echo message="toDir: ${servlet.web.user}@${servlet.web.machine}:${servlet.web.dir}"/>
         <echo message="with port = ${servlet.web.port} and knownhosts=${servlet.web.knownhosts} passphrase=${servlet.web.passphrase} keyfile=${servlet.web.keyfile} "/>
 
-        <scp todir="${servlet.web.user}@${servlet.web.machine}:${servlet.web.dir}" keyfile="${servlet.web.keyfile}" 
+        <scp todir="${servlet.web.user}@${servlet.web.machine}:${servlet.web.dir}" keyfile="${servlet.web.keyfile}"
             knownhosts="${servlet.web.knownhosts}" passphrase="${servlet.web.passphrase}" verbose="true" >
             <fileset file="${wattos.war.file}" />
         </scp>
     </target>
-	
+
 	<target name="servlet-install" depends="init,jar,servlet-jar-cp,servlet-resources-cp" description="Publishes the Wattos jar. Manual restart of server still needed.">
 		<echo message="Make sure the following two remote directories are open for writing:" />
 		<echo message="${servlet.web.usermachine}:${servlet.web.dir}/${servlet.lib.dir}" />
@@ -346,10 +345,10 @@
 		</scp>
 	</target>
 
-	<!-- 
+	<!--
     ======================
     WEB APP SECTION
-    ======================  
+    ======================
     -->
 	<target name="webapp-install" depends="init,jar,home-cp,webapp-jar-cp,webapp-resources-cp" description="Publishes the Wattos jar. Manual restart of server still needed.">
 		<echo message="Make sure the following two remote directories are open for writing:" />
@@ -402,10 +401,10 @@
 
 	<!--
         Found that after checkout to Windows there were extra eols but fixed with the below.
-Default is based on the platform on which you are running this task. 
-For Unix platforms, the default is "lf". 
-For DOS based systems (including Windows), the default is "crlf". 
-For Mac OS, the default is "cr".        
+Default is based on the platform on which you are running this task.
+For Unix platforms, the default is "lf".
+For DOS based systems (including Windows), the default is "crlf".
+For Mac OS, the default is "cr".
     -->
 	<target name="fixcrlf" description="Change the end-of-line string to single cr like under Linux" depends="init">
 		<property name="dir_todo" value="scripts" />
@@ -421,8 +420,8 @@ For Mac OS, the default is "cr".
 	</target>
 
 	<!--
-	rm -f ParseException.java SimpleCharStream.java Token.java TokenMgrError.java 
-	rm -f AmberParser.java AmberParserConstants.java AmberParserTokenManager.java    	
+	rm -f ParseException.java SimpleCharStream.java Token.java TokenMgrError.java
+	rm -f AmberParser.java AmberParserConstants.java AmberParserTokenManager.java
 	-->
 
 	<target name="parserAmber" depends="init" description="JavaCC compiler compiler Amber">

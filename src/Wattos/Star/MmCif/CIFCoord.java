@@ -48,10 +48,10 @@ public class CIFCoord {
     UserInterface ui;
 
     public static ArrayList dataTypeTranslationExceptions = new ArrayList();
-    
+
     /** BEGIN BLOCK COPY FROM Wattos.Soup.PdbFile */
     public DBMS         dbms;
-    public Gumbo        gumbo;    
+    public Gumbo        gumbo;
     public Atom         atom;
     public Residue      res;
     public Molecule     mol;
@@ -62,64 +62,64 @@ public class CIFCoord {
     public Relation     molMain;
     public Relation     modelMain;
     public Relation     entryMain;
-    
+
     int previousAtomId  = Defs.NULL_INT;
     int currentAtomId   = Defs.NULL_INT;
     int currentResId    = Defs.NULL_INT;
     int currentMolId    = Defs.NULL_INT;
     int currentModelId  = Defs.NULL_INT;
-    int currentEntryId  = Defs.NULL_INT;    
-//    public String tagNameEntryId;          
-//    public String tagNameEntryName;        
-//    public String tagNameMolEntryId;       
-    public String tagNameMolId;            
-    public String tagNameMolAssEntityId;   
+    int currentEntryId  = Defs.NULL_INT;
+//    public String tagNameEntryId;
+//    public String tagNameEntryName;
+//    public String tagNameMolEntryId;
+    public String tagNameMolId;
+    public String tagNameMolAssEntityId;
 //    public String tagNameMolAssEntityLabel;
-//    public String tagNameMolSFCategory;    
-    public String tagNameMolEntityId;      
-    public String tagNameMolType;          
-    public String tagNameMolName; // same values as another?          
-    public String tagNameMolPolType;       
-    public String tagNameMolPolMolId;       
-    
-//    public String tagNameMolSeqLength;     
-//    public String tagNameMolSeq;           
-//    public String tagNameResEntityId;      
-    public String tagNameResNum;         
-    public String tagNameResCompId;        
-    public String tagNameResMolId;         
-//    public String tagNameResResId;         
-//    public String tagNameResNum_2;         
+//    public String tagNameMolSFCategory;
+    public String tagNameMolEntityId;
+    public String tagNameMolType;
+    public String tagNameMolName; // same values as another?
+    public String tagNameMolPolType;
+    public String tagNameMolPolMolId;
+
+//    public String tagNameMolSeqLength;
+//    public String tagNameMolSeq;
+//    public String tagNameResEntityId;
+    public String tagNameResNum;
+    public String tagNameResCompId;
+    public String tagNameResMolId;
+//    public String tagNameResResId;
+//    public String tagNameResNum_2;
     public String tagNameResName;
     public String tagNameResNonPolMolId;
     public String tagNameResNonPolCompId;
     public String tagNameResNonPolNum;
-    
+
 //    public String tagNameChem_compSFCategory;
 //    public String tagNameChem_compId;
 //    public String tagNameChem_compType;
 
-//    public String tagNameAtomSFCategory;   
-//    public String tagNameAtomSFId_1;       
-//    public String tagNameAtomSFId_2;       
-    public String tagNameAtomModelId;      
-    public String tagNameAtomId;           
-    public String tagNameAtomAsym_ID;       
-    public String tagNameAtomEntityId;       
-    public String tagNameAtomResId;        
-    public String tagNameAtomResName;      
-    public String tagNameAtomName;         
-    public String tagNameAtomAuthMolId;    
-    public String tagNameAtomAuthResId;       
-    public String tagNameAtomAuthResName;  
-    public String tagNameAtomAuthName;   
-    public String tagNameAtomPdbInsertionCode;       
-    public String tagNameAtomElementId;    
-    public String tagNameAtomCoorX;        
-    public String tagNameAtomCoorY;        
-    public String tagNameAtomCoorZ;         
-    public String tagNameAtomBFactor;      
-    public String tagNameAtomOccupancy;      
+//    public String tagNameAtomSFCategory;
+//    public String tagNameAtomSFId_1;
+//    public String tagNameAtomSFId_2;
+    public String tagNameAtomModelId;
+    public String tagNameAtomId;
+    public String tagNameAtomAsym_ID;
+    public String tagNameAtomEntityId;
+    public String tagNameAtomResId;
+    public String tagNameAtomResName;
+    public String tagNameAtomName;
+    public String tagNameAtomAuthMolId;
+    public String tagNameAtomAuthResId;
+    public String tagNameAtomAuthResName;
+    public String tagNameAtomAuthName;
+    public String tagNameAtomPdbInsertionCode;
+    public String tagNameAtomElementId;
+    public String tagNameAtomCoorX;
+    public String tagNameAtomCoorY;
+    public String tagNameAtomCoorZ;
+    public String tagNameAtomBFactor;
+    public String tagNameAtomOccupancy;
 
     /** END BLOCK */
 
@@ -135,17 +135,17 @@ public class CIFCoord {
         this.ui      = ui;
         if ( ! initConvenienceVariables() ) {
             throw new Exception( "Failed to initConvenienceVariables" );
-        }    
+        }
         if ( ! initConvenienceVariablesStar() ) {
             throw new Exception( "Failed to initConvenienceVariablesStar" );
-        }    
+        }
     }
-        
-        
+
+
     /** BEGIN BLOCK FOR SETTING LOCAL CONVENIENCE VARIABLES COPY FROM Wattos.Soup.PdbFile */
     public boolean initConvenienceVariables() {
-        
-        atomMain = dbms.getRelation( Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[RelationSet.RELATION_ID_MAIN_RELATION_NAME] );        
+
+        atomMain = dbms.getRelation( Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[RelationSet.RELATION_ID_MAIN_RELATION_NAME] );
         if ( atomMain == null ) {
             General.showError("failed to find the atom main relation");
             return false;
@@ -154,12 +154,12 @@ public class CIFCoord {
         if ( atom == null ) {
             General.showError("failed to find atom RelationSet");
             return false;
-        }        
+        }
         gumbo = (Gumbo) atom.getRelationSoSParent();
         if ( gumbo == null ) {
             General.showError("failed to find the gumbo RelationSoS");
             return false;
-        }        
+        }
         atom    = gumbo.atom;
         res     = gumbo.res;
         mol     = gumbo.mol;
@@ -188,14 +188,14 @@ public class CIFCoord {
             tagNameMolName                    = (String) ((ArrayList)starDict.toCIF2D.get( "mol_main",       "name"         )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameMolPolType                 = (String) ((ArrayList)starDict.toCIF2D.get( "mol_main",       "pol_type"         )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameMolPolMolId                = (String) ((ArrayList)starDict.toCIF2D.get( "mol_main",       "_entity_poly.entity_id" )).get(StarDictionary.POSITION_CIF_TAG_NAME);
-            
-            
-            
+
+
+
             tagNameResNum                     = (String) ((ArrayList)starDict.toCIF2D.get( "res_main",       "res_id"                       )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameResCompId                  = (String) ((ArrayList)starDict.toCIF2D.get( "res_main",       "name"                   )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameResMolId                   = (String) ((ArrayList)starDict.toCIF2D.get( "res_main",       "mol_id"                                       )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameResName                    = (String) ((ArrayList)starDict.toCIF2D.get( "res_main",       Relation.DEFAULT_ATTRIBUTE_NAME                                         )).get(StarDictionary.POSITION_CIF_TAG_NAME);
-            
+
             tagNameResNonPolMolId             = (String) ((ArrayList)starDict.toCIF2D.get( "res_main",     "_pdbx_nonpoly_scheme.asym_id"         )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameResNonPolCompId            = (String) ((ArrayList)starDict.toCIF2D.get( "res_main",     "_pdbx_nonpoly_scheme.mon_id"         )).get(StarDictionary.POSITION_CIF_TAG_NAME);
             tagNameResNonPolNum               = (String) ((ArrayList)starDict.toCIF2D.get( "res_main",     "_pdbx_nonpoly_scheme.ndb_seq_num"         )).get(StarDictionary.POSITION_CIF_TAG_NAME);
@@ -224,136 +224,145 @@ public class CIFCoord {
             return false;
         }
         return true;
-    }        
+    }
     /** END BLOCK */
-    
 
-    
+
+
     /**
      * Creates a new instance of CIFCoord
      */
     public CIFCoord() {
     }
-    
-    /** Convert the data in the file to components in the gumbo etc. 
+
+    /** Convert the data in the file to components in the gumbo etc.
        Will list max of one conversion error per column in db.
      *Deselects all other entries in DBMS until now.
      *If atoms in restraint data can not be linked to atoms in coordinate list they will be marked in:
      *dc.hasUnLinkedAtom.
-     */    
-    public boolean toWattos(URL url, boolean syncModels) {        
+     */
+    public boolean toWattos(URL url, boolean syncModels) {
         // Use a temporary dbms so the data doesn't clobber the regular one.
         DBMS dbmsTemp = new DBMS();
-        StarFileReader sfr = new StarFileReader(dbmsTemp);        
+        StarFileReader sfr = new StarFileReader(dbmsTemp);
         StarNode sn = sfr.parse( url );
         if ( sn == null ) {
             General.showError("toWattos was unsuccessful. Failed to read mmcif formatted file");
             return false;
-        }        
+        }
         Object o_tmp_1 = sn.get(0);
         if ( !(o_tmp_1 instanceof DataBlock)) {
             General.showError("Expected top level object of type DataBlock but got: " + o_tmp_1.getClass().getName());
             return false;
         }
         DataBlock db = (DataBlock) o_tmp_1;
-        
+
 //        General.showDebug( "Read star file was: "+db.toSTAR());
 
         StarDictionary starDict = ui.wattosLib.starDictionary;
         if ( starDict == null ) {
-            General.showCodeBug("Couldn find the star dictionary in ui.wattosLib");            
+            General.showCodeBug("Couldn find the star dictionary in ui.wattosLib");
             return false;
         }
-        boolean isMMCIF = true;        
-        boolean status = db.translateToNativeTypesByDict( starDict, isMMCIF);            
+        boolean isMMCIF = true;
+        boolean status = db.translateToNativeTypesByDict( starDict, isMMCIF);
         if ( ! status ) {
             General.showError("Failed to automatically convert to native types as defined in the star dictionary. Check input and try again please.");
             return false;
         }
-//        General.showDebug("Automatically converted to native types as defined in the star dictionary.");                        
+//        General.showDebug("Automatically converted to native types as defined in the star dictionary.");
 
-        /** 
-            _struct_asym.id 
-            _struct_asym.pdbx_blank_PDB_chainid_flag 
-            _struct_asym.pdbx_modified 
-            _struct_asym.entity_id 
-            _struct_asym.details 
-            A N N 1 ? 
+        /**
+_pdbx_version.entry_id        1AI0
+_pdbx_version.revision_date   2007-03-16
+_pdbx_version.major_version   3
+_pdbx_version.minor_version   100
+_pdbx_version.details         ?
+        */
+        TagTable tTPdbxVersion = db.getTagTable("_pdbx_version.major_version",true);
+
+        /**
+            _struct_asym.id
+            _struct_asym.pdbx_blank_PDB_chainid_flag
+            _struct_asym.pdbx_modified
+            _struct_asym.entity_id
+            _struct_asym.details
+            A N N 1 ?
             B N N 2 ?
-            */ 
+            */
         TagTable tTStructAsym = db.getTagTable(tagNameMolId,true);
-        /** 
-            _entity.id 
-            _entity.type 
-            _entity.pdbx_description 
-            
+        /**
+            _entity.id
+            _entity.type
+            _entity.pdbx_description
+
             ...
-            1 polymer     syn 55-MER                      17626.533 1 ? ? ?                                     ? 
-            2 polymer     man 'Transcription factor IIIA' 10299.908 1 ? ? 'zinc fingers 4-6 (residues 127-212)' ? 
-            3 non-polymer syn 'ZINC ION'                  65.380    3 ? ? ?  
-            */                                   
+            1 polymer     syn 55-MER                      17626.533 1 ? ? ?                                     ?
+            2 polymer     man 'Transcription factor IIIA' 10299.908 1 ? ? 'zinc fingers 4-6 (residues 127-212)' ?
+            3 non-polymer syn 'ZINC ION'                  65.380    3 ? ? ?
+            */
         TagTable tTEntity     = db.getTagTable(tagNameMolEntityId,true);
-        /** _entity_poly.entity_id                      1 
+        /** _entity_poly.entity_id                      1
             _entity_poly.type                           polypeptide(L) */
         TagTable tTEntityPoly = db.getTagTable(tagNameMolPolType,false);  // if present
-        
+
         /** _entity_poly_seq.entity_id
             _entity_poly_seq.num
             _entity_poly_seq.mon_id
-            1  1 MET 
+            1  1 MET
             1  2 SER etc... Optional for when there are no polymers.*/
         TagTable tTEntityPolySeq = db.getTagTable(tagNameResMolId,false); // if present
-        
-        /** _pdbx_nonpoly_scheme.asym_id 
-            _pdbx_nonpoly_scheme.entity_id 
-            _pdbx_nonpoly_scheme.mon_id 
+
+        /** _pdbx_nonpoly_scheme.asym_id
+            _pdbx_nonpoly_scheme.entity_id
+            _pdbx_nonpoly_scheme.mon_id
             _pdbx_nonpoly_scheme.ndb_seq_num # important tag for numbering within asym
-            B 2 MG  1 201 201 MG  MG  ? . 
-            C 3 GDP 1 200 200 GDP GDP ? . 
-            D 4 HOH 1 1   1   HOH HOH ? . 
-            D 4 HOH 2 2   2   HOH HOH ? .             */        
+            B 2 MG  1 201 201 MG  MG  ? .
+            C 3 GDP 1 200 200 GDP GDP ? .
+            D 4 HOH 1 1   1   HOH HOH ? .
+            D 4 HOH 2 2   2   HOH HOH ? .             */
         TagTable tTEntityNonPoly = db.getTagTable(tagNameResNonPolMolId,true);
-        
+
         /**
-_atom_site.group_PDB 
-_atom_site.id 
-_atom_site.type_symbol 
-_atom_site.label_atom_id 
-_atom_site.label_alt_id 
-_atom_site.label_comp_id 
-_atom_site.label_asym_id 
-_atom_site.label_entity_id 
-_atom_site.label_seq_id 
-_atom_site.pdbx_PDB_ins_code 
-_atom_site.Cartn_x 
-_atom_site.Cartn_y 
-_atom_site.Cartn_z 
-_atom_site.occupancy 
-_atom_site.B_iso_or_equiv 
-_atom_site.Cartn_x_esd 
-_atom_site.Cartn_y_esd 
-_atom_site.Cartn_z_esd 
-_atom_site.occupancy_esd 
-_atom_site.B_iso_or_equiv_esd 
-_atom_site.auth_seq_id 
-_atom_site.auth_comp_id 
-_atom_site.auth_asym_id 
-_atom_site.auth_atom_id 
-_atom_site.pdbx_PDB_model_num 
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.Cartn_x_esd
+_atom_site.Cartn_y_esd
+_atom_site.Cartn_z_esd
+_atom_site.occupancy_esd
+_atom_site.B_iso_or_equiv_esd
+_atom_site.auth_seq_id
+_atom_site.auth_comp_id
+_atom_site.auth_asym_id
+_atom_site.auth_atom_id
+_atom_site.pdbx_PDB_model_num
 
 2hgh / 1ai0 waters without residue number in same entity:
 
-ATOM   1     P  P      . G   A 1 1  ? -6.937  29.285  -10.973 1.00 0.00 ? ? ? ? ? 1   G   B P      1  
-ATOM   6329  H  HB3    . ASP B 2 87 ? -13.031 33.553  -1.159  1.00 0.00 ? ? ? ? ? 190 ASP A HB3    2  
-HETATM 6330  ZN ZN     . ZN  C 3 .  ? 15.007  -10.087 -10.730 1.00 0.00 ? ? ? ? ? 191 ZN  A ZN     2  
-HETATM 6331  ZN ZN     . ZN  D 3 .  ? -7.655  6.077   -12.407 1.00 0.00 ? ? ? ? ? 192 ZN  A ZN     2  
-HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? ? 193 ZN  A ZN     2                 
-HETATM 4797  O  O      . HOH U 5 .  ? 0.104   -1.907  -19.678 1.00 0.00 ? ? ? ? ? 9  HOH ? O    1  
-HETATM 4798  H  H1     . HOH U 5 .  ? 0.336   -2.657  -19.128 1.00 0.00 ? ? ? ? ? 9  HOH ? H1   1  
-HETATM 4799  H  H2     . HOH U 5 .  ? 0.882   -1.736  -20.204 1.00 0.00 ? ? ? ? ? 9  HOH ? H2   1  
-HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? ? 10 HOH ? O    1   */ 
+ATOM   1     P  P      . G   A 1 1  ? -6.937  29.285  -10.973 1.00 0.00 ? ? ? ? ? 1   G   B P      1
+ATOM   6329  H  HB3    . ASP B 2 87 ? -13.031 33.553  -1.159  1.00 0.00 ? ? ? ? ? 190 ASP A HB3    2
+HETATM 6330  ZN ZN     . ZN  C 3 .  ? 15.007  -10.087 -10.730 1.00 0.00 ? ? ? ? ? 191 ZN  A ZN     2
+HETATM 6331  ZN ZN     . ZN  D 3 .  ? -7.655  6.077   -12.407 1.00 0.00 ? ? ? ? ? 192 ZN  A ZN     2
+HETATM 6332  ZN ZN     . ZN  E 3 .  ? -17.047 23.691  1.024   1.00 0.00 ? ? ? ? ? 193 ZN  A ZN     2
+HETATM 4797  O  O      . HOH U 5 .  ? 0.104   -1.907  -19.678 1.00 0.00 ? ? ? ? ? 9  HOH ? O    1
+HETATM 4798  H  H1     . HOH U 5 .  ? 0.336   -2.657  -19.128 1.00 0.00 ? ? ? ? ? 9  HOH ? H1   1
+HETATM 4799  H  H2     . HOH U 5 .  ? 0.882   -1.736  -20.204 1.00 0.00 ? ? ? ? ? 9  HOH ? H2   1
+HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? ? 10 HOH ? O    1   */
         TagTable tTCoor       = db.getTagTable(tagNameAtomAsym_ID,true);
-                                
+
         if ( tTStructAsym == null ) {
             General.showError("Failed to find assembly defs.");
             return false;
@@ -371,8 +380,8 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
         // Translate As to 1s.
         /** _struct_asym.id
             _struct_asym.entity_id
-            A 1 
-            B 1 
+            A 1
+            B 1
          *From 1b4c. Need to translate ABC etc to 123 for char to int.
          *Per asym_id only 1 entity id.
          */
@@ -384,54 +393,54 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
         tTStructAsym.copyColumnBlock(tTStructAsym, tagNameMolId, 0, savedColumnName, 0, tTStructAsym.sizeMax);
         if ( ! convertChainId2EntityId(tTStructAsym, tagNameMolId,  asymId2IntMap)) {
             General.showError("Failed to convertChainId2EntityId for: "+tagNameMolId);
-            return false;            
-        }        
-//        General.showDebug("Column: "+ tagNameMolName+" is (2): " + Strings.toString( 
+            return false;
+        }
+//        General.showDebug("Column: "+ tagNameMolName+" is (2): " + Strings.toString(
 //                tTEntity.getColumnString(tagNameMolName)));
         Strings.deriveUniqueNames( tTEntity.getColumnString(tagNameMolName) );
-//        General.showDebug("Column: "+ tagNameMolName+" is (2): " + Strings.toString( 
+//        General.showDebug("Column: "+ tagNameMolName+" is (2): " + Strings.toString(
 //                tTEntity.getColumnString(tagNameMolName)));
         if ( ! convertChainId2EntityId(tTEntityNonPoly,tagNameResNonPolMolId, asymId2IntMap)) {
             General.showError("Failed to convertChainId2EntityId for: "+tagNameResNonPolMolId);
-            return false;            
+            return false;
         }
         if ( ! convertChainId2EntityId(tTCoor,       tagNameAtomAsym_ID, asymId2IntMap)) {
             General.showError("Failed to convertChainId2EntityId for: "+tagNameAtomAsym_ID);
-            return false;            
+            return false;
         }
-        
+
         // ENTRY
         // MODEL
         int modelCountMax = 1;
         if ( tTCoor != null ) { // Make just one model if there's no coordinates.
             // Check to see the first is 1
             if ( tTCoor.getValueInt(0, tagNameAtomModelId) != 1 ) {
-                General.showError("The models need to be numbered starting at 1 but found:" + tTCoor.getValueInt(0, tagNameAtomModelId));            
+                General.showError("The models need to be numbered starting at 1 but found:" + tTCoor.getValueInt(0, tagNameAtomModelId));
                 return false;
             }
             // Last model's number
             // this wouldn't work with gaps in relation but since the data is read consequetively from
             // the star file it always works.
-            modelCountMax = tTCoor.getValueInt(tTCoor.sizeRows-1, tagNameAtomModelId); 
+            modelCountMax = tTCoor.getValueInt(tTCoor.sizeRows-1, tagNameAtomModelId);
         }
-        
-        // MOLECULES        
+
+        // MOLECULES
         if ( ! tTStructAsym.isSortedFromOneInColumn( tagNameMolId ) ) {
             General.showError("The assembly tT needs to be ordered on the entity id.");
             return false;
         }
         // Assume no rows are deleted (Safe after test above)
         int molCountMax = tTStructAsym.sizeRows;
-        
-        
+
+
 
         int[] entityIdList = (int[]) tTStructAsym.getColumn(tagNameMolAssEntityId);
-        // Cache the rids so we don't need fancy lookup below. 
+        // Cache the rids so we don't need fancy lookup below.
         // Costs are reasonable: 40*2*200*4 bytes=64kb
         int[]       rid_model = new int[modelCountMax+1];
         int[][]     rid_mol   = new int[modelCountMax+1][molCountMax+1];
         int[][][]   rid_res   = new int[modelCountMax+1][molCountMax+1][];
-        
+
 
 // ENTRY
         String entryName    = InOut.getFilenameBase( new File(url.getFile()));
@@ -439,7 +448,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
             entryName    = entryName.substring(0, 4);
         }
         String assemblyName = entryName;
-        
+
         OrfIdList orfIdList = null;
         currentEntryId = entry.add(entryName, orfIdList, assemblyName);
         if ( currentEntryId < 0 ) {
@@ -453,20 +462,35 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
         }
 //        General.showDebug("Setting selected for entry with rid: " + currentEntryId);
         entry.selected.set( currentEntryId );
-        
+        if ( tTPdbxVersion == null ) {
+            General.showWarning("Failed to find table with tag _pdbx_version.major_version defs. Continueing without setting version.");
+        } else {
+            General.showDebug("Found table with tag _pdbx_version.major_version defs.");
+            String majorVersion = tTPdbxVersion.getValueString(0, "_pdbx_version.major_version");
+            String minorVersion = tTPdbxVersion.getValueString(0, "_pdbx_version.minor_version");
+            String pdbVersion = null;
+            if (majorVersion == null || minorVersion == null ) {
+                General.showWarning("Failed to find tag _pdbx_version.min/major_version defs. Continueing without setting version.");
+            } else{
+                pdbVersion = majorVersion + "." + minorVersion;
+                General.showDebug("Setting pdbCoordinateFileVersionNameList to: " + pdbVersion);
+            	entry.pdbCoordinateFileVersionNameList[currentEntryId] = pdbVersion;
+        	}
+        }
+
 // MODEL
 //        boolean showWarningtTResHeader = true;
         for (int modelCount=1;modelCount<=modelCountMax;modelCount++) {
-            currentModelId = model.add(modelCount, currentEntryId);            
+            currentModelId = model.add(modelCount, currentEntryId);
             if ( currentModelId < 0 ) {
                 General.showCodeBug("Failed to add model number:" + modelCount + " into dbms.");
                 return false;
             }
             model.selected.set( currentModelId );
-            // cache rid model 
+            // cache rid model
             rid_model[ modelCount ] = currentModelId;
-            
-            int tTAssemblyRID = 0;            
+
+            int tTAssemblyRID = 0;
 // MOLECULE
             for (int molCount=1;molCount<=molCountMax;molCount++) {
 //                General.showDebug("Working on molecule: " + Integer.toString(molCount));
@@ -474,10 +498,10 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                 String asymId = tTStructAsym.getValueString(tTAssemblyRID, savedColumnName);
 //                General.showDebug("Found asymId from savedColumnName: ["+asymId+"]");
 //                Parameters p = new Parameters(); // Printf parameters
-//                p.add( gumbo.entry.nameList[ gumbo.model.entryId[ currentModelId ]] );            
+//                p.add( gumbo.entry.nameList[ gumbo.model.entryId[ currentModelId ]] );
 //                p.add( entityId );
-//                String molName = Format.sprintf("%s%03i", p);       
-                String molName = tTEntity.getValueString(entityId-1,tagNameMolName);                    
+//                String molName = Format.sprintf("%s%03i", p);
+                String molName = tTEntity.getValueString(entityId-1,tagNameMolName);
                 if ( molName == null ) {
                     General.showError("Failed to get molName for molecule entity: " + entityId);
                     return false;
@@ -488,14 +512,14 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                     return false;
                 }
                 mol.selected.set( currentMolId );
-                
+
                 // cache rid molecule
-                rid_mol[modelCount][molCount] = currentMolId;                
+                rid_mol[modelCount][molCount] = currentMolId;
                 /** E.g. polymer, non-polymer, water, other, or unknown */
                 String molType      = Molecule.typeEnum[     Molecule.UNKNOWN_TYPE];
                 /** E.g. polypeptide(L) */
                 String molPolType   = Molecule.polTypeEnum[  Molecule.UNKNOWN_POL_TYPE];
-                
+
                 if ( tTEntity != null ) {
 //                    General.showDebug("tTEntity reads: " + tTEntity.toSTAR());
                     BitSet entitySet = SQLSelect.selectBitSet(dbmsTemp,tTEntity,tagNameMolEntityId,
@@ -509,7 +533,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                         return false;
                     }
                     int rid = entitySet.nextSetBit(0);
-                    molType = tTEntity.getValueString(rid,tagNameMolType);                    
+                    molType = tTEntity.getValueString(rid,tagNameMolType);
                 } else {
                     General.showError("Each entity should have been defined; none found for molecule: " + mol.nameList[currentMolId]);
                     return false;
@@ -535,7 +559,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
 //                General.showDebug("Found molType    : "+ molType);
 //                General.showDebug("Found molPolType : "+ molPolType);
 //                mol.setName(   currentMolId, sFRes.title );
-                mol.setType(   currentMolId, molType); 
+                mol.setType(   currentMolId, molType);
                 mol.setPolType(currentMolId, molPolType);
                 mol.nameList[currentMolId] = molName;
 // RESIDUES
@@ -549,7 +573,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                     if ( resSet == null ) {
                         General.showError("Missed residues for entity: " + entityId);
                         return false;
-                    }         
+                    }
                     // Check to see the first is 1
                     int firstResRid = resSet.nextSetBit(0);
                     if ( firstResRid < 0 ) { // No residues will be added from tTEntityPolySeq
@@ -568,18 +592,18 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                             General.showError("Expected a positive resCountMax (not null either) but found:" + resCountMax);
                             return false;
                         }
-                        rid_res[modelCount][molCount] = new int[resCountMax+1]; // assign last dimension within.                
+                        rid_res[modelCount][molCount] = new int[resCountMax+1]; // assign last dimension within.
                         String[] resNameList    = tTEntityPolySeq.getColumnString( tagNameResName );
                         int[] resSeqId          = tTEntityPolySeq.getColumnInt( tagNameResNum );
                         int resCount=1;
                         for (int tTResRID=resSet.nextSetBit(0);tTResRID>=0;tTResRID=resSet.nextSetBit(tTResRID+1)) {
                             if ( resSeqId[tTResRID] != resCount ) {
-                                General.showError("Expected resSeqId[tTResRID] == resCount but found: " + 
+                                General.showError("Expected resSeqId[tTResRID] == resCount but found: " +
                                         resSeqId[tTResRID] + " and: " + resCount + " at tTResRID: " + tTResRID);
                                 return false;
                             }
-                            currentResId = res.add( resNameList[tTResRID], resSeqId[tTResRID], 
-                                    Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );                    
+                            currentResId = res.add( resNameList[tTResRID], resSeqId[tTResRID],
+                                    Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );
                             if ( currentResId < 0 ) {
                                 General.showCodeBug("Failed to add res id:" + resCount + " into dbms.");
                                 return false;
@@ -594,8 +618,8 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                         }
                     } // end of conditional residues being present block; can't break out of an if block?
                 } // end of work on polyseq
-                
-                // Try to add from Coor 
+
+                // Try to add from Coor
                 if ( ! doneWithEntityPolyOrNonPoly) { // try to get residue name(s) from the coordinates
 //                    General.showDebug("Not done with entity poly; must be a nonpoly/water.");
                     BitSet atomSet = SQLSelect.selectBitSet(dbmsTemp,tTCoor,tagNameAtomEntityId,
@@ -617,14 +641,14 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                         General.showError("Failed to find any atom in first model for entity: " + entityId);
                         General.showError("This was found in for instance entry 1j6t for the PO3 group and was reported in NRG issue 157");
                         General.showError("No easy work around possible.");
-                        return false;                        
+                        return false;
                     }
                     int resCount=1;
                     String resName = tTCoor.getValueString(firstAtomRid, tagNameAtomResName);
                     // Water is so special for live on earth.
                     if ( mol.type[currentMolId]!=Molecule.WATER_TYPE ) {
-                        rid_res[modelCount][molCount] = new int[resCount+1]; // assign last dimension within.                
-                        currentResId = res.add( resName, resCount, Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );                    
+                        rid_res[modelCount][molCount] = new int[resCount+1]; // assign last dimension within.
+                        currentResId = res.add( resName, resCount, Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );
                         if ( currentResId < 0 ) {
                             General.showCodeBug("Failed to add res count:" + resCount + " into dbms.");
                             return false;
@@ -645,32 +669,32 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                         rid_res[modelCount][molCount] = new int[water_count+1]; // assign last dimension within.
                         for ( int atomRid=atomOSet.nextSetBit(0);atomRid>=0;atomRid = atomOSet.nextSetBit(atomRid+1)) {
                             tTCoor.setValue(atomRid, tagNameAtomResId, new Integer(resCount));
-                            currentResId = res.add( resName, resCount, Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );                    
+                            currentResId = res.add( resName, resCount, Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );
                             if ( currentResId < 0 ) {
                                 General.showCodeBug("Failed to add WATER:" + resCount + " into dbms.");
                                 return false;
                             }
                             res.selected.set( currentResId );
                             // cache rid residue
-                            rid_res[modelCount][molCount][resCount] = currentResId;      
+                            rid_res[modelCount][molCount][resCount] = currentResId;
                             // are there follow up Hydrogens?
                             for (int offset=1;offset<3;offset++) {
-                                int atomRid2 = atomRid+offset;                                
+                                int atomRid2 = atomRid+offset;
                                 if ( atomSet.get(atomRid2) && tTCoor.getValueString(atomRid2, tagNameAtomName).startsWith("H")) {
-                                    tTCoor.setValue(atomRid2, tagNameAtomResId, new Integer(resCount));                                            
+                                    tTCoor.setValue(atomRid2, tagNameAtomResId, new Integer(resCount));
 //                                    General.showDebug("Renumbered water residue for coor table at: " + tTCoor.toStringRow(atomRid2, false));
                                 }
                             }
                             resCount++;
-                        }                        
+                        }
                     }
                 }
                 tTAssemblyRID++;
-            } // end of loop over molecules      
+            } // end of loop over molecules
         } // end of loop over models
-                     
-        
-// ATOMS        
+
+
+// ATOMS
         // Already checked to see the first is 1
         int atomCountMax = tTCoor.sizeRows;
 
@@ -678,13 +702,13 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
          *then copy the complete set to the dbms main table for atoms. The copy
          *can be batched and will be faster than copy one by one row.
          */
-        String[] newbies = { 
-            Gumbo.DEFAULT_ATTRIBUTE_SET_RES[ RelationSet.RELATION_ID_COLUMN_NAME ],   
-            Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[ RelationSet.RELATION_ID_COLUMN_NAME ],   
-            Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RelationSet.RELATION_ID_COLUMN_NAME ], 
-            Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME ], 
-            Gumbo.DEFAULT_ATTRIBUTE_HAS_COOR,  
-            Relation.DEFAULT_ATTRIBUTE_SELECTED,  
+        String[] newbies = {
+            Gumbo.DEFAULT_ATTRIBUTE_SET_RES[ RelationSet.RELATION_ID_COLUMN_NAME ],
+            Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[ RelationSet.RELATION_ID_COLUMN_NAME ],
+            Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RelationSet.RELATION_ID_COLUMN_NAME ],
+            Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME ],
+            Gumbo.DEFAULT_ATTRIBUTE_HAS_COOR,
+            Relation.DEFAULT_ATTRIBUTE_SELECTED,
             Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID
         };
         if ( !(
@@ -694,7 +718,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
             tTCoor.insertColumn(0, Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME ],      Relation.DATA_TYPE_INT,null) &&
             tTCoor.insertColumn(0, Gumbo.DEFAULT_ATTRIBUTE_HAS_COOR,           Relation.DATA_TYPE_BIT,null) &&
             tTCoor.insertColumn(0, Relation.DEFAULT_ATTRIBUTE_SELECTED,        Relation.DATA_TYPE_BIT,null) &&
-            tTCoor.insertColumn(0, Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID,         Relation.DATA_TYPE_INT,null) 
+            tTCoor.insertColumn(0, Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID,         Relation.DATA_TYPE_INT,null)
         )) {
             General.showError("Failed to insert all required columns");
             return false;
@@ -707,18 +731,18 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
         hasCoor.or( tTCoor.used );
 
         // Rename some.
-        String[] equivalents = { 
-                Relation.DEFAULT_ATTRIBUTE_NAME,          
-                Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME, 
-                Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID,   
-                Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME, 
+        String[] equivalents = {
+                Relation.DEFAULT_ATTRIBUTE_NAME,
+                Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME,
+                Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID,
+                Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME,
                 Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME,
                 Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE,
-                Gumbo.DEFAULT_ATTRIBUTE_COOR_X,        
-                Gumbo.DEFAULT_ATTRIBUTE_COOR_Y,        
-                Gumbo.DEFAULT_ATTRIBUTE_COOR_Z,        
-                Gumbo.DEFAULT_ATTRIBUTE_BFACTOR,    
-                Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY      
+                Gumbo.DEFAULT_ATTRIBUTE_COOR_X,
+                Gumbo.DEFAULT_ATTRIBUTE_COOR_Y,
+                Gumbo.DEFAULT_ATTRIBUTE_COOR_Z,
+                Gumbo.DEFAULT_ATTRIBUTE_BFACTOR,
+                Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY
         };
         for ( int n=0;n<equivalents.length;n++) {
             String columnName = (String) ((ArrayList)starDict.toCIF2D.get( "atom_main", equivalents[n])).get(StarDictionary.POSITION_CIF_TAG_NAME);
@@ -730,26 +754,26 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                 General.showError("Failed to rename column: " + columnName + " to: " + equivalents[n] + ". Is it present?");
                 return false;
             }
-        }                            
+        }
         /** Translate the string elements to int elements using an slightly optimized routine.
          */
         int[] elementIds = (int[]) tTCoor.getColumn( Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID );
         String[] elementIdsTmp = (String[]) tTCoor.getColumn(tagNameAtomElementId);
         if ( elementIdsTmp == null ) {
-            General.showWarning("No element ids tag  present in input at with name: " + tagNameAtomElementId + " ; setting all to null.");                    
+            General.showWarning("No element ids tag  present in input at with name: " + tagNameAtomElementId + " ; setting all to null.");
             tTCoor.setValueByColumn( Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID, new Integer(Defs.NULL_INT));
         } else {
             // Only need to do for sizeRows; not maxRows because we are garanteed they're not all used.
             if ( ! Chemistry.translateElementNameToIdInArrays( elementIdsTmp, elementIds, false, 0, tTCoor.sizeRows ) ) {
-                General.showError("Failed to translate all element names to ids in arrays; setting all to null. Shouldn't be fatal but it might.");                    
+                General.showError("Failed to translate all element names to ids in arrays; setting all to null. Shouldn't be fatal but it might.");
                 tTCoor.setValueByColumn( Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID, new Integer(Defs.NULL_INT));
                 return false;
             }
-        }            
+        }
         tTCoor.setValueByColumn(Gumbo.DEFAULT_ATTRIBUTE_HAS_COOR,  Boolean.valueOf(true));
 
         /** Set fkcs */
-        tTCoor.setValueByColumn(Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME ], new Integer(currentEntryId));                  
+        tTCoor.setValueByColumn(Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME ], new Integer(currentEntryId));
         int[]   atomModelIdList         = (int[])       tTCoor.getColumn( tagNameAtomModelId );
         int[]   atomMolIdList           = (int[])       tTCoor.getColumn( tagNameAtomAsym_ID );
         int[]   atomResIdList           = (int[])       tTCoor.getColumn( tagNameAtomResId );
@@ -770,7 +794,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
         int resNum;
         int atomCount=0;
         try {
-            for (;atomCount<atomCountMax;atomCount++) {        // This loop might want to be optimized        
+            for (;atomCount<atomCountMax;atomCount++) {        // This loop might want to be optimized
                 modelNum    = atomModelIdList[  atomCount];
                 molNum      = atomMolIdList[    atomCount];
                 resNum      = atomResIdList[    atomCount];
@@ -780,14 +804,14 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                 }
                 model_main_id[  atomCount] = rid_model[ modelNum];
                 mol_main_id[    atomCount] = rid_mol[   modelNum][molNum];
-                res_main_id[    atomCount] = rid_res[   modelNum][molNum][resNum];                
+                res_main_id[    atomCount] = rid_res[   modelNum][molNum][resNum];
             }
         } catch ( Throwable t ) {
             General.showThrowable(t);
             General.showError("For atom: " + atomCount + " in the file, failed to set the RIDs" );
             General.showError("Model number: " + atomModelIdList[  atomCount] + ", molecule number: " + atomMolIdList[    atomCount] + ", residue number: " + atomResIdList[    atomCount]);
             General.showError("Is the atom in known topology. E.g. does the residue occur in the system description.");
-            General.showError("This also happens when the model numbering is significantly off as per issue 169 for eg entries 1j6y and 2fce");            
+            General.showError("This also happens when the model numbering is significantly off as per issue 169 for eg entries 1j6y and 2fce");
             return false;
         }
 
@@ -797,11 +821,11 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
         if ( ! atomMain.append( tTCoor, 0, atomCountMax, columnsToCopy, false) ) {
             General.showCodeBug("Failed to append from modifed tag table in STAR file to Wattos atom main relation");
             return false;
-        }                
-           
+        }
+
         // Sync the atoms over the models in the entry. Note that this will remove unsynced atoms.
         if ( syncModels ) {
-            if ( (! entry.modelsSynced.get( currentEntryId  )) && 
+            if ( (! entry.modelsSynced.get( currentEntryId  )) &&
                  (! entry.syncModels( currentEntryId ))) {
                 General.showError("Failed to sync models after reading in the coordinates. Deleting the whole entry again.");
                 if ( ! entry.mainRelation.removeRowsCascading( currentEntryId, true ) ) {
@@ -815,17 +839,17 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
             General.showWarning("Needs testing for sure.");
             General.showWarning("The code will definitely not work when reading in restraints on top of partily missing atoms.");
         }
-      
-        
+
+
         // Select all newly added atoms; code added later.
-        BitSet orgAtoms = SQLSelect.selectBitSet(dbms, atom.mainRelation, 
-                Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME], 
+        BitSet orgAtoms = SQLSelect.selectBitSet(dbms, atom.mainRelation,
+                Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME],
                 SQLSelect.OPERATION_TYPE_EQUALS, new Integer(currentEntryId), false);
-        atom.selected.or( orgAtoms );                        
+        atom.selected.or( orgAtoms );
         return true;
     }
-    
-    
+
+
     /** @see Wattos.Utils.PrimitiveArray#convertString2Int
      */
    public static boolean convertChainId2EntityId(TagTable t, String label, ObjectIntMap asymId2IntMap) {
@@ -835,7 +859,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
        }
         String[] column = t.getColumnString(label);
         if ( column == null ) {
-            General.showError("Failed to get String[] for column labeled: " + label);            
+            General.showError("Failed to get String[] for column labeled: " + label);
             return false;
         }
 //        General.showDebug("Column in convertChainId2EntityId is: " + PrimitiveArray.toString(column));
@@ -865,7 +889,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
             for (;r>-1;r--) {
                 // Only do parse if previous string was different.
                 currentString = column[r];
-                if ( (currentString != null) && currentString.equals( previousString ) ) { 
+                if ( (currentString != null) && currentString.equals( previousString ) ) {
                     result[r] = previousValue;
                 } else {
                     currentValue = asymId2IntMap.getValueInt(currentString);
@@ -879,7 +903,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
             General.showError("For value on row id: " + r + " Rows are processed last first.");
             return false;
         }
-        t.replaceColumn(label,Relation.DATA_TYPE_INT,result);        
+        t.replaceColumn(label,Relation.DATA_TYPE_INT,result);
 //        General.showDebug("Column converted to: " + PrimitiveArray.toString(result));
         return true;
     }
@@ -887,8 +911,8 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
          // Translate As to 1s.
         /** _struct_asym.id
             _struct_asym.entity_id
-            A 1 
-            B 1 
+            A 1
+            B 1
          *From 1b4c. Need to translate ABC etc to 123 for char to int.
          *Per asym_id only 1 entity id.
          */

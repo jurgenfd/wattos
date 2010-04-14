@@ -363,6 +363,7 @@ public class File31 {
 	public String tagNameEntryID;
 	public String tagNameEntryTitle;
 	public String tagNameEntryNMR_STAR_version;
+	public String tagNameEntryPDB_coordinate_file_version;
 	public String tagNameEntryExperimental_method;
 	public String tagNameEntryDetails;
 
@@ -1208,7 +1209,9 @@ public class File31 {
 			tagNameEntryTitle = (String) ((ArrayList) starDict.toStar2D.get("entry_information", "_Entry.Title"))
 					.get(StarDictionary.POSITION_STAR_TAG_NAME);
 			tagNameEntryNMR_STAR_version = (String) ((ArrayList) starDict.toStar2D.get("entry_information",
-					"_Entry.NMR_STAR_version")).get(StarDictionary.POSITION_STAR_TAG_NAME);
+			"_Entry.NMR_STAR_version")).get(StarDictionary.POSITION_STAR_TAG_NAME);
+			tagNameEntryPDB_coordinate_file_version = (String) ((ArrayList) starDict.toStar2D.get("entry_information",
+			"_Entry.PDB_coordinate_file_version")).get(StarDictionary.POSITION_STAR_TAG_NAME);
 			tagNameEntryExperimental_method = (String) ((ArrayList) starDict.toStar2D.get("entry_information",
 					"_Entry.Experimental_method")).get(StarDictionary.POSITION_STAR_TAG_NAME);
 			tagNameEntryDetails = (String) ((ArrayList) starDict.toStar2D.get("entry_information", "_Entry.Details"))
@@ -3945,12 +3948,14 @@ public class File31 {
 			// Integer(Relation.DATA_TYPE_STRING));
 			namesAndTypes.put(tagNameEntryTitle, new Integer(Relation.DATA_TYPE_STRING));
 			namesAndTypes.put(tagNameEntryNMR_STAR_version, new Integer(Relation.DATA_TYPE_STRING));
+			namesAndTypes.put(tagNameEntryPDB_coordinate_file_version, new Integer(Relation.DATA_TYPE_STRING));
 			namesAndTypes.put(tagNameEntryExperimental_method, new Integer(Relation.DATA_TYPE_STRING));
 			namesAndTypes.put(tagNameEntryDetails, new Integer(Relation.DATA_TYPE_STRING));
 			order.add(tagNameEntrySf_category);
 			// order.add(tagNameEntryID );
 			order.add(tagNameEntryTitle);
 			order.add(tagNameEntryNMR_STAR_version);
+			order.add(tagNameEntryPDB_coordinate_file_version);
 			order.add(tagNameEntryExperimental_method);
 			order.add(tagNameEntryDetails);
 			namesAndValues.put(tagNameEntrySf_category, "entry_information");
@@ -4357,11 +4362,12 @@ public class File31 {
 
 		// ENTRY
 		int entryRID = entry.selected.nextSetBit(0);
-		String assemblyName = entryMain.getValueString(entryRID, Gumbo.DEFAULT_ATTRIBUTE_ASSEMBLY_NAME);
 		if (entryRID < 0) {
 			General.showCodeBug("Failed to find any entry to write again");
 			return null;
 		}
+		String assemblyName = entryMain.getValueString(entryRID, Gumbo.DEFAULT_ATTRIBUTE_ASSEMBLY_NAME);
+		String pdb_coordinate_file_version = entryMain.getValueString(entryRID, Gumbo.DEFAULT_ATTRIBUTE_PDB_COORDINATE_FILE_VERSION);
 
 		String entryName = assemblyName;
 		entryName = "1"; // TODO: delete this line after FC updates.
@@ -4399,6 +4405,7 @@ public class File31 {
 		TagTable tTEntry = (TagTable) sFEntryInfo.get(0);
 		tTEntry.setValue(0, tagNameEntryExperimental_method, "NMR");
 		tTEntry.setValue(0, tagNameEntryTitle, "Data for entry " + entryName);
+		tTEntry.setValue(0, tagNameEntryPDB_coordinate_file_version, pdb_coordinate_file_version);
 		// tTEntry.setValue(0, tagNameEntryDetails,
 		// "Contains restraints for entry " +entryName);
 
