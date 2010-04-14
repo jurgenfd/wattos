@@ -7,7 +7,8 @@ entry_main,_Study.Details,STRING,,study_list,_Study.Details,,,,X
 entry_information,_Entry.Sf_category        ,STRING,,entry_information,_Entry.Sf_category        ,,,,X
 entry_information,_Entry.ID                 ,STRING,,entry_information,_Entry.ID                 ,,,,X
 entry_information,_Entry.Title              ,STRING,,entry_information,_Entry.Title              ,,,,X
-entry_information,_Entry.NMR_STAR_version   ,STRING,,entry_information,_Entry.NMR_STAR_version   ,,,,X
+entry_information,_Entry.NMR_STAR_version   ,STRING,,entry_information,_Entry.NMR_STAR_version   ,_pdbx_version.major_version,,,X
+entry_information,_Entry.PDB_coordinate_file_version   ,STRING,,entry_information,_Entry.PDB_coordinate_file_version   ,,,,X
 entry_information,_Entry.Experimental_method,STRING,,entry_information,_Entry.Experimental_method,,,,X
 entry_information,_Entry.Details            ,STRING,,entry_information,_Entry.Details            ,,,,X
 entry_main,_Assembly.Sf_category,STRING,,assembly,_Assembly.Sf_category,,,,X
