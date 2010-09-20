@@ -3,7 +3,7 @@
  */
 
 package Wattos.Database;
- 
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -52,7 +52,7 @@ import com.Ostermiller.util.ExcelCSVParser;
  * array index calculations which each individually are bound checked.
  * <P>
  * The rows may be unordered but the columns are ordered although they are usually addressed
- * by the label. Rows may be ordered by using an extra column with the 
+ * by the label. Rows may be ordered by using an extra column with the
  * keyword defined by: DEFAULT_ATTRIBUTE_ORDER_ID (currently "orderId").
  * Normally the rows are returned
  * by their physical ordering in the primitive arrays, skipping any not used rows.
@@ -69,12 +69,12 @@ import com.Ostermiller.util.ExcelCSVParser;
  * types different per cell. The following data types are supported:
  * <OL>
  * <LI>BitSet- This is more optimal than boolean[] usually.
- * <LI>char[] - 
- * <LI>byte[] - 
- * <LI>short[] - 
- * <LI>int[] - 
- * <LI>float[] - 
- * <LI>double[] - 
+ * <LI>char[] -
+ * <LI>byte[] -
+ * <LI>short[] -
+ * <LI>int[] -
+ * <LI>float[] -
+ * <LI>double[] -
  * <LI>String[] - and others.
  * </OL>
  * The default values for the cells is the default value of primitive data type; e.g.
@@ -88,11 +88,11 @@ import com.Ostermiller.util.ExcelCSVParser;
  * the data encapsulated by this class.
  * <LI>The choice made was to not add another level of indirection because it would cost an additional
  * array access (with Java range checking done). This does mean the objects above this have to
- * keep track of the direct indices and should the array be reordered; they all need to be 
+ * keep track of the direct indices and should the array be reordered; they all need to be
  * notified. Reordering can be done by using a special column labeled by a value hard-
  * coded by the variable: DEFAULT_ATTRIBUTE_ORDER_ID
  * <LI>Arrays of items can be maintained by e.g. a linked list of elements encoded in
- * here (for the forward/backward indices) AND the structure above it (for the first/last and 
+ * here (for the forward/backward indices) AND the structure above it (for the first/last and
  * number of elements in the array).<BR>
  * The class LinkedListArray is included here for that special purpose. When a row is removed
  * the instances of linkedlistarray will be corrected accordingly.
@@ -102,19 +102,19 @@ import com.Ostermiller.util.ExcelCSVParser;
  * @author Jurgen F. Doreleijers
  */
 public class Relation implements Serializable  {
-    
-    /** Faking this variable makes the serializing not worry 
-     *about potential small differences.*/ 
-    private static final long serialVersionUID = -1207795172754062330L;    
+
+    /** Faking this variable makes the serializing not worry
+     *about potential small differences.*/
+    private static final long serialVersionUID = -1207795172754062330L;
     /** For speed precode the types.*/
-    public static final int DATA_TYPE_INVALID       = -1;    
-    public static final int DATA_TYPE_BIT           = 0;    
-    public static final int DATA_TYPE_CHAR          = 1;    
-    public static final int DATA_TYPE_BYTE          = 2;    
+    public static final int DATA_TYPE_INVALID       = -1;
+    public static final int DATA_TYPE_BIT           = 0;
+    public static final int DATA_TYPE_CHAR          = 1;
+    public static final int DATA_TYPE_BYTE          = 2;
     public static final int DATA_TYPE_SHORT         = 3;    // Latest addition to family.
-    public static final int DATA_TYPE_INT           = 4;    
-    public static final int DATA_TYPE_FLOAT         = 5;    
-    public static final int DATA_TYPE_DOUBLE        = 6;    
+    public static final int DATA_TYPE_INT           = 4;
+    public static final int DATA_TYPE_FLOAT         = 5;
+    public static final int DATA_TYPE_DOUBLE        = 6;
     /** See class LinkedListArray; used for cheap implementation of certain type of ListsOfLists */
     public static final int DATA_TYPE_LINKEDLIST    = 7;
     /** See class LinkedListArrayInfo */
@@ -129,49 +129,49 @@ public class Relation implements Serializable  {
     public static final int DATA_TYPE_OBJECT        = 14; // Data type within one column better be the same still. Because of comparator.
     /** String representation of the data types as specified before
      */
-    public static final String[] dataTypeList = {   "BIT",            
-                                                    "CHAR",         
-                                                    "BYTE",         
-                                                    "SHORT",         
-                                                    "INTEGER",         
-                                                    "FLOAT",     
-                                                    "DOUBLE",    
-                                                    "LINKEDLIST",    
-                                                    "LINKEDLISTINFO",    
-                                                    "STRING",    
+    public static final String[] dataTypeList = {   "BIT",
+                                                    "CHAR",
+                                                    "BYTE",
+                                                    "SHORT",
+                                                    "INTEGER",
+                                                    "FLOAT",
+                                                    "DOUBLE",
+                                                    "LINKEDLIST",
+                                                    "LINKEDLISTINFO",
+                                                    "STRING",
                                                     "STRINGNR",
                                                     "INT ARRAY",
                                                     "FLOAT ARRAY",
                                                     "STR ARRAY",
-                                                    "OBJECT"    };    
+                                                    "OBJECT"    };
     /** String representation of the data types in SQL as specified before
      */
-    public static final String[] dataTypeListSQL = {"BOOLEAN",            
-                                                    "CHAR(1)",         
-                                                    "SMALLINT",         
-                                                    "SMALLINT",         
-                                                    "INT",         
-                                                    "FLOAT",     
-                                                    "DOUBLE",    
-                                                    null, //"LINKEDLIST",    
-                                                    null, //"LINKEDLISTINFO",    
-                                                    "LONGTEXT",    
+    public static final String[] dataTypeListSQL = {"BOOLEAN",
+                                                    "CHAR(1)",
+                                                    "SMALLINT",
+                                                    "SMALLINT",
+                                                    "INT",
+                                                    "FLOAT",
+                                                    "DOUBLE",
+                                                    null, //"LINKEDLIST",
+                                                    null, //"LINKEDLISTINFO",
+                                                    "LONGTEXT",
                                                     "LONGTEXT",
                                                     null, //"INT ARRAY",
                                                     null, //"FLOAT ARRAY",
                                                     null, //"STR ARRAY",
-                                                    null};//"OBJECT"        
+                                                    null};//"OBJECT"
     public static final ArrayList dataTypeArrayList = new ArrayList( Arrays.asList( dataTypeList ));
     public static final boolean[] supportsNulls = {
-        false,  //BIT            
-        true,   //CHAR         
-        false,  //BYTE         
-        true,   //INTEGER         
-        true,   //FLOAT     
-        true,   //DOUBLE    
-        true,   //LINKEDLIST    
-        true,   //LINKEDLISTINFO    
-        true,   //STRING    
+        false,  //BIT
+        true,   //CHAR
+        false,  //BYTE
+        true,   //INTEGER
+        true,   //FLOAT
+        true,   //DOUBLE
+        true,   //LINKEDLIST
+        true,   //LINKEDLISTINFO
+        true,   //STRING
         true,   //STRINGNR
         true,   //INT ARRAY
         true,   //STR ARRAY
@@ -179,15 +179,15 @@ public class Relation implements Serializable  {
 
     /** A standard attribute that is commonly present but not required. It's of type bit.*/
     public static final String      DEFAULT_ATTRIBUTE_SELECTED         = "selected";
-    
+
     /** A standard attribute to indicate that the column referred to is the physical array.
      *don't use it any more; use null pointer instead for the column.
      */
     public static final String      DEFAULT_ATTRIBUTE_PHYSICAL_COLUMN  = "physicalColumn";
-                                                    
+
     /** A standard attribute to indicate that the column referred to is the physical array */
     public static final String      DEFAULT_ATTRIBUTE_PHYSICAL_COLUMN_ID_POSTFIX  = "_id";
-                                                    
+
     /** Pretty small initial size; resize as necessary. Idea
      *is to be able to handle millions of rows.*/
     public static final int        DEFAULT_MAXSIZE                 = 100;
@@ -213,12 +213,12 @@ public class Relation implements Serializable  {
 
     /** Used for larger sections of code where performance is not an issue. Usually the
      * debug code is just commented out when done though.
-     */    
+     */
 //    private static final boolean DEBUG = true;
 
     /**A numeric value to indicate it's not a real index */
     public static final int NOT_AN_INDEX = LinkedListArray.NOT_AN_INDEX;
-    
+
     /**A string value to indicate it's not a real index. Note it isn't declared final but it is static */
     public static String NOT_AN_INDEX_STRING = LinkedListArray.NOT_AN_INDEX_STRING;
     /**A one-character string value to indicate true */
@@ -227,8 +227,8 @@ public class Relation implements Serializable  {
     public static final String FALSE = "F";
 
     /** For use in parent-child modelling with connected relations. NOT USED ANYMORE */
-    public static final String      DEFAULT_ATTRIBUTE_PARENT           = "parent";     
-    public static final String      DEFAULT_ATTRIBUTE_CHILD_LIST       = "childList";   
+    public static final String      DEFAULT_ATTRIBUTE_PARENT           = "parent";
+    public static final String      DEFAULT_ATTRIBUTE_CHILD_LIST       = "childList";
     public static final String      DEFAULT_ATTRIBUTE_SIBLING_LIST     = "siblingList";
     /** For use to do selections on rows. */
     public static final boolean     DEFAULT_ATTRIBUTE_SELECTED_VALUE   = false;
@@ -237,8 +237,8 @@ public class Relation implements Serializable  {
     public static final String      DEFAULT_ATTRIBUTE_NAME             = "name";
     /** The type of the object modeled by the row. e.g. single for a bond between 2 atoms*/
     public static final String      DEFAULT_ATTRIBUTE_TYPE             = "type";
-    
-    /** The number of the object not over the whole relation but among it's siblings (under 1 parent). 
+
+    /** The number of the object not over the whole relation but among it's siblings (under 1 parent).
      *The numbering starts at 1 in most but not all cases.*/
     public static final String      DEFAULT_ATTRIBUTE_NUMBER           = "number";
 
@@ -260,34 +260,34 @@ public class Relation implements Serializable  {
      *that useful if the order isn't meaningful over all elements in the table. Usually
      *it's better to have ordering with less scope.
      */
-    public static final String      DEFAULT_ATTRIBUTE_ORDER_ID         = "order";     
+    public static final String      DEFAULT_ATTRIBUTE_ORDER_ID         = "order";
     /** Used to identify an element */
-    public static final String      DEFAULT_ATTRIBUTE_ID               = "identifier";     
+    public static final String      DEFAULT_ATTRIBUTE_ID               = "identifier";
     public static final int         DEFAULT_ATTRIBUTE_PARENT_VALUE     = NOT_AN_INDEX;
     /** Value indicating that the relation's physical size grew after calling
      *a routine like (at the moment only): getNextReservedRow.
      */
     public static final int         DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW     = -2;
 
-    
+
     /** Name of the relation */
     public String name;
-    
+
     /** Other objects that should all be native arrays with using parallel indices as
      * the above. */
     public HashMap attr;
-    
+
     /** Cached id for the data type in a column.*/
     public HashMap columnDataType;
-            
+
     /** Name for the column. Only place where order of columns is defined and matters.*/
     public ArrayList columnOrder;
-            
+
     /** Actual size of the underlying primitive arrays at this point.
      *Note that the actual size of a BitSet is determined by the JVM implementation.
      */
     public int sizeMax;
-    
+
     /** The number of items in the list that are used excluding those
      * never allocated and those deleted.     */
     public int sizeRows;
@@ -314,14 +314,14 @@ public class Relation implements Serializable  {
      *strict about that).
      */
     public HashMap indices;
-        
-    /** A relation is always part of a DB, organized by a DBMS*/    
+
+    /** A relation is always part of a DB, organized by a DBMS*/
     public DBMS dbms;
-    
+
     /** Parent if this relation is in a Relation set
      *otherwise null.     */
     public RelationSet relationSetParent;
-    
+
     /** Creates a new instance of Relation */
     public Relation( String name, DBMS dbms ) throws Exception {
         boolean status = init( name, dbms, null );
@@ -329,7 +329,7 @@ public class Relation implements Serializable  {
             throw new Exception( "Failed to initialize relation in dbms" );
         }
     }
-    
+
     /** Creates a new instance of Relation */
     public Relation( String name, DBMS dbms, RelationSet relationSetParent ) throws Exception {
         boolean status = init( name, dbms, relationSetParent );
@@ -337,7 +337,7 @@ public class Relation implements Serializable  {
             throw new Exception( "Failed to initialize relation in dbms with parent: " + relationSetParent);
         }
     }
-    
+
     /** Creates a new instance of Relation
      * @param maxRowSize The maximum number of rows that the relation can hold
      * before it automatically resizes.
@@ -348,17 +348,17 @@ public class Relation implements Serializable  {
             throw new Exception( "Failed to initialize relation in dbms with relation name: " + name);
         }
     }
-        
+
     /** Initialize the instance data.
-     */    
+     */
     public boolean init( String name, DBMS dbms, RelationSet relationSetParent ) {
         return init(name, DEFAULT_MAXSIZE, dbms, relationSetParent );
     }
-    
+
     /** Initialize the instance data given a maximum size of the number of rows.
      * @param maxSizeNew The maximum number of rows that the relation can hold
      * before it automatically resizes.
-     */    
+     */
     public boolean init(String name, int maxSizeNew, DBMS dbms, RelationSet relationSetParent ) {
 
         this.name           = name;
@@ -380,7 +380,7 @@ public class Relation implements Serializable  {
         }
 
         // Remove a possible earlier instance.
-        if ( dbms.containsRelation( name ) ) {            
+        if ( dbms.containsRelation( name ) ) {
             dbms.removeRelation( this );
         }
 
@@ -397,7 +397,7 @@ public class Relation implements Serializable  {
     public RelationSet getRelationSetParent() {
         return relationSetParent;
     }
-    
+
     /** Can be null if the relation is not in a RelationSet or
      *if RelationSet doesn't have a parent.
      */
@@ -407,27 +407,27 @@ public class Relation implements Serializable  {
         }
         return relationSetParent.getRelationSoSParent();
     }
-    
+
     /** The number of columns in the relation. A convenience method.
      * @return size of the relation in columns
-     */    
+     */
     public int sizeColumns() {
         return columnOrder.size();
     }
-    
-    /** 
+
+    /**
      *Returns true when label given is: DEFAULT_ATTRIBUTE_PHYSICAL_COLUMN
-     * @return 
-     */    
+     * @return
+     */
     public boolean containsColumn( String label) {
         if ( label == null ) {
             return false;
-        } 
+        }
         // Common case:
         if ( label.equals( DEFAULT_ATTRIBUTE_PHYSICAL_COLUMN ) ) {
             return true;
         }
-        
+
         // Checks if element exists and if so returns it's index or -1 if it doesn't
         // exist.
 
@@ -437,19 +437,19 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
-    /** 
+
+    /**
      *Returns true when label given is: DEFAULT_ATTRIBUTE_PHYSICAL_COLUMN
-     */    
+     */
     public boolean containsColumnRegexName( String labelRegex ) {
         if ( labelRegex == null ) {
             return false;
-        } 
+        }
         // Common case:
         if ( labelRegex.equals( DEFAULT_ATTRIBUTE_PHYSICAL_COLUMN ) ) {
             return true;
         }
-        
+
         for (int i=0;i<columnOrder.size();i++) {
             if ( ((String) columnOrder.get(i)).matches(labelRegex)) {
                 return true;
@@ -457,8 +457,8 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
-    
+
+
     /** Change the maximum number of rows the relation can hold. Both shrinking and growing
      * can be done.
      * @param maxSizeNew New maximum size of the rows.
@@ -468,7 +468,7 @@ public class Relation implements Serializable  {
 
         /** Destroy all indices if any available */
         removeIndices();
-        
+
         try {
             /** Do them one by one so garbage collection can take place in between
              *without throwing "out of memory" errors.             */
@@ -491,7 +491,7 @@ public class Relation implements Serializable  {
                         if ( ! status  ) {
                             General.showError("resizeCapacity on linkedlistarray failed");
                             return false;
-                        }                            
+                        }
                         break;
                     }
                     case DATA_TYPE_LINKEDLISTINFO: {
@@ -501,7 +501,7 @@ public class Relation implements Serializable  {
                         if ( ! status  ) {
                             General.showError("resizeCapacity on linkedlistarrayinfo failed");
                             return false;
-                        }                            
+                        }
                         break;
                     }
                     default: {
@@ -510,11 +510,11 @@ public class Relation implements Serializable  {
                         if ( object_new == null ) {
                             General.showError("resizeArray failed; perhaps columns are of different size now; inconsistent state of program; stop program if possible.");
                             return false;
-                        }               
+                        }
                         if ( ! PrimitiveArray.fillArrayNulls( object_new, sizeMax, maxSizeNew) ) {
                             General.showError("Failed to fill array extension with default nill values.");
                             return false;
-                        }                                           
+                        }
                         attr.put(label, object_new ); // does a replace.
                     }
                 }
@@ -523,18 +523,18 @@ public class Relation implements Serializable  {
             if ( hash == null ) {
                 General.showError("resizeArray failed; perhaps columns are of different size now; inconsistent state of program; stop program if possible.");
                 return false;
-            }  
-                          
+            }
+
             if ( ! PrimitiveArray.fillArrayNulls( hash, sizeMax, maxSizeNew) ) {
                 General.showError("Failed to fill array extension with default nill values.");
                 return false;
             }
-             */                                                       
+             */
         } catch ( OutOfMemoryError e ) {
             // Maybe later recover gracefully without resizing and returning false;
             General.doOutOfMemoryExit(e);
         }
-        sizeMax = maxSizeNew;    
+        sizeMax = maxSizeNew;
         // Let RelationSet parent know that the size changed (if parent exists).
         if ( relationSetParent != null ) {
             relationSetParent.doSizeUpdateRelation(name);
@@ -542,14 +542,14 @@ public class Relation implements Serializable  {
         return true;
     }
 
-    
+
     /** Grow the list to have the specified maximum capacity. If the current
      * capacity is higher than the requested, nothing will change.
      * @param maxSizeNew New maximum size of the rows.
      * @return <CODE>true</CODE> for success and <CODE>false</CODE> for things like memory problems.
      */
     public boolean ensureCapacity(int maxSizeNew) {
-        
+
         /** Check if the change is as expected:
          *-a- In the right direction +*+ or -*- is always positive.
          *-b- Some change at all         */
@@ -557,67 +557,67 @@ public class Relation implements Serializable  {
             General.showWarning("Current size is larger than (or equal to) the requested size. Not resizing.");
             return true;
         }
-        
+
         boolean status = resizeCapacity(maxSizeNew);
         return status;
     }
-    
+
     /** Very fast method intended. Returns false if the data type given is
      *  DATA_TYPE_LINKEDLIST or DATA_TYPE_LINKEDLISTINFO.
      */
     public boolean equalElements( Object col, int dataType, int r1, int r2 ) {
         switch ( dataType ) {
             case DATA_TYPE_BIT: {
-                BitSet temp = (BitSet) col;                
+                BitSet temp = (BitSet) col;
                 if ( temp.get(r1) == temp.get(r2) ) {
                     return true;
                 }
                 return false;
-            } 
+            }
             case DATA_TYPE_CHAR: {
-                char[] temp = (char[]) col;                
+                char[] temp = (char[]) col;
                 if ( temp[r1] == temp[r2] ) {
                     return true;
                 }
                 return false;
             }
             case DATA_TYPE_BYTE: {
-                byte[] temp = (byte[]) col;                
+                byte[] temp = (byte[]) col;
                 if ( temp[r1] == temp[r2] ) {
                     return true;
                 }
                 return false;
             }
             case DATA_TYPE_SHORT: {
-                short[] temp = (short[]) col;                
+                short[] temp = (short[]) col;
                 if ( temp[r1] == temp[r2] ) {
                     return true;
                 }
                 return false;
             }
             case DATA_TYPE_INT: {
-                int[] temp = (int[]) col;                
+                int[] temp = (int[]) col;
                 if ( temp[r1] == temp[r2] ) {
                     return true;
                 }
                 return false;
             }
             case DATA_TYPE_FLOAT: {
-                float[] temp = (float[]) col;                
+                float[] temp = (float[]) col;
                 if ( temp[r1] == temp[r2] ) {
                     return true;
                 }
                 return false;
             }
             case DATA_TYPE_DOUBLE: {
-                double[] temp = (double[]) col;                
+                double[] temp = (double[]) col;
                 if ( temp[r1] == temp[r2] ) {
                     return true;
                 }
                 return false;
             }
             case DATA_TYPE_STRING: {
-                String[] temp = (String[]) col;  
+                String[] temp = (String[]) col;
                 if ( temp[r1] == null ) {
                     if ( temp[r2] == null ) {
                         return true;
@@ -630,7 +630,7 @@ public class Relation implements Serializable  {
                 return false;
             }
             case DATA_TYPE_STRINGNR: {
-                String[] temp = (String[]) col;  
+                String[] temp = (String[]) col;
                 if ( temp[r1] == null ) {
                     if ( temp[r2] == null ) {
                         return true;
@@ -643,7 +643,7 @@ public class Relation implements Serializable  {
                 return false;
             }
             case DATA_TYPE_OBJECT: {
-                Object[] temp = (Object[]) col;  
+                Object[] temp = (Object[]) col;
                 if ( temp[r1] == null ) {
                     if ( temp[r2] == null ) {
                         return true;
@@ -664,7 +664,7 @@ public class Relation implements Serializable  {
                 return false;
             }
             case DATA_TYPE_ARRAY_OF_INT: {
-                int[][] temp = (int[][]) col;  
+                int[][] temp = (int[][]) col;
                 if ( temp[r1] == null ) {
                     if ( temp[r2] == null ) {
                         return true;
@@ -677,7 +677,7 @@ public class Relation implements Serializable  {
                 return false;
             }
             case DATA_TYPE_ARRAY_OF_FLOAT: {
-                float[][] temp = (float[][]) col;  
+                float[][] temp = (float[][]) col;
                 if ( temp[r1] == null ) {
                     if ( temp[r2] == null ) {
                         return true;
@@ -689,13 +689,13 @@ public class Relation implements Serializable  {
                 }
                 return false;
             }
-        }                        
+        }
         General.showError("code bug in equalElements for data type id: [" + dataType  + "]");
-        General.showError("unknown type. Known are: " + 
+        General.showError("unknown type. Known are: " +
             Strings.concatenate( dataTypeList, "," ) );
         return false;
     }
-    
+
     /** Same as namesake method this time based on the percentage given.
      * The maximum number of rows allowed will be increased by a percentage as given.
      * @param growthPercentage The growth rate.
@@ -723,7 +723,7 @@ public class Relation implements Serializable  {
         }
         return ensureCapacity( maxSizeNew );
     }
-    
+
     /** Append a DATA_TYPE_STRINGNR column without fkc.*/
     public boolean insertColumn(String label) {
         return insertColumn( label, DATA_TYPE_STRINGNR, null);
@@ -733,7 +733,7 @@ public class Relation implements Serializable  {
     public boolean insertColumn(String label, int dataType, ForeignKeyConstr foreignKeyConstr) {
         return insertColumn( sizeColumns(), label, dataType, foreignKeyConstr);
     }
-    
+
     /** Create new int[] in a relation with fixed size for a list of rows.
      */
     public static boolean createIntArrays( Relation relation, String columnLabel, BitSet todo, int intArraySize ) {
@@ -743,14 +743,14 @@ public class Relation implements Serializable  {
         }
         int[][] LoL = (int[][]) relation.getColumn( columnLabel );
         for (int i=todo.nextSetBit(0); i>=0; i=todo.nextSetBit(i+1))  {
-            int[] L = new int[intArraySize];                        
+            int[] L = new int[intArraySize];
             Arrays.fill( L, Defs.NULL_INT); // little bit slower but worth the diff.
             LoL[ i ] = L;
         }
         return true;
     }
-    
-    
+
+
     /** Add a column to keep track of the ordering of the rows. */
     public boolean addColumnForOverallOrder() {
         if ( getColumnIdx(DEFAULT_ATTRIBUTE_ORDER_ID) >= 0 ) {
@@ -759,40 +759,40 @@ public class Relation implements Serializable  {
                 return true;
             } else {
                 General.showError("Order column present is not at required first position.");
-                return false;                
+                return false;
             }
         }
-        insertColumn(0, DEFAULT_ATTRIBUTE_ORDER_ID, DATA_TYPE_INT, null);        
+        insertColumn(0, DEFAULT_ATTRIBUTE_ORDER_ID, DATA_TYPE_INT, null);
         return true;
     }
-    
+
     /** Remove all but the given columns. Columns will be deleted in the reverse order they
      *'re present.
      * Failure to do a column delete is reported and the deletions will stop.
      */
-    public boolean keepOnlyColumns( ArrayList columnNames ) {        
+    public boolean keepOnlyColumns( ArrayList columnNames ) {
         for (int i=columnOrder.size()-1;i>=0;i--) {
             String label = (String) columnOrder.get(i);
             //check is done using equals method of the objects for correct string comparison
-            if ( ! columnNames.contains( label ) ) { 
+            if ( ! columnNames.contains( label ) ) {
                 Object column = removeColumn(label);
-                if ( column == null ) { 
+                if ( column == null ) {
                     return false;
                 }
             }
         }
         return true;
     }
-    
-    
-    /** 
+
+
+    /**
      *The ForeignKeyConstrSet and namesAndValues may be null.
-     * @param index New column index. All others shift to the right. 
+     * @param index New column index. All others shift to the right.
      * @return <CODE>true</CODE> for success and <CODE>false</CODE> for things like memory problems.
-     */    
-    public boolean insertColumnSet(int index, HashMap namesAndTypes, ArrayList order, 
+     */
+    public boolean insertColumnSet(int index, HashMap namesAndTypes, ArrayList order,
         HashMap namesAndValues, ForeignKeyConstrSet foreignKeyConstrSet) {
- 
+
         if ( namesAndValues == null ) {
             namesAndValues = new HashMap();
         }
@@ -808,9 +808,9 @@ public class Relation implements Serializable  {
             General.showError("namesAndValues().size("+namesAndValues.size()+") > columnNewSize(" +columnNewSize+").");
             return false;
         }
-                 
-            
-        int c = index;        
+
+
+        int c = index;
         for (int col=0;col<columnNewSize;col++) {
             String label = (String) order.get(col);
             int dataType = ((Integer) namesAndTypes.get( label )).intValue();
@@ -825,21 +825,21 @@ public class Relation implements Serializable  {
                 General.showError("failed to insert a new column for column number: "+c+"; not inserting more columns now");
                 return false;
             }
-            if ( ! namesAndValues.containsKey(label) ) {                
+            if ( ! namesAndValues.containsKey(label) ) {
                 //General.showDebug("NOT setting a standard value for column with label: " + label);
             } else {
                 Object value = namesAndValues.get( label );
                 //General.showDebug("Setting a standard value: " + value + " for column with label: " + label);
                 switch ( dataType ) {
-                    case DATA_TYPE_BIT: 
-                    case DATA_TYPE_CHAR: 
-                    case DATA_TYPE_BYTE: 
-                    case DATA_TYPE_SHORT: 
-                    case DATA_TYPE_INT: 
-                    case DATA_TYPE_FLOAT: 
-                    case DATA_TYPE_DOUBLE: 
-                    case DATA_TYPE_STRING: 
-                    case DATA_TYPE_STRINGNR: 
+                    case DATA_TYPE_BIT:
+                    case DATA_TYPE_CHAR:
+                    case DATA_TYPE_BYTE:
+                    case DATA_TYPE_SHORT:
+                    case DATA_TYPE_INT:
+                    case DATA_TYPE_FLOAT:
+                    case DATA_TYPE_DOUBLE:
+                    case DATA_TYPE_STRING:
+                    case DATA_TYPE_STRINGNR:
                     case DATA_TYPE_OBJECT: {
                         setValueByColumn(label,value);
                         break;
@@ -866,57 +866,57 @@ public class Relation implements Serializable  {
                     }
                     default: {
                         General.showError("code bug in insertColumnSet for label: [" + label + "] and type id: [" + dataType  + "]");
-                        General.showError("unknown type. Known are: " + 
+                        General.showError("unknown type. Known are: " +
                             Strings.concatenate( dataTypeList, "," ) );
                         return false;
                     }
-                }                
+                }
             }
             c++;
         }
         return true;
     }
 
-    /** 
+    /**
      * @return <CODE>true</CODE> for success and <CODE>false</CODE> for things like memory problems.
-     */    
+     */
     public boolean insertColumnSetFromCsvFile(String dtd_file_name) {
- 
+
         General.showOutput("Reading from dtd file    : " + dtd_file_name);
-        Relation dtd = null;        
-                
+        Relation dtd = null;
+
         try {
-            dtd = new Relation("dtd_" + dtd_file_name, dbms);        
+            dtd = new Relation("dtd_" + dtd_file_name, dbms);
             if ( ! dtd.readCsvFile(dtd_file_name, false, null)) {
                 General.showError("failed to read dtd");
                 return false;
             }
             dtd.renameColumn(0, "columnName");
             dtd.renameColumn(1, "columnDataType");
-            
+
             int columns     = dtd.used.cardinality();
             for (int c=0;c<columns;c++) {
                 String columnName  = dtd.getValueString(c, "columnName");
                 String dataTypeStr = dtd.getValueString(c, "columnDataType");
-                
+
                 insertColumn(-1,columnName,DATA_TYPE_STRING,null);
                 int dataType = dataTypeArrayList.indexOf( dataTypeStr );
                 if ( dataType < 0 ) {
-                    General.showError("For column: " + columnName + " ("+c+")");                    
+                    General.showError("For column: " + columnName + " ("+c+")");
                     General.showError("Data type listed in dtd that is not supported: " + dataTypeStr + " Skipping read.");
                     General.showWarning("Known are: " + Strings.concatenate( dataTypeList, "," ) );
                     continue;
-                }            
+                }
                 if ( ! dataTypeStr.equals( "STRING") ) {
-                    convertDataTypeColumn(columnName, dataType, null );                
+                    convertDataTypeColumn(columnName, dataType, null );
                 }
                 //General.showDebug("Inserted column: " + columnName + " of type: " + dataTypeStr);
-            }                        
+            }
         } catch ( Throwable t ) {
             General.showThrowable(t);
             return false;
         }
-        return true;    
+        return true;
     }
 
 
@@ -928,63 +928,63 @@ public class Relation implements Serializable  {
      */
     public boolean replaceColumn(String label, int dataType, Object column) {
         if ( ! hasColumn( label )  ) {
-            General.showError("in -a- replaceColumn label NOT already present for label: [" + 
+            General.showError("in -a- replaceColumn label NOT already present for label: [" +
                 label + "] and type: [" + dataTypeList[dataType] + "]. So didn't replace with another column with this label.");
             return false;
         }
         int index = getColumnIdx( label );
         if ( index < 0 ) {
-            General.showError("-b- in replaceColumn label NOT already present for label: [" + 
+            General.showError("-b- in replaceColumn label NOT already present for label: [" +
                 label + "] and type: [" + dataTypeList[dataType] + "]. So didn't replace with another column with this label.");
             return false;
         }
 
         /** Removing the index for this column */
         if ( containsIndex(label) ) {
-            removeIndex(label);        
+            removeIndex(label);
         }
-        
+
         // Do explicit remove if the previous data type was stringnr because new type might not be so.
         if ( getColumnDataType(label) == DATA_TYPE_STRINGNR ) {
             attr.remove( label + STANDARD_STRING_SET_POSTFIX );
         }
-        
+
         // Replace the column. The old one will be gc-ed.
-        if ( dataType == DATA_TYPE_STRINGNR ) {            
+        if ( dataType == DATA_TYPE_STRINGNR ) {
             Object realColumn       =              ((ArrayList) column).get(0);
             StringSet ss            = (StringSet) (((ArrayList) column).get(1));
             attr.put( label, realColumn);
             attr.put( label + STANDARD_STRING_SET_POSTFIX, ss );
-        } else {        
+        } else {
             attr.put( label, column );
         }
-        
+
         columnDataType.put(label, new Integer(dataType) );
         return true;
     }
-        
-    /** Returns -1 on failure. */   
+
+    /** Returns -1 on failure. */
     public int getColumnIdx( String label ) {
         return columnOrder.indexOf( label );
     }
-        
+
     /** Returns DATA_TYPE_INVALID on failure. Also able to return int for the physical column
      *when specified in the default way.
-     */   
+     */
     public int getColumnDataType( String label ) {
-        // Cover the case where the physical column is specified.        
+        // Cover the case where the physical column is specified.
         if ( label == null ) {
             return DATA_TYPE_INT;
         }
         if ( label.equals(DEFAULT_ATTRIBUTE_PHYSICAL_COLUMN )) {
             General.showCodeBug("Shouldn't use: " + DEFAULT_ATTRIBUTE_PHYSICAL_COLUMN + " any more to indicate physical column; use null instead");
             return DATA_TYPE_INVALID;
-        }      
-        
+        }
+
         if ( ! columnDataType.containsKey( label )) {
             return DATA_TYPE_INVALID;
         }
-        
+
         Object o = columnDataType.get(label);
         if ( o == null ) {
             General.showError("code bug; got null for data type for column with label: "+label);
@@ -995,11 +995,11 @@ public class Relation implements Serializable  {
             General.showError("code bug; got DATA_TYPE_INVALID for column with label: "+label);
             return DATA_TYPE_INVALID;
         }
-        return dataType;            
+        return dataType;
     }
-        
+
     /** Returns the equivalent SQL data type for this column.
-     */   
+     */
     public String getColumnDataTypeSQL( String label ) {
         int dataType = getColumnDataType( label );
         if ( dataType == DATA_TYPE_INVALID) {
@@ -1008,9 +1008,9 @@ public class Relation implements Serializable  {
         }
         return dataTypeListSQL[dataType];
     }
-        
-    /** Returns null on failure. */   
-    public String getColumnLabel( int index ) {        
+
+    /** Returns null on failure. */
+    public String getColumnLabel( int index ) {
         if ( ! isValidColumnIdx(index) ) {
             General.showError("in getColumnLabel: given index is not valid for columns: " + index);
             return null;
@@ -1018,7 +1018,7 @@ public class Relation implements Serializable  {
         String label = (String) columnOrder.get(index);
         return label;
     }
-        
+
     /** Adds an index for a specific column of either single record ids (rids) or [rids].
      */
     public boolean addIndex( String label, int index_type ) {
@@ -1044,7 +1044,7 @@ public class Relation implements Serializable  {
                     status = false;
                 }
                 break;
-            } 
+            }
             case DATA_TYPE_SHORT: {
                 if ( index_type == Index.INDEX_TYPE_SORTED ) {
                     index = new IndexSortedShort();
@@ -1053,7 +1053,7 @@ public class Relation implements Serializable  {
                     status = false;
                 }
                 break;
-            } 
+            }
             case DATA_TYPE_INT: {
                 if ( index_type == Index.INDEX_TYPE_SORTED ) {
                     index = new IndexSortedInt();
@@ -1085,26 +1085,26 @@ public class Relation implements Serializable  {
                 status = false;
             }
         }
-        
+
         /** Check 1 type of error. */
         if ( ! status ) {
             General.showError("some overall bug in addIndex for label: [" + label + "] and type id: [" + dataType  + "]");
             return false;
         }
-        
+
         if ( index == null ) {
             General.showError("code bug in addIndex for label: [" + label + "] and type id: [" + dataType  + "]");
             General.showError("index could not be created even though the code says so.");
             return false;
         }
-        
+
         status = index.updateIndex(this, label);
         if ( ! status ) {
             General.showError("code bug in addIndex for label: [" + label + "] and type id: [" + dataType  + "]");
             General.showError("index could not be updated.");
             return false;
         }
-        
+
         // All's well add the index to the relation class.
         Index[] al = (Index[]) indices.get( label );
         if ( al == null ) {
@@ -1114,9 +1114,9 @@ public class Relation implements Serializable  {
         al[index_type] = index;
         return true;
     }
-    
-    
-    
+
+
+
     /** Insert a column for a certain variable type; before the given position.
      * @param index New column index. All others shift to the right. If -1 it will append at the end.
      * @param label Column name; has to be unique.
@@ -1124,23 +1124,23 @@ public class Relation implements Serializable  {
      * @return <CODE>true</CODE> for success and <CODE>false</CODE> for things like memory problems.
      */
     public boolean insertColumn(int index, String label, int dataType, ForeignKeyConstr foreignKeyConstr ) {
-        
+
         if ( hasColumn( label )  ) {
-            General.showWarning("in insertColumn label already present for label: [" + 
+            General.showWarning("in insertColumn label already present for label: [" +
                 label + "] and type: [" + dataTypeList[dataType] + "]. So didn't add another column with this label.");
             return false;
         }
-        
+
         if ( index > sizeColumns() ) {
-            General.showWarning("in insertColumn the given index for the new column ("+index+") is larger than the current size: [" + 
+            General.showWarning("in insertColumn the given index for the new column ("+index+") is larger than the current size: [" +
                 sizeColumns() + "] that's impossible. No column added.");
             return false;
-        }            
+        }
 
         if ( index == -1 ) {
             index = sizeColumns();
         }
-        
+
         switch ( dataType ) {
             case DATA_TYPE_BIT: {
                 BitSet temp = new BitSet();
@@ -1149,7 +1149,7 @@ public class Relation implements Serializable  {
             }
             case DATA_TYPE_CHAR: {
                 char[] temp = new char[sizeMax];
-                Arrays.fill(temp, Defs.NULL_CHAR); 
+                Arrays.fill(temp, Defs.NULL_CHAR);
                 attr.put( label, temp );
                 break;
             }
@@ -1160,25 +1160,25 @@ public class Relation implements Serializable  {
             }
             case DATA_TYPE_SHORT: {
                 short[] temp = new short[sizeMax];
-                Arrays.fill(temp, Defs.NULL_SHORT); 
+                Arrays.fill(temp, Defs.NULL_SHORT);
                 attr.put( label, temp );
                 break;
             }
             case DATA_TYPE_INT: {
                 int[] temp = new int[sizeMax];
-                Arrays.fill(temp, Defs.NULL_INT); 
+                Arrays.fill(temp, Defs.NULL_INT);
                 attr.put( label, temp );
                 break;
             }
             case DATA_TYPE_FLOAT: {
                 float[] temp = new float[sizeMax];
-                Arrays.fill(temp, Defs.NULL_FLOAT); 
+                Arrays.fill(temp, Defs.NULL_FLOAT);
                 attr.put( label, temp );
                 break;
             }
             case DATA_TYPE_DOUBLE: {
                 double[] temp = new double[sizeMax];
-                Arrays.fill(temp, Defs.NULL_DOUBLE); 
+                Arrays.fill(temp, Defs.NULL_DOUBLE);
                 attr.put( label, temp );
                 break;
             }
@@ -1200,7 +1200,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_STRINGNR: {
                 String[] temp = new String[sizeMax];
                 attr.put( label, temp );
-                // For stringnr we always use the StringSet class which gives best performance for 
+                // For stringnr we always use the StringSet class which gives best performance for
                 // collections of strings with high redundancy.
                 StringSet tempSet = new StringSet();
                 attr.put( label + STANDARD_STRING_SET_POSTFIX, tempSet );
@@ -1227,12 +1227,12 @@ public class Relation implements Serializable  {
             }
             default: {
                 General.showError("code bug in insertColumn on relation: " + name + " for label: [" + label + "] and type id: [" + dataType  + "]");
-                General.showError("unknown type. Known are: " + 
+                General.showError("unknown type. Known are: " +
                     Strings.concatenate( dataTypeList, "," ) );
                 return false;
             }
         }
-                
+
         columnOrder.add( index, label );
         columnDataType.put(label, new Integer(dataType) );
         if ( foreignKeyConstr != null ) {
@@ -1242,7 +1242,7 @@ public class Relation implements Serializable  {
                 return false;
             }
         }
-        
+
         // If the column is the column designated as the selection column
         // then fill it with the default value.
         if ( label.equals( DEFAULT_ATTRIBUTE_SELECTED ) ) {
@@ -1251,7 +1251,7 @@ public class Relation implements Serializable  {
         return true;
     }
 
-    
+
     /** Set the values in the primitive Arrays to their defaults given the start
      * index and end indices. This method is the most efficient one!
      * @param idxStart inclusive
@@ -1261,15 +1261,15 @@ public class Relation implements Serializable  {
     public boolean setValuesToDefaultByRowRange( int idxStart, int idxEnd ) {
 
         /** Destroy all indices if available */
-        removeIndices();        
+        removeIndices();
 
-        int sizeColumns = sizeColumns();        
+        int sizeColumns = sizeColumns();
         for (int c=0;c<sizeColumns;c++) {
             String label = getColumnLabel(c);
             int dataType = getColumnDataType(label);
             switch ( dataType ) {
                 case DATA_TYPE_BIT: {
-                    BitSet temp = (BitSet) attr.get( label );                    
+                    BitSet temp = (BitSet) attr.get( label );
                     temp.clear( idxStart, idxEnd );
                     break;
                 }
@@ -1343,15 +1343,15 @@ public class Relation implements Serializable  {
                 }
                 default: {
                     General.showError("code bug in setValuesToDefaultByRowRange for column label: [" + label + "] and type id: [" + dataType  + "]");
-                    General.showError("unknown type. Known are: " + 
+                    General.showError("unknown type. Known are: " +
                         Strings.concatenate( dataTypeList, "," ) );
                     return false;
                 }
-            }            
-        }      
+            }
+        }
         return true;
     }
-    
+
     /** Set the values in the primitive Arrays to their defaults given the start
      * index and end indices. This method is not as efficient as the one where
      * the start and end indices are given but still quite good!
@@ -1361,7 +1361,7 @@ public class Relation implements Serializable  {
     public boolean setValuesToDefaultByRowRange( int[] idxList ) {
 
         /** Destroy all indices if available */
-        removeIndices();        
+        removeIndices();
 
         int sizeColumns = sizeColumns();
         int sizeList = idxList.length;
@@ -1370,7 +1370,7 @@ public class Relation implements Serializable  {
             int dataType = getColumnDataType(label);
             switch ( dataType ) {
                 case DATA_TYPE_BIT: {
-                    BitSet temp = (BitSet) attr.get( label );                    
+                    BitSet temp = (BitSet) attr.get( label );
                     for (int i=0;i<sizeList;i++) {
                         temp.clear(idxList[i]);
                     }
@@ -1474,16 +1474,16 @@ public class Relation implements Serializable  {
                 }
                 default: {
                     General.showError("code bug in setValuesToDefaultByRowRange for column with label: [" + label + "] and type id: [" + dataType  + "]");
-                    General.showError("unknown type. Known are: " + 
+                    General.showError("unknown type. Known are: " +
                         Strings.concatenate( dataTypeList, "," ) );
                     return false;
                 }
-            }            
-        }      
+            }
+        }
         return true;
     }
 
-    
+
     /** Set the values in the primitive Arrays to their defaults given the start
      * index and end indices. This method is just as efficient as the one where
      * the start and end indices are given; very good!
@@ -1501,7 +1501,7 @@ public class Relation implements Serializable  {
             int dataType = getColumnDataType(label);
             switch ( dataType ) {
                 case DATA_TYPE_BIT: {
-                    BitSet temp = (BitSet) attr.get( label );                    
+                    BitSet temp = (BitSet) attr.get( label );
                     for (int i=rowSetToRemove.nextSetBit(0); i>=0; )  {
                         int j = rowSetToRemove.nextClearBit(i+1);
                         if ( j < 0 ) j = rowSetToRemove.length();
@@ -1645,16 +1645,16 @@ public class Relation implements Serializable  {
                 }
                 default: {
                     General.showError("code bug in setValuesToDefaultByRowRange for column with label: [" + label + "] and type id: [" + dataType  + "]");
-                    General.showError("unknown type. Known are: " + 
+                    General.showError("unknown type. Known are: " +
                         Strings.concatenate( dataTypeList, "," ) );
                     return false;
                 }
-            }            
-        }      
+            }
+        }
         return true;
     }
 
-    
+
 
     /** Simply calls setValuesToDefaultByRowRange
      * This method is the least efficient one!
@@ -1687,10 +1687,10 @@ public class Relation implements Serializable  {
                     +" is not new list size: " + idxListNewSize + ". Not copying rows.");
             return false;
         }
-                
+
         /** Destroy all indices if any available */
         removeIndices();
-        
+
         for (int c=0;c<sizeColumns;c++) {
             String label = getColumnLabel(c);
             int dataType = getColumnDataType(label);
@@ -1791,12 +1791,12 @@ public class Relation implements Serializable  {
                 }
                 default: {
                     General.showError("code bug in moveRows for column id: [" + c + "] and type id: [" + dataType  + "]");
-                    General.showError("unknown type. Known are: " + 
+                    General.showError("unknown type. Known are: " +
                         Strings.concatenate( dataTypeList, "," ) );
                     return false;
                 }
-            }            
-        }      
+            }
+        }
         /** Remove the original list of rows then but without updating the linked list arrays
          *because those are already done by it's own moveRows method
          */
@@ -1818,10 +1818,10 @@ public class Relation implements Serializable  {
             return false;
         }
         int columnIdx = columnOrder.indexOf( label );
-        
+
         return setValue( row, columnIdx, value);
     }
-    
+
     public boolean setValue( int row, int columnIdx, int value) {
         return setValue( row, getColumnLabel(columnIdx), new Integer(value));
     }
@@ -1834,7 +1834,7 @@ public class Relation implements Serializable  {
     public boolean setValue( int row, String label , boolean value) {
         return setValue( row, label, new Boolean(value));
     }
-    
+
     /** Low efficiency method; use direct access in stead to set the value of cells by column.
      * This method has to fetch the column every time which is kind of inefficient.
      *Note: For non-redundant strings the value should be interned before calling this routine.
@@ -1850,11 +1850,11 @@ public class Relation implements Serializable  {
         }
 
         /** Destroy all indices if any available */
-        removeIndices();        
-        
+        removeIndices();
+
         String label = getColumnLabel(columnIdx);
         int dataType = getColumnDataType(label);
-                
+
         switch ( dataType ) {
             case DATA_TYPE_BIT: {
                 BitSet temp = (BitSet) attr.get( label );
@@ -1895,7 +1895,7 @@ public class Relation implements Serializable  {
                 byte valueInType = Defs.NULL_BYTE;
                 if ( value != null ) {
                     valueInType = ((Byte) value).byteValue();
-                }                
+                }
                 temp[row] = valueInType;
                 break;
             }
@@ -1909,7 +1909,7 @@ public class Relation implements Serializable  {
                 short valueInType = Defs.NULL_SHORT;
                 if ( value != null ) {
                     valueInType = ((Short) value).shortValue();
-                }                
+                }
                 temp[row] = valueInType;
                 break;
             }
@@ -1923,8 +1923,8 @@ public class Relation implements Serializable  {
                 int valueInType = Defs.NULL_INT;
                 if ( value != null ) {
                     valueInType = ((Integer) value).intValue();
-                }                
-                temp[row] = valueInType;                
+                }
+                temp[row] = valueInType;
                 break;
             }
             case DATA_TYPE_FLOAT: {
@@ -1937,8 +1937,8 @@ public class Relation implements Serializable  {
                 float valueInType = Defs.NULL_FLOAT;
                 if ( value != null ) {
                     valueInType = ((Float) value).floatValue();
-                }                
-                temp[row] = valueInType;                
+                }
+                temp[row] = valueInType;
                 break;
             }
             case DATA_TYPE_DOUBLE: {
@@ -1951,8 +1951,8 @@ public class Relation implements Serializable  {
                 double valueInType = Defs.NULL_DOUBLE;
                 if ( value != null ) {
                     valueInType = ((Double) value).doubleValue();
-                }                
-                temp[row] = valueInType;                
+                }
+                temp[row] = valueInType;
                 break;
             }
             case DATA_TYPE_LINKEDLIST: {
@@ -1965,7 +1965,7 @@ public class Relation implements Serializable  {
                 General.showWarning("given value is LinkedListInfo can't set value for this type.");
                 return false;
             }
-            case DATA_TYPE_STRING: 
+            case DATA_TYPE_STRING:
             case DATA_TYPE_STRINGNR: {
                 String[] temp = (String[]) attr.get( label );
                 if ( ! (value instanceof String)) {
@@ -1976,8 +1976,8 @@ public class Relation implements Serializable  {
                 String valueInType = Defs.NULL_STRING_NULL;
                 if ( value != null ) {
                     valueInType = (String) value;
-                }                
-                temp[row] = valueInType;                
+                }
+                temp[row] = valueInType;
                 break;
             }
             case DATA_TYPE_ARRAY_OF_INT: {
@@ -2012,22 +2012,22 @@ public class Relation implements Serializable  {
             }
             default: {
                 General.showError("code bug in setValue for value: [" + value + "] and type id: [" + dataType  + "]");
-                General.showError("unknown type. Known are: " + 
+                General.showError("unknown type. Known are: " +
                     Strings.concatenate( dataTypeList, "," ) );
                 return false;
             }
-        }                    
+        }
         return true;
     }
-    
+
     public boolean setValueByColumn(String label, int value) {
         return setValueByColumn(label, new Integer( value));
     }
-    
+
     public boolean setValueByColumn(String label, float value) {
         return setValueByColumn(label, new Float( value));
     }
-    
+
 
     /** Set to given value for all rows of specified column.
      * For efficiency the attributes will be set for
@@ -2041,12 +2041,12 @@ public class Relation implements Serializable  {
             General.showWarning("in setValueByColumn label not present: [" + label + "]");
             return false;
         }
-        
+
         /** Destroy index if available */
-        if ( containsIndex(label) ) removeIndex(label);        
-        
+        if ( containsIndex(label) ) removeIndex(label);
+
         int dataType = getColumnDataType(label);
-        
+
         switch ( dataType ) {
             case DATA_TYPE_BIT: {
                 BitSet temp = (BitSet) attr.get( label );
@@ -2188,16 +2188,16 @@ public class Relation implements Serializable  {
             }
             default: {
                 General.showError("code bug in setValue for value: [" + value + "] and type id: [" + dataType  + "]");
-                General.showError("unknown type. Known are: " + 
+                General.showError("unknown type. Known are: " +
                     Strings.concatenate( dataTypeList, "," ) );
                 return false;
             }
-        }                    
+        }
         return true;
-    }    
-    
+    }
+
     /**
-     * 
+     *
      * @see #removeRows
      */
     public boolean removeRow(int row, boolean updateLinkedLists) {
@@ -2205,10 +2205,10 @@ public class Relation implements Serializable  {
             General.showError("in removeRow row already deleted for index: [" + row + "]. Not changing that.");
             return false;
         }
-        
+
         /** Destroy all indices if any available */
-        removeIndices();        
-                
+        removeIndices();
+
         if ( updateLinkedLists ) {
             for (int i=0;i<columnDataType.size();i++) {
                 String label = getColumnLabel(i);
@@ -2217,12 +2217,12 @@ public class Relation implements Serializable  {
                     LinkedListArray ll = (LinkedListArray) getColumn( i );
                     ll.removeRow( row );
                 }
-            }  
-        }         
+            }
+        }
         used.clear(row);
         reserved.clear(row);
-        sizeRows--; 
-        
+        sizeRows--;
+
         boolean status = setValuesToDefaultByRow(row);
         if ( !status ) {
             General.showError("failed to setValuesToDefaultByRow for row:"+ row);
@@ -2239,10 +2239,10 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
-    
+
+
     /**
-     * 
+     *
      * @see #removeRowsCascading
      */
     public boolean removeRowCascading(int rowToDelete, boolean updateLinkedLists) {
@@ -2256,50 +2256,50 @@ public class Relation implements Serializable  {
         return false;
     }
 
-    
+
     /**
-     * 
+     *
      * @see DBMS#removeRowsCascading
      */
     public boolean removeRowsCascading(BitSet rowSet, boolean updateLinkedLists) {
         boolean status = dbms.removeRowsCascading(name, rowSet);
         if ( ! status ) {
             General.showError("in Relation.removeRowCascading.");
-        }        
+        }
         return status;
     }
 
     /**
-     * 
+     *
      * @see DBMS#removeRowsCascading
      */
-    public boolean removeRowsCascading(int[] rowList, boolean updateLinkedLists) {        
-        return removeRowsCascading( PrimitiveArray.toBitSet(rowList, sizeMax), updateLinkedLists);        
-    }      
-    
-    /**
-     * 
-     * @see DBMS#removeRowsCascading
-     */
-    public boolean removeRowsCascading(int rid, boolean updateLinkedLists) {        
-        return removeRowsCascading( new int[] { rid }, updateLinkedLists);        
-    }        
+    public boolean removeRowsCascading(int[] rowList, boolean updateLinkedLists) {
+        return removeRowsCascading( PrimitiveArray.toBitSet(rowList, sizeMax), updateLinkedLists);
+    }
 
     /**
-     * 
+     *
      * @see DBMS#removeRowsCascading
      */
-    public boolean removeRowsCascading(IntArrayList rowList, boolean updateLinkedLists) {        
-        return removeRowsCascading( PrimitiveArray.toBitSet(rowList, sizeMax), updateLinkedLists);        
-    }        
+    public boolean removeRowsCascading(int rid, boolean updateLinkedLists) {
+        return removeRowsCascading( new int[] { rid }, updateLinkedLists);
+    }
 
-    
     /**
-     * 
+     *
+     * @see DBMS#removeRowsCascading
+     */
+    public boolean removeRowsCascading(IntArrayList rowList, boolean updateLinkedLists) {
+        return removeRowsCascading( PrimitiveArray.toBitSet(rowList, sizeMax), updateLinkedLists);
+    }
+
+
+    /**
+     *
      * @see #removeRows
      */
     public boolean removeRows(int[] rowList, boolean updateLinkedLists ) {
-        return removeRows( PrimitiveArray.toBitSet( rowList, rowList[rowList.length-1] ), updateLinkedLists, true );        
+        return removeRows( PrimitiveArray.toBitSet( rowList, rowList[rowList.length-1] ), updateLinkedLists, true );
     }
 
     /** Convenience method see removeRows
@@ -2310,12 +2310,12 @@ public class Relation implements Serializable  {
         rowSetToRemove.and(used); // don't remove those not in use (they're already set to false
         return removeRows(rowSetToRemove, updateLinkedLists, resetDefaultValues );
     }
-    
-    
+
+
    /**
-     * Remove will not just mark the item as not in use. All elements in the many 
+     * Remove will not just mark the item as not in use. All elements in the many
      * arrays are initialized to their standard values unless specified otherwise.<BR>
-     * If more rows than exist are tried to be removed then the argument will be 
+     * If more rows than exist are tried to be removed then the argument will be
      * adjusted and a warning is issued detailing the problem.<BR>
      * @return <CODE>true</CODE> for success.
      * @param rowSetToRemove Will not be changed unless you picked the BitSets used or reserved for
@@ -2323,7 +2323,7 @@ public class Relation implements Serializable  {
      */
     public boolean removeRows(BitSet rowSetToRemove, boolean updateLinkedLists, boolean resetDefaultValues ) {
         boolean status = true;
-        
+
         /** If the input is the same as the used or reserved BitSet then
          *issue a warning but continue for debugging purposes
          *
@@ -2334,15 +2334,15 @@ public class Relation implements Serializable  {
             General.showWarning("In Relation.removeRows the set to remove is the same as the Relation.reserved for relation with name: "+name);
         }
          */
-        
+
         /** Make a copy anyway because it needs to be and-ed with the used set.
          */
         rowSetToRemove = (BitSet) rowSetToRemove.clone();
         rowSetToRemove.and(used);
-        
+
         /** Destroy all indices if any available */
         removeIndices();
-        
+
         if ( updateLinkedLists && (rowSetToRemove.cardinality() > 0)) {
             // TODO recode this if linked lists will be used in the future.
             int[] rowList = PrimitiveArray.toIntArray( rowSetToRemove );
@@ -2358,13 +2358,13 @@ public class Relation implements Serializable  {
                     }
                 }
             }
-        }        
-        
+        }
+
         int countDeleted = 0; // Used for debugging
         for (int i=rowSetToRemove.nextSetBit(0); i>=0; )  {
             // Find stretch of set bits indicating rows that need to be removed.
             int j = rowSetToRemove.nextClearBit(i+1);
-            
+
             if ( j >= 0 ) {
                 // Remove from row i to j-1
             } else {
@@ -2391,14 +2391,14 @@ public class Relation implements Serializable  {
             }
         }
          */
-        
+
         if ( resetDefaultValues ) {
             if ( ! setValuesToDefaultByRowRange(rowSetToRemove) ) {
                 General.showError("failed to setValuesToDefaultByRowRange.");
                 status = false;
             }
         }
-        
+
         if ( containsColumn( Relation.DEFAULT_ATTRIBUTE_ORDER_ID )) {
             boolean status_new = reorderRows();
             if ( !status_new ) {
@@ -2408,8 +2408,8 @@ public class Relation implements Serializable  {
         }
         return status;
     }
-    
-    
+
+
     /** Remove all columns in relation except those named in the argument list.
      *The ordering column should be listed in the argument in order to be maintained.
      *No check done to see if argument contains valid column names.
@@ -2432,15 +2432,15 @@ public class Relation implements Serializable  {
         }
         return status;
     }
-    
-    /** 
+
+    /**
      * @param label
      * @return <CODE>column</CODE> for success or null for failure.
      */
     public Object removeColumn(String label) {
         int columnIdx = getColumnIdx( label );
         if ( columnIdx == -1 ) {
-            General.showError("requested to remove column for label: [" + label + 
+            General.showError("requested to remove column for label: [" + label +
                 "] but label doesn't exist in column label list: " + Strings.toString(columnOrder));
             return null;
         }
@@ -2448,9 +2448,9 @@ public class Relation implements Serializable  {
         columnDataType.remove( label );
 
         if ( containsIndex(label) ) {
-            removeIndex(label);        
+            removeIndex(label);
         }
-        
+
         if ( dbms == null ) {
             General.showError("DEBUG dbms is null");
             return null;
@@ -2462,19 +2462,19 @@ public class Relation implements Serializable  {
             if ( ! status ) {
                 General.showError("failed to remove foreign key constraint from dbms.foreignKeyConstrSet.. Continuing..");
                 return null;
-            }                
+            }
         }
-        
+
         Object o = attr.remove( label );
         if ( o == null ) {
-            General.showError("requested to remove column for label: [" + label + 
+            General.showError("requested to remove column for label: [" + label +
                 "] but label doesn't exist in column labels (b).");
             return null;
         }
-                
+
         return o;
     }
-    
+
     /** Fast convenience method */
     public boolean hasColumn( String label) {
         return attr.containsKey( label );
@@ -2485,11 +2485,11 @@ public class Relation implements Serializable  {
         }
         return status;
          */
-    }    
+    }
     /** Returns the column object if there is one with the specified name.
      * @param label Name of the column (is unique).
      * @return Column object (e.g. int[]) or <CODE>null</CODE> for failure.
-     */    
+     */
     public Object getColumn( String label) {
         Object temp = attr.get( label );
         if ( temp == null ) {
@@ -2502,12 +2502,12 @@ public class Relation implements Serializable  {
             return null;
         }
         return temp;
-    }                
-    
+    }
+
     /** Returns the column int[] if there is one with the specified name.
      * @param label Name of the column (is unique).
      * @return <CODE>null</CODE> for failure.
-     */    
+     */
     public int[] getColumnInt( String label) {
         Object temp = attr.get( label );
         if ( temp == null ) {
@@ -2525,12 +2525,12 @@ public class Relation implements Serializable  {
             return null;
         }
         return (int[]) temp;
-    }                
-    
+    }
+
     /** Returns the column int[] if there is one with the specified name.
      * @param label Name of the column (is unique).
      * @return <CODE>null</CODE> for failure.
-     */    
+     */
     public float[] getColumnFloat( String label) {
         Object temp = attr.get( label );
         if ( temp == null ) {
@@ -2548,13 +2548,13 @@ public class Relation implements Serializable  {
             return null;
         }
         return (float[]) temp;
-    }                
-        
+    }
+
 
     /** Returns the column float[][] if there is one with the specified name.
      * @param label Name of the column (is unique).
      * @return <CODE>null</CODE> for failure.
-     */    
+     */
     public float[][] getColumnFloatList( String label) {
         Object temp = attr.get( label );
         if ( temp == null ) {
@@ -2573,12 +2573,12 @@ public class Relation implements Serializable  {
             return null;
         }
         return (float[][]) temp;
-    }                
-        
+    }
+
     /** Returns the column int[][] if there is one with the specified name.
      * @param label Name of the column (is unique).
      * @return <CODE>null</CODE> for failure.
-     */    
+     */
     public int[][] getColumnIntList( String label) {
         Object temp = attr.get( label );
         if ( temp == null ) {
@@ -2596,12 +2596,12 @@ public class Relation implements Serializable  {
             return null;
         }
         return (int[][]) temp;
-    }                
+    }
 
     /** Returns the column BitSet if there is one with the specified name.
      * @param label Name of the column (is unique).
      * @return <CODE>null</CODE> for failure.
-     */    
+     */
     public BitSet getColumnBit( String label) {
         Object temp = attr.get( label );
         if ( temp == null ) {
@@ -2619,12 +2619,12 @@ public class Relation implements Serializable  {
             return null;
         }
         return (BitSet) temp;
-    }                
-    
-    
+    }
+
+
     /** Returns the StringSet column if there is one with the specified name plus standard extension.
      * @param label Name of the column (is unique) without postfix.
-     */    
+     */
     public String[] getColumnString( String label) {
 
         Object temp = attr.get( label );
@@ -2642,12 +2642,12 @@ public class Relation implements Serializable  {
             return null;
         }
         return (String[]) temp;
-    }                
+    }
 
-    
+
     /** Returns the StringSet column if there is one with the specified name plus standard extension.
      * @param label Name of the column (is unique) without postfix.
-     */    
+     */
     public StringSet getColumnStringSet( String label) {
         String labelNew = label + STANDARD_STRING_SET_POSTFIX;
         Object temp = attr.get( labelNew );
@@ -2665,14 +2665,14 @@ public class Relation implements Serializable  {
         }
         General.showError("In getColumnStringSet(String), column not found for label: [" + labelNew + "] for relation with name: " + name);
         return null;
-    }                
+    }
 
-    
+
     /** Returns the column object if there is one with the specified regular expression
      or -1 if there isn't.
-     */    
+     */
     public int getColumnIdForRegExp( String labelRegExp ) {
-        Pattern p_general_format = Pattern.compile(labelRegExp, Pattern.COMMENTS);            
+        Pattern p_general_format = Pattern.compile(labelRegExp, Pattern.COMMENTS);
         Matcher m_general_format = p_general_format.matcher(""); // default matcher on empty string.
         for (int c=sizeColumns()-1; c>=0 ;c--)  {
             m_general_format.reset( getColumnLabel(c));
@@ -2683,27 +2683,27 @@ public class Relation implements Serializable  {
             }
         }
         return -1;
-    }                
-    
+    }
+
     /** Returns the column object if there is one with the specified id.
      * @return Column object (e.g. int[]) or <CODE>null</CODE> for failure.
      * @param column Column int id.
-     */    
+     */
     public Object getColumn( int column) {
         if ( column < 0 || column >= sizeColumns() ) {
             General.showError("column index not in range [0,"+sizeColumns()+">");
             return null;
         }
-        
+
         String label = getColumnLabel( column );
         if ( label == null ) {
             General.showError("failed to get column for column index: [" + column + "]");
             return null;
         }
         return getColumn(label);
-    }                
+    }
 
-    
+
     /** Assigns a name to a column by int id reference.
      * Range checking is done.
      * @param column Column int id.
@@ -2718,7 +2718,7 @@ public class Relation implements Serializable  {
         String oldLabel = getColumnLabel( column );
         return renameColumn(oldLabel, label);
     }
-    
+
     /** Assigns a new name to the column as specified by the old name. It will check that
      * the new name is unique and that the old name existed.
      * @param labelOld Column name of the column to be renamed.
@@ -2726,7 +2726,7 @@ public class Relation implements Serializable  {
      * @return <CODE>true</CODE> for success.
      */
     public boolean renameColumn( String labelOld, String label) {
-        
+
         //General.showDebug("TODO: recode the renaming of column names in relations for feature of fkc on real columns");
 
         // Order
@@ -2748,7 +2748,7 @@ public class Relation implements Serializable  {
             return false;
         }
         attr.put(label, o);
-        
+
         // Data type
         o = columnDataType.remove(labelOld);
         if ( o == null ) {
@@ -2756,19 +2756,19 @@ public class Relation implements Serializable  {
             return false;
         }
         columnDataType.put(label, o);
-        
+
         // DBMS
         boolean status = dbms.foreignKeyConstrSet.renameColumn( name, labelOld, label );
         if ( ! status ) {
             General.showError("failed to rename column in fkc set for old label: [" + labelOld + "]");
             return false;
         }
-        
+
         return true;
     }
-    
-    
-    /** For backward compatibility and smaller selections */    
+
+
+    /** For backward compatibility and smaller selections */
     public int[] getNewRowIdList(int freeRowCount) {
         if ( freeRowCount < 1 ) {
             General.showError("Asked for less than 1 new row id: " + freeRowCount);
@@ -2780,8 +2780,8 @@ public class Relation implements Serializable  {
             return null;
         }
         return PrimitiveArray.toIntArray(result);
-    }                
-    
+    }
+
     /** Look for new row ids to place items. Returns a list of indices to them or null to
      * indicate some failure. This routine will consequently mark the rows then as used
      *but not selected. It will not use the reservation system.
@@ -2796,10 +2796,10 @@ public class Relation implements Serializable  {
 
         /** Bit expensive for small selections but small amount of real objects. */
         BitSet result = new BitSet(sizeRows);
-        
+
         /** Destroy all indices if any available */
         removeIndices();
-        
+
         // Make sure we have enough rows free from beginning. Very important so no checks
         // on that are needed below in routine.
         int leftFree = sizeMax - sizeRows;
@@ -2811,7 +2811,7 @@ public class Relation implements Serializable  {
             //General.showDebug("really used before " + sizeRows);
             ensureCapacity( newSize );
         }
-    
+
         // The following algorithm is very fast for any but the case of single gaps.
         int rowsCountCollected = 0;
         int endIdx =0;
@@ -2832,7 +2832,7 @@ public class Relation implements Serializable  {
             int rangeSize = Math.min( maxRangeSize, sizeStillNeeded );
             endIdx = startIdx + rangeSize;
             int rowsToAdd = endIdx - startIdx; // same as sizeStillNeeded right?
-            
+
             if ( rangeSize < 1 ) {
                 General.showError("expect range size to be at least 1 but found: " + rangeSize);
                 return null;
@@ -2847,7 +2847,7 @@ public class Relation implements Serializable  {
         //General.showDebug("free element list:" + PrimitiveArray.toString(result));
         return result;
     }
-    
+
     /** Convenience method actually using getNewRowIdList.
      * @return  one index for a new row or -1 to indicate failure.*/
     public int getNewRowId() {
@@ -2857,7 +2857,7 @@ public class Relation implements Serializable  {
         }
         return idxList[0];
     }
-    
+
     /** Default is to show headers and data types and even rows that are not selected if such a property
      *exists or not.*/
     public String toString() {
@@ -2882,7 +2882,7 @@ public class Relation implements Serializable  {
     public String toStringRow(int row) {
         return toStringRow(row, false);
     }
-    
+
     /**
      *Still need to program correct quote styles for csv format if that becomes important.
      * @return string representation of the row as a comma separated list in csv format.
@@ -2892,32 +2892,32 @@ public class Relation implements Serializable  {
     public String toStringRow(int row, boolean showColumnLabels) {
         if ( ! used.get(row) ) {
             return ROW_NOT_USED_STRING;
-        }        
+        }
         if ( sizeColumns() == 0 ) {
             return ROW_WITHOUT_COLUMNS_STRING;
         }
 
         StringBuffer sb = new StringBuffer(); // Reserve some estimated space.
-        
+
         if ( showColumnLabels ) {
             sb.append( "[Header] " );
             for (int c=0;c<sizeColumns();c++) {
                 sb.append( getColumnLabel(c) );
-                sb.append(General.eol);
+                sb.append(",");
             }
             sb.deleteCharAt(sb.length()-1); // Deleting it afterwards saves some
                                             // test times.
             sb.append(General.eol);
         }
-        
+
         sb.append( "["+row+"] " );
         for (int c=0;c<sizeColumns();c++) {
             sb.append( getValueString(row,c) );
             sb.append(',');
         }
         sb.deleteCharAt(sb.length()-1); // Deleting it afterwards saves some test times.
-        
-        return sb.toString();        
+
+        return sb.toString();
     }
 
     /** This will create a string representation. The code in here should not
@@ -2926,29 +2926,29 @@ public class Relation implements Serializable  {
      * @return string representation of the header.
      * @param show_data_types
      * @param show_header  */
-    public String toString(boolean show_header, 
-        boolean show_data_types, 
-        boolean show_fkcs, 
-        boolean show_indices, 
-        boolean show_rows, 
+    public String toString(boolean show_header,
+        boolean show_data_types,
+        boolean show_fkcs,
+        boolean show_indices,
+        boolean show_rows,
         boolean show_selected_only) {
-        
+
         int sizeColumns = sizeColumns();
         if ( sizeColumns < 1 ) {
             return    "---  Relation        : " + name + " has NO columns ---\n";
         }
-        
+
         BitSet selected = null;
         if ( show_selected_only ) {
             selected = (BitSet) attr.get(DEFAULT_ATTRIBUTE_SELECTED);
             if ( selected == null ) {
                 General.showError("requested to show only those rows that are selected but there's no 'selected' column");
                 return null;
-            }                
+            }
         }
-        
+
         StringBuffer sb = new StringBuffer();
-        
+
         // Header
         if (show_header) {
             boolean containsForeignKeyConstraints = false;
@@ -2975,7 +2975,7 @@ public class Relation implements Serializable  {
                 sb.append("---  Data Types      : ");
                 for (int i=0;i<sizeColumns;i++) {
                     String label = getColumnLabel(i);
-                    int dataType = getColumnDataType(label);                
+                    int dataType = getColumnDataType(label);
                     sb.append(dataTypeList[dataType]);
                     //sb.append("("+dataType+")");
                     if ( i < ( sizeColumns - 1 ) )
@@ -3005,7 +3005,7 @@ public class Relation implements Serializable  {
                     if ( indices.containsKey( label )) {
                         // Check all elements in array to see if there is such an index
                         Index[] al = (Index[]) indices.get( label );
-                        for (int j=0;j<Index.INDEX_TYPE_COUNT;j++) {                            
+                        for (int j=0;j<Index.INDEX_TYPE_COUNT;j++) {
                             Index index = al[j];
                             if ( index == null ) { // will skip zero-th element
                                 continue;
@@ -3020,7 +3020,7 @@ public class Relation implements Serializable  {
                 }
             }
         }
-        
+
         if ( show_rows ) {
             if ( sizeRows < 1 ) {
                 sb.append("---  Empty Relation (" + sizeColumns + " columns but no rows) ---\n");
@@ -3038,14 +3038,14 @@ public class Relation implements Serializable  {
                     continue;
                 }
                 sb.append( toStringRow( r ) ); // Get the row representation.
-                sb.append(General.eol);            
+                sb.append(General.eol);
                 rowWrittenCount++;
             }
             if ( rowWrittenCount != sizeRows && (!show_selected_only) ) {
                 sb.append("ERROR: rowWrittenCount("+rowWrittenCount+") != sizeRows("+ sizeRows +")");
                 //return null;
             }
-        }        
+        }
         return sb.toString();
     }
 
@@ -3054,12 +3054,12 @@ public class Relation implements Serializable  {
     public String toSTAR() {
         return toSTAR(used);
     }
-    
+
     /** For the requested rows a loop or for a single row the free values will be generated.
      *For empty relations it will return an empty string.
      *Errors will lead to a return value of null.
      */
-    public String toSTAR(BitSet todo) {   
+    public String toSTAR(BitSet todo) {
         String result = null;
         try {
             BitSet toRemove =(BitSet) todo.clone();
@@ -3071,23 +3071,23 @@ public class Relation implements Serializable  {
             }
             //result = copyMainRelation.toString(true, true, true, true, true, false);
 
-            TagTable tT = new TagTable("tempjeToSTAR", dbms);            
+            TagTable tT = new TagTable("tempjeToSTAR", dbms);
             tT.init(copyMainRelation);
-            tT.isFree = false;            
-            result = tT.toSTAR(); 
+            tT.isFree = false;
+            result = tT.toSTAR();
             if ( result == null || result.length() == 0 ) {
                 General.showError("failed to render tag table to STAR");
                 return null;
             }
-            dbms.removeRelation(tT);            
+            dbms.removeRelation(tT);
         } catch ( Throwable t ) {
             General.showThrowable(t);
             return null;
         }
         return result;
     }
-        
-    
+
+
     /** Returns null on error. Returns the average and sd of a set of values when
      *there are more than 1 valid values. If there are no values then no average
      *can be calculated so the average returned will be Defs.NULL. Same if there
@@ -3101,7 +3101,7 @@ public class Relation implements Serializable  {
         }
         return Statistics.getAvSd(list);
     }
-    
+
     /** Returns an array without gaps and only valid elements.
      */
     public float[] getFlatListFloat( String label ) {
@@ -3125,7 +3125,7 @@ public class Relation implements Serializable  {
         flatList.setSize(j); // correct size now.
         return PrimitiveArray.toFloatArray(flatList);
     }
-    
+
     /** Returns an array without gaps and only valid elements.
      */
     public int[] getFlatListInt( String label ) {
@@ -3149,7 +3149,7 @@ public class Relation implements Serializable  {
         flatList.setSize(j); // correct size now.
         return PrimitiveArray.toIntArray(flatList);
     }
-    
+
     /** Convenience method; Don't use this where speed is important. */
     public String getValueString( int row, String label) {
         return getValueString( row, getColumnIdx( label));
@@ -3158,12 +3158,12 @@ public class Relation implements Serializable  {
     /** Fast method, no checks.*/
     public double getValueDouble( int row, String label) {
         return ((double[]) attr.get(label))[row];
-    }    
-    
+    }
+
     /** Fast method, no checks.*/
     public double getValueDoubleSafe( int row, String label) {
         int dataType = getColumnDataType(label);
-    
+
         // Sanity checks
         if ( dataType == DATA_TYPE_INVALID ) {
             General.showWarning("Failed to get data type for column at position: " + label);
@@ -3173,9 +3173,9 @@ public class Relation implements Serializable  {
             General.showWarning("Tried to get a string value from relation ("+name+"), row ("+row+") that is not in use at column id: " + label);
             return Defs.NULL_DOUBLE;
         }
-        
+
         switch ( dataType ) {
-            case DATA_TYPE_BIT: {               
+            case DATA_TYPE_BIT: {
                 BitSet temp = (BitSet) attr.get(label);
                 boolean value = temp.get( row );
                 if ( value ) {
@@ -3187,7 +3187,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_CHAR: {
                 char[] temp = (char[]) attr.get(label);
                 char value = temp[row];
-                if ( Defs.isNull( value ) ) {                    
+                if ( Defs.isNull( value ) ) {
                     return Defs.NULL_DOUBLE;
                 } else {
                     return (double) value;
@@ -3201,7 +3201,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_SHORT: {
                 short[] temp = (short[]) attr.get(label);
                 short value = temp[row];
-                if ( Defs.isNull( value ) ) {                    
+                if ( Defs.isNull( value ) ) {
                     return Defs.NULL_DOUBLE;
                 }
                 return (double) value;
@@ -3209,7 +3209,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_INT: {
                 int[] temp = (int[]) attr.get(label);
                 int value = temp[row];
-                if ( Defs.isNull( value ) ) {                    
+                if ( Defs.isNull( value ) ) {
                     return Defs.NULL_DOUBLE;
                 }
                 return (double) value;
@@ -3217,7 +3217,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_FLOAT: {
                 float[] temp = (float[]) attr.get(label);
                 float value = temp[row];
-                if ( Defs.isNull( value ) ) {                    
+                if ( Defs.isNull( value ) ) {
                     return Defs.NULL_DOUBLE;
                 }
                 return (double) value;
@@ -3228,36 +3228,36 @@ public class Relation implements Serializable  {
                 return value;
             }
         }
-        General.showError("Failed getValueDoubleSafe");        
+        General.showError("Failed getValueDoubleSafe");
         return Defs.NULL_DOUBLE;
-    }    
+    }
 
     /** Fast method, no checks.*/
     public float getValueFloat( int row, String label) {
         return ((float[]) attr.get(label))[row];
-    }    
+    }
     /** Fast method, no checks.*/
     public int getValueInt( int row, String label) {
         return ((int[]) attr.get(label))[row];
-    }    
+    }
     /** Fast method, no checks.*/
     public boolean getValueBit( int row, String label) {
         return ((BitSet) attr.get(label)).get(row);
-    }    
+    }
     /** Fast method, no checks.*/
     public char getValueChar( int row, String label) {
         return ((char[]) attr.get(label))[row];
-    }    
+    }
     /** Fast method, no checks.*/
     public byte getValueByte( int row, String label) {
         return ((byte[]) attr.get(label))[row];
-    }    
-  
+    }
+
     /** Fast method, no checks.*/
-    public Object getValue( int row, String label) {        
+    public Object getValue( int row, String label) {
         int dataType = getColumnDataType(label);
         switch ( dataType ) {
-            case DATA_TYPE_BIT: {               
+            case DATA_TYPE_BIT: {
                 return Boolean.valueOf( getValueBit( row, label));
             }
             case DATA_TYPE_CHAR: {
@@ -3303,15 +3303,15 @@ public class Relation implements Serializable  {
                 General.showError("code bug in getValue for row: [" + row + "] and colum: [" + label  + "]");
                 Object col = attr.get(label);
                 General.showDebug("Object type for column: " + label + " is " + col.getClass().getName());
-                General.showError("Unknown type: " + dataType + ". Known are: " + 
+                General.showError("Unknown type: " + dataType + ". Known are: " +
                     Strings.concatenate( dataTypeList, "," ) );
                 return null;
             }
         }
-    }    
-    
-    
-   /** Convenience Class; Don't use this where speed is important. 
+    }
+
+
+   /** Convenience Class; Don't use this where speed is important.
      *It will translate null values into dots for data types that support null values.
      * @param row
      * @param column
@@ -3319,7 +3319,7 @@ public class Relation implements Serializable  {
     public String getValueString( int row, int column) {
         String label = getColumnLabel(column);
         int dataType = getColumnDataType(label);
-    
+
         // Sanity checks
         if ( dataType == DATA_TYPE_INVALID ) {
             General.showWarning("Failed to get data type for column at position: " + column);
@@ -3329,7 +3329,7 @@ public class Relation implements Serializable  {
             General.showWarning("Tried to get a string value from relation ("+name+"), row ("+row+") that is not in use at column id: " + column);
             return Defs.NULL_STRING_DOT;
         }
-        
+
         // Allow no exceptions to be cast up.
         try {
         //if ( false ) {
@@ -3339,7 +3339,7 @@ public class Relation implements Serializable  {
         //Object col = attr.get(label);
         //General.showDebug("Object type for column: " + label + " is " + col.getClass().getName());
         switch ( dataType ) {
-            case DATA_TYPE_BIT: {               
+            case DATA_TYPE_BIT: {
                 BitSet temp = (BitSet) attr.get(label);
                 boolean value = temp.get( row );
                 if ( value ) {
@@ -3351,7 +3351,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_CHAR: {
                 char[] temp = (char[]) attr.get(label);
                 char value = temp[row];
-                if ( Defs.isNull( value ) ) {                    
+                if ( Defs.isNull( value ) ) {
                     return Defs.NULL_STRING_DOT;
                 } else {
                     return Character.toString( value );
@@ -3365,7 +3365,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_SHORT: {
                 short[] temp = (short[]) attr.get(label);
                 short value = temp[row];
-                if ( Defs.isNull( value ) ) {                    
+                if ( Defs.isNull( value ) ) {
                     return Defs.NULL_STRING_DOT;
                 }
                 return Short.toString( value );
@@ -3373,7 +3373,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_INT: {
                 int[] temp = (int[]) attr.get(label);
                 int value = temp[row];
-                if ( Defs.isNull( value ) ) {                    
+                if ( Defs.isNull( value ) ) {
                     return Defs.NULL_STRING_DOT;
                 }
                 return Integer.toString( value );
@@ -3381,7 +3381,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_FLOAT: {
                 float[] temp = (float[]) attr.get(label);
                 float value = temp[row];
-                if ( Defs.isNull( value ) ) {                    
+                if ( Defs.isNull( value ) ) {
                     return Defs.NULL_STRING_DOT;
                 }
                 return Float.toString( value);
@@ -3389,7 +3389,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_DOUBLE: {
                 double[] temp = (double[]) attr.get(label);
                 double value = temp[row];
-                if ( Defs.isNull( value ) ) {                    
+                if ( Defs.isNull( value ) ) {
                     return Defs.NULL_STRING_DOT;
                 }
                 return Double.toString( temp[row]);
@@ -3405,7 +3405,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_STRING: {
                 String[] temp = (String[]) attr.get(label);
                 String value = temp[row];
-                if ( Defs.isNullString( value )) {                    
+                if ( Defs.isNullString( value )) {
                     return Defs.NULL_STRING_DOT;
                 }
                 return value;
@@ -3413,7 +3413,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_STRINGNR: {
                 String[] temp = (String[]) attr.get(label);
                 String value = temp[row];
-                if ( Defs.isNullString( value )) {                    
+                if ( Defs.isNullString( value )) {
                     return Defs.NULL_STRING_DOT;
                 }
                 return value;
@@ -3421,7 +3421,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_ARRAY_OF_INT: {
                 int[][] temp = (int[][]) attr.get(label);
                 int[] value = temp[row];
-                if ( value == null ) {                    
+                if ( value == null ) {
                     return Defs.NULL_STRING_DOT;
                 }
                 return PrimitiveArray.toString( temp[row] );
@@ -3429,7 +3429,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_ARRAY_OF_FLOAT: {
                 float[][] temp = (float[][]) attr.get(label);
                 float[] value = temp[row];
-                if ( value == null ) {                    
+                if ( value == null ) {
                     return Defs.NULL_STRING_DOT;
                 }
                 return PrimitiveArray.toString( temp[row] );
@@ -3437,7 +3437,7 @@ public class Relation implements Serializable  {
             case DATA_TYPE_OBJECT: {
                 Object[] temp = (Object[]) attr.get(label);
                 Object value = temp[row];
-                if ( value == null ) {                    
+                if ( value == null ) {
                     return Defs.NULL_STRING_DOT;
                 }
                 //return value.toString();
@@ -3447,7 +3447,7 @@ public class Relation implements Serializable  {
                 General.showError("code bug in getValueString for row: [" + row + "] and colum: [" + column  + "]");
                 Object col = attr.get(label);
                 General.showDebug("Object type for column: " + label + " is " + col.getClass().getName());
-                General.showError("Unknown type: " + dataType + ". Known are: " + 
+                General.showError("Unknown type: " + dataType + ". Known are: " +
                     Strings.concatenate( dataTypeList, "," ) );
                 return null;
             }
@@ -3461,8 +3461,8 @@ public class Relation implements Serializable  {
             General.showDebug("Object type for column: " + label + " is " + col.getClass().getName());
             return null;
         }
-    }    
-    
+    }
+
     /** After this routine the indices of the linked list if any contained should be
      * corrected from externally by reindexing the linked list on the basis of the
      * returned map.
@@ -3485,12 +3485,12 @@ public class Relation implements Serializable  {
             int maxSizeNew = (int) ( sizeRows * ( 1.0f + DEFAULT_SIZE_CHANGE_PERCENTAGE/100.0f ));
             General.showWarning("newSize (" +newSize+") = sizeRows("+sizeRows+") is not allowed when the rows are all full; will try to trim to smallest efficient("+maxSizeNew+").");
             return reduceCapacity( maxSizeNew);
-        }                
+        }
 
         /** Destroy all indices if any available *
         removeIndicesAll();
-        
-        //General.showDebug("Reducing capacity from: " + sizeMax + " to : " + newSize);            
+
+        //General.showDebug("Reducing capacity from: " + sizeMax + " to : " + newSize);
         int oldSizeMax = sizeMax;
         int[] result = new int[oldSizeMax];
         // Move elements from the end into the gaps untill all gaps are filled.
@@ -3501,7 +3501,7 @@ public class Relation implements Serializable  {
         if ( itemsOldIdxList == null) {
             General.showError("Failed to get the row ids from the back.");
             return null;
-        }    
+        }
         /** If there's none to move then just truncate the array
          *
         int[] itemsNewIdxList = new int[0];
@@ -3515,7 +3515,7 @@ public class Relation implements Serializable  {
             if ( ! status ) {
                 General.showError("Failed to move the rows.");
                 return null;
-            }            
+            }
             /** Format the result array; which might be wastefull for small capacity changes
              *but is very fast for usage afterwards.
              *The unused/unchanged:*
@@ -3528,7 +3528,7 @@ public class Relation implements Serializable  {
         if ( ! status ) {
             General.showError("Failed to resize capacity.");
             return null;
-        }            
+        }
         return result;
     }
      */
@@ -3543,18 +3543,18 @@ public class Relation implements Serializable  {
             if ( dataType == DATA_TYPE_LINKEDLIST ) {
                 LinkedListArray ll = (LinkedListArray) getColumn( i );
                 ll.remap( map );
-            }        
+            }
         }
         return true;
     }
      */
-    
-    
+
+
     /** Return a list of indices containing the used elements at the end of array.
      *The routine will return element at index newSize at most. It can not
      *return an empty list. The order is with the lowest indices in the lowest
      *slots.
-     *corrected from externally by reindexing the linked list on the basis of the 
+     *corrected from externally by reindexing the linked list on the basis of the
      *returned map
      */
     public int[] getFilledFromBackRowIdList(int newSize) {
@@ -3565,7 +3565,7 @@ public class Relation implements Serializable  {
         int[] result = new int[sizeRows]; // Largest size possible is sizeRows. Will be truncated later.
         // Routine can be optimized when requesting more than 1 element from "used"
         // or when there would be a reverse function of getNextSetBit...
-        int idx = sizeMax - 1;        
+        int idx = sizeMax - 1;
         int i=0;
         while ( idx >= newSize ) {
             if ( used.get( idx ) ) {
@@ -3577,12 +3577,12 @@ public class Relation implements Serializable  {
 //        int resultSize = i;
         //General.showDebug("result: with max:("+i+") " + PrimitiveArray.toString(result));
         // Trim the result to the number of elements needed for trim.
-        result = PrimitiveArray.resizeArray(result, i);        
+        result = PrimitiveArray.resizeArray(result, i);
         //General.showDebug("result: " + PrimitiveArray.toString(result));
-        result = PrimitiveArray.invertArray(result);               
+        result = PrimitiveArray.invertArray(result);
         //General.showDebug("result: " + PrimitiveArray.toString(result));
         return result;
-    } 
+    }
 
     /** This routine can cleverly remove rows in the child relation and updating the linkedlist array in the child
      * and the linkedlistarrayinfo at this level.
@@ -3593,7 +3593,7 @@ public class Relation implements Serializable  {
      */
     public boolean deleteChildren(int row, int[] childToDeleteList, Relation child ) {
         LinkedListArrayInfo childInfo    = (LinkedListArrayInfo)      attr.get( DEFAULT_ATTRIBUTE_CHILD_LIST );
-        LinkedListArray     siblingList  = (LinkedListArray)    child.attr.get( DEFAULT_ATTRIBUTE_SIBLING_LIST );        
+        LinkedListArray     siblingList  = (LinkedListArray)    child.attr.get( DEFAULT_ATTRIBUTE_SIBLING_LIST );
 
         int[] fullList = new int[childInfo.countList[ row ]];
         if ( ! siblingList.getList( childInfo.firstList[ row ], fullList ) ) {
@@ -3606,15 +3606,15 @@ public class Relation implements Serializable  {
             General.showError("failed to remove children in deleteChildren; not deleting children");
             return false;
         }
-        
-        int[] newList  = PrimitiveArray.minus( fullList, childToDeleteList);        
+
+        int[] newList  = PrimitiveArray.minus( fullList, childToDeleteList);
         if ( ! childInfo.set(row, newList) ) {
             General.showError("failed to set new list of children in deleteChildren; inconsistent program state");
             return false;
         }
-        return true;                        
+        return true;
     }
-    
+
     /** This routine can cleverly remove rows in the child relation and updating the linkedlist array in the child
      * and the linkedlistarrayinfo at this level.
      * @param row Row for parent in this relation.
@@ -3623,7 +3623,7 @@ public class Relation implements Serializable  {
      */
     public boolean deleteChildren(int row, Relation child ) {
         LinkedListArrayInfo childInfo    = (LinkedListArrayInfo)      attr.get( DEFAULT_ATTRIBUTE_CHILD_LIST );
-        LinkedListArray     siblingList  = (LinkedListArray)    child.attr.get( DEFAULT_ATTRIBUTE_SIBLING_LIST );        
+        LinkedListArray     siblingList  = (LinkedListArray)    child.attr.get( DEFAULT_ATTRIBUTE_SIBLING_LIST );
 
         int[] fullList = new int[childInfo.countList[ row ]];
         if ( ! siblingList.getList( childInfo.firstList[ row ], fullList ) ) {
@@ -3637,7 +3637,7 @@ public class Relation implements Serializable  {
             General.showError("failed to remove children in deleteChildren; not deleting children");
             return false;
         }
-        
+
         if ( ! childInfo.set(row, new int[0]) ) {
             General.showError("failed to set new list of children in deleteChildren; inconsistent program state");
             return false;
@@ -3675,8 +3675,8 @@ public class Relation implements Serializable  {
         columnOrder.addAll(0, columnOrderNew );
         return true;
     }
-                
-    /** 
+
+    /**
      * The argument set E doesn't need to contain all columns though in contrast to the requerement
      * in above method reorderColumns. It may even contain more elements.
      * Order the set W of Wattos tagnames such that:
@@ -3698,9 +3698,9 @@ public class Relation implements Serializable  {
         columnOrder.addAll( salV );
         return true;
     }
-                
-    
-    /** 
+
+
+    /**
      *see: #renumberRows(String,BitSet,int)
      */
     public boolean reorderRows() {
@@ -3708,7 +3708,7 @@ public class Relation implements Serializable  {
         return renumberRows( DEFAULT_ATTRIBUTE_ORDER_ID, used, 0);
     }
 
-        
+
     /** Fast routine that fills the given column with the number of the physical
      *order starting with the given number (zero should be used for renumbering
      *the order column used for the child class TagTable).
@@ -3721,40 +3721,40 @@ public class Relation implements Serializable  {
         }
 
         if ( ! containsColumn( columnName ) ) {
-            General.showError("Failed numberRowsPhysical as the column to renumber: " + 
+            General.showError("Failed numberRowsPhysical as the column to renumber: " +
                 columnName + " doesn't exist in this relation: " + name );
             return false;
-        }        
-        
+        }
+
         // Check to see if there are any rows todo that are not in use.
         // If speed is an issue this check can be removed.
         BitSet temp = (BitSet) rowsToDo.clone();
         temp.andNot(used);
-        if ( temp.cardinality() > 0 ) { 
+        if ( temp.cardinality() > 0 ) {
             General.showCodeBug("There are rows to renumber that are not in use: " + temp.cardinality());
             return false;
-        }                        
-        
+        }
+
         int[] column = getColumnInt( columnName );
         if ( column == null ) {
             General.showCodeBug("Failed to get an int[] column in Relation.numberRowsPhysical for name: " + columnName);
             return false;
-        }                        
+        }
         // Temp array for info to be sorted
         // Reset the order id on the basis of the order of the sorted Physical Row ID.
         int count = startNumber;
         for (int i=rowsToDo.nextSetBit(0); i>=0; i=rowsToDo.nextSetBit(i+1))  {
             column[ i ] = count;
             count++;
-        }                
-        return true;        
+        }
+        return true;
     }
-    
-    /** Sorts rows by one or more columns */ 
+
+    /** Sorts rows by one or more columns */
     public boolean sortByColumns( String[] sortColumnList ) {
         if ( sortColumnList.length != 1 ) {
             General.showCodeBug("Routine only capable of sorting on one column as of yet");
-            return false;            
+            return false;
         }
         General.showDebug("Sorting on column(s): " + Strings.toString(sortColumnList));
         Index[] indexList = new Index[sortColumnList.length];
@@ -3767,20 +3767,20 @@ public class Relation implements Serializable  {
             if ( indexList[c] == null ) {
                 General.showError("Failed to get index for column: " + sortColumnList[c]);
                 return false;
-            }            
+            }
         }
         Index mainIndex = indexList[0];
         General.showDebug("Main index: " + mainIndex.toString(true, true));
 
         int[] orderColumn = getColumnInt(DEFAULT_ATTRIBUTE_ORDER_ID);
-        
+
 //        General.showDebug("row order column: " +PrimitiveArray.toString(orderColumn));
         if ( orderColumn == null ) {
             insertColumnPhysical(0, DEFAULT_ATTRIBUTE_ORDER_ID);
             General.showDebug("insertColumnPhysical done");
             orderColumn = getColumnInt(DEFAULT_ATTRIBUTE_ORDER_ID);
         }
-        
+
         if ( mainIndex.rids.length != used.cardinality() ) {
             General.showError("main index length : " + mainIndex.rids.length);
             General.showError("used.cardinality(): " + used.cardinality());
@@ -3791,8 +3791,8 @@ public class Relation implements Serializable  {
             r_idx = used.nextSetBit(r_idx+1);
             setValue(mainIndex.rids[r], DEFAULT_ATTRIBUTE_ORDER_ID, r_idx);
         }
-        
-        
+
+
         int[] orderColumnReduced = new int[ mainIndex.rids.length ];
         System.arraycopy( orderColumn, 0, orderColumnReduced, 0, mainIndex.rids.length);
         General.showDebug("sorted row order column: " +PrimitiveArray.toString(orderColumnReduced));
@@ -3824,34 +3824,34 @@ public class Relation implements Serializable  {
         }
 
         if ( ! containsColumn( columnName ) ) {
-            General.showError("Failed renumberRows as the column to renumber: " + 
+            General.showError("Failed renumberRows as the column to renumber: " +
                 columnName + " doesn't exist in this relation: " + name );
             return false;
-        }        
-        
+        }
+
         // Check to see if there are any rows todo that are not in use.
         // If speed is an issue this check can be removed.
         BitSet temp = (BitSet) rowsToDo.clone();
         temp.andNot(used);
-        if ( temp.cardinality() > 0 ) { 
+        if ( temp.cardinality() > 0 ) {
             General.showCodeBug("There are rows to renumber that are not in use: " + temp.cardinality());
             return false;
-        }                        
-        
+        }
+
         int[] column = getColumnInt( columnName );
         if ( column == null ) {
             General.showCodeBug("Failed to get an int[] column in Relation.renumberRows for name: " + columnName);
             return false;
-        }                        
+        }
         // Temp array for info to be sorted
         ArrayList tempList = new ArrayList();
-        tempList.ensureCapacity(rowsToDoCount); 
+        tempList.ensureCapacity(rowsToDoCount);
         // Fill temp array; kind of expensive.
         for (int i=rowsToDo.nextSetBit(0); i>=0; i=rowsToDo.nextSetBit(i+1))  {
             ObjectIntPair pair = new ObjectIntPair(new Integer(column[i]),i);
             tempList.add( pair );
         }
-                    
+
         // sort collection based on the old id
         Collections.sort( tempList, new ComparatorIntIntPair());
         // Reset the order id on the basis of the order of the sorted Physical Row ID.
@@ -3860,11 +3860,11 @@ public class Relation implements Serializable  {
             ObjectIntPair pair = (ObjectIntPair) tempList.get(i);
             column[ pair.i ] = count;
             count++;
-        }        
-        
+        }
+
         return true;
     }
-        
+
 
     /** Convenience method */
     public int[] getRowOrderMap( String label ) {
@@ -3875,11 +3875,11 @@ public class Relation implements Serializable  {
         }
         return getRowOrderMap( colId );
     }
-        
+
     /** Use the given column to reconstruct the order of the tuples. The method assumes that the column contains
      *a list of randomly ordered elements 0 through n-1 with each element occurring exactly once. The method
      *is very fast; order of N for one scan.
-     *If the order is messed up this routine shouldn't fail but print the error 
+     *If the order is messed up this routine shouldn't fail but print the error
      *and return null;
      *The routine will only include rows that actually have a non-null value for the order column.
      *More explicitly: it will return a map of length null if the order column contains null values.
@@ -3905,7 +3905,7 @@ public class Relation implements Serializable  {
         }
         Arrays.fill( map, NOT_AN_INDEX ); // Note those that have not been set yet.
         for (int i=0;i<sizeMax;i++) {
-            if ( used.get(i) ) {                
+            if ( used.get(i) ) {
                 int order_i = order[i];
                 if ( Defs.isNull( order_i )) {
                     continue; // if elements are skipped then the map needs to be resized.
@@ -3915,7 +3915,7 @@ public class Relation implements Serializable  {
                     General.showError("In relation: " + name);
                     General.showError("(0) impossible row order id: " + order_i +" should be in range of [0,"+sizeRows+">.");
                     return null;
-                }                    
+                }
                 if ( map[ order_i ] == NOT_AN_INDEX ) {
                     map[ order_i ] = i;
                     countDone++;
@@ -3943,20 +3943,20 @@ public class Relation implements Serializable  {
         }
         return mapReduced;
     }
-            
-    
+
+
     /** Use the given column to reconstruct the order of the tuples. The method assumes that the column contains
      *a list of randomly ordered elements 0 through n-1 with each element occurring exactly once. The method
      *is very fast; order of N for one scan.
-     *If the order is messed up this routine shouldn't fail but print the error 
+     *If the order is messed up this routine shouldn't fail but print the error
      *and return null;
      *Method doesn't change order in given column name.
      */
     public int[] getRowOrderMap( String label, BitSet elementsToOrder ) {
-        
+
         int countDone = 0;
         int countToOrder = elementsToOrder.cardinality();
-                
+
         int[] map = new int[ countToOrder ];
         int[] order = getColumnInt(label);
         if ( order == null ) {
@@ -3975,7 +3975,7 @@ public class Relation implements Serializable  {
                 General.showError("In relation: " + name);
                 General.showError("(1) impossible row order id: " + order_i +" should be in range of [0,"+countToOrder+">.");
                 return null;
-            }                    
+            }
             if ( map[ order_i ] == NOT_AN_INDEX ) {
                 map[ order_i ] = i;
                 countDone++;
@@ -3991,7 +3991,7 @@ public class Relation implements Serializable  {
                 General.showError("Code bug. Found no row with row id: " + j );
                 return null;
             }
-        }        
+        }
         if ( countDone != countToOrder ) {
             General.showError("number of to order rows not identical to the given size.");
             General.showError("used: " + countDone + " and sizeRows: " + countToOrder );
@@ -4001,14 +4001,14 @@ public class Relation implements Serializable  {
     }
 
 
-    /** Returns a list of the rows that are in use. In the order of the physical 
+    /** Returns a list of the rows that are in use. In the order of the physical
      *addresses.
      */
     public int[] getUsedRowMapList() {
         return PrimitiveArray.toIntArray( used );
     }
-        
-    
+
+
     /** Just checking
      */
     public boolean isValidColumnIdx( int columnIdx ) {
@@ -4017,7 +4017,7 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
+
     /** See namesake method */
     public boolean convertDataTypeColumn( String label, int dataType, String format ) {
         int columnIdx = getColumnIdx(label);
@@ -4026,7 +4026,7 @@ public class Relation implements Serializable  {
              General.showError("Available column names are: " + Strings.toString( columnOrder ));
              return false;
         }
-        return convertDataTypeColumn( columnIdx, dataType, format );        
+        return convertDataTypeColumn( columnIdx, dataType, format );
     }
 
     /** Will attempt to convert all columns if the argument isn't null.
@@ -4045,31 +4045,31 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
+
     /** Will attempt to convert the data type of a certain column to the given
      *data type. Index will be dropped if present.
      *For string values the data will be formatted so that they can be read in by
      *MySQL. E.g. for an original boolean the result will be 'T' or 'F'.
      */
     public boolean convertDataTypeColumn( int columnIdx, int dataType, String format ) {
-        
+
         if ( ! isValidColumnIdx( columnIdx ) ) {
              General.showError("given columnIdx doesn't exist" );
              return false;
         }
         String label = getColumnLabel(columnIdx);
-        
+
         if ( containsIndex( label ) ) {
             removeIndex( label );
         }
-        
+
         int originalDataType = getColumnDataType(label);
 
         if ( dataType == originalDataType ) {
             General.showWarning("data type to convert to is the same as the original; nothing done for column labeled: " + label);
             return true;
         }
-        
+
         Object column = null;
         Object columnIn = getColumn(columnIdx);
 
@@ -4105,7 +4105,7 @@ public class Relation implements Serializable  {
                                 column = PrimitiveArray.convertString2StringNR( columnIn, dataType );
                             }
                             break;
-                        }                   
+                        }
                         case DATA_TYPE_STRING: {
                             if ( format != null ) {
                                 column = PrimitiveArray.convertString2String( columnIn, dataType, format );
@@ -4115,24 +4115,24 @@ public class Relation implements Serializable  {
                                 }
                             }
                             break;
-                        }                   
+                        }
                         case DATA_TYPE_ARRAY_OF_INT: {
                             column = PrimitiveArray.convertString2ArrayOfInt( columnIn, dataType );
                             break;
-                        }                   
+                        }
                         case DATA_TYPE_ARRAY_OF_FLOAT: {
                             column = PrimitiveArray.convertString2ArrayOfFloat( columnIn, dataType );
                             break;
-                        }                   
+                        }
                         case DATA_TYPE_ARRAY_OF_STR: {
                             column = PrimitiveArray.convertString2ArrayOfString( columnIn, dataType );
                             break;
-                        }                   
+                        }
                         default: {
                             General.showError("-b- uncoded conversion attempted from " + dataTypeList[originalDataType]  + " to " + dataTypeList[dataType]  );
                             return false;
                         }
-                    }             
+                    }
                     break;
                 }
                 case DATA_TYPE_INT: {
@@ -4142,12 +4142,12 @@ public class Relation implements Serializable  {
                             //General.showDebug("Now really using to data type String");
                             column = PrimitiveArray.convertInt2String( columnIn, dataType, format );
                             break;
-                        }  
+                        }
                         default: {
                             General.showError("-c-uncoded conversion attempted from " + dataTypeList[originalDataType]  + " to " + dataTypeList[dataType]  );
                             return false;
                         }
-                    }             
+                    }
                     break;
                 }
                 case DATA_TYPE_FLOAT: {
@@ -4155,12 +4155,12 @@ public class Relation implements Serializable  {
                         case DATA_TYPE_STRING: {
                             column = PrimitiveArray.convertFloat2String( columnIn, dataType, format );
                             break;
-                        }                   
+                        }
                         default: {
                             General.showError("-d-uncoded conversion attempted from " + dataTypeList[originalDataType]  + " to " + dataTypeList[dataType]  );
                             return false;
                         }
-                    }             
+                    }
                     break;
                 }
                 case DATA_TYPE_DOUBLE: {
@@ -4168,56 +4168,56 @@ public class Relation implements Serializable  {
                         case DATA_TYPE_STRING: {
                             column = PrimitiveArray.convertDouble2String( columnIn, dataType, format );
                             break;
-                        }                   
+                        }
                         default: {
                             General.showError("-d-uncoded conversion attempted from " + dataTypeList[originalDataType]  + " to " + dataTypeList[dataType]  );
                             return false;
                         }
-                    }             
+                    }
                     break;
                 }
                 case DATA_TYPE_BIT: {
-                    switch (  dataType ) {                    
+                    switch (  dataType ) {
                         case DATA_TYPE_STRING: {
                             // Ensure the right size
                             BitSet columnIn2 = new BitSet(sizeMax);
-                            columnIn2.or( (BitSet) columnIn );                        
+                            columnIn2.or( (BitSet) columnIn );
                             column = PrimitiveArray.convertBit2String( columnIn2, dataType, format );
                             break;
-                        }                   
+                        }
                         default: {
                             General.showError("-d-uncoded conversion attempted from " + dataTypeList[originalDataType]  + " to " + dataTypeList[dataType]  );
                             return false;
                         }
-                    }             
+                    }
                     break;
                 }
                 case DATA_TYPE_OBJECT: {
-                    switch (  dataType ) {                    
+                    switch (  dataType ) {
                         case DATA_TYPE_STRING: {
                             column = PrimitiveArray.convertObject2String( columnIn );
                             break;
-                        }                   
+                        }
                         default: {
                             General.showError("-d-uncoded conversion attempted from " + dataTypeList[originalDataType]  + " to " + dataTypeList[dataType]  );
                             return false;
                         }
-                    }             
+                    }
                     break;
                 }
                 default: {
                     General.showDebug("-a-uncoded conversion attempted from " + dataTypeList[originalDataType]  + " to " + dataTypeList[dataType]  );
                     General.showDebug("Returning an empty result");
-                    switch (  dataType ) {                    
+                    switch (  dataType ) {
                         case DATA_TYPE_STRING: {
                             column = new String[sizeMax];
                             break;
-                        }                   
+                        }
                         default: {
                             General.showError("-e-uncoded conversion attempted from " + dataTypeList[originalDataType]  + " to " + dataTypeList[dataType]  );
                             return false;
                         }
-                    }             
+                    }
                 }
             }
         } catch ( Throwable t ) {
@@ -4229,20 +4229,20 @@ public class Relation implements Serializable  {
             General.showDebug("Format is                      :" + format);
             return false;
         }
-        
+
         if ( column == null ) {
             General.showError("conversion failed from " + dataTypeList[originalDataType]  + " to " + dataTypeList[dataType]  );
-            General.showError("will maintain column in old data format"  );            
-            return false;            
+            General.showError("will maintain column in old data format"  );
+            return false;
         }
 
         // Replace the old column with the new.
         replaceColumn( label, dataType, column );
-            
+
         return true;
     }
-    
-    
+
+
 
     /** not very useful other than testing? */
     public boolean convertDataTypeAllColumnsString2StringNR() {
@@ -4255,20 +4255,20 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
+
     public void updateIndicesAll() {
         updateIndex(null,-1);
     }
-    
+
     /** Actually completely reconstruct the index. If the column argument is
      *null then do all columns. If the index type is -1 then do all that are
      *present.
      */
     public boolean updateIndex( String columnLabel, int indexType ) {
-                
+
         boolean status;
         // Do all columns for which there are indices.
-        if ( columnLabel == null ) {    
+        if ( columnLabel == null ) {
             Set keys = indices.keySet();
             for (Iterator it=keys.iterator();it.hasNext();) {
                 String key = (String) it.next();
@@ -4280,12 +4280,12 @@ public class Relation implements Serializable  {
             }
             return true;
         }
-                
+
         if ( ! hasColumn(columnLabel)) {
-            General.showError("No column with label: " + columnLabel );                 
+            General.showError("No column with label: " + columnLabel );
             return false;
         }
-        
+
         // Do the update for one column for one index type
         if ( indexType > -1 ) {
             Index index = getIndex(columnLabel, indexType);
@@ -4308,10 +4308,10 @@ public class Relation implements Serializable  {
                 updateIndex( columnLabel, j);
             }
         }
-            
+
         return true;
     }
-    
+
     /** Checks if for this column there is an index of the specified type */
     public boolean containsIndex(String columnLabel, int indexType) {
         Object index = getIndex( columnLabel, indexType );
@@ -4320,7 +4320,7 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
+
     /** Checks if for this column there is at least one index */
     public boolean containsIndex(String columnLabel) {
         if ( indices.containsKey( columnLabel )) {
@@ -4328,7 +4328,7 @@ public class Relation implements Serializable  {
         }
         return false;
     }
-    
+
     /** Checks to see if there are any nulls in the table. It will check per column
      *starting at the first column.
      */
@@ -4347,21 +4347,21 @@ public class Relation implements Serializable  {
         }
         return overall_status;
     }
-    
+
     public boolean columnIsNullable( String label) {
         int dataType = getColumnDataType(label);
         if ( ! supportsNulls[ dataType ] ) {
-            General.showDebug("found column " + label + " of type: " + dataTypeList[dataType] + 
+            General.showDebug("found column " + label + " of type: " + dataTypeList[dataType] +
             " that doesn't support nulls so returning false.");
             return false;
         }
         return true;
     }
-    
+
     /** Minimum number of reported nulls is 1 in the case the boolean is set */
     public boolean columnContainsNull(String label, boolean doReportNulls, int numberToReport) {
         int reportedNulls = 0;
-        
+
         if ( ! containsColumn( label ) ) {
             General.showError( "no column with label: " + label + " in columnContainsNull; so no null");
             return false;
@@ -4372,20 +4372,20 @@ public class Relation implements Serializable  {
         if ( ! columnIsNullable(label) ) {
             return false;
         }
-            
+
         int columnIdx = getColumnIdx(label);
-                        
+
         switch ( dataType ) {
             case DATA_TYPE_BIT:
             case DATA_TYPE_BYTE: {
                 return false; // explicitelyl listed but already checked for above.
             }
             case DATA_TYPE_CHAR: {
-                char[] temp = (char[]) column;                
+                char[] temp = (char[]) column;
                 for (int i=used.nextSetBit(0); i>=0; i=used.nextSetBit(i+1))  {
                     if ( Defs.isNull( temp[i] )) {
                         if ( ! doReportNulls ) return true;
-                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]"+ " in row: " + toStringRow(i) );                        
+                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]"+ " in row: " + toStringRow(i) );
                         reportedNulls++;
                         if ( reportedNulls >= numberToReport ) {
                             return true;
@@ -4399,7 +4399,7 @@ public class Relation implements Serializable  {
                 for (int i=used.nextSetBit(0); i>=0; i=used.nextSetBit(i+1))  {
                     if ( Defs.isNull( temp[i] )) {
                         if ( ! doReportNulls ) return true;
-                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );                        
+                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );
                         reportedNulls++;
                         if ( reportedNulls >= numberToReport ) {
                             return true;
@@ -4413,7 +4413,7 @@ public class Relation implements Serializable  {
                 for (int i=used.nextSetBit(0); i>=0; i=used.nextSetBit(i+1))  {
                     if ( Defs.isNull( temp[i] )) {
                         if ( ! doReportNulls ) return true;
-                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );                        
+                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );
                         reportedNulls++;
                         if ( reportedNulls >= numberToReport ) {
                             return true;
@@ -4427,7 +4427,7 @@ public class Relation implements Serializable  {
                 for (int i=used.nextSetBit(0); i>=0; i=used.nextSetBit(i+1)) {
                     if ( Defs.isNull( temp[i] )) {
                         if ( ! doReportNulls ) return true;
-                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );                        
+                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );
                         reportedNulls++;
                         if ( reportedNulls >= numberToReport ) {
                             return true;
@@ -4441,7 +4441,7 @@ public class Relation implements Serializable  {
                 for (int i=used.nextSetBit(0); i>=0; i=used.nextSetBit(i+1))  {
                     if ( Defs.isNull( temp[i] )) {
                         if ( ! doReportNulls ) return true;
-                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );                        
+                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );
                         reportedNulls++;
                         if ( reportedNulls >= numberToReport ) {
                             return true;
@@ -4461,7 +4461,7 @@ public class Relation implements Serializable  {
                 for (int i=used.nextSetBit(0); i>=0; i=used.nextSetBit(i+1))  {
                     if ( Defs.isNullString( temp[i] )) {
                         if ( ! doReportNulls ) return true;
-                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );                        
+                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );
                         reportedNulls++;
                         if ( reportedNulls >= numberToReport ) {
                             return true;
@@ -4476,7 +4476,7 @@ public class Relation implements Serializable  {
                 for (int i=used.nextSetBit(0); i>=0; i=used.nextSetBit(i+1))  {
                     if ( Defs.isNullString(temp[i] )) {
                         if ( ! doReportNulls ) return true;
-                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );                        
+                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );
                         reportedNulls++;
                         if ( reportedNulls >= numberToReport ) {
                             return true;
@@ -4490,7 +4490,7 @@ public class Relation implements Serializable  {
                 for (int i=used.nextSetBit(0); i>=0; i=used.nextSetBit(i+1))  {
                     if ( temp[i] == null ) {
                         if ( ! doReportNulls ) return true;
-                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );                        
+                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );
                         reportedNulls++;
                         if ( reportedNulls >= numberToReport ) {
                             return true;
@@ -4504,7 +4504,7 @@ public class Relation implements Serializable  {
                 for (int i=used.nextSetBit(0); i>=0; i=used.nextSetBit(i+1))  {
                     if ( temp[i] == null ) {
                         if ( ! doReportNulls ) return true;
-                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );                        
+                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );
                         reportedNulls++;
                         if ( reportedNulls >= numberToReport ) {
                             return true;
@@ -4518,7 +4518,7 @@ public class Relation implements Serializable  {
                 for (int i=used.nextSetBit(0); i>=0; i=used.nextSetBit(i+1)) {
                     if ( temp[i] == null ) {
                         if ( ! doReportNulls ) return true;
-                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );                        
+                        General.showDebug("found a null value in column: " + getColumnLabel(columnIdx) + "["+columnIdx+"]" + " in row: " + toStringRow(i) );
                         reportedNulls++;
                         if ( reportedNulls >= numberToReport ) {
                             return true;
@@ -4529,7 +4529,7 @@ public class Relation implements Serializable  {
             }
             default: {
                 General.showError("code bug in columnContainsNull for colum: [" + column  + "]");
-                General.showError("Unknown type: " + dataType + ". Known are: " + 
+                General.showError("Unknown type: " + dataType + ". Known are: " +
                     Strings.concatenate( dataTypeList, "," ) );
                 return false;
             }
@@ -4538,120 +4538,120 @@ public class Relation implements Serializable  {
             return true;
         }
         return false;
-    }    
-    
-        
+    }
+
+
     /** If the index doesn't already exist; create it */
     public Index getIndex(String columnLabel, int index_type ) {
-        if ( (index_type < 0 ) || 
+        if ( (index_type < 0 ) ||
              (index_type >= Index.INDEX_TYPE_COUNT )) {
-            General.showError("Index type requested from getIndex is out of bounds:" + index_type);              
+            General.showError("Index type requested from getIndex is out of bounds:" + index_type);
             return null;
-        }                
-            
+        }
+
         Index[] al = (Index[]) indices.get( columnLabel );
         if ( (al == null) || (al[ index_type ]==null)) {
             if ( ! containsColumn( columnLabel ) ) {
-                General.showError("Code bug in getIndex failed to addIndex for unexisting colum: [" + columnLabel  + "]");                
-                General.showError("This relation is:\n" + toString(true, true, true, true, false, false ));              
+                General.showError("Code bug in getIndex failed to addIndex for unexisting colum: [" + columnLabel  + "]");
+                General.showError("This relation is:\n" + toString(true, true, true, true, false, false ));
                 return null;
-            }                
-            
+            }
+
             if ( ! addIndex( columnLabel, index_type )) {
-                General.showError("Code bug in getIndex failed to addIndex for colum: [" + columnLabel  + "]");                
-                General.showError("and index_type: [" + index_type + "]");                
-                General.showError("and index_type name : [" + Index.index_type_names[ index_type ] + "]");                
+                General.showError("Code bug in getIndex failed to addIndex for colum: [" + columnLabel  + "]");
+                General.showError("and index_type: [" + index_type + "]");
+                General.showError("and index_type name : [" + Index.index_type_names[ index_type ] + "]");
                 return null;
             }
             return getIndex(columnLabel, index_type ); // I hope this doesn't cycle.;-) It did once;-(
         }
         Index index = al[ index_type ];
         if ( index == null ) {
-            General.showCodeBug("Returned index is STILL null.");                            
+            General.showCodeBug("Returned index is STILL null.");
             General.showCodeBug("Requested index for: columnLabel: " + columnLabel + " and index_type: " +
-               Index.list_type_names[ index_type ] );                            
-            //General.showCodeBug("Got index list: " + Strings.toString( al));                            
+               Index.list_type_names[ index_type ] );
+            //General.showCodeBug("Got index list: " + Strings.toString( al));
         }
         return index;
     }
-    
-    
-    
+
+
+
     /** Using the sorted int index on a column to find rids with exact matches and then
      *return the int VALUES in the corresponding rows of a DIFFERENT column.
      */
     public IntArrayList getValueListBySortedIntIndex(
-        IndexSortedInt index, 
+        IndexSortedInt index,
         int indexValue,
-        String columnLabelValue, 
+        String columnLabelValue,
         IntArrayList result ) {
 
         if ( index == null ) {
             General.showCodeBug("Got null as argument for sorted index in relation: " + name);
             return null;
         }
-        IntArrayList rows = (IntArrayList) index.getRidList(  new Integer(indexValue), 
-            Index.LIST_TYPE_INT_ARRAY_LIST, null);                     
+        IntArrayList rows = (IntArrayList) index.getRidList(  new Integer(indexValue),
+            Index.LIST_TYPE_INT_ARRAY_LIST, null);
         if ( rows == null ) {
             General.showDebug("Failed to get list of rows for value" );
             return null;
         }
-        //General.showDebug("In getValueListBySortedIntIndex got rids: " + PrimitiveArray.toString( rows ));       
+        //General.showDebug("In getValueListBySortedIntIndex got rids: " + PrimitiveArray.toString( rows ));
         //General.showDebug("now looking for the associated values in the column with label: " + columnLabelValue);
         int[] values = getColumnInt( columnLabelValue );
         if ( values == null ) {
             General.showCodeBug("Failed to get values column with label: " + columnLabelValue);
             return null;
         }
-        
+
         int setSize = rows.size();
         if ( result == null ) {
             result = new IntArrayList(setSize);
-        }               
+        }
         result.setSize( setSize );
         for (int i=0;i<setSize;i++) {
             result.setQuick( i, values[ rows.getQuick(i) ]);
-        }                        
+        }
 //        General.showDebug("Found the following rids of values: " + PrimitiveArray.toString( result ));
         if ( result.size() < 1 ) {
             General.showDebug("Didn't find any result in Relation.getValueList_IntArrayList_BySortedIntIndex for index value: " + indexValue);
-        }    
+        }
         return result;
     }
-    
-    
-    /** Removes all indices if the columnLabel argument is null 
+
+
+    /** Removes all indices if the columnLabel argument is null
      */
     public boolean removeIndex(String columnLabel) {
         if ( columnLabel == null ) {
             return removeIndices();
         }
-        
+
         //General.showDebug("clearing index for column label: " + columnLabel);
         if ( indices.containsKey( columnLabel ) ) {
             indices.remove(columnLabel);
             return true;
         } else  if ( hasColumn(columnLabel)) {
-            General.showError("No index present for column labeled: " + columnLabel);            
+            General.showError("No index present for column labeled: " + columnLabel);
         } else {
             General.showError("No column present labeled: " + columnLabel);
             General.showError("so no index there either.");
         }
-        return false;            
+        return false;
     }
-    
+
     /** Clears all indices */
     public boolean removeIndices() {
         indices.clear();
         return true;
     }
-        
-  
+
+
     /** Returns the name of the row i. This is not the column name dummy. */
     public String getName( int i ) {
         return ((String[]) getColumn(  DEFAULT_ATTRIBUTE_NAME ))[i];
     }
- 
+
     /**
      * Get the next reserved id or the argument in case that one hasn't been taken either.
      * If no more reservations exist then make DEFAULT_GROWTH_SIZE_RESERVATIONS (was 100) more
@@ -4666,29 +4666,29 @@ public class Relation implements Serializable  {
      * @return Next reserved id or Defs.NULL_INT in case of a code bug or
      * DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW in case the relation grew.
      * Call again when that happens.
-     */    
-    public int getNextReservedRow( int currentReservedRid ) {        
+     */
+    public int getNextReservedRow( int currentReservedRid ) {
         int nextRid = reserved.nextSetBit( currentReservedRid );
-        // most common situation where there were still reserved rows left.        
+        // most common situation where there were still reserved rows left.
         if ( nextRid >= 0 ) {
-            reserved.clear( nextRid );        
-            return nextRid; 
+            reserved.clear( nextRid );
+            return nextRid;
         }
-        
+
         /** Make sure none are left. Maybe the method argument was bogus.
          *We don't resize often so checking doesn't matter.
          */
         //General.showDebug("Found no reserved rows looking forward from id (inclusive): " + currentReservedRid);
         nextRid = reserved.nextSetBit( 0 );
         if ( nextRid >= 0 ) {
-            reserved.clear( nextRid );        
+            reserved.clear( nextRid );
             return nextRid;
         }
 
         //General.showDebug("Found no reserved rows left at all.");
         /** We ran out for sure. Extend the reservation.*/
         // No bits left set in old variable and
-        // the new var is larger than the old one so no combination is needed.                
+        // the new var is larger than the old one so no combination is needed.
         //General.showOutput("Reserving another batch of " + DEFAULT_GROWTH_SIZE_RESERVATIONS + " rows.");
         int oldMaxSize = sizeMax;
         reserved = getNewRows( DEFAULT_GROWTH_SIZE_RESERVATIONS );
@@ -4707,16 +4707,16 @@ public class Relation implements Serializable  {
         if ( nextRid < 0 ) {
             General.showCodeBug("Failed to get next reserved row even after successful expansion.");
             return -1;
-        }            
-        
-        reserved.clear( nextRid );        
+        }
+
+        reserved.clear( nextRid );
         return nextRid;
     }
 
     /** All rows that were reserved before will be deleted; in other words their
      *reservation will be cancelled.
      */
-    public boolean reserveRows( int rowsToReserve ) {        
+    public boolean reserveRows( int rowsToReserve ) {
         if ( reserved == null ) {
             General.showCodeBug("Reservation variable was null this is bad because we check for existing reservations before making new ones." );
             return false;
@@ -4728,8 +4728,8 @@ public class Relation implements Serializable  {
             reserved = new BitSet();
             General.showCodeBug("Failed to remove rows. Not reserving any new ones.");
             return false;
-        }        
-        
+        }
+
         reserved = getNewRows(rowsToReserve);
         if ( reserved == null ) {
             reserved = new BitSet();
@@ -4738,11 +4738,11 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
+
     /** All rows that were reserved before will be deleted; in other words their
      *reservation will be cancelled.
      */
-    public boolean reserveRow( int rowToReserve ) {        
+    public boolean reserveRow( int rowToReserve ) {
         if ( reserved == null ) {
             General.showCodeBug("Reservation variable was null this is bad because we check for existing reservations before making new one." );
             return false;
@@ -4756,11 +4756,11 @@ public class Relation implements Serializable  {
         reserved.set(rowToReserve);
         return true;
     }
-    
+
     /** Remove the row and reserve it.
      *reservation will be cancelled.
      */
-    public boolean rereserveRow( int rowToReserve ) {        
+    public boolean rereserveRow( int rowToReserve ) {
         if ( reserved == null ) {
             General.showCodeBug("Reservation variable was null this is bad because we check for existing reservations before making new one." );
             return false;
@@ -4770,13 +4770,13 @@ public class Relation implements Serializable  {
             General.showWarning("Row to REreserve is not in use for rid: " + rowToReserve );
             return false;
         }
-        
+
         boolean status = removeRow( rowToReserve, true );
         if ( ! status ) {
             General.showCodeBug("Row to REreserve failed to be removed for rid: " + rowToReserve );
             return false;
         }
-        
+
         status = reserveRow(rowToReserve);
         if ( ! status ) {
             General.showCodeBug("Row to REreserve failed to be reserved for rid: " + rowToReserve );
@@ -4784,11 +4784,11 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
+
     /** All rows that were reserved before will now cheaply be deleted; in other words their
      *reservation will be cancelled.
      */
-    public boolean cancelAllReservedRows() {        
+    public boolean cancelAllReservedRows() {
         if ( reserved == null ) {
             General.showCodeBug("Reservation variable was null this is bad because we check for reservations before cancelling any." );
             reserved = new BitSet();
@@ -4802,31 +4802,31 @@ public class Relation implements Serializable  {
             reserved = new BitSet();
             General.showCodeBug("Failed to remove rows. Assume rows do exist now and cancel reservations..");
             return false;
-        }        
-        
+        }
+
         reserved = new BitSet();
         return true;
     }
-    
+
     /** Based on a relations' name return the name for a column
      *that refers to the physcial column. Simply appending a string to the end.
      *E.g. atom_main -> atom_main_id and
      *dist_constr_viol_avg -> dist_constr_viol_avg_id
      */
-    public String getDefaultColumnNameForPhysical() {        
+    public String getDefaultColumnNameForPhysical() {
         return name + DEFAULT_ATTRIBUTE_PHYSICAL_COLUMN_ID_POSTFIX;
     }
-    
-    
+
+
     /** Shifts all values except if they're nulls.
      */
     public boolean shiftValuesInColumnBlockInt( String label, int start, int end, int shift ) {
-            
+
         int[] intColumn = (int[]) getColumnInt(label);
         if ( intColumn == null ) {
             General.showError("Failed to get int[] column for label: " + label);
             return false;
-        }            
+        }
         for (int rid=start; rid< end; rid++) {
             if ( ! Defs.isNull( intColumn[ rid ] ) ) { // slowest component (inline code by hotspot/jit compiler?)
                 intColumn[ rid ] += shift;
@@ -4834,7 +4834,7 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
+
     /** Order in source column can start at -shift whereas ordering in target should start at 0
      */
     public boolean copyToOrderColumn( String label, int shift ) {
@@ -4850,27 +4850,27 @@ public class Relation implements Serializable  {
             if ( ! status ) {
                 General.showWarning("Failed to add column for overall order. Not using column for order: "+label);
                 return false;
-            }                
+            }
         }
-        
-        status = copyColumnBlock( this,  label, 0, DEFAULT_ATTRIBUTE_ORDER_ID, 0, sizeMax);        
+
+        status = copyColumnBlock( this,  label, 0, DEFAULT_ATTRIBUTE_ORDER_ID, 0, sizeMax);
         if ( ! status ) {
             General.showWarning("Failed to copy column block to order column from column: "+label);
             return false;
-        }                
-        status = shiftValuesInColumnBlockInt( DEFAULT_ATTRIBUTE_ORDER_ID, 0, sizeMax, shift);        
+        }
+        status = shiftValuesInColumnBlockInt( DEFAULT_ATTRIBUTE_ORDER_ID, 0, sizeMax, shift);
         if ( ! status ) {
             General.showWarning("Failed to (shiftValuesInColumnBlockInt) copy column block to order column from column: "+label);
             return false;
-        }                
-        
+        }
+
         if ( ! isSortedFromOneInColumn( label ) ) {
             //General.showDebug("The given column: " + label + " still needs sorting.");
             return true;
         }
         return true;
     }
-    
+
     /** Checks if the ordering in the column is natural e.g. starting from one and skipping no number going
      up. If the argument is null then the default column will be checked. Returns false if no such
      column is present. Method does allow for gaps in the relation.
@@ -4884,16 +4884,16 @@ public class Relation implements Serializable  {
             General.showError( "Not isSortedFromOneInColumn because column not present: " + label);
             return false;
         }
-        
+
         Object column = getColumn(label);
         if ( getColumnDataType(label) != DATA_TYPE_INT ) {
-            General.showCodeBug("Data type not supported in isSortedFromOneInColumn " + 
+            General.showCodeBug("Data type not supported in isSortedFromOneInColumn " +
                 dataTypeList[getColumnDataType(label)] + " for column: " + label);
             return false;
-        }        
+        }
         int[] col = (int[]) column;
         int k = 1;
-        for (int i=used.nextSetBit(0); i>=0; )  {       
+        for (int i=used.nextSetBit(0); i>=0; )  {
             if ( col[i] != k ) {
                 //General.showDebug("In column: " + label + " on used row: " + i + " value was not sorted");
                 //General.showDebug("Expected: " + k + " but found: " + col[i]);
@@ -4903,7 +4903,7 @@ public class Relation implements Serializable  {
             i=used.nextSetBit(i+1);
         }
         return true;
-    }                 
+    }
 
     /** Returns true if all elements in given column are of the same value
      *given. Returns false for many reasons; e.g. column doesn't exist or
@@ -4937,7 +4937,7 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
+
     /** Append data from a different relation to this relation. Should be fast.
      *Creates space as needed. The columns to be copied are specified in the argument .
      *Columns in the original table will be maintained and extended with default values if
@@ -4947,7 +4947,7 @@ public class Relation implements Serializable  {
      *Only used rows in the other relation will be used. Unused rows in this relation
      *will be filled as required.
      */
-    public boolean append( Relation otherRelation, int startIdxOther, int endIdxOther, 
+    public boolean append( Relation otherRelation, int startIdxOther, int endIdxOther,
         ArrayList columnOrderOther, boolean allowNewColumns ) {
         // Check input
         if ( columnOrderOther == null ) {
@@ -4958,7 +4958,7 @@ public class Relation implements Serializable  {
             General.showError("Found startIdxOther >=  endIdxOther:" + startIdxOther + " >= " +  endIdxOther );
             return false;
         }
-        
+
         // Ensure all required columns in this relation are added (before or here).
         for (int c=0;c<columnOrderOther.size();c++) {
             String label = (String) columnOrderOther.get(c) ;
@@ -4971,9 +4971,9 @@ public class Relation implements Serializable  {
                 insertColumn(label, getColumnDataType(label), null);
             }
         }
-        
-        
-        
+
+
+
         /** Split the otherRelation into blocks that can be copied fast. Hopefully
          *even in one blow!
          */
@@ -4987,22 +4987,22 @@ public class Relation implements Serializable  {
         if ( endIdxOtherBlock == -1 || endIdxOtherBlock > endIdxOther ) { // All are in use; trust the caller on the size (maybe bad;-).
             endIdxOtherBlock = endIdxOther;
         }
-        
+
         /** Start iteration. Iterating should be fast if data is fragmented.*/
-        while ( true ) {            
-            
+        while ( true ) {
+
             // Make room; coming through!
             int blockOtherSize = endIdxOtherBlock - startIdxOtherBlock;
             //General.showDebug("Using src block from: " + startIdxOtherBlock + " to: " + endIdxOtherBlock);
             int maxSizeNew = blockOtherSize + sizeRows;
             if ( maxSizeNew > sizeMax ) {
                 ensureCapacity(maxSizeNew);
-            }                        
-            
+            }
+
             int otherSizeDone  = 0;
             int startIdxBlock  = 0;
             int endIdxBlock    = 0;
-            while ( otherSizeDone < blockOtherSize ) {            
+            while ( otherSizeDone < blockOtherSize ) {
                 /** Find space in this relation */
                 startIdxBlock  = used.nextClearBit(endIdxBlock);
                 if ( startIdxBlock == -1 ) {
@@ -5026,27 +5026,27 @@ public class Relation implements Serializable  {
                 sizeRows += endIdxBlock - startIdxBlock;
                 // Just do those that are needed.
                 for (int c=0;c<columnOrderOther.size();c++ ) {
-                    String label = (String) columnOrderOther.get(c);                
+                    String label = (String) columnOrderOther.get(c);
                     // Call private method for actual work.
                     //General.showDebug("Appending column with label: " + label );
                     copyColumnBlock( otherRelation, label, startIdxOtherBlock+otherSizeDone, label, startIdxBlock, blockSize );
-                }                                
-                otherSizeDone += blockSize;                
+                }
+                otherSizeDone += blockSize;
             }
-                
+
             //General.showDebug("Copied rows number: " + otherSizeDone );
-                
+
             // Prepare for next iteration.
             startIdxOtherBlock  = otherRelation.used.nextSetBit(   endIdxOtherBlock );
             if ( ( startIdxOtherBlock == -1) || ( startIdxOtherBlock >= endIdxOther )) {
                 break; // Only abort condition in while loop!
-            }                
+            }
             endIdxOtherBlock    = otherRelation.used.nextClearBit( startIdxOtherBlock );
             if ( endIdxOtherBlock == -1 || endIdxOtherBlock > endIdxOther ) { // All are in use; trust the caller on the size (maybe bad;-).
                 endIdxOtherBlock = endIdxOther;
             }
         }
-        
+
         /// NEED TO REINTERN THE STRINGS AFTER APPEND.
         return true;
     }
@@ -5081,7 +5081,7 @@ public class Relation implements Serializable  {
                 return false;
             }
             switch ( dataType ) {
-                case DATA_TYPE_BIT: {               
+                case DATA_TYPE_BIT: {
                     BitSet temp = (BitSet) attr.get(label);
                     temp.set( dst, temp.get( src ));
                     continue;
@@ -5161,31 +5161,31 @@ public class Relation implements Serializable  {
                     General.showError("code bug in copyRow for row: [" + src + "] and colum: [" + column  + "]");
                     Object col = attr.get(label);
                     General.showDebug("Object type for column: " + label + " is " + col.getClass().getName());
-                    General.showError("Unknown type: " + dataType + ". Known are: " + 
+                    General.showError("Unknown type: " + dataType + ". Known are: " +
                         Strings.concatenate( dataTypeList, "," ) );
                     return false;
                 }
-            }        
+            }
         }
         return true;
     }
-    
+
     /** Needs more efficient algorithm for bitset copy
      */
-    public boolean copyColumnBlock( Relation srcRelation,  String label_src, int src_position, 
+    public boolean copyColumnBlock( Relation srcRelation,  String label_src, int src_position,
                                                            String label_dst, int dst_position, int length ) {
         int dataType = getColumnDataType(label_dst);
         if ( dataType == DATA_TYPE_INVALID ) {
             General.showCodeBug("Invalid data type for relation in dst column: " + label_dst);
             return false;
         }
-        
-        int dataTypeSrc = srcRelation.getColumnDataType(label_src);        
+
+        int dataTypeSrc = srcRelation.getColumnDataType(label_src);
         if ( dataTypeSrc == DATA_TYPE_INVALID ) {
             General.showCodeBug("Invalid data type for relation in dst column: " + label_dst);
             return false;
         }
-        
+
         if ( dataTypeSrc != dataType ) {
             General.showCodeBug("Data types differ between src column: " + label_src + " type: " + dataType   + " (" + dataTypeList[dataType]+")");
             if ( (dataTypeSrc >= 0) && (dataTypeSrc < dataTypeList.length) ) {
@@ -5195,7 +5195,7 @@ public class Relation implements Serializable  {
             }
             return false;
         }
-        
+
         Object src = srcRelation.getColumn( label_src );
         Object dst = getColumn( label_dst );
 
@@ -5225,8 +5225,8 @@ public class Relation implements Serializable  {
                     System.arraycopy((double[])     src, src_position, (double[])       dst, dst_position, length );
                     break;
                 }
-                case DATA_TYPE_STRING:       
-                case DATA_TYPE_STRINGNR:     
+                case DATA_TYPE_STRING:
+                case DATA_TYPE_STRINGNR:
                 case DATA_TYPE_OBJECT: { // Just copies a reference.
 //                    General.showDebug("Doing System.arraycopy((Object[])");
                     System.arraycopy((Object[])     src, src_position, (Object[])       dst, dst_position, length );
@@ -5238,7 +5238,7 @@ public class Relation implements Serializable  {
                     int src_position_end = src_position+length;
                     int shift = dst_position-src_position;
                     int j = src_position+shift; // tried to optimize.
-                    for (int i=src_position;i<src_position_end;i++ ) {                    
+                    for (int i=src_position;i<src_position_end;i++ ) {
                         dstTemp.set( j, srcTemp.get(i));
                         j++; // might be fastest to increment by 1 i.s.o. recalculate by + operator.
                     }
@@ -5256,8 +5256,8 @@ public class Relation implements Serializable  {
             return false;
         }
         return true;
-    }    
-    
+    }
+
     /**
      *If containsHeaderRow is false then the default labels will be used.
      *dtd file if not existing defaults to all elements being STRING.
@@ -5265,16 +5265,16 @@ public class Relation implements Serializable  {
      *columns having the column name and the column data type as strings.
      */
     public boolean readCsvFile( String file_name, boolean containsHeaderRow, String dtd_file_name) {
-	
+
         //General.showDebug("Reading from file    : " + file_name);
         //General.showDebug(" with header         : " + containsHeaderRow);
         //General.showDebug(" and dtd             : " + dtd_file_name);
-        Relation dtd = null;        
-        
-        
+        Relation dtd = null;
+
+
         try {
             if ( dtd_file_name != null ) {
-                dtd = new Relation("dtd_" + file_name, dbms);        
+                dtd = new Relation("dtd_" + file_name, dbms);
                 // some recursion.
                 if ( ! dtd.readCsvFile(dtd_file_name, false, null)) {
                     General.showError("failed to read dtd");
@@ -5285,7 +5285,7 @@ public class Relation implements Serializable  {
                 // In case of fkcs
                 if ( dtd.sizeColumns() == 4 ) {
                     dtd.renameColumn(2, "foreignRelationName");
-                    dtd.renameColumn(3, "foreignColumnName");                    
+                    dtd.renameColumn(3, "foreignColumnName");
                 }
             }
 
@@ -5294,7 +5294,7 @@ public class Relation implements Serializable  {
                 General.showWarning("Failed to open resource as a stream from location: " + file_name);
                 return false;
             }
-            
+
             BufferedReader br = new BufferedReader( fr );
             //CSVParser parser = new CSVParser(br);
             ExcelCSVParser parser = new ExcelCSVParser(br);
@@ -5305,11 +5305,11 @@ public class Relation implements Serializable  {
             // Parse the data. If this is too expensive then revise this routine so it
             // uses the line by line parser method getLine(). Method chosen here is to do
             // it with minimal programming effort.
-            String[][] values = parser.getAllValues();            
+            String[][] values = parser.getAllValues();
             if ( values == null ) {
                 General.showError("no data read from csv file");
                 return false;
-            }            
+            }
             if ( values.length <= 0 ) {
                 General.showError("number of rows found: " + values.length);
                 General.showError("but expected at least      : " + 1);
@@ -5319,7 +5319,7 @@ public class Relation implements Serializable  {
             ArrayList columnLabels = new ArrayList( Arrays.asList( values[0] ) );
             if ( containsHeaderRow ) {
                 columnLabels = new ArrayList( Arrays.asList( values[0] ) );
-                Strings.chomp( columnLabels );                
+                Strings.chomp( columnLabels );
             }
             int rows        = values.length;
             int columns     = PrimitiveArray.getMaxColumns( values );
@@ -5335,16 +5335,16 @@ public class Relation implements Serializable  {
                     return false;
                 }
             }
-            
+
             if ( containsHeaderRow ) {
                 rows--;
             }
             //General.showDebug("Read number of rows (excluding possible header): " + rows);
             //General.showDebug("Read number of columns                         : " + columns);
-            
+
             // Keep name
             init(name,rows,dbms,null);
-            
+
             BitSet bs = null;
             if ( rows > 0 ) {
                 bs = getNewRows( rows ); // result isn't actually used
@@ -5352,7 +5352,7 @@ public class Relation implements Serializable  {
                     General.showError("Failed to get new rows");
                 }
             }
-            
+
             for (int c=0;c<columns;c++) {
                 String columnName = "column_label_" + c;
 		String dataTypeStr = "STRING";
@@ -5361,15 +5361,15 @@ public class Relation implements Serializable  {
                     columnName = columnName.trim();
                     dataTypeStr = dtd.getValueString(c, "columnDataType");
                     dataTypeStr = dataTypeStr.trim();
-                    
+
                 } else if (containsHeaderRow) {
-                    columnName = values[0][c];                    
+                    columnName = values[0][c];
                 }
                 insertColumn(-1,columnName,DATA_TYPE_STRING,null);
                 int r = 0;
                 if ( containsHeaderRow ) {
                     r = 1;
-                }    
+                }
                 int i=0;
                 try { // let's find out where the mistakes are if any.
                     for (;i<rows;i++) {
@@ -5377,7 +5377,7 @@ public class Relation implements Serializable  {
                         // this test obviously slows things down.
                         if ( c < values[r].length ) {
                             setValue(i,columnName,values[r][c]);
-                        }                        
+                        }
                         r++;
                     }
                 } catch (Throwable t) {
@@ -5391,9 +5391,9 @@ public class Relation implements Serializable  {
                     General.showError("For column: " + columnName + " ("+c+")");
                     General.showWarning("Known are: " + Strings.concatenate( dataTypeList, "," ) );
                     continue;
-                }            
+                }
                 if ( ! dataTypeStr.equals( "STRING") ) {
-                    convertDataTypeColumn(columnName, dataType, null );                
+                    convertDataTypeColumn(columnName, dataType, null );
                 }
                 // After data type is converted the fkc can be added.
                 if ( (dtd != null) && (dtd.sizeColumns()==4) ) {
@@ -5406,18 +5406,18 @@ public class Relation implements Serializable  {
                         if ( foreignColumnName.equalsIgnoreCase(DEFAULT_ATTRIBUTE_PHYSICAL_COLUMN)) {
                             foreignColumnName = null; // indicating the physical column.
                         }
-                        ForeignKeyConstr fkc = new ForeignKeyConstr(dbms, 
-                            name, columnName, 
+                        ForeignKeyConstr fkc = new ForeignKeyConstr(dbms,
+                            name, columnName,
                             foreignRelationName, foreignColumnName);
                         if ( ! dbms.foreignKeyConstrSet.addForeignKeyConstr(fkc)) {
                             General.showError("Failed to add fkc: " + fkc);
                             General.showError("Dtd: " + dtd.toString());
-                            
+
                             return false;
-                        }                        
+                        }
                     }
-                }                
-            }            
+                }
+            }
         } catch ( Throwable t ) {
             General.showThrowable(t);
             return false;
@@ -5428,15 +5428,15 @@ public class Relation implements Serializable  {
                 return false;
             }
         }
-        
-        return true;    
+
+        return true;
     }
-    
-    
+
+
     /** Doesn't check for valid values. Just a convenience method not optimized for
      *speed.
      */
-    public boolean copyValue(Relation other, int otherRid, String otherColumnName, 
+    public boolean copyValue(Relation other, int otherRid, String otherColumnName,
                                 int toRid, String toColumnName) {
         Object value = other.getValue(otherRid, otherColumnName);
         if ( ! setValue(toRid, toColumnName, value)) {
@@ -5446,7 +5446,7 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
+
     /** Actually inserts a real column with simply the indexes as elements.
      * Can be useful for instance for keeping track of order.
      */
@@ -5465,7 +5465,7 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
+
     /**
     Using order column when present.
      *using string values that can be read in by MySQL. E.g. for boolean use "F"
@@ -5497,7 +5497,7 @@ public class Relation implements Serializable  {
                 if ( ! containsSelected ) {
                     continue;
                 }
-            }                        
+            }
             if ( tmpRelation.getColumnDataType(columnName) != DATA_TYPE_STRING ) {
                 //General.showDebug("translating native to String values for column: " + c);
                 if ( ! tmpRelation.convertDataTypeColumn(columnName, DATA_TYPE_STRING, null )) {
@@ -5513,13 +5513,13 @@ public class Relation implements Serializable  {
         if ( containsColumn(DEFAULT_ATTRIBUTE_ORDER_ID ) ) {
             map = getRowOrderMap( DEFAULT_ATTRIBUTE_ORDER_ID );
             if ( map == null ) {
-                General.showError("Failed to convert the order column to an int[]");                
+                General.showError("Failed to convert the order column to an int[]");
                 return null;
             }
         } else {
             map = PrimitiveArray.toIntArray( tmpRelation.used ); // use physical ordering in stead.
             if ( map == null ) {
-                General.showError("Failed to convert the used BitSet to an int[]");                
+                General.showError("Failed to convert the used BitSet to an int[]");
                 return null;
             }
         }
@@ -5528,7 +5528,7 @@ public class Relation implements Serializable  {
         for (int c=0;c<tmpRelation.sizeColumns();c++) {
             String columnName = tmpRelation.getColumnLabel(c);
             //General.showDebug("Working on column:" + columnName + " (" + c + ")");
-            
+
             if ( columnName.equals(DEFAULT_ATTRIBUTE_ORDER_ID)) {
                 if ( ! containsOrder ) {
                     continue;
@@ -5538,7 +5538,7 @@ public class Relation implements Serializable  {
                 if ( ! containsSelected ) {
                     continue;
                 }
-            }            
+            }
             String[] column = tmpRelation.getColumnString(columnName);
             if ( column == null ) {
                 General.showError("failed to get String[] column in tmpRelation for column: " + columnName + " (" + c + ")");
@@ -5547,12 +5547,12 @@ public class Relation implements Serializable  {
             try {
                 // Switch outside the loop for speed.
                 if ( ! useActualNULL ) {
-                    for (int r=(rows-1);r>=0;r--) {                
+                    for (int r=(rows-1);r>=0;r--) {
                         result[r][c_actual] = column[  map[r] ];
                     }
                 } else {
                     String tmpStr = null;
-                    for (int r=(rows-1);r>=0;r--) {                
+                    for (int r=(rows-1);r>=0;r--) {
                         //General.showDebug("Using: result["+r+"]["+c+"] = column["+idx+"]");
                         tmpStr = column[  map[r] ];
                         if ( Defs.isNullString(tmpStr) ) {
@@ -5569,12 +5569,12 @@ public class Relation implements Serializable  {
                 return null;
             }
             c_actual++;
-        }        
+        }
         // remove the relation from dbms so it can be gc-ed.
         dbms.removeRelation( tmpRelation );
         return result;
     }
-    
+
     /** convenience method.
      */
     public boolean writeCsvFile( String file_name, boolean containsHeaderRow) {
@@ -5582,17 +5582,17 @@ public class Relation implements Serializable  {
         boolean containsSelected       = true;
         boolean containsOrder          = false;
         boolean useActualNULL          = false;
-        return writeCsvFile( file_name, 
-            containsHeaderRow, containsPhysicalColumn, 
-            containsSelected,  containsOrder, 
+        return writeCsvFile( file_name,
+            containsHeaderRow, containsPhysicalColumn,
+            containsSelected,  containsOrder,
             useActualNULL);
     }
-    
+
     /** Writes a csv file with a set of columns that can be influenced by the parameters given.
      */
-    public boolean writeCsvFile( String file_name, 
-        boolean containsHeaderRow, boolean containsPhysicalColumn, 
-        boolean containsSelected,  boolean containsOrder, 
+    public boolean writeCsvFile( String file_name,
+        boolean containsHeaderRow, boolean containsPhysicalColumn,
+        boolean containsSelected,  boolean containsOrder,
         boolean useActualNULL) {
         try {
             FileWriter writer = new FileWriter(file_name);
@@ -5623,7 +5623,7 @@ public class Relation implements Serializable  {
                     }
                     bw.write(columnName);
                 }
-                bw.write( General.eol );               
+                bw.write( General.eol );
             }
             if ( used.cardinality() == 0 ) {
                 General.showDebug("No rows in use for relation: " + name + " so no data written to csv file");
@@ -5632,7 +5632,7 @@ public class Relation implements Serializable  {
                 return true;
             }
             String[][] values = toStringValues(
-                containsPhysicalColumn, containsSelected, 
+                containsPhysicalColumn, containsSelected,
                 containsOrder,          useActualNULL );
             if ( values == null ) {
                 bw.close();
@@ -5642,7 +5642,7 @@ public class Relation implements Serializable  {
             }
             //General.showDebug("Changing null values to empty strings so the writer can deal with these values");
             Strings.changeNullsToEmpties( values );
-            
+
             //General.showDebug("Reformat to csv.");
             String str = Strings.toCsv(values);
             if ( str == null ) {
@@ -5653,8 +5653,8 @@ public class Relation implements Serializable  {
             }
             //General.showDebug("Starting to write to file: " + file_name );
             bw.write(str);
-            
-            
+
+
             //General.showDebug("Written header: " + containsHeaderRow);
             //General.showDebug("Written number of records: " + used.cardinality() +
             //" for number of columns (excluding possible header): " + columnCount);
@@ -5679,12 +5679,12 @@ public class Relation implements Serializable  {
         if ( ! containsColumn(label)) {
             General.showError("Can't getValueStringArray for unexisting column with label: " + label);
             General.showError("In relation: " + name);
-            return false;            
+            return false;
         }
         if ( !(getColumnDataType(label) == DATA_TYPE_STRINGNR || // most common one first in check.
                getColumnDataType(label) == DATA_TYPE_STRING ) ) {
             General.showError("Can't getValueStringArray for non string datatype of column with label" + label);
-            return false;                               
+            return false;
         }
         result.clear();
         int rids_size = rids.size();
@@ -5698,7 +5698,7 @@ public class Relation implements Serializable  {
         }
         return true;
     }
-    
+
     /** Very little checking done */
     public int getIntSum(String label) {
         int[] columFlat = getFlatListInt(label);
@@ -5708,18 +5708,18 @@ public class Relation implements Serializable  {
         int result = PrimitiveArray.getSum(columFlat);
         return result;
     }
-    
-    /** Scans the relation for rows that have identical values for all given 
-     *columns and deletes (as the final step) these rows. 
+
+    /** Scans the relation for rows that have identical values for all given
+     *columns and deletes (as the final step) these rows.
      *Only works on columns with data type String and int.
-     *Check algorithm for easy extensions. The algorithm isn't 
+     *Check algorithm for easy extensions. The algorithm isn't
      *100% garanteed as the row is hashed by the comma
      *separated string representation of the individual values.
      */
     public boolean removeDuplicates( String[] columnNames) {
         Object[] columnList = new Object[columnNames.length];
         BitSet duplicates = new BitSet();
-        for (int i=0;i<columnNames.length;i++) {                
+        for (int i=0;i<columnNames.length;i++) {
             String label = columnNames[i];
             int dataType = getColumnDataType(label);
             if ( dataType != DATA_TYPE_INT && dataType != DATA_TYPE_STRINGNR) {
@@ -5736,12 +5736,12 @@ public class Relation implements Serializable  {
         }
         HashMap prev = new HashMap();
         StringBuffer value = new StringBuffer();
-        
+
         Object columnObject;
         String key;
         for (int rid=used.nextSetBit(0);rid>=0;rid=used.nextSetBit(rid+1)) {
             value.setLength(0);
-            for (int i=0;i<columnNames.length;i++) {              
+            for (int i=0;i<columnNames.length;i++) {
                 value.append(',');
                 columnObject = columnList[i];
                 if ( columnObject instanceof int[] ) {
@@ -5751,7 +5751,7 @@ public class Relation implements Serializable  {
                 }
             }
             key = value.toString();
-            
+
             if ( prev.containsKey(key) ) {
                 //General.showDebug("Found duplicate: " + key);
                 duplicates.set(rid);
@@ -5765,9 +5765,9 @@ public class Relation implements Serializable  {
             General.showError("Failed to Removing duplicates for relation: " + name +
                 " and columns: " + Strings.toString( columnNames ));
             return false;
-        }                
+        }
         return true;
-    }        
+    }
 }
 
 

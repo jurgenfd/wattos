@@ -242,6 +242,10 @@ public class CIFCoord {
      *dc.hasUnLinkedAtom.
      */
     public boolean toWattos(URL url, boolean syncModels) {
+
+        BitSet atomSetBad = new BitSet();
+        atomSetBad.clear(); // Unnecessary but clear.
+
         // Use a temporary dbms so the data doesn't clobber the regular one.
         DBMS dbmsTemp = new DBMS();
         StarFileReader sfr = new StarFileReader(dbmsTemp);
@@ -465,7 +469,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
         if ( tTPdbxVersion == null ) {
             General.showWarning("Failed to find table with tag _pdbx_version.major_version defs. Continueing without setting version.");
         } else {
-            General.showDebug("Found table with tag _pdbx_version.major_version defs.");
+//            General.showDebug("Found table with tag _pdbx_version.major_version defs.");
             String majorVersion = tTPdbxVersion.getValueString(0, "_pdbx_version.major_version");
             String minorVersion = tTPdbxVersion.getValueString(0, "_pdbx_version.minor_version");
             String pdbVersion = null;
@@ -473,9 +477,9 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                 General.showWarning("Failed to find tag _pdbx_version.min/major_version defs. Continueing without setting version.");
             } else{
                 pdbVersion = majorVersion + "." + minorVersion;
-                General.showDebug("Setting pdbCoordinateFileVersionNameList to: " + pdbVersion);
-            	entry.pdbCoordinateFileVersionNameList[currentEntryId] = pdbVersion;
-        	}
+//                General.showDebug("Setting pdbCoordinateFileVersionNameList to: " + pdbVersion);
+                entry.pdbCoordinateFileVersionNameList[currentEntryId] = pdbVersion;
+            }
         }
 
 // MODEL
@@ -613,7 +617,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                             rid_res[modelCount][molCount][resCount] = currentResId;
                             resCount++;
                         }
-                        if ( resCount > 1 ) { // at leas 1 was added to the soup.
+                        if ( resCount > 1 ) { // at least 1 was added to the soup.
                             doneWithEntityPolyOrNonPoly = true;
                         }
                     } // end of conditional residues being present block; can't break out of an if block?
@@ -638,61 +642,63 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                     int firstAtomRid = atomSet.nextSetBit(0);
 //                    General.showDebug("Looking at coor table for record: " + tTCoor.toStringRow(firstAtomRid, false));
                     if ( firstAtomRid < 0 ) {
-                        General.showError("Failed to find any atom in first model for entity: " + entityId);
-                        General.showError("This was found in for instance entry 1j6t for the PO3 group and was reported in NRG issue 157");
-                        General.showError("No easy work around possible.");
-                        return false;
-                    }
-                    int resCount=1;
-                    String resName = tTCoor.getValueString(firstAtomRid, tagNameAtomResName);
-                    // Water is so special for live on earth.
-                    if ( mol.type[currentMolId]!=Molecule.WATER_TYPE ) {
-                        rid_res[modelCount][molCount] = new int[resCount+1]; // assign last dimension within.
-                        currentResId = res.add( resName, resCount, Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );
-                        if ( currentResId < 0 ) {
-                            General.showCodeBug("Failed to add res count:" + resCount + " into dbms.");
-                            return false;
-                        }
-                        res.selected.set( currentResId );
-                        // cache rid residue
-                        rid_res[modelCount][molCount][resCount] = currentResId;
+                        General.showWarning("Failed to find any atom in first model for entity: " + entityId);
+                        General.showWarning("This was found in for instance entry 1j6t for the PO3 group and was reported in NRG issue 157");
+//                        atomSetNotInFirstModel.set(firstAtomRid);
+//                        General.showWarning("Increased number of these atoms to: " + atomSetNotInFirstModel.cardinality());
                     } else {
-                        if ( ! resName.equals("HOH")) {
-                            General.showError("Found a water posing residue: " + resName);
-                            return false;
-                        }
-                        BitSet atomOSet = SQLSelect.selectBitSet(dbmsTemp,tTCoor,tagNameAtomName,
-                                SQLSelect.OPERATION_TYPE_EQUALS,"O",false);
-                        atomOSet.and(atomSet); // only within this specific entity
-                        int water_count = atomOSet.cardinality();
-//                        General.showDebug("Found number of oxygen atoms indicating a water molecule: "+water_count);
-                        rid_res[modelCount][molCount] = new int[water_count+1]; // assign last dimension within.
-                        for ( int atomRid=atomOSet.nextSetBit(0);atomRid>=0;atomRid = atomOSet.nextSetBit(atomRid+1)) {
-                            tTCoor.setValue(atomRid, tagNameAtomResId, new Integer(resCount));
+                        int resCount=1;
+                        String resName = tTCoor.getValueString(firstAtomRid, tagNameAtomResName);
+                        // Water is so special for live on earth.
+                        if ( mol.type[currentMolId]!=Molecule.WATER_TYPE ) {
+                            rid_res[modelCount][molCount] = new int[resCount+1]; // assign last dimension within.
                             currentResId = res.add( resName, resCount, Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );
                             if ( currentResId < 0 ) {
-                                General.showCodeBug("Failed to add WATER:" + resCount + " into dbms.");
+                                General.showCodeBug("Failed to add res count:" + resCount + " into dbms.");
                                 return false;
                             }
                             res.selected.set( currentResId );
                             // cache rid residue
                             rid_res[modelCount][molCount][resCount] = currentResId;
-                            // are there follow up Hydrogens?
-                            for (int offset=1;offset<3;offset++) {
-                                int atomRid2 = atomRid+offset;
-                                if ( atomSet.get(atomRid2) && tTCoor.getValueString(atomRid2, tagNameAtomName).startsWith("H")) {
-                                    tTCoor.setValue(atomRid2, tagNameAtomResId, new Integer(resCount));
-//                                    General.showDebug("Renumbered water residue for coor table at: " + tTCoor.toStringRow(atomRid2, false));
-                                }
+                        } else {
+                            if ( ! resName.equals("HOH")) {
+                                General.showError("Found a water posing residue: " + resName);
+                                return false;
                             }
-                            resCount++;
-                        }
-                    }
-                }
+                            BitSet atomOSet = SQLSelect.selectBitSet(dbmsTemp,tTCoor,tagNameAtomName,
+                                    SQLSelect.OPERATION_TYPE_EQUALS,"O",false);
+                            atomOSet.and(atomSet); // only within this specific entity
+                            int water_count = atomOSet.cardinality();
+    //                        General.showDebug("Found number of oxygen atoms indicating a water molecule: "+water_count);
+                            rid_res[modelCount][molCount] = new int[water_count+1]; // assign last dimension within.
+                            for ( int atomRid=atomOSet.nextSetBit(0);atomRid>=0;atomRid = atomOSet.nextSetBit(atomRid+1)) {
+                                tTCoor.setValue(atomRid, tagNameAtomResId, new Integer(resCount));
+                                currentResId = res.add( resName, resCount, Defs.NULL_STRING_NULL, Defs.NULL_STRING_NULL, currentMolId );
+                                if ( currentResId < 0 ) {
+                                    General.showCodeBug("Failed to add WATER:" + resCount + " into dbms.");
+                                    return false;
+                                }
+                                res.selected.set( currentResId );
+                                // cache rid residue
+                                rid_res[modelCount][molCount][resCount] = currentResId;
+                                // are there follow up Hydrogens?
+                                for (int offset=1;offset<3;offset++) {
+                                    int atomRid2 = atomRid+offset;
+                                    if ( atomSet.get(atomRid2) && tTCoor.getValueString(atomRid2, tagNameAtomName).startsWith("H")) {
+                                        tTCoor.setValue(atomRid2, tagNameAtomResId, new Integer(resCount));
+    //                                    General.showDebug("Renumbered water residue for coor table at: " + tTCoor.toStringRow(atomRid2, false));
+                                    }
+                                }
+                                resCount++;
+                            } // End for over atomOSet
+                        } // end else
+                    } // end for atomSetNotInFirstModel
+                } // end for !doneWithEntityPolyOrNonPoly
                 tTAssemblyRID++;
             } // end of loop over molecules
         } // end of loop over models
-
+//        int atomNotInFirstModelCount = atomSetBad.cardinality();
+//        General.showWarning("There are " + atomNotInFirstModelCount + " atoms that were skipped because no accomodating residue was present in the first model. Fixes issue 157.");
 
 // ATOMS
         // Already checked to see the first is 1
@@ -723,12 +729,6 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
             General.showError("Failed to insert all required columns");
             return false;
         }
-
-        // Select and set 'hasCoor' for all atoms in bulk
-        BitSet selected = tTCoor.getColumnBit( Relation.DEFAULT_ATTRIBUTE_SELECTED ); // all false at this point
-        selected.or( tTCoor.used );
-        BitSet hasCoor = tTCoor.getColumnBit( Gumbo.DEFAULT_ATTRIBUTE_HAS_COOR );
-        hasCoor.or( tTCoor.used );
 
         // Rename some.
         String[] equivalents = {
@@ -763,7 +763,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
             General.showWarning("No element ids tag  present in input at with name: " + tagNameAtomElementId + " ; setting all to null.");
             tTCoor.setValueByColumn( Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID, new Integer(Defs.NULL_INT));
         } else {
-            // Only need to do for sizeRows; not maxRows because we are garanteed they're not all used.
+            // Only need to do for sizeRows; not maxRows because we are guaranteed they're not all used.
             if ( ! Chemistry.translateElementNameToIdInArrays( elementIdsTmp, elementIds, false, 0, tTCoor.sizeRows ) ) {
                 General.showError("Failed to translate all element names to ids in arrays; setting all to null. Shouldn't be fatal but it might.");
                 tTCoor.setValueByColumn( Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID, new Integer(Defs.NULL_INT));
@@ -792,28 +792,51 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
         int modelNum;
         int molNum;
         int resNum;
-        int atomCount=0;
-        try {
-            for (;atomCount<atomCountMax;atomCount++) {        // This loop might want to be optimized
-                modelNum    = atomModelIdList[  atomCount];
-                molNum      = atomMolIdList[    atomCount];
-                resNum      = atomResIdList[    atomCount];
+        int atomIdx=0;
+//        try {
+        for (;atomIdx<atomCountMax;atomIdx++) {        // This loop might want to be optimized
+            resNum = Defs.NULL_INT;
+            try {
+                modelNum    = atomModelIdList[  atomIdx];
+                molNum      = atomMolIdList[    atomIdx];
+                resNum      = atomResIdList[    atomIdx];
                 if ( Defs.isNull(resNum)) {
                     resNum = 1; // unnumbered residues such as ions and waters
                     // waters will be renumbered again later.
                 }
-                model_main_id[  atomCount] = rid_model[ modelNum];
-                mol_main_id[    atomCount] = rid_mol[   modelNum][molNum];
-                res_main_id[    atomCount] = rid_res[   modelNum][molNum][resNum];
+                model_main_id[  atomIdx] = rid_model[ modelNum];
+                mol_main_id[    atomIdx] = rid_mol[   modelNum][molNum];
+                res_main_id[    atomIdx] = rid_res[   modelNum][molNum][resNum];
+            } catch ( Throwable t ) {
+                atomSetBad.set(atomIdx);
+                General.showDebug("atomSetNotInFirstModel grew to size: " + atomSetBad.cardinality());
             }
-        } catch ( Throwable t ) {
-            General.showThrowable(t);
-            General.showError("For atom: " + atomCount + " in the file, failed to set the RIDs" );
-            General.showError("Model number: " + atomModelIdList[  atomCount] + ", molecule number: " + atomMolIdList[    atomCount] + ", residue number: " + atomResIdList[    atomCount]);
-            General.showError("Is the atom in known topology. E.g. does the residue occur in the system description.");
-            General.showError("This also happens when the model numbering is significantly off as per issue 169 for eg entries 1j6y and 2fce");
-            return false;
         }
+//        } catch ( Throwable t ) {
+//            General.showThrowable(t);
+//            General.showError("For atom: " + atomCount + " in the file, failed to set the RIDs" );
+//            General.showError("Model number: " + atomModelIdList[  atomCount] + ", molecule number: " + atomMolIdList[    atomCount] + ", residue number: " + atomResIdList[    atomCount]);
+//            General.showError("Is the atom in known topology. E.g. does the residue occur in the system description.");
+//            General.showError("This also happens when the model numbering is significantly off as per issue 169 for eg entries 1j6y and 2fce");
+//            return false;
+//        }
+
+        // Select and set 'hasCoor' for all atoms in bulk
+        BitSet atomSetOk = new BitSet();
+        atomSetOk.or(tTCoor.used);
+
+        if ( atomSetBad.cardinality() > 0 ) {
+            General.showDebug("atomSetBad size: " + atomSetBad.cardinality());
+            General.showDebug("atomsSetOk size: " + atomSetOk.cardinality());
+            atomSetOk.andNot( atomSetBad );
+            General.showDebug("atomsSetOk size (after non-Oks zapped): " + atomSetOk.cardinality());
+        }
+        BitSet selected = tTCoor.getColumnBit( Relation.DEFAULT_ATTRIBUTE_SELECTED ); // all false at this point
+        BitSet hasCoor = tTCoor.getColumnBit( Gumbo.DEFAULT_ATTRIBUTE_HAS_COOR );
+        selected.or( atomSetOk );
+        hasCoor.or( atomSetOk );
+
+
 
         ArrayList columnsToCopy = new ArrayList();
         columnsToCopy.addAll( Arrays.asList( equivalents ) );
