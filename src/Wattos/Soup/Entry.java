@@ -990,7 +990,7 @@ public class Entry extends GumboItem implements Serializable {
                             General.showDebug("Deleting following atoms in first/master model and related ones:");
                             showedBeginMessage = true;
                         }
-                        General.showDebug("Sync list is incomplete for atom in master atom: " + i + " and model id: " + j);
+//                        General.showDebug("Sync list is incomplete for atom in master atom: " + i + " and model id: " + j);
                         General.showDebug(gumbo.atom.toString(i));
 //                        General.showDebug(PrimitiveArray.toString(gumbo.atom.modelSiblingIds[i]));
                         showedMessageCount++;
@@ -1200,7 +1200,7 @@ public class Entry extends GumboItem implements Serializable {
             ridN, ridH, ridO, ridC);
 
 
-	return true;
+    return true;
     }
      */
 

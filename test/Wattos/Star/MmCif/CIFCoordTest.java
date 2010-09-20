@@ -24,7 +24,7 @@ import Wattos.Utils.InOut;
  * @author jurgen
  */
 public class CIFCoordTest extends TestCase {
-     
+
     String fs = File.separator;
     /** This entry is a beauty to test with. It consists of:
      * NON-SYMMETRIC INSULIN (dimeric) HEXAMER (total of 12 chains)
@@ -32,30 +32,32 @@ public class CIFCoordTest extends TestCase {
         FORMUL  14  IPH    6(C6 H6 O1)
         FORMUL  15  HOH   *2(H2 O1)      1 asym ID!
 In remediated mmCIF: 21 asyms (chains)
-        A N N 1 ? 
-        B N N 2 ? 
-        C N N 1 ? 
-        D N N 2 ? 
-        E N N 1 ? 
-        F N N 2 ? 
-        G N N 1 ? 
-        H N N 2 ? 
-        I N N 1 ? 
-        J N N 2 ? 
-        K N N 1 ? 
+        A N N 1 ?
+        B N N 2 ?
+        C N N 1 ?
+        D N N 2 ?
+        E N N 1 ?
+        F N N 2 ?
+        G N N 1 ?
+        H N N 2 ?
+        I N N 1 ?
+        J N N 2 ?
+        K N N 1 ?
         L N N 2 ? # last of peptides
-        M N N 3 ? 
+        M N N 3 ?
         N N N 3 ? # last of Zn
-        O N N 4 ? 
-        P N N 4 ? 
-        Q N N 4 ? 
-        R N N 4 ? 
-        S N N 4 ? 
+        O N N 4 ?
+        P N N 4 ?
+        Q N N 4 ?
+        R N N 4 ?
+        S N N 4 ?
         T N N 4 ? # last of IPH
         U N N 5 ? # water     */
-    String pdb_id = "1ai0";
+//    String pdb_id = "1ai0";
+    String pdb_id = "1j6t"; // Used straight up (only 3 models).
 //    String pdb_id = "2hgh";
-    String baseInputName = pdb_id + "_rem_small";    
+    String baseInputName = pdb_id;
+//    String baseInputName = pdb_id + "_rem_small";
     String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
     File inputDir       = new File( wattosRoot,"data"+fs+"test_data" );
     File outputDir      = new File( wattosRoot,"tmp_dir" );
@@ -68,7 +70,7 @@ In remediated mmCIF: 21 asyms (chains)
     boolean status = true;
     long start;
     long taken;
-    
+
     public CIFCoordTest(String testName) {
         super(testName);
         // Select to show no output if all goes well because the routine in normal mode has
@@ -76,20 +78,20 @@ In remediated mmCIF: 21 asyms (chains)
         General.setVerbosityToDebug();
 //        General.verbosity = General.verbosityNothing;
         //General.showEnvironment();
-        
-        General.showDebug("wattos root: " + wattosRoot);
+
+        General.showDebug("wattos roottie: " + wattosRoot);
         General.showDebug("inputDir: " + inputDir);
-                
+
         if ( gumbo == null ) {
             fail("gumbo from ui still null");
         }
     }
-    
+
     public static Test suite() {
         TestSuite suite = new TestSuite(CIFCoordTest.class);
         return suite;
     }
-    
+
     public void test() {
         File input = new File(inputDir, baseInputName+".cif.gz");
         URL url = InOut.getUrlFileFromName(input.toString());
@@ -97,7 +99,7 @@ In remediated mmCIF: 21 asyms (chains)
             fail("specify a valid name for input");
         }
         start = System.currentTimeMillis();
-        boolean syncModels = true; 
+        boolean syncModels = true;
         status = gumbo.entry.readmmCIFFormattedFile(url,ui,syncModels);
         taken = System.currentTimeMillis() - start;
         General.showDebug( "to Wattos took: " + taken + "(" + (taken/1000.0) + " sec)" );
@@ -108,13 +110,13 @@ In remediated mmCIF: 21 asyms (chains)
             fail("DBMS is NOT consistent after reading in file.");
         } else {
             General.showDebug("DBMS is consistent after reading in file.");
-        }        
+        }
         if ( !writeStar()) {
             fail("writeStar");
         }
         return;
     }
-    
+
     /**
      */
     public boolean writeStar() {
@@ -124,7 +126,7 @@ In remediated mmCIF: 21 asyms (chains)
         }
         taken = System.currentTimeMillis() - start;
         General.showDebug( "to STAR took: " + taken + "(" + (taken/1000.0) + " sec)" );
-        
+
 //        File listFile               = new File( inputDir,   outputFileName);// reference
 //        String msg = InOut.getLines(outputFile.toString(),0,99999);         // produced
 //        String exp = InOut.getLines(listFile.toString(),0,99999);           // expected
@@ -136,9 +138,9 @@ In remediated mmCIF: 21 asyms (chains)
 //            }
 //            fail("Output STAR representation is not as before.");
 //        }
-//        
+//
         return true;
     }
-    
-    
+
+
 }
