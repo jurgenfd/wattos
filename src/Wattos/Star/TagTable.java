@@ -32,7 +32,7 @@ import Wattos.Utils.Strings;
  */
 public class TagTable extends Relation {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -323908324987659058L;
     public static final int         dataNodeType        = StarGeneral.DATA_NODE_TYPE_TAGTABLE;
@@ -44,7 +44,7 @@ public class TagTable extends Relation {
     public StarNode     parent;
     /** When true the ordering should be taken from the physical ordering instead of the order column */
     public boolean      useDefaultOrdering;
-    
+
     /** Creates a new instance of TagTable */
     public TagTable( String name, DBMS dbms ) throws Exception {
         super( name, dbms );
@@ -60,7 +60,7 @@ public class TagTable extends Relation {
         // is usually in place.
         return true;
     }
-    
+
     /** Makes a deep copy of all the data. Adds the order column needed for STAR data if not
      *present already and fills it sequentially for now.
      * The free/looped state is a guess from the number of rows (?>1) in use.
@@ -68,40 +68,40 @@ public class TagTable extends Relation {
      *as needed.
      */
     public boolean init(Relation relation) {
-        
+
         // Add relation to dbms, note that this will remove the previous instance of the relation first.
         init( name, relation.dbms );                 // Do a full init first.
         /** By type and alphabetical order */
         sizeMax         = relation.sizeMax;
         sizeRows        = relation.sizeRows;
-        columnDataType  = (HashMap)     relation.columnDataType.clone();         
-        columnOrder     = (ArrayList)   relation.columnOrder.clone();         
-        reserved        = (BitSet)      relation.reserved.clone();         
-        used            = (BitSet)      relation.used.clone();         
+        columnDataType  = (HashMap)     relation.columnDataType.clone();
+        columnOrder     = (ArrayList)   relation.columnOrder.clone();
+        reserved        = (BitSet)      relation.reserved.clone();
+        used            = (BitSet)      relation.used.clone();
         attr            = (HashMap)     relation.attr.clone();          // Contains the column references.
-        indices         = (HashMap)     relation.indices.clone();         
-        
+        indices         = (HashMap)     relation.indices.clone();
+
         isFree          = true;
         if ( relation.sizeRows > 1 ) {
             isFree          = false;
         }
-        
+
         // Keep one if it's already available.
-        if ( ! containsColumn( DEFAULT_ATTRIBUTE_ORDER_ID )) {            
+        if ( ! containsColumn( DEFAULT_ATTRIBUTE_ORDER_ID )) {
             if ( ! addColumnForOverallOrder()) {
                 General.showError("In TagTable.init(relation) failed to add column for overall order id");
                 return false;
             }
             if ( ! numberRowsPhysical(DEFAULT_ATTRIBUTE_ORDER_ID,used,0)) {
                 General.showError("In TagTable.init(relation) failed to numberRowsPhysical");
-                return false;                
+                return false;
             }
-        }        
+        }
         return true;
     }
-    
+
     /** Recursively looks for the top star node which has info on like the
-     *preferred format. Usually it only takes a couple of look ups so it's 
+     *preferred format. Usually it only takes a couple of look ups so it's
      *very fast.
      *Only for tagtable it returns null if tagtable is the last on the stack.
      */
@@ -113,7 +113,7 @@ public class TagTable extends Relation {
         }
     }
 
-    
+
     /** Return string in stead of output to a writer. Returns null if
      * unsuccessful.
      */
@@ -126,7 +126,7 @@ public class TagTable extends Relation {
         }
         return stw.toString();
     }
-    
+
     /** Creates formatted STAR output */
     public boolean toSTAR( Writer w) {
 //        General.showDebug("Now in TagTable.toSTAR for table: " + name);
@@ -135,17 +135,17 @@ public class TagTable extends Relation {
         String loopIndent       = Strings.createStringOfXTimesTheCharacter(' ', parent.general.loopIdentSize);
         String freeIndent       = Strings.createStringOfXTimesTheCharacter(' ', parent.general.freeIdentSize);
         String tagNameIndent    = Strings.createStringOfXTimesTheCharacter(' ', parent.general.tagnamesIdentSize);
-        
+
         int lastColumnIdx       = sizeColumns();
 //        int valueCount          = 0;
 //        int valueId             = 0;
 //        int count               = 0;
-        
-        if ( sizeColumns() == 0 ) { 
+
+        if ( sizeColumns() == 0 ) {
             General.showError("Attempted to render empty TagTable to STAR, even no order column.");
             return false;
         }
-        
+
         // columnOrder.toArray() doesn't allow the cast to String[] it seems.
         String[] tagNames = PrimitiveArray.asStringArray( columnOrder );
         int maxTagNameSize = Strings.getMaxSizeStrings( tagNames );
@@ -159,7 +159,7 @@ public class TagTable extends Relation {
             General.showWarning("Attempted to render empty TagTable to STAR.");
             return true;
         }
-        
+
 //        if ( orderColumnIdx != 0 ) {
 //            General.showWarning("Order column not found at zero-ed position but at: " + orderColumnIdx);
 //        }
@@ -171,16 +171,16 @@ public class TagTable extends Relation {
             General.showDebug("The tagtable: ["+name+"] contains more than 1 row so the type was reset from free to looped.");
             isFree = false;
         }
-        
+
         Relation prtRelation = null;
-        try {                     
+        try {
             // Free tags here
             if ( isFree ) {
                 for (int c=0; c<lastColumnIdx;c++)  {
                     if ( c == orderColumnIdx ) {
                         continue;
-                    }                    
-                    // Just format it such that it will take the least space.                
+                    }
+                    // Just format it such that it will take the least space.
                     sb.append( freeIndent );
                     String label = getColumnLabel(c);
                     int labelLength = label.length();
@@ -198,7 +198,7 @@ public class TagTable extends Relation {
                 sb.append( '\n' );
                 w.write(sb.toString());
                 return true;
-            } 
+            }
 
             // Loop tag names here
 //            sb.append( "\n" ); // trying to match the whitespace to Steve's starlib
@@ -248,7 +248,7 @@ public class TagTable extends Relation {
             if ( map.length != sizeRows ) {
                 General.showError("(B) The obtained used row map list length: " + map.length  + " isn't of the right length: " + sizeRows);
                 return false;
-            }                
+            }
 
             prtRelation = new Relation(dbms.getNextRelationName(),dbms);
             if ( prtRelation == null ) {
@@ -262,16 +262,16 @@ public class TagTable extends Relation {
             for (int c=0; c<lastColumnIdx;c++)  {
                 if ( c == orderColumnIdx ) {
                     continue;
-                }                
+                }
                 String label = getColumnLabel(c);
                 namesAndTypes.put( getColumnLabel(c), new Integer(Relation.DATA_TYPE_STRINGNR));
-                order.add(label);                 
+                order.add(label);
             }
             if ( ! prtRelation.insertColumnSet(0, namesAndTypes, order, null, null)) {
                 General.showError("Failed to insertColumnSet for STAR printing");
                 return false;
             }
-            // make the relation of the same row dimensions 
+            // make the relation of the same row dimensions
             if ( prtRelation.sizeMax < sizeMax ) { // check to prevent a warning.
                 prtRelation.ensureCapacity( sizeMax );
             }
@@ -286,7 +286,7 @@ public class TagTable extends Relation {
             for (int c=0; c<lastColumnIdx;c++)  {
                 if ( c == orderColumnIdx ) {
                     continue;
-                }            
+                }
                 String label = getColumnLabel(c);
                 /** Safe the references for below */
                 colList[c]      =prtRelation.getColumnString(label);
@@ -298,7 +298,7 @@ public class TagTable extends Relation {
                 Object    colOrg = getColumn(label);
                 int dataType = getColumnDataType(label);
                 String v = null;
-                
+
                 for (int r=0;r<sizeRows;r++)  {
                     // Safe some work on all but the first element
                     if ( r!=0 ) {
@@ -312,7 +312,7 @@ public class TagTable extends Relation {
                     // easily be optimized by first doing conversion to String only column
                     // outside of this loop. It would save a lot of objects too.
                     v = StarGeneral.addQuoteStyle(getValueString(map[r],c));
-                    col[r] = colSet.intern(v); // just keep one reference per string per column.              
+                    col[r] = colSet.intern(v); // just keep one reference per string per column.
                 }
                 if ( colSet.containsQuotedValue()) {
                     colContainsAQuotedValue = true;
@@ -325,13 +325,13 @@ public class TagTable extends Relation {
                 HashMap paddedValues = new HashMap();
                 char[] charsReusable = new char[maxSizeElementsCol];
                 String padded = null;
-//                Parameters p = new Parameters(); // for printf                    
+//                Parameters p = new Parameters(); // for printf
                 boolean leftAlign = true;
                 v = col[0];
                 if ( Strings.startLooksLikeANumber(v) ) {
                     leftAlign = false;
-                } 
-                
+                }
+
                 for (int r=0;r<sizeRows;r++)  {
                     v = col[r];
                     padded = (String) paddedValues.get(v);
@@ -343,7 +343,7 @@ public class TagTable extends Relation {
                         General.showCodeBug("Failed getting translation to a (un-)quoted string value.");
                         General.showCodeBug("For relation: " + name + " at column: " + label + " and row: "
                                 + r);
-                        return false;                                                    
+                        return false;
                     }
                     if ( v.length() != charsReusable.length ) {
                         if ( Strings.growToSize(v,leftAlign,
@@ -351,7 +351,7 @@ public class TagTable extends Relation {
                             padded = new String(charsReusable);
                         } else {
                             General.showError("Failed Strings.growToSize");
-                            return false;                            
+                            return false;
                         }
                     } else {
                         padded = v;
@@ -363,7 +363,7 @@ public class TagTable extends Relation {
                     }
                     col[r]=padded;
                     paddedValues.put(v,padded);
-                }                    
+                }
             }
 
 
@@ -373,7 +373,7 @@ public class TagTable extends Relation {
                 for (int c=0; c<lastColumnIdx;c++)  {
                     if ( c == orderColumnIdx ) {
                         continue;
-                    }                    
+                    }
                     sb.append( colList[c][r] );
                     sb.append( spaceBetweenLoopedValues );
                 }
@@ -387,7 +387,7 @@ public class TagTable extends Relation {
                 sb.append( '\n' );
             }
 
-            w.write(sb.toString());                          
+            w.write(sb.toString());
         } catch ( Throwable t) {
             General.showThrowable( t );
             return false;
@@ -395,19 +395,19 @@ public class TagTable extends Relation {
             if ( (prtRelation!=null) && dbms.containsRelation(prtRelation.name)) {
                 if ( ! dbms.removeRelation(prtRelation)) {
                     General.showError("Failed dbms.removeRelation(prtRelation)");
-                }            
+                }
             }
-        }        
-//        General.showDebug("Leaving TagTable.toSTAR for table: " + name);        
+        }
+//        General.showDebug("Leaving TagTable.toSTAR for table: " + name);
         return true;
-    }        
-    
+    }
+
     /** Find the correct tagtable in the tree under this starnode.
      * One can use the wild card '*' for the any of the arguments. Returns null if no tagtable is
      * present in the tree.
      */
     public TagTable getTagTable(String columnName) {
-        
+
         if ( columnName.equals(StarGeneral.WILDCARD) || containsColumn(columnName) ) {
             //General.showDebug("found table with column name: " + columnName);
             return this;
@@ -421,15 +421,15 @@ public class TagTable extends Relation {
      * present in the tree.
      */
     public TagTable getTagTableRegExp(String columnNameRegExp) {
-        
+
         if ( columnNameRegExp.equals(StarGeneral.WILDCARD) || containsColumn(columnNameRegExp) ) {
             //General.showDebug("found table with column name: " + columnName);
             return this;
         }
-        Pattern p_general_format = Pattern.compile(columnNameRegExp, Pattern.COMMENTS);            
+        Pattern p_general_format = Pattern.compile(columnNameRegExp, Pattern.COMMENTS);
         Matcher m_general_format = p_general_format.matcher(""); // default matcher on empty string.
-        
-        
+
+
         int lastColumnIdx       = sizeColumns();
         for (int c=1; c<lastColumnIdx;c++)  {
             m_general_format.reset( getColumnLabel(c));
@@ -442,7 +442,7 @@ public class TagTable extends Relation {
         return null;
     }
 
-    
+
     /** According to the data types specified in the dictionary
      *translate it assuming that all are strings of type non-redundant
      */
@@ -462,23 +462,23 @@ public class TagTable extends Relation {
             SaveFrame parentSf = (SaveFrame) parent;
             sFCategory = parentSf.getCategory();
             //* HashOfHashes fromStar2D -> ArrayList
-            //*      "Saveframe category" -> "Tag name" -> ("Wattos relation", "Wattos name", "Wattos data type") 
+            //*      "Saveframe category" -> "Tag name" -> ("Wattos relation", "Wattos name", "Wattos data type")
             if ( sFCategory == null ) {
                 General.showWarning("Can't translate data type to native by dictionary for tagtables with parent of unknown sf category at this moment.");
                 return overallStatus;
             }
 
             if ( !starDict.fromStar2D.containsKey( sFCategory )) {
-                General.showDebug("Skipping translation of saveframe category (no data type definitions in dictionary): " + sFCategory );
+//                General.showDebug("Skipping translation of saveframe category (no data type definitions in dictionary): " + sFCategory );
                 /**
-                General.showDebug("Definitions exist for saveframe categories: " + 
-                    Strings.toString( starDict.fromStar.keySet().toArray() ));            
+                General.showDebug("Definitions exist for saveframe categories: " +
+                    Strings.toString( starDict.fromStar.keySet().toArray() ));
                  */
                 return overallStatus;
             }
             HashMap fromStarCached = (HashMap) starDict.fromStar2D.get( sFCategory );
 
-            for (int i=0; i<sizeColumns(); i++) { 
+            for (int i=0; i<sizeColumns(); i++) {
                 String label = null;
                 try {
                     label = getColumnLabel(i);
@@ -512,21 +512,21 @@ public class TagTable extends Relation {
                     if ( columnDataType == getColumnDataType(label) ) {
                         //General.showDebug("Tag has a data type as listed in dictionary: " + columnDataTypeString + " No need to convert this column");
                         continue;
-                    }                    
+                    }
                     boolean status = convertDataTypeColumn( i, columnDataType, null );
                     if ( ! status ) {
                         General.showError("Column with tag: " + label + " had conversion error for at least 1 of the rows. Column was not converted. Old data untouched.");
                         overallStatus = false;
                         continue;
-                    }                                        
+                    }
                 } catch ( Exception e ) {
                     General.showError("in translateToNativeTypesByDict for tag table: " + name + " and column: " + label);
                     General.showThrowable(e);
                     overallStatus = false;
                 }
-            } // end of loop per column.   
+            } // end of loop per column.
         } else {
-            for (int i=0; i<sizeColumns(); i++) { 
+            for (int i=0; i<sizeColumns(); i++) {
                 String label = null;
                 try {
                     label = getColumnLabel(i);
@@ -559,23 +559,23 @@ public class TagTable extends Relation {
                     if ( columnDataType == getColumnDataType(label) ) {
                         //General.showDebug("Tag has a data type as listed in dictionary: " + columnDataTypeString + " No need to convert this column");
                         continue;
-                    }                    
+                    }
                     boolean status = convertDataTypeColumn( i, columnDataType, null );
                     if ( ! status ) {
                         General.showError("Column with tag: " + label + " had conversion error for at least 1 of the rows. Column was not converted. Old data untouched.");
                         overallStatus = false;
                         continue;
-                    }                                        
+                    }
                 } catch ( Exception e ) {
                     General.showError("in translateToNativeTypesByDict for tag table: " + name + " and column: " + label);
                     General.showThrowable(e);
                     overallStatus = false;
                 }
-            } // end of loop per column.               
+            } // end of loop per column.
         }
         return overallStatus;
     }
-    
+
     /** According to the data formatting specified in the dictionary
      *translate it. Since fancy printing is done by com.braju package
      *it isn't fast. Limit the amount of columns to do it on or expect the
@@ -596,21 +596,21 @@ public class TagTable extends Relation {
         String sFCategory = parentSf.getCategory();
         // We'll do a rather stupid double lookup.
         //* HashOfHashes fromStar2D -> ArrayList
-        //*      "Saveframe category" -> "Tag name" -> ("Wattos relation", "Wattos name", "Wattos data type") 
+        //*      "Saveframe category" -> "Tag name" -> ("Wattos relation", "Wattos name", "Wattos data type")
         /*
          *Maps TO nmr-star from wattos:
          * HashOfHashes toStar2D -> ArrayList
-         *      "Wattos relation" -> "Wattos name" -> ("Saveframe category", "Tag name", "Text format") 
-         */        
+         *      "Wattos relation" -> "Wattos name" -> ("Saveframe category", "Tag name", "Text format")
+         */
         if ( (sFCategory==null) || !starDict.fromStar2D.containsKey( sFCategory ) ) {
             General.showWarning("No definitions for saveframe category: " + sFCategory );
-            General.showDebug("Definitions exist for saveframe categories: " + 
-                Strings.toString( starDict.fromStar.keySet().toArray() ));            
+            General.showDebug("Definitions exist for saveframe categories: " +
+                Strings.toString( starDict.fromStar.keySet().toArray() ));
             return overallStatus;
-        }        
+        }
         HashMap fromStarCached = (HashMap) starDict.fromStar2D.get( sFCategory );
-        
-        for (int i=0; i<sizeColumns(); i++) {                    
+
+        for (int i=0; i<sizeColumns(); i++) {
             try {
                 String label = getColumnLabel(i);
                 // Skip the order column if present
@@ -623,38 +623,38 @@ public class TagTable extends Relation {
                     continue;
                 }
                 String wattosRelationName   = (String) info.get(StarDictionary.POSITION_WATTOS_RELATION );
-                String wattosName           = (String) info.get(StarDictionary.POSITION_WATTOS_NAME );                                                
+                String wattosName           = (String) info.get(StarDictionary.POSITION_WATTOS_NAME );
                 String columnDataTypeString = (String) info.get(StarDictionary.POSITION_WATTOS_DATATYPE );
-                
+
                 ArrayList infoStar = (ArrayList) starDict.toStar2D.get( wattosRelationName, wattosName);
                 if ( infoStar == null ) {
                     General.showWarning("Tag doesn't occur in dictionary for wattosRelationName, wattosName: " + wattosRelationName + " and " +  wattosName);
                     continue;
-                }                
+                }
 //                String columnSaveframeCategory  = (String) infoStar.get(StarDictionary.POSITION_STAR_CATEGORY );
                 String columnTagName            = (String) infoStar.get(StarDictionary.POSITION_STAR_TAG_NAME );
                 String columnTextFormat         = (String) infoStar.get(StarDictionary.POSITION_STAR_TAG_FORMAT );
-                
+
                 if ( ! label.equals( columnTagName ) ) {
                     General.showError("Failed a consistency check. Dictionary has different STAR tag names in different maps: " + label + " and " + columnTagName );
                     return false;
                 }
-                                        
+
                 int columnDataTypeWattos = dataTypeArrayList.indexOf( columnDataTypeString );
                 if ( columnDataTypeWattos < 0 ) {
                     General.showWarning("Tag has a data type listed in dictionary that is not supported: " + columnDataTypeString + " Skipping this column");
                     General.showWarning("Known are: " + Strings.concatenate( dataTypeList, "," ) );
                     continue;
                 }
-                
+
                 if ( columnTextFormat.length() < 1 ) {
                     //General.showDebug("Skipping tag without text format listed in STAR: " + label);
                     continue;
-                }                    
+                }
                 //General.showDebug("Formating for text format: " + columnTextFormat);
-                
+
                 int columnDataType = getColumnDataType(label);
-                
+
                 if (!((columnDataType == Relation.DATA_TYPE_FLOAT )||
                       (columnDataType == Relation.DATA_TYPE_STRING )||
                       (columnDataType == Relation.DATA_TYPE_STRINGNR )||
@@ -680,8 +680,8 @@ public class TagTable extends Relation {
                 General.showThrowable(e);
                 overallStatus = false;
             }
-        }        
+        }
         return true;
     }
-    
+
 }

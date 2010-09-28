@@ -38,6 +38,7 @@ public class File31Test extends TestCase {
     // Below parameters are true by default.
     //Note that the checks are dependent so e.g. for writeStar to be successful some (assume all) need to be done.
     boolean calcDist            = false;
+    boolean calcCdih            = true;
     boolean getSurplus          = false;
     boolean doAssignment        = false;
     boolean doCompletenessCheck = false;
@@ -53,7 +54,10 @@ public class File31Test extends TestCase {
 //    String baseInputName = "1ai0_rem_small_out";
 //    String baseInputName = "2hgh_rem_small_out";
 //    String baseInputName = "2hgh_rest_chris";
-    String baseInputName = "1brv_DOCR_small";
+//    String baseInputName = "2knr_DOCR_small"; TODO:
+    String baseInputName = "2kwb_DOCR_small";
+//    String baseInputName = "2kwb_DOCR";
+//    String baseInputName = "1brv_DOCR_small";
 //    String baseInputName = "2hgh-nmrif_small";
 
     String wattosRoot   = InOut.getEnvVar("WATTOSROOT");
@@ -96,6 +100,7 @@ public class File31Test extends TestCase {
         if ( url == null ) {
             fail("specify a valid name for input");
         }
+        General.showDebug("url: " + url);
         start = System.currentTimeMillis();
         boolean doEntry                             = true;     // default true
         boolean doRestraints                        = true;     // default true
@@ -125,6 +130,9 @@ public class File31Test extends TestCase {
 
         if ( calcDist && (!doCalcDist())) {
             fail("doCalcDist");
+        }
+        if ( calcCdih && (!doCalcCdih())) {
+            fail("doCalcCdih");
         }
         if ( getSurplus && (!getSurplus())) {
             fail("getSurplus");
@@ -185,10 +193,28 @@ public class File31Test extends TestCase {
             fail("Violations representation is not as before.");
         }
         if ( ! dbms.foreignKeyConstrSet.checkConsistencySet(false, true) ) {
-            fail("DBMS is NOT consistent after violation analysis.");
+            fail("DBMS is NOT consistent after distance violation analysis.");
         } else {
-            General.showDebug("DBMS is consistent after violation analysis.");
+            General.showDebug("DBMS is consistent after distance violation analysis.");
         }
+        return true;
+    }
+
+    public boolean doCalcCdih() {
+        General.showDebug("Starting File31Test# doCalcCdih.");
+        File violListFileName = new File(outputDir, "xxxx_DOCR_cdih_viol.txt");
+
+        if ( ! ui.constr.cdih.calcSimpleConstraintViolation(5.0f, violListFileName.toString())) {
+            General.showError("Failed CalcDihConstraintViolation");
+            return false;
+        }
+
+        if ( ! dbms.foreignKeyConstrSet.checkConsistencySet(false, true) ) {
+            fail("DBMS is NOT consistent after dihedral violation analysis.");
+        } else {
+            General.showDebug("DBMS is consistent after dihedral violation analysis.");
+        }
+        General.showDebug("Done File31Test# doCalcCdih.");
         return true;
     }
 

@@ -20,6 +20,7 @@ import Wattos.Utils.FloatIntPair;
 import Wattos.Utils.General;
 import Wattos.Utils.InOut;
 import Wattos.Utils.PrimitiveArray;
+import Wattos.Utils.StringArrayList;
 import Wattos.Utils.Strings;
 import Wattos.Utils.Wiskunde.Geometry;
 import cern.colt.list.IntArrayList;
@@ -29,13 +30,15 @@ import com.braju.format.Parameters;
 
 /**
  * Property of 3 atoms. Value contains the angle in degrees.
- * 
+ *
  * @author Jurgen F. Doreleijers
  * @version 1
  */
 public class Cdih extends SimpleConstr implements Serializable {
 
     private static final long serialVersionUID = -1886027960322072182L;
+
+    StringArrayList salChi2TyrOrPhe  = new StringArrayList( new String[] {"PHE", "TYR"} );
 
     public Cdih(DBMS dbms, RelationSoS relationSoSParent) {
         super(dbms, relationSoSParent);
@@ -164,8 +167,7 @@ public class Cdih extends SimpleConstr implements Serializable {
             General.showWarning("Got empty set from getSCListSetFromSCSet for CDIH.");
             return true;
         }
-        for (int currentCDIHListId = scListRids.nextSetBit(0); currentCDIHListId >= 0; currentCDIHListId = scListRids
-                .nextSetBit(currentCDIHListId + 1)) {
+        for (int currentCDIHListId = scListRids.nextSetBit(0); currentCDIHListId >= 0; currentCDIHListId = scListRids.nextSetBit(currentCDIHListId + 1)) {
             if (!constr.cdihList.calcViolation(todo, currentCDIHListId, cutoff)) {
                 General.showError("Failed to calcViol for cdih list: " + currentCDIHListId);
                 return false;
@@ -426,6 +428,35 @@ public class Cdih extends SimpleConstr implements Serializable {
     }
 
     /** Push this method up to SimpleConstr.java */
+    public boolean isChi2TyrOrPhe(int atomRid) {
+//      lastAtom = self.atoms[3]
+//      atomName = getDeepByKeysOrAttributes(lastAtom,'name')
+//      if atomName != 'CD1':
+//          return False
+//      lastAtomRes = lastAtom._parent
+//      lastAtomResType = getDeepByKeysOrAttributes(lastAtomRes, 'db', 'name')
+//      if lastAtomResType in ['TYR', 'PHE']:
+//          return True
+//      return False
+        try {
+            int resRid = gumbo.atom.resId[atomRid];
+            String atomName = gumbo.atom.nameList[atomRid];
+            String resName = gumbo.res.nameList[resRid];
+            if ( ! atomName.equals("CD1")) {
+                return false;
+            }
+            if ( salChi2TyrOrPhe.contains(resName)) {
+                return true;
+            }
+        } catch (Throwable t) {
+            General.showThrowable(t);
+            General.showDebug("Now that we know that the code fails; let's continue less fancy.");
+            return false;
+        }
+        return false;
+    }
+
+    /** Push this method up to SimpleConstr.java */
     public IntArrayList getAtomRidList(int rid) {
         IndexSortedInt indexMainAtom = (IndexSortedInt) simpleConstrAtom.getIndex(
                 Constr.DEFAULT_ATTRIBUTE_SET_CDIH[RelationSet.RELATION_ID_COLUMN_NAME], Index.INDEX_TYPE_SORTED);
@@ -449,11 +480,13 @@ public class Cdih extends SimpleConstr implements Serializable {
     /**
      * Calculate the averaged value for the given constraint in all given models. Presumes the model sibling atoms are
      * ok if initialized. The parameter selectedModelArray needs to contain the rids. If the parameter is null then all
-     * models will be used. The models are derived from the sibling list of the first atom in the restraint. A returned
-     * result with a Defs.NULL_FLOAT for the first element indicates the restraint has unlinked atoms or a failure to
+     * models will be used. The models are derived from the sibling list of the first atom in the restraint.
+     *
+     * A returned result with a Defs.NULL_FLOAT for the first/first element indicates the restraint has unlinked atoms or a failure to
      * find all atoms.
      */
-    public float[] calcValue(int currentCDIHId, int[] selectedModelArray) {
+    public float[][] calcValue(int currentCDIHId, int[] selectedModelArray) {
+
         IndexSortedInt indexMainAtom = (IndexSortedInt) simpleConstrAtom.getIndex(
                 Constr.DEFAULT_ATTRIBUTE_SET_CDIH[RelationSet.RELATION_ID_COLUMN_NAME], Index.INDEX_TYPE_SORTED);
         if (indexMainAtom == null) {
@@ -470,7 +503,7 @@ public class Cdih extends SimpleConstr implements Serializable {
         if (selectedModelArray == null) {
             int atomRidFirstAtom = atomIdAtom[scAtoms.get(0)];
             if (Defs.isNull(atomRidFirstAtom)) {
-                General.showError("Failed to calcDistance for restraint: " + toString(currentCDIHId));
+                General.showError("Failed to calcDihedral for restraint: " + toString(currentCDIHId));
                 return null;
             }
             int[] tmp = gumbo.atom.modelSiblingIds[atomRidFirstAtom];
@@ -485,33 +518,50 @@ public class Cdih extends SimpleConstr implements Serializable {
             }
         }
         int modelCount = selectedModelArray.length;
-        float[] result = new float[modelCount];
-        result[0] = Defs.NULL_FLOAT; // Indication of the restraint has unlinked atoms or a failure to find all atoms.
+
+        int atomRidLastAtom = atomIdAtom[scAtoms.get(3)];
+        boolean considerSymmetry = isChi2TyrOrPhe(atomRidLastAtom); // Hack for Phe/Tyr CHI2
+        int swapSize = 1; // DEFAULT: no swap.
+        if ( considerSymmetry ) {
+            swapSize = 2;
+        }
+        float[][] result = new float[swapSize][modelCount];
+        result[0][0] = Defs.NULL_FLOAT; // Indication of the restraint has unlinked atoms or a failure to find all atoms.
 
         if (hasUnLinkedAtom.get(currentCDIHId)) {
-            General.showDetail("Skipping distance calculation for constraint at rid: " + currentCDIHId
-                    + " because not all atoms are linked.");
+            General.showDetail("Skipping dihedral calculation for constraint at rid: " + currentCDIHId  + " because not all atoms are linked.");
             return result;
         }
 
-        // When the set of atoms involved is collected for the first model, the other models can easily be done too.
-        int[] atomsInvolvedModel = new int[4];
-        for (int currentModelId = 0; currentModelId < modelCount; currentModelId++) {
-            // General.showDebug("Working on model: " + (currentModelId+1)); // used to seeing model numbers starting at
-            // 1.
-            // Get a new list of atoms for other models
-            // The atoms in the first model need not be special coded although it could be done faster.
-            for (int i = 0; i < atomsInvolvedModel.length; i++) {
-                int atomIdFirstModel = atomIdAtom[scAtoms.get(i)];
-                atomsInvolvedModel[i] = gumbo.atom.modelSiblingIds[atomIdFirstModel][currentModelId];
+        for (int swapIdx = 0; swapIdx < swapSize; swapIdx++ ) {
+            // When the set of atoms involved is collected for the first model, the other models can easily be done too.
+            int[] atomsInvolvedModel = new int[4];
+            for (int currentModelId = 0; currentModelId < modelCount; currentModelId++) {
+//                 General.showDebug("Working on model: " + (currentModelId+1)); // used to seeing model numbers starting at 1.
+                // Get a new list of atoms for other models
+                // The atoms in the first model need not be special coded although it could be done faster.
+                for (int i = 0; i < atomsInvolvedModel.length; i++) {
+                    int atomIdFirstModel = atomIdAtom[scAtoms.get(i)];
+                    atomsInvolvedModel[i] = gumbo.atom.modelSiblingIds[atomIdFirstModel][currentModelId];
+                }
+                if ( swapIdx == 1 ) {
+                    int lastAtomIdx = atomsInvolvedModel[3];
+                    int ssaPartner = gumbo.atom.getSsaPartnerTry2(lastAtomIdx);
+                    if ( Defs.isNull(ssaPartner)) {
+                        General.showError("In Cdih.calcValue failed to atom.getSsaPartner(lastAtomIdx) for atom:");
+                        General.showError(gumbo.atom.toString(lastAtomIdx));
+                        return null;
+                    }
+                    atomsInvolvedModel[3] = ssaPartner;
+                }
+                float v = (float) gumbo.atom.calcDihedral(atomsInvolvedModel);
+                if (Defs.isNull(v)) {
+                    General.showError("Failed to calculate the torsion angle for constraint: " + currentCDIHId
+                            + " in model: " + (currentModelId + 1) + ".");
+                    return null;
+                }
+                result[swapIdx][currentModelId] = v;
             }
-            float v = (float) gumbo.atom.calcDihedral(atomsInvolvedModel);
-            if (Defs.isNull(v)) {
-                General.showError("Failed to calculate the torsion angle for constraint: " + currentCDIHId
-                        + " in model: " + (currentModelId + 1) + ".");
-                return null;
-            }
-            result[currentModelId] = v;
         }
         return result;
     }
@@ -584,7 +634,7 @@ public class Cdih extends SimpleConstr implements Serializable {
                 General.showError("Failed to generate saveframe for sc list: " + scListCount);
                 return null;
             }
-            sF.setTitle("distance_constraint_statistics_" + scListCount);
+            sF.setTitle("dihedral_constraint_statistics_" + scListCount);
             if (scListCount != 1) {
                 TagTable tT = sF.getTagTable(constr.cdihList.tagNameTA_constraint_stats_list_Details, true);
                 tT.setValue(0, constr.cdihList.tagNameTA_constraint_stats_list_Details, Defs.NULL_STRING_DOT);
@@ -600,7 +650,9 @@ public class Cdih extends SimpleConstr implements Serializable {
             General.showError("Failed to render sc results to STAR text.");
             return null;
         }
+//        General.showDebug("From Cdih.toSTAR: ["+result+"]");
         return result;
     }
+
 
 }

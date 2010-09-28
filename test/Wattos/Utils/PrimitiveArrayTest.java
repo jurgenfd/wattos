@@ -75,6 +75,14 @@ public class PrimitiveArrayTest extends TestCase {
         assertEquals("1\n2", txt);                        
     }
     
+    public void testLearningJavaAgain( ) {
+        float[] fList = new float[2];
+        General.showDebug("fList length: [" + fList.length + "]");
+        float[][] fLoL = new float[2][3];
+        General.showDebug("fLoL length: [" + fLoL.length + "]");
+        General.showDebug("fLoL[0] length: [" + fLoL[0].length + "]");
+    }
+    
     /**
     public void testConvertInt2String() {
         Object columnIn = null;

@@ -27,11 +27,11 @@ import Wattos.Utils.StringSet;
 /**
  *This set of relations is made up of the main relation as usual and then relation: simpleConstrAtom and
  * simpleConstrViol..
- * 
+ *
  *The idea is that dihedral and rdc restraints can be extended from this class. Kinda like PropNAtom class for regular
  * dihedrals, distances, etc.
- * 
- * 
+ *
+ *
  * @author Jurgen F. Doreleijers
  * @version 1
  */
@@ -467,7 +467,7 @@ public class SimpleConstr extends ConstrItem implements Serializable {
      * segid "SH3 " and resid 53 and name HE1 )) 3.600 1.700 1.700 peak 6 weight 0.10000E+01 volume 0.14383E-02 ppm1
      * 4.578 ppm2 9.604 CV 1 OR { 6} (( segid "SLP " and resid 83 and name HB )) (( segid "SH3 " and resid 53 and name
      * HE1 ))
-     * 
+     *
      * @param format
      *            TODO
      */
@@ -498,21 +498,21 @@ public class SimpleConstr extends ConstrItem implements Serializable {
         /*
          * int todoCount = todo.cardinality(); StringBuffer sb = new StringBuffer( todoCount 80 5); // rough unimportant
          * estimation of 80 chars per restraint.
-         * 
+         *
          * DecimalFormat df = new DecimalFormat(); df.setMaximumFractionDigits(3);
-         * 
+         *
          * if ( todoCount == 0 ) { return "No distance constraints selected in toString."; }
-         * 
+         *
          * float[] upp_theo = null; float[] low_theo = null;
-         * 
+         *
          * if ( mainRelation.containsColumn( DEFAULT_UPP_THEO) && mainRelation.containsColumn( DEFAULT_LOW_THEO) ) {
          * upp_theo = mainRelation.getColumnFloat(DEFAULT_UPP_THEO); low_theo =
          * mainRelation.getColumnFloat(DEFAULT_LOW_THEO); } boolean containsTheos = true;
-         * 
+         *
          * if ( upp_theo == null || low_theo == null ) { containsTheos = false; }
-         * 
+         *
          * //sb.append( "Total number of distance constraints todo: " + todoCount + "\n");
-         * 
+         *
          * IndexSortedInt indexMembAtom = (IndexSortedInt)
          * simpleConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_SC_MEMB_ID, Index.INDEX_TYPE_SORTED); IndexSortedInt
          * indexNodeMemb = (IndexSortedInt) simpleConstrMemb.getIndex(Constr.DEFAULT_ATTRIBUTE_SC_NODE_ID,
@@ -520,10 +520,10 @@ public class SimpleConstr extends ConstrItem implements Serializable {
          * simpleConstrNode.getIndex(Constr.DEFAULT_ATTRIBUTE_SET_SC[ RelationSet.RELATION_ID_COLUMN_NAME ],
          * Index.INDEX_TYPE_SORTED); if ( indexMembAtom == null || indexNodeMemb == null || indexMainNode == null ) {
          * General.showCodeBug("Failed to get all indexes."); return null; }
-         * 
+         *
          * // int currentSCViolId = Defs.NULL_INT; int currentSCNodeId = Defs.NULL_INT; int currentscId = Defs.NULL_INT;
          * // int currentscListId = Defs.NULL_INT; int currentSCEntryId = Defs.NULL_INT;
-         * 
+         *
          * int scCount = 0; // FOR EACH CONSTRAINT BitSet unlinkedAtomSelected = (BitSet) hasUnLinkedAtom.clone();
          * unlinkedAtomSelected.and( selected ); int unlinkedAtomCount = unlinkedAtomSelected.cardinality(); if (
          * unlinkedAtomCount > 0 ) { General.showWarning("Skipping toString for " + unlinkedAtomCount +
@@ -531,14 +531,14 @@ public class SimpleConstr extends ConstrItem implements Serializable {
          * todo.nextSetBit(0);currentscId>=0;currentscId = todo.nextSetBit(currentscId+1)) { Integer currentscIdInteger
          * = new Integer(currentscId); if ( scCount != 0 ) { sb.append( General.eol ); } sb.append( "SC: " + currentscId
          * ); if ( showViolations ) {
-         * 
+         *
          * if ( ! Defs.isNull( violLowMax[currentscId]) ) { sb.append( " violLowMax: " +
          * df.format(violLowMax[currentscId]) + " at model: " + violLowMaxModelNum[currentscId]); } if ( ! Defs.isNull(
          * violUppMax[currentscId]) ) { sb.append( " violUppMax: " + df.format(violUppMax[currentscId]) + " at model: "
          * + violUppMaxModelNum[currentscId]); } } if ( showTheos ) { if ( containsTheos ) { sb.append(
          * " lowTheo/uppTheo: " + Defs.toString( low_theo[ currentscId ]) + "/" + Defs.toString( upp_theo[ currentscId
          * ]) ); } else { sb.append( " no lowTheo/uppTheo: "); } }
-         * 
+         *
          * sb.append( General.eol ); if ( hasUnLinkedAtom.get( currentscId )) {
          * General.showDetail("Skipping toString for constraint at rid: " + currentscId +
          * " because not all atoms are linked." ); continue; } // currentscListId = scListIdMain[ currentscId ];
@@ -554,35 +554,35 @@ public class SimpleConstr extends ConstrItem implements Serializable {
          * " and number of monomers: " + numberMonomers);
          */
         /*
-         * 
-         * 
+         *
+         *
          * boolean atomFound = true; // signals at least one atom could not be found when 'false' IntArrayList scNodes =
          * (IntArrayList) indexMainNode.getRidList( currentscIdInteger, Index.LIST_TYPE_INT_ARRAY_LIST, null);
          * //General.showDebug("Found the following rids of nodes in constraint: " +
          * PrimitiveArray.toStringMakingCutoff( scNodes ));
-         * 
+         *
          * int dCNodeNumber = 1; // Define a list of n constraint nodes with 2 sets of atoms so elements are of type
          * IntArrayList[2] // ArrayList atomsInvolved = new ArrayList();
-         * 
-         * 
+         *
+         *
          * // FOR EACH NODE for ( int currentSCNodeBatchId=0;currentSCNodeBatchId<scNodes.size();
          * currentSCNodeBatchId++) { currentSCNodeId = scNodes.getQuick( currentSCNodeBatchId ); // quick enough?;-)
          * //General.showDebug("Using distance constraint node: " + dCNodeNumber + " at rid: " + currentSCNodeId );
-         * 
+         *
          * // For each constraint node (those with distance etc but without logic) add the distance info to // the
          * distance star loop. int logOp = logicalOp[currentSCNodeId]; sb.append( "Node " + dCNodeNumber + " " ); if ( !
          * Defs.isNull( logOp ) ) { sb.append( " " + DEFAULT_LOGICAL_OPERATION_NAMES[logOp] + " "); }
-         * 
+         *
          * sb.append( "Low/target/Upp" ); sb.append( ": " ); sb.append( Defs.toString( lowBound[ currentSCNodeId ]) +
          * " " + Defs.toString( target[ currentSCNodeId ]) + " " + Defs.toString( uppBound[ currentSCNodeId ]) +
          * General.eol);
-         * 
+         *
          * if ( ! Defs.isNull( logOp ) ) { if ( logOp != DEFAULT_LOGICAL_OPERATION_ID_OR ) {
          * General.showError("Can't deal with logical operations different than OR but found: [" + logOp + "]"); return
          * null; } dCNodeNumber++; continue; } // Assumption at this point is that the constraint nodes are OR-ed.
          * Change code here to // allow different type of trees. //General.showDebug(
          * "Dc node is a constraint node and not a logical node." );
-         * 
+         *
          * // FOR BOTH MEMBER (just 2) IntArrayList scMembs = (IntArrayList) indexNodeMemb.getRidList( new
          * Integer(currentSCNodeId), Index.LIST_TYPE_INT_ARRAY_LIST, null);
          * //General.showDebug("Found the following rids of members in constraint node (" + currentSCNodeId + "): " +
@@ -622,7 +622,7 @@ public class SimpleConstr extends ConstrItem implements Serializable {
      * Returns the distances target, lowerbound dev, upperbound dev given target, low, upp. Returns null when given
      * input can't be translated e.g. all were nulls. In summary, 3 binary states in combination gives 8 possibilities
      * detailed below.
-     * 
+     *
      * <PRE>
      * t target
      * l lower bound
@@ -633,15 +633,15 @@ public class SimpleConstr extends ConstrItem implements Serializable {
      * only t   [t]     0   0   t
      * only l   [t,oo]  l   0   oo
      * only u	[0,u]   0   0   u
-     * 
+     *
      * t&amp;l      [l,t]   t   t-l 0
      * t&amp;u      [t,u]   u   u-t 0
      * l&amp;u      [l,u]   u   u-l 0
-     * 
+     *
      * t&amp;l&amp;u    [l,t,u] t   t-l u-t
      * no data  error
      * </PRE>
-     * 
+     *
      * Fast but verbose routine.
      */
 
@@ -837,7 +837,9 @@ public class SimpleConstr extends ConstrItem implements Serializable {
             General.showError("Failed to do constr.toSTAR");
             return false;
         }
-        if (msg.length() != 0) {
+        if (msg.length() == 0) {
+//            General.showDebug("Why isn't there a message? Is that for RDC?");
+        } else {
             if (!InOut.writeTextToFile(new File(fileName), msg, true, false)) {
                 General.showError("Failed to write summary for violations");
             }

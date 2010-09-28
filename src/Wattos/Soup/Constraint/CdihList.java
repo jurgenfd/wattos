@@ -29,7 +29,7 @@ import Wattos.Utils.Wiskunde.Statistics;
 /**
  * A list of distance restraints. Contains method to write the violation STAR statistics. Angles will be shown in range
  * <-180,180] such as phi and psi.
- * 
+ *
  * @author Jurgen F. Doreleijers
  * @version 1
  */
@@ -286,25 +286,6 @@ public class CdihList extends SimpleConstrList implements Serializable {
     }
 
     /**
-     * public BitSet getCDIHViolRidsByListId(int ridList ) { // Get all restraints in list BitSet result =
-     * SQLSelect.selectBitSet(dbms, constr.cdih.cdihViol, Constr.DEFAULT_ATTRIBUTE_SET_CDIH_LIST[
-     * RelationSet.RELATION_ID_COLUMN_NAME ], SQLSelect.OPERATION_TYPE_EQUALS, new Integer(ridList),false); if ( result
-     * == null ) { General.showError("Failed to SQLSelect.selectBitSet in getCDIHViolRidsByListId"); return null; }
-     * return result; }
-     */
-
-    /**
-     * Remove existing violation records for this list if they exist.
-     * 
-     * public boolean removeViolationsByListId( int currentCDIHListId ) { BitSet cdihViolRidSet =
-     * getCDIHViolRidsByListId(currentCDIHListId ); if ( cdihViolRidSet == null ) {
-     * General.showError("Failed to getCDIHRidsInListAndTodo in removeViolationsByListId"); return false; } if (
-     * cdihViolRidSet.cardinality() != 0 ) { //
-     * General.showDebug("Will remove old list of violations by list id numbered: " + cdihViolRidSet.cardinality()); }
-     * return constr.cdih.cdihViol.removeRowsCascading(cdihViolRidSet,false); }
-     */
-
-    /**
      * Calculates the violation for given list and only consider restraints given in the todoCDIH set. If the cutoff is
      * Defs.NULL then it will be assumed to be 5 degrees. It sets list properties too. Note that the value is given in
      * degrees whereas internally Wattos calculates in radians.
@@ -358,14 +339,15 @@ public class CdihList extends SimpleConstrList implements Serializable {
                     + " because not all atoms are linked for them.");
         }
         // FOR EACH CONSTRAINT
-        for (int currentCDIHId = todoCDIHFiltered.nextSetBit(0); currentCDIHId >= 0; currentCDIHId = todoCDIHFiltered
-                .nextSetBit(currentCDIHId + 1)) {
-            float[] valueList = cdih.calcValue(currentCDIHId, selectedModelArray);
-            if (valueList == null) {
+        for (int currentCDIHId = todoCDIHFiltered.nextSetBit(0); currentCDIHId >= 0; currentCDIHId = todoCDIHFiltered.nextSetBit(currentCDIHId + 1)) {
+//            float[] valueList = cdih.calcValue(currentCDIHId, selectedModelArray);
+            float[][] valueLoL = cdih.calcValue(currentCDIHId, selectedModelArray);
+            // structure: valueLoL[swapIdx][modelIdx]
+            if (valueLoL == null) {
                 General.showError("Failed to calculate values for restraint:\n" + toString(currentCDIHId));
                 return false;
             }
-            if (Defs.isNull(valueList[0])) {
+            if (Defs.isNull(valueLoL[0][0])) { // By contract the first/first element in the list can contain an error message.
                 General.showError("The restraint has unlinked atoms or a failure to find all atoms for restraint:\n"
                         + toString(currentCDIHId));
                 return false;
@@ -377,22 +359,36 @@ public class CdihList extends SimpleConstrList implements Serializable {
 
             cdih.violUppMax[currentCDIHId] = -1f;
             cdih.violLowMax[currentCDIHId] = -1f;
-
+            int valueLoLLength = valueLoL.length;
             for (int currentModelId = 0; currentModelId < selectedModelArray.length; currentModelId++) {
-                float value = valueList[currentModelId];
-                if (Defs.isNull(value)) {
-                    General.showError("Failed to calculate the value for constraint: " + currentCDIHId + " in model: "
-                            + (currentModelId + 1) + " will NOT try other models.");
-                    return false;
+                float[] violList = new float[valueLoLLength];
+                for (int swapIdx = 0; swapIdx < valueLoLLength; swapIdx++ ) {
+                    float value = valueLoL[swapIdx][currentModelId];
+                    if (Defs.isNull(value)) {
+                        General.showError("Failed to calculate the value for constraint (swapIdx:"+swapIdx+"): " +
+                                currentCDIHId + " in model: " + (currentModelId + 1) + " will NOT try other models.");
+                        return false;
+                    }
+                    violList[swapIdx] = (float) Geometry.violationAngles((double) low, (double) upp, (double) value);
                 }
-                float viol = (float) Geometry.violationAngles((double) low, (double) upp, (double) value);
+                int swapIdxSelected = 0;
+                if ( valueLoLLength > 1 ) {
+                    float af0 = Math.abs(violList[0]); // absolute float value for swap state 0
+                    float af1 = Math.abs(violList[1]);
+                    if ( ! Defs.isNull(af1)) {
+                        if ( af1 < af0 ) {
+                            swapIdxSelected = 1;
+                        }
+                    }
+                }
+                float value = valueLoL[swapIdxSelected][currentModelId];
+                float viol = violList[swapIdxSelected];
+
                 boolean[] isViol = Geometry.isLowUppViolationAngles((double) low, (double) upp, (double) value,
                         (double) viol);
                 boolean isLowViol = isViol[0];
                 boolean isUppViol = isViol[1];
-
-//                General.showDebug("**** Found value, viol: " + Math.toDegrees(value) + ", "
-//                        + Math.toDegrees(viol) );
+//                General.showDebug("**** Found value, viol: " + Math.toDegrees(value) + ", " + Math.toDegrees(viol) );
                 currentCDIHViolId = cdih.simpleConstrViol.getNextReservedRow(currentCDIHViolId);
                 // Check if the relation grew in size because not all relations can be adequately estimated.
                 if (currentCDIHViolId == Relation.DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW) {

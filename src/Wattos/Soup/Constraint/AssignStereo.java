@@ -476,7 +476,7 @@ public class AssignStereo {
     /**
      * Return true for a pseudo type that is under consideration
      */
-    public boolean isValidPseudoType(int pseudoType) {
+    public static boolean isValidPseudoType(int pseudoType) {
         if ((pseudoType == PseudoLib.DEFAULT_PSEUDO_ATOM_ID_CH2_OR_NH2)
                 || (pseudoType == PseudoLib.DEFAULT_PSEUDO_ATOM_ID_AROMAT_2H)
                 || (pseudoType == PseudoLib.DEFAULT_PSEUDO_ATOM_ID_TWO_METHYL)) {

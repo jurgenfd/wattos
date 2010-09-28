@@ -19,12 +19,12 @@ import cern.colt.list.*;
  * @author Jurgen F. Doreleijers
  */
 public class PseudoLib implements Serializable {
-        
-    private static final long serialVersionUID = -1207795172754062330L;    
+
+    private static final long serialVersionUID = -1207795172754062330L;
 
     /** Local resource */
     static final String STR_FILE_LOCATION = "Data/PseudoLib.str";
-    
+
     public static final int DEFAULT_PSEUDO_ATOM_ID_UNDEFINED             = 0;
     public static final int DEFAULT_PSEUDO_ATOM_ID_CH2_OR_NH2            = 1;
     public static final int DEFAULT_PSEUDO_ATOM_ID_METHYL                = 2;
@@ -32,10 +32,10 @@ public class PseudoLib implements Serializable {
     public static final int DEFAULT_PSEUDO_ATOM_ID_TWO_METHYL            = 4;
     public static final int DEFAULT_PSEUDO_ATOM_ID_AROMAT_2H             = 5;
     public static final int DEFAULT_PSEUDO_ATOM_ID_AROMAT_4H             = 6;
-    
-    /** Store how many atoms the pseudo atom represents */    
+
+    /** Store how many atoms the pseudo atom represents */
     public static int[] PSEUDO_ATOM_ATOM_COUNT = { 0, 2, 3, 4, 6, 2, 4 };
-    
+
     /** Needs to correspond to above definitions. */
     public static String[] PSEUDO_ATOM_TYPES = {
         "undefined",
@@ -50,7 +50,7 @@ public class PseudoLib implements Serializable {
     public static final int DEFAULT_OK                    = 0;
     public static final int DEFAULT_REPLACED_BY_PSEUDO    = 1;
     public static final int DEFAULT_REDUNDANT_BY_PSEUDO   = 2;
-    
+
     /** A map that's fast to do lookups like:<BR>
      *Give me all atom names constituting QD in residue PHE: HD1 and HD2
      *and the other way around:
@@ -59,7 +59,7 @@ public class PseudoLib implements Serializable {
      *pseudoAtomType to figure out which you want. They map to the default pseudo atom
      *ids defined above.
      */
-    
+
     /** Maps to ArrayList of pseudo atom names. They are ordered with respect to
      *the number of regular atoms they represent.
      *A descending order by the number of atoms they represent. For PHE HD1 it would
@@ -68,27 +68,27 @@ public class PseudoLib implements Serializable {
     public HashOfHashes fromAtoms;
     /** Maps to ArrayList of atom names */
     public HashOfHashes toAtoms;
-    /** Maps to ArrayList of integer pseudo atom types*/    
+    /** Maps to ArrayList of integer pseudo atom types*/
     public HashOfHashes pseudoAtomType;
 
-    
-    public PseudoLib() {                
+
+    public PseudoLib() {
         init();
     }
-    
+
     public boolean init() {
         fromAtoms       = new HashOfHashes();
         toAtoms         = new HashOfHashes();
         pseudoAtomType  = new HashOfHashes();
         return true;
     }
-    
+
     public boolean readStarFile( URL url) {
         if ( url == null ) {
             url = getClass().getResource(STR_FILE_LOCATION);
         }
         DBMS dbms_local = new DBMS(); // Create a local copy so anything can be read in.
-        StarFileReader sfr = new StarFileReader(dbms_local);        
+        StarFileReader sfr = new StarFileReader(dbms_local);
 //        long start = System.currentTimeMillis();
         StarNode sn = sfr.parse( url );
 //        long taken = System.currentTimeMillis() - start;
@@ -105,7 +105,7 @@ public class PseudoLib implements Serializable {
             return false;
         }
         DataBlock db = (DataBlock) o_tmp_1;
-        
+
         SaveFrame sf = db.getSaveFrameByCategory( "pseudo_atom_lib", true );
         if ( sf == null ) {
             General.showError("Failed to find SaveFrame with category pseudo_atom_lib");
@@ -114,7 +114,7 @@ public class PseudoLib implements Serializable {
 //        String name = sf.title;
         //General.showDebug("Found saveframe with name: " + name);
 
-        ArrayList result = sf.getTagTableList("_Comp_ID"); 
+        ArrayList result = sf.getTagTableList("_Comp_ID");
         if ( result == null || (result.size() != 1) ) {
             if ( result == null ) {
                 General.showWarning("Found number of loops: null");
@@ -140,8 +140,8 @@ public class PseudoLib implements Serializable {
         String[] atomName_4     = tT.getColumnString("_Atom_ID_4");
         String[] atomName_5     = tT.getColumnString("_Atom_ID_5");
         String[] atomName_6     = tT.getColumnString("_Atom_ID_6");
-        
-        if (    resName        == null || 
+
+        if (    resName        == null ||
                 pseudoAtomName == null ||
                 pseudoAtomt    == null ||
                 atomName_1     == null ||
@@ -167,7 +167,7 @@ public class PseudoLib implements Serializable {
             int pseudoAtomTypeA = (new Integer( pseudoAtomt[i])).intValue();
             int atomsRepresentedCountA = PSEUDO_ATOM_ATOM_COUNT[ pseudoAtomTypeA ];
             pseudoAtomType.put( resName[i], pseudoAtomName[i], new Integer( pseudoAtomTypeA ));
-            ArrayList atomList = new ArrayList();            
+            ArrayList atomList = new ArrayList();
             toAtoms.put(        resName[i], pseudoAtomName[i], atomList);
             for ( int a=0;a<atomNames.length;a++ ) {
                 //General.showDebug("Processing atom: " + atomNames[a][i] );
@@ -182,7 +182,7 @@ public class PseudoLib implements Serializable {
                 }
                 ArrayList fromListPseudo = (ArrayList) fromAtoms.get( resName[i], atomNames[a][i]);
                 if ( fromListPseudo == null ) {
-                    fromListPseudo = new ArrayList(); 
+                    fromListPseudo = new ArrayList();
                     fromAtoms.put(      resName[i], atomNames[a][i],    fromListPseudo);
                 }
                 // Insert the new pseudo atom name to the appropriate position
@@ -194,9 +194,9 @@ public class PseudoLib implements Serializable {
                     if ( atomsRepresentedCountA > atomsRepresentedCountB ) {
                         break;
                     }
-                }                    
+                }
                 fromListPseudo.add(b, pseudoAtomName[i] );
-            }            
+            }
         }
         return true;
     }
@@ -204,18 +204,18 @@ public class PseudoLib implements Serializable {
     /** Convenience method. Returns null in case the residue names differ or
      no common parent is defined.
      */
-    public String getCommonPseudoParent( String res_name_A, String res_name_B, String atomName_A, String atomName_B ) {        
+    public String getCommonPseudoParent( String res_name_A, String res_name_B, String atomName_A, String atomName_B ) {
         if ( ! res_name_A.equals(res_name_B)) {
             //General.showDebug("residues in getCommonPseudoParent aren't the same: " + res_name_A + " and " + res_name_B);
             return null;
         }
         return getCommonPseudoParent( res_name_A, new String[] { atomName_A, atomName_B }, true );
     }
-    
+
     /** checks to see if all atoms defined by the pseudo are in the list.
      *Returns false on error.
      */
-    public boolean containsAllAtomsOfPseudo( int resRid, String pseudoName, 
+    public boolean containsAllAtomsOfPseudo( int resRid, String pseudoName,
             IntArrayList atomRidList, UserInterface ui) {
         BitSet presence = new BitSet();
         ArrayList atomNames = (ArrayList) toAtoms.get(ui.gumbo.res.nameList[ resRid ],pseudoName);
@@ -233,9 +233,9 @@ public class PseudoLib implements Serializable {
         if ( presence.cardinality() == atomNames.size() ) {
             return true;
         }
-        return false;        
+        return false;
     }
-                    
+
     /** Returns the name of the common pseudo atom or null to indicate there was no such atom
      *in the lib. If multiple common pseudo atoms exist then the most specific one to this
      *pair will be returned.
@@ -244,16 +244,16 @@ public class PseudoLib implements Serializable {
      *E.g. Leu HD12, HD13, HD21 will return QD.
      *Notes:    don't use pseudo atom names in the variable: atom_name_list
      *          Assumption in this code is that no atoms are listed twice.
-     *          The atom for which the pseudo atom is to be found MUST be listed 
+     *          The atom for which the pseudo atom is to be found MUST be listed
      * first in the list.
      *
-    public String getCommonPseudoParent( String res_name, String[] atom_name_list, 
-            boolean requireAllPresent , boolean allowUnrelatedAtoms) {        
+    public String getCommonPseudoParent( String res_name, String[] atom_name_list,
+            boolean requireAllPresent , boolean allowUnrelatedAtoms) {
         StringArrayList psList = new StringArrayList();
         for (int i=0;i<atom_name_list.length;i++) {
             ArrayList ps = (ArrayList) fromAtoms.get(res_name, atom_name_list[i]);
             if ( ps == null) {
-                General.showDebug("Failed to get any ps for res name: " + res_name + " and atom name: " + atom_name_list[i]);                
+                General.showDebug("Failed to get any ps for res name: " + res_name + " and atom name: " + atom_name_list[i]);
                 return null; // none common
             }
             StringArrayList pseudos = new StringArrayList( ps );
@@ -286,20 +286,20 @@ public class PseudoLib implements Serializable {
     }
      */
 
-    
+
     /** Convenience method.
-     *This method will filter out any atom which is in the list but is not in the same residue or 
+     *This method will filter out any atom which is in the list but is not in the same residue or
      *even not in a shared pseudo atom with the given atom.
-     *The pseudoparent of the atom for which the id in the atomsInMemberList is 
+     *The pseudoparent of the atom for which the id in the atomsInMemberList is
      *given will be searched. This is not necessarily the first in the list.
      *This code will filter out atoms that are listed twice.
      * @see #getCommonPseudoParent(String,String[],boolean)
      */
-    public String getCommonPseudoParent( int atomIdInList, 
-            IntArrayList atomsInMemberList, 
-            UserInterface ui, 
+    public String getCommonPseudoParent( int atomIdInList,
+            IntArrayList atomsInMemberList,
+            UserInterface ui,
             boolean requireAllPresent) {
-//        General.showDebug("Doing getCommonPseudoParent for atoms:\n" + 
+//        General.showDebug("Doing getCommonPseudoParent for atoms:\n" +
 //                ui.gumbo.atom.toString(PrimitiveArray.toBitSet(atomsInMemberList)));
         int atomsInMemberListSize = atomsInMemberList.size();
         if ( (atomsInMemberList == null ) || (atomsInMemberListSize < 1) ) {
@@ -313,7 +313,7 @@ public class PseudoLib implements Serializable {
         // Store for later use:
         int atomRid = atomsInMemberList.getQuick(atomIdInList);
         // Clone it before mutilation.
-        atomsInMemberList = (IntArrayList) atomsInMemberList.clone();        
+        atomsInMemberList = (IntArrayList) atomsInMemberList.clone();
         if (!PrimitiveArray.removeDuplicatesBySort(atomsInMemberList)) {
             General.showError("Failed to PrimitiveArray.removeDuplicatesBySort");
             return null;
@@ -328,19 +328,19 @@ public class PseudoLib implements Serializable {
                 General.showError("Failed to getPseudoParent because failed to swap elements to first position.");
                 return null;
             }
-        }        
+        }
         Atom atom = ui.gumbo.atom;
         int resRid = atom.resId[atomRid];
         String resName = ui.gumbo.res.nameList[ resRid ];
         String atomName = atom.nameList[ atomRid ];
         ArrayList ps = (ArrayList) fromAtoms.get(resName, atomName);
         if ( ps == null) {
-            General.showDebug("Failed to get any ps for res name: " + resName + " and atom name: " + atomName);                
+            General.showDebug("Failed to get any ps for res name: " + resName + " and atom name: " + atomName);
             return null; // none common
         }
         StringArrayList pseudos = new StringArrayList( ps );
-        
-        
+
+
         // Make certain they're all in the same residue and share 1 or 2 pseudos with the first atom.
         IntArrayList atomsInMemberListSamePseudo = new IntArrayList(atomsInMemberListSize);
         for (int i=0;i<atomsInMemberListSize;i++) {
@@ -359,43 +359,43 @@ public class PseudoLib implements Serializable {
                 General.showError("Failed to take intersection.");
                 return null;
             }
-            if ( pseudosSameRes.size() < 1 ) {                
+            if ( pseudosSameRes.size() < 1 ) {
                 continue;  // no common pseudo with this atom.
             }
-            atomsInMemberListSamePseudo.add(atomRidFiltered);            
-        }        
+            atomsInMemberListSamePseudo.add(atomRidFiltered);
+        }
         return getCommonPseudoParent( atomsInMemberListSamePseudo, ui, requireAllPresent );
-    }    
-    
+    }
+
     /** Convenience method to go from atom relation to simply the atom
      *names.
      */
-    public String getCommonPseudoParent( 
-            IntArrayList atomsRids, 
+    public String getCommonPseudoParent(
+            IntArrayList atomsRids,
             UserInterface ui,
             boolean requireAllPresent ) {
         String[] atomNames = new String[atomsRids.size()];
         for (int i=(atomNames.length-1);i>=0;i--) {
             atomNames[i] = ui.gumbo.atom.nameList[ atomsRids.get(i)];
-        }        
+        }
         int atomRid = atomsRids.get(0);
         int resRid = ui.gumbo.atom.resId[atomRid];
-        String resName = ui.gumbo.res.nameList[ resRid ];        
-        return getCommonPseudoParent( resName, atomNames, requireAllPresent );        
+        String resName = ui.gumbo.res.nameList[ resRid ];
+        return getCommonPseudoParent( resName, atomNames, requireAllPresent );
     }
-    
+
     /** Convenience method */
-    public String getCommonPseudoParent( 
+    public String getCommonPseudoParent(
             String resName,
-            String[] atomsInMemberList, 
+            String[] atomsInMemberList,
             boolean requireAllPresent) {
-        return getCommonPseudoParent( 
+        return getCommonPseudoParent(
             resName,
-            atomsInMemberList, 
+            atomsInMemberList,
             requireAllPresent,
             true );
     }
-    
+
     /** The caller makes sure the atom list contains no atoms other than related
      *to the first in a common pseudo atom.
      *<BR>
@@ -411,39 +411,39 @@ public class PseudoLib implements Serializable {
      *E.g. Leu HB2, HG will return null (error). If showWarning is set then a message is shown.
      *E.g. Asn HA will return Defs.EMPTY_STRING.
      */
-    public String getCommonPseudoParent( 
+    public String getCommonPseudoParent(
             String resName,
-            String[] atomsInMemberList, 
+            String[] atomsInMemberList,
             boolean requireAllPresent,
             boolean showWarning ) {
-        
+
         int atomsInMemberListSize = atomsInMemberList.length;
-        
+
         String atomName = atomsInMemberList[ 0 ];
         ArrayList ps = (ArrayList) fromAtoms.get(resName, atomName);
         if ( ps == null) {
-            //General.showError("In getCommonPseudoParent: Failed to get any ps for res name: " + resName + " and atom name: " + atomName);                
+            //General.showError("In getCommonPseudoParent: Failed to get any ps for res name: " + resName + " and atom name: " + atomName);
             return Defs.EMPTY_STRING; // none common
-        }        
+        }
         StringArrayList pseudos = new StringArrayList( ps );
         //General.showDebug("Considering pseudos: " + ps);
-        
+
         // Find one or two common pseudos
         for (int i=1;i<atomsInMemberListSize;i++) {
             String atomNameOther = atomsInMemberList[ i ];
             ArrayList psOther = (ArrayList) fromAtoms.get(resName, atomNameOther);
             if ( psOther == null) {
                 if ( showWarning ) {
-                    General.showWarning("in getCommonPseudoParent: Failed to get any ps for res name: " + resName + " and atom name: " + atomNameOther);                
-                    General.showWarning("   that is looking for common pseudo parent for atoms with names: " + Strings.toString(atomsInMemberList));                
-                    General.showWarning("   based on first atom found pseudo candidates: " + Strings.toString(ps));                
+                    General.showWarning("in getCommonPseudoParent: Failed to get any ps for res name: " + resName + " and atom name: " + atomNameOther);
+                    General.showWarning("   that is looking for common pseudo parent for atoms with names: " + Strings.toString(atomsInMemberList));
+                    General.showWarning("   based on first atom found pseudo candidates: " + Strings.toString(ps));
                 }
                 return null;
             }
             StringArrayList pseudosOther = new StringArrayList( psOther );
             pseudos = pseudos.intersection(pseudosOther);
             if ( pseudos.size() < 1 ) {
-                //General.showDebug("in getCommonPseudoParent: no common pseudo for residue: " + resName + " and atom names: " + atomName + " and: " + atomNameOther);                
+                //General.showDebug("in getCommonPseudoParent: no common pseudo for residue: " + resName + " and atom names: " + atomName + " and: " + atomNameOther);
                 return Defs.EMPTY_STRING;
             }
         }
@@ -454,17 +454,17 @@ public class PseudoLib implements Serializable {
             //General.showDebug("Without checking presence of all constituents, returning most specific pseudo in common:"  + psAtomName );
             return psAtomName;
         }
-        
+
         int pseudoTypeAtomCount = getAtomCountPseudo( resName, psAtomName);
         if ( pseudoTypeAtomCount < 0 ) {
             General.showError("Failed to get pseudoTypeAtomCount for: " + resName + " and: " + psAtomName);
             return null;
         }
-        
+
         if ( atomsInMemberListSize == pseudoTypeAtomCount ) {
             return psAtomName;
-        }   
-        
+        }
+
         //General.showDebug("Not all atoms are present. Expected: " + pseudoTypeAtomCount + " but had: " + atomsInMemberListSize);
         return Defs.EMPTY_STRING;
     }
@@ -478,22 +478,22 @@ public class PseudoLib implements Serializable {
                     " for residue: " + resName);
             return -1;
         }
-        int pseudoType = pseudoTypeInteger.intValue();        
-        return PSEUDO_ATOM_ATOM_COUNT[ pseudoType ];        
+        int pseudoType = pseudoTypeInteger.intValue();
+        return PSEUDO_ATOM_ATOM_COUNT[ pseudoType ];
     }
     /** TODO make sure the hasSibling returns true for pseudo atoms like VAL MG1 etc.
-     */    
+     */
     public boolean hasSibling( String resName, String atomName) {
         //General.showDebug("Checking to see if atom: " + atomName + " in res: " + resName + " has a sibling");
         Object out = fromAtoms.get( resName, atomName);
-        return (out != null);        
-    }    
-    
+        return (out != null);
+    }
+
     /** Returns the name of the sibling of an atom with respect to the pseudo given.
      *<PRE>
-     *E.g. VAL QG  the sibling of HG11 is HG21. 
+     *E.g. VAL QG  the sibling of HG11 is HG21.
      *E.g. VAL MG1 the sibling of HG11 is null. A warning will be issued.
-     *E.g. VAL QD  the sibling of HD1  is HD2. 
+     *E.g. VAL QD  the sibling of HD1  is HD2.
      *</PRE>
      */
     public String getStereoSibling( String resName, String atomName, String pseudoAtomName) {
@@ -502,7 +502,7 @@ public class PseudoLib implements Serializable {
             General.showWarning("In getStereoSibling found unknown pseudoAtomName: " + pseudoAtomName +
                     " for residue: " + resName);
             return null;
-        } 
+        }
         int pseudoType = pseudoTypeInteger.intValue();
         if (!((pseudoType == PseudoLib.DEFAULT_PSEUDO_ATOM_ID_CH2_OR_NH2 )||
               (pseudoType == PseudoLib.DEFAULT_PSEUDO_ATOM_ID_AROMAT_2H )||
@@ -521,7 +521,7 @@ public class PseudoLib implements Serializable {
         if ( idxatomName < 0 ) {
             General.showCodeBug("In getStereoSibling found atom not in pseudoAtom: " + pseudoAtomName +
                     " for residue: " + resName + " and atom: " + atomName);
-            return null;            
+            return null;
         }
         int idxatomNameSibling = idxatomName;
         switch ( pseudoType ) {
@@ -548,5 +548,5 @@ public class PseudoLib implements Serializable {
             }
         }
         return (String) atomNameList.get(idxatomNameSibling);
-    }    
+    }
 }
