@@ -22,7 +22,7 @@ true
 #Remove unlinked restraints (y suggested)
 #Sync over models; removing inconsistent atoms (true suggested)
 ReadEntryNMRSTAR
-/Users/jd/ccpn_tmp/data/recoord/1brv/1brv_restr.new.str
+/Users/jd/workspace35/wattos/data/test_data/2kwb_DOCR.str.gz
 y
 y
 y
@@ -30,18 +30,9 @@ n
 y
 y
 
-
-# Distance tolerance above which to delete (2.0 suggested)
-# Maximum number of violations to remove. Largest violations will be removed (3 suggested)
-# Enter file name base (with path) for output of removed constraints
-#FilterHighDistanceViol
-#0.5
-#3
-#tmp_dir/1brv_DOCR_small_dc_high_viol.str
-
 CalcDihConstraintViolation
 1.0
-tmp_dir/1brv_DOCR_dih_viol.str
+tmp_dir/2kwb_DOCR_dih_viol.str
 
 
 Quit

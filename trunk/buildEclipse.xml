@@ -187,7 +187,7 @@
 		<!-- <echo message="classpath: ${build.dir}:${javac.classpath}:${j2ee.platform.classpath}"/>
     -->
 
-		<for list="AddMissingAtoms.wcf" param="fn">
+		<for list="CalcDihConstrViolation.wcf" param="fn">
 			<sequential>
 				<echo message="Executing macro: ${macros.local.dir}/@{fn}" />
 				<java jvm="${platform.java}" fork="true" failonerror="false" resultproperty="result" maxmemory="512m" classname="Wattos.CloneWars.UserInterface" dir="${test_data.local.dir}" input="${macros.local.dir}/@{fn}" output="${tmp.local.dir}/@{fn}.log" timeout="240000">

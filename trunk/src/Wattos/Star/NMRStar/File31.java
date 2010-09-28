@@ -54,6 +54,7 @@ import Wattos.Utils.General;
 import Wattos.Utils.HashOfHashesOfHashes;
 import Wattos.Utils.InOut;
 import Wattos.Utils.PrimitiveArray;
+import Wattos.Utils.StringArrayList;
 import Wattos.Utils.StringIntMap;
 import Wattos.Utils.Strings;
 import Wattos.Utils.Wiskunde.Geometry;
@@ -2307,23 +2308,57 @@ public class File31 {
                 hasCoor.or(tTCoor.used);
 
                 // Rename some.
-                String[] equivalents = { Relation.DEFAULT_ATTRIBUTE_NAME, Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME,
-                        Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID, Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME,
-                        Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME, Gumbo.DEFAULT_ATTRIBUTE_COOR_X,
-                        Gumbo.DEFAULT_ATTRIBUTE_COOR_Y, Gumbo.DEFAULT_ATTRIBUTE_COOR_Z,
-                        Gumbo.DEFAULT_ATTRIBUTE_BFACTOR, Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY };
+                String[] equivalents = {
+                        Relation.DEFAULT_ATTRIBUTE_NAME,
+                        Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME,
+                        Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID,
+                        Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME,
+                        Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME,
+                        Gumbo.DEFAULT_ATTRIBUTE_COOR_X,
+                        Gumbo.DEFAULT_ATTRIBUTE_COOR_Y,
+                        Gumbo.DEFAULT_ATTRIBUTE_COOR_Z,
+                        Gumbo.DEFAULT_ATTRIBUTE_BFACTOR,
+                        Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY
+                };
+                String[] optionalEquivalents = {
+                        Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME,
+                        Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID,
+                        Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME,
+                        Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME
+                };
+                StringArrayList optionalEquivalentList = new StringArrayList(optionalEquivalents);
                 for (int n = 0; n < equivalents.length; n++) {
-                    String columnName = (String) ((ArrayList) starDict.toStar2D.get("atom_main", equivalents[n]))
+                    String equivalent = equivalents[n];
+                    String columnName = (String) ((ArrayList) starDict.toStar2D.get("atom_main", equivalent))
                             .get(StarDictionary.POSITION_STAR_TAG_NAME);
                     if (columnName == null) {
-                        General.showCodeBug("Failed to find definition for Wattos column: " + equivalents[n]
+                        General.showCodeBug("Failed to find definition for Wattos column: " + equivalent
                                 + "in dictionary.");
                         return false;
                     }
-                    if (!tTCoor.renameColumn(columnName, equivalents[n])) {
-                        General.showError("Failed to rename column: " + columnName + " to: " + equivalents[n]
-                                + ". Is it present?");
-                        return false;
+                    boolean hasColumnName = tTCoor.hasColumn(columnName);
+//                    General.showDebug("In File31.java hasColumnName: " + columnName + " is: " + hasColumnName);
+                    if ( hasColumnName ) {
+                        if (!tTCoor.renameColumn(columnName, equivalent)) {
+                            General.showError("In File31.java failed to rename column: " + columnName + " to: " + equivalent
+                                    + ". Is it present?");
+                            return false;
+                        }
+                    } else { // was it an optionally present column?
+//                        boolean isOptional = equivalent.equals(Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME);
+                        boolean isOptional = optionalEquivalentList.contains(equivalent);
+//                        General.showDebug("In File31.java isOptional: " + columnName + " is: " + isOptional);
+                        if ( isOptional ) {
+                            int dataType = Relation.DATA_TYPE_STRINGNR;
+                            if (!tTCoor.insertColumn(equivalent, dataType, null)) {
+                                General.showError("In File31.java failed to insert NEW column (was optional): " + equivalent);
+                                return false;
+                            }
+                        } else {
+                            General.showError("In File31.java missing mandatory column: " + columnName + " to: " + equivalent
+                                    + ". Is it present?");
+                            return false;
+                        }
                     }
                 }
                 /**
@@ -2883,8 +2918,7 @@ public class File31 {
                                         // presumed pseudo
                                         // atom.
                                         if (list == null || list.size() < 1) {
-                                            General
-                                                    .showDetail("While reading DCs: While reading DCs: Coulnd't find atom (assumed a pseudo but apparently not) in residue: "
+                                            General.showDetail("While reading DCs: Coulnd't find atom (assumed a pseudo but apparently not) in residue: "
                                                             + resNumb
                                                             + " in mol: "
                                                             + molNumb
@@ -2998,8 +3032,7 @@ public class File31 {
                                         // pseudo
                                         // atom.
                                         if (list == null || list.size() < 1) {
-                                            General
-                                                    .showDetail("While reading DCs: While reading DCs: Coulnd't find atom (assumed a pseudo but apparently not) in residue: "
+                                            General.showDetail("While reading DCs: Coulnd't find atom (assumed a pseudo but apparently not) in residue: "
                                                             + resNumb
                                                             + " in mol: "
                                                             + molNumb

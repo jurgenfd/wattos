@@ -27,6 +27,7 @@ import Wattos.Database.Indices.IndexHashedIntToMany;
 import Wattos.Soup.Comparator.ComparatorAtom;
 import Wattos.Soup.Comparator.ComparatorAtomPerModelMolResAtom;
 import Wattos.Soup.Comparator.ComparatorAuthorAtomWithoutEntry;
+import Wattos.Soup.Constraint.Triplet;
 import Wattos.Star.DataBlock;
 import Wattos.Star.SaveFrame;
 import Wattos.Star.StarNode;
@@ -46,24 +47,24 @@ import com.braju.format.Parameters;
 /**
  * Property of an atom like: where is it in the {@link Wattos.Soup} and in 3D.
  * This class serves as the template for the relationsets in the Soup.
- *  
+ *
  * The atom name is the IUPAC recommended standard. The
- * {@link <a href="http://www.bmrb.wisc.edu">BMRB</a>} 
- * preferred HN over 
- * {@link <a href="http://www.rcsb.org/pdb">PDB</a>} 
+ * {@link <a href="http://www.bmrb.wisc.edu">BMRB</a>}
+ * preferred HN over
+ * {@link <a href="http://www.rcsb.org/pdb">PDB</a>}
  * PDB preferred H will be used. HB2/HB3 i.s.o. HB1/HB2
- * <I>etc</I>. 
+ * <I>etc</I>.
  * <BR>
- * 
+ *
  * <P>Some random documentations:<BR>
  * <UL>
  * <LI> Each atom in the first model has information on it's siblings in related models.
  * <LI> Updates and deletions are tricky. Be careful with deleting atoms specific
- * to 1 model. For an example look at 
+ * to 1 model. For an example look at
  * {@link Wattos.CloneWars.CommandHub#ReadEntryExtraCoordinatesWHATIFPDB}
- * <LI>When deleting a model in the soup then also nill the atom siblings list. 
+ * <LI>When deleting a model in the soup then also nill the atom siblings list.
  * That is: each affected atom sibling list to be set to null.
- * There is an Entry property that shows if models are sync-ed. That is false if this 
+ * There is an Entry property that shows if models are sync-ed. That is false if this
  * still needs to be done. If true, it may be assumed that the atoms are in sync. This adds complexity
  * because for each update/deletion the entry attribute has to be set to false.
  * </ul>
@@ -71,40 +72,40 @@ import com.braju.format.Parameters;
  * @version 1
  */
 public class Atom extends GumboItem implements Serializable {
-        
+
     private static final long serialVersionUID = -1654597752202161738L;
     /** Classification of an atom based on it's second char in the atom name */
     public static String[] DEFAULT_CLASS_NAMES      = { "amide", "alpha", "beta", "gamma", "delta", "epsilon", "dzeta  ", "other"};
     public static char[] ATOM_CHAR                  = { '_', 'A', 'B', 'G', 'D', 'E', 'Z', ' '};
-    
+
     public static final String CAN_HYDROGEN_BOND            = "can_hydrogen_bond";
     /** When CAN_HYDROGEN_BOND is true this parameter identifies a donor.
      *Note that an atom can be a donor and acceptor at the same time in the
      *topology lib only, depending on protonation.     */
     public static final String IS_HB_DONOR                  = "is_HB_donor";
-    
+
     /** See IS_HB_DONOR     */
     public static final String IS_HB_ACCEP                  = "is_HB_accep";
-    
+
     private final static boolean DEBUG = true;
     static final float DEFAULT_TOLERANCE_CALCULATE_BONDS = 0.1f;
     static final float DEFAULT_TYPE_UNKNOWN     = 0;
     static final float DEFAULT_TYPE_NONLINEAR   = 1;
     static final float DEFAULT_TYPE_TETRAHEDRAL = 2;
     static final float DEFAULT_TYPE_PLANAR      = 3;
-    
+
     /** Convenience variables */
     public int[]       resId;          // starting with fkcs
-    public int[]       molId;          
-    public int[]       modelId;          
-    public int[]       entryId;          
-    /** the index of the first model is zero*/ 
-    public int[][]     modelSiblingIds; 
+    public int[]       molId;
+    public int[]       modelId;
+    public int[]       entryId;
+    /** the index of the first model is zero*/
+    public int[][]     modelSiblingIds;
     /** For the master atom itself this should be set to it's own rid */
     public int[]       masterAtomId;
     public int[]       elementId;      // non fkcs
-    public float[]     occupancy;     
-    public float[]     bfactor;     
+    public float[]     occupancy;
+    public float[]     bfactor;
     public String[]    authMolNameList;
     public StringSet   authMolNameListNR;
     public String[]    authResNameList;
@@ -118,13 +119,13 @@ public class Atom extends GumboItem implements Serializable {
     public BitSet      canHydrogenBond;
     public BitSet      isHBDonor;
     public BitSet      isHBAccep;
-        
+
     public Atom(DBMS dbms, RelationSoS relationSoSParent) {
-        super(dbms, relationSoSParent); 
+        super(dbms, relationSoSParent);
         resetConvenienceVariables();
     }
 
-    /** The relationSetName is a parameter so non-standard relation sets 
+    /** The relationSetName is a parameter so non-standard relation sets
      *can be created; e.g. AtomTmp with a relation named AtomTmpMain etc.
      */
     public Atom(DBMS dbms, String relationSetName, RelationSoS relationSoSParent) {
@@ -142,7 +143,7 @@ public class Atom extends GumboItem implements Serializable {
 
         name = Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[RELATION_ID_SET_NAME];
 
-        // MAIN RELATION in addition to the ones in gumbo item.        
+        // MAIN RELATION in addition to the ones in gumbo item.
         DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_SET_RES[  RELATION_ID_COLUMN_NAME], new Integer(DATA_TYPE_INT));
         DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[  RELATION_ID_COLUMN_NAME], new Integer(DATA_TYPE_INT));
         DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[RELATION_ID_COLUMN_NAME], new Integer(DATA_TYPE_INT));
@@ -161,30 +162,30 @@ public class Atom extends GumboItem implements Serializable {
         DEFAULT_ATTRIBUTES_TYPES.put( CAN_HYDROGEN_BOND,                                          new Integer(DATA_TYPE_BIT));
         DEFAULT_ATTRIBUTES_TYPES.put( IS_HB_DONOR,                                                new Integer(DATA_TYPE_BIT));
         DEFAULT_ATTRIBUTES_TYPES.put( IS_HB_ACCEP,                                                new Integer(DATA_TYPE_BIT));
-                
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_RES[   RELATION_ID_COLUMN_NAME ] );         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[   RELATION_ID_COLUMN_NAME ]);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RELATION_ID_COLUMN_NAME ]);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RELATION_ID_COLUMN_NAME ]);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_BFACTOR);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_MODEL_SIBLINGS);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_MASTER_RID);         
-        DEFAULT_ATTRIBUTES_ORDER.add( CAN_HYDROGEN_BOND);         
-        DEFAULT_ATTRIBUTES_ORDER.add( IS_HB_DONOR);         
-        DEFAULT_ATTRIBUTES_ORDER.add( IS_HB_ACCEP);         
-        
+
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_RES[   RELATION_ID_COLUMN_NAME ] );
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[   RELATION_ID_COLUMN_NAME ]);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RELATION_ID_COLUMN_NAME ]);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RELATION_ID_COLUMN_NAME ]);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_BFACTOR);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_MODEL_SIBLINGS);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_MASTER_RID);
+        DEFAULT_ATTRIBUTES_ORDER.add( CAN_HYDROGEN_BOND);
+        DEFAULT_ATTRIBUTES_ORDER.add( IS_HB_DONOR);
+        DEFAULT_ATTRIBUTES_ORDER.add( IS_HB_ACCEP);
+
         DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_SET_RES[RELATION_ID_COLUMN_NAME],    Gumbo.DEFAULT_ATTRIBUTE_SET_RES[RELATION_ID_MAIN_RELATION_NAME]});
         DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[RELATION_ID_COLUMN_NAME],    Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[RELATION_ID_MAIN_RELATION_NAME]});
         DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[RELATION_ID_COLUMN_NAME],  Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[RELATION_ID_MAIN_RELATION_NAME]});
         DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[RELATION_ID_COLUMN_NAME],  Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[RELATION_ID_MAIN_RELATION_NAME]});
-            
+
         Relation relation = null;
         String relationName = Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[RELATION_ID_MAIN_RELATION_NAME];
         try {
@@ -195,18 +196,18 @@ public class Atom extends GumboItem implements Serializable {
         }
 
         // Create the fkcs without checking that the columns exist yet.
-        DEFAULT_ATTRIBUTE_FKCS = ForeignKeyConstrSet.createFromRelation(dbms, DEFAULT_ATTRIBUTE_FKCS_FROM_TO, relationName);        
-        relation.insertColumnSet( 0, DEFAULT_ATTRIBUTES_TYPES, DEFAULT_ATTRIBUTES_ORDER, 
+        DEFAULT_ATTRIBUTE_FKCS = ForeignKeyConstrSet.createFromRelation(dbms, DEFAULT_ATTRIBUTE_FKCS_FROM_TO, relationName);
+        relation.insertColumnSet( 0, DEFAULT_ATTRIBUTES_TYPES, DEFAULT_ATTRIBUTES_ORDER,
             DEFAULT_ATTRIBUTE_VALUES, DEFAULT_ATTRIBUTE_FKCS);
         addRelation( relation );
         mainRelation = relation;
 
         // OTHER RELATIONS HERE
         //..
-        
+
         return true;
-    }            
-    
+    }
+
    /** Adds a new entry in the array. Since there are so many parameters it might be faster
     *to in-line this method. Which the JIT might do anyway.
     *Note that the atom coordinates will automatically be rounded to 3 digits after
@@ -216,9 +217,9 @@ public class Atom extends GumboItem implements Serializable {
     public int add(String name,                                                 // WattosItem attributes
         boolean has_coor, float[] coor, float charge,                           // GumboItem attributes
         int elementId, float occupancy, float bfactor,                          // Atom attributes.
-        String authMolName, String authResName, String authResId, String authAtomName, 
+        String authMolName, String authResName, String authResId, String authAtomName,
         int parentId, String pdbInsertionCode) {
-            
+
         int maxSize = mainRelation.sizeMax;
         int result = super.add( name, has_coor, GumboItem.roundToPdbPrecision(coor), charge);
         if ( result < 0 ) {
@@ -228,33 +229,33 @@ public class Atom extends GumboItem implements Serializable {
         if ( maxSize != mainRelation.sizeMax) {
             resetConvenienceVariables();
         }
-                        
+
         resId[              result ] = parentId;                                   // Atom attributes. (fkcs)
         molId[              result ] = gumbo.res.molId[     parentId ];
         modelId[            result ] = gumbo.res.modelId[   parentId ];
         entryId[            result ] = gumbo.res.entryId[   parentId ];
 
         this.elementId[     result ] = elementId;                                   // Atom attributes. (non-fkcs)
-        this.occupancy[     result ] = occupancy;                                     
-        this.bfactor[       result ] = bfactor;                                                     
+        this.occupancy[     result ] = occupancy;
+        this.bfactor[       result ] = bfactor;
 
-        authMolNameList[    result ] = authMolNameListNR.intern( authMolName );          
-        authResNameList[    result ] = authResNameListNR.intern( authResName );          
-        authResIdList[      result ] = authResNameListNR.intern( authResId );          
-        authAtomNameList[   result ] = authAtomNameListNR.intern( authAtomName );          
-        pdbInsertionCodeList[   result ] = pdbInsertionCodeListNR.intern( authAtomName );          
-        
-        
+        authMolNameList[    result ] = authMolNameListNR.intern( authMolName );
+        authResNameList[    result ] = authResNameListNR.intern( authResName );
+        authResIdList[      result ] = authResNameListNR.intern( authResId );
+        authAtomNameList[   result ] = authAtomNameListNR.intern( authAtomName );
+        pdbInsertionCodeList[   result ] = pdbInsertionCodeListNR.intern( authAtomName );
+
+
         type[ result ] = dbms.ui.wattosLib.atomLibAmber.getAtomTypeId( gumbo.res.nameList[parentId], name);
         return result;
-    }            
+    }
 
     /** Renumbers selected atoms (to 1 .. N selected atoms in residue) in all selected entries, models, mols, res.
      *Uses a very expensive 5 level loop! See if it's doable.
      *Overrides the default implementation in WattosItem.
-    public boolean resetNumbers() {        
-        
-        /** START OF BLOCK copy from Atom.resetNumbers 
+    public boolean resetNumbers() {
+
+        /** START OF BLOCK copy from Atom.resetNumbers
         // Some short hand notations
         BitSet usedEntry = gumbo.entry.mainRelation.used;
         BitSet usedModel = gumbo.model.mainRelation.used;
@@ -266,7 +267,7 @@ public class Atom extends GumboItem implements Serializable {
         BitSet selMol    = gumbo.mol.mainRelation.getColumnBit(   DEFAULT_ATTRIBUTE_SELECTED );
         BitSet selRes    = gumbo.res.mainRelation.getColumnBit(   DEFAULT_ATTRIBUTE_SELECTED );
         BitSet selAtom   = mainRelation.getColumnBit(  DEFAULT_ATTRIBUTE_SELECTED );
-        /** Just making sure no work is done on selected but not used elements: 
+        /** Just making sure no work is done on selected but not used elements:
         selEntry.and(   usedEntry );
         selModel.and(   usedModel );
         selMol.and(     usedMol );
@@ -277,26 +278,26 @@ public class Atom extends GumboItem implements Serializable {
         String columnLabelMolId   = Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[   RelationSet.RELATION_ID_COLUMN_NAME];
         String columnLabelResId   = Gumbo.DEFAULT_ATTRIBUTE_SET_RES[   RelationSet.RELATION_ID_COLUMN_NAME];
         String columnLabelAtomId  = Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[  RelationSet.RELATION_ID_COLUMN_NAME];
-        /** END OF BLOCK 
-        
+        /** END OF BLOCK
+
         for (int ent=selEntry.nextSetBit(0);            ent>=0; ent=selEntry.nextSetBit(ent+1))  {
-            BitSet selModelSub = SQLSelect.selectBitSet(dbms, gumbo.model.mainRelation, 
+            BitSet selModelSub = SQLSelect.selectBitSet(dbms, gumbo.model.mainRelation,
                 columnLabelEntryId, SQLSelect.OPERATION_TYPE_EQUALS, new Integer(ent), false);
             selModelSub.and( selModel );
             General.showDebug("For selected entry: " + gumbo.entry.mainRelation.getValueString(ent, DEFAULT_ATTRIBUTE_NAME ) +
                 " found number of selected models: " + selModelSub.cardinality());
             for (int mod=selModelSub.nextSetBit(0);     mod>=0; mod=selModelSub.nextSetBit(mod+1))  {
-                BitSet selMolSub = SQLSelect.selectBitSet(dbms, gumbo.mol.mainRelation, 
+                BitSet selMolSub = SQLSelect.selectBitSet(dbms, gumbo.mol.mainRelation,
                     columnLabelModelId, SQLSelect.OPERATION_TYPE_EQUALS, new Integer(mod), false);
                 selMolSub.and( selMol );
                 General.showDebug("Found selected mols: " + selMolSub.cardinality());
                 for (int mol=selMolSub.nextSetBit(0);   mol>=0; mol=selMolSub.nextSetBit(mol+1))    {
-                    BitSet selResSub = SQLSelect.selectBitSet(dbms, gumbo.res.mainRelation, 
+                    BitSet selResSub = SQLSelect.selectBitSet(dbms, gumbo.res.mainRelation,
                         columnLabelMolId, SQLSelect.OPERATION_TYPE_EQUALS, new Integer(mol), false);
                     selResSub.and( selRes );
                     General.showDebug("Found selected res: " + selResSub.cardinality());
                     for (int res=selResSub.nextSetBit(0);   res>=0; res=selResSub.nextSetBit(res+1))    {
-                        BitSet selAtomSub = SQLSelect.selectBitSet(dbms, mainRelation, 
+                        BitSet selAtomSub = SQLSelect.selectBitSet(dbms, mainRelation,
                             columnLabelResId, SQLSelect.OPERATION_TYPE_EQUALS, new Integer(res), false);
                         selAtomSub.and( selAtom );
                         General.showDebug("Found selected atoms: " + selAtomSub.cardinality());
@@ -310,7 +311,7 @@ public class Atom extends GumboItem implements Serializable {
         }
         General.showWarning("Renumbering atoms according to physical order at this point");
         return true;
-    }            
+    }
      */
 
     /** Checks the atoms in the todo set for if they're bonded to one or more instances with the element type given.
@@ -347,8 +348,8 @@ public class Atom extends GumboItem implements Serializable {
         }
         return result;
     }
-    
-    
+
+
     /** Returns a set of donors and acceptors of those requested
      *NB
      *<OL>
@@ -368,7 +369,7 @@ public class Atom extends GumboItem implements Serializable {
         atomInFirstModelN.and( atomsInMaster );
         atomInFirstModelO.and( atomsInMaster );
         atomInFirstModelS.and( atomsInMaster );
-        
+
         BitSet atomInFirstModelDonor = new BitSet(); // initialized to false first.
         BitSet atomInFirstModelAccep = new BitSet();
         atomInFirstModelDonor.or( atomInFirstModelN );
@@ -390,10 +391,10 @@ public class Atom extends GumboItem implements Serializable {
         //General.showDebug("Donors:\n" + toString(atomInFirstModelDonor));
         //General.showDebug("Acceps:\n" + toString(atomInFirstModelAccep));
         BitSet[] result = new BitSet[] { atomInFirstModelDonor, atomInFirstModelAccep };
-        return result;        
+        return result;
     }
-    
-    
+
+
     /**
      * A hydrogen bond is defined as X-H ... Y. Where X (donor) and Y (acceptor) are both atoms of
      * element types N, O, or S and X has an attached H.
@@ -410,22 +411,22 @@ public class Atom extends GumboItem implements Serializable {
      * @see #getHydrogenBondAcceptorsAndDonors
      * @param atomsInMaster
      * @return true for success
-     */    
-    public boolean calcHydrogenBond(BitSet atomsInMaster, 
+     */
+    public boolean calcHydrogenBond(BitSet atomsInMaster,
         float hbHADistance, float hbDADistance, float hbDHAAngle,
         String summaryFileName) {
 
 //        boolean status = true;
-	if ( hbHADistance < 0 ) {
-		hbHADistance = Calculation.hbHADistance;
+    if ( hbHADistance < 0 ) {
+        hbHADistance = Calculation.hbHADistance;
         }
-	if ( hbDADistance < 0 ) {
-		hbDADistance = Calculation.hbDADistance;
+    if ( hbDADistance < 0 ) {
+        hbDADistance = Calculation.hbDADistance;
         }
-	if ( hbDHAAngle < 0 ) {
-		hbDHAAngle = Calculation.hbDHAAngle;
+    if ( hbDHAAngle < 0 ) {
+        hbDHAAngle = Calculation.hbDHAAngle;
         }
-        
+
         BitSet[] result = getHydrogenBondAcceptorsAndDonors(atomsInMaster);
         if ( result == null ) {
             General.showError("Failed to get lists of donor and acceptors for hydrogen bonds");
@@ -433,21 +434,21 @@ public class Atom extends GumboItem implements Serializable {
         }
         BitSet atomInFirstModelDonor = result[0];
         BitSet atomInFirstModelAccep = result[1];
-                
-        
+
+
 
         int entryRID = gumbo.entry.getEntryId();
         if ( entryRID < 0 ) {
             General.showError("Failed to get single entry id");
             return false;
         }
-        BitSet modelsInEntry = gumbo.entry.getModelsInEntry(entryRID);        
+        BitSet modelsInEntry = gumbo.entry.getModelsInEntry(entryRID);
         if ( modelsInEntry == null ) {
             General.showError("Failed calcHydrogenBond because failed to get the models in this entry for rid: " + entryRID);
             return false;
         }
         int modelCount = modelsInEntry.cardinality();
-        
+
         try {
             IntArrayList boundHList = new IntArrayList();
             IntArrayList boundListBond = null;
@@ -456,7 +457,7 @@ public class Atom extends GumboItem implements Serializable {
             int atomRid, bondRid;
             int k,l,s,x;
             /** Atoms involved; NB here the acceptor is a N but it could be any of: N, O, and S. */
-            int ridH = -1; 
+            int ridH = -1;
             Integer iInt = null;
             boolean foundHBBond = false;
 //            float d;
@@ -469,7 +470,7 @@ public class Atom extends GumboItem implements Serializable {
                 General.showError("Failed calcHydrogenBond because failed to get the indexes on bonds ");
                 return false;
             }
-            
+
             for (int i=atomInFirstModelDonor.nextSetBit(0);i>=0;i=atomInFirstModelDonor.nextSetBit(i+1)) {
                 //General.showDebug("Checking for donor:\n" + toString(i));
                 iInt = new Integer(i);
@@ -483,7 +484,7 @@ public class Atom extends GumboItem implements Serializable {
                     if ( resId[i]==resId[j]) {
                         /**
                         General.showDebug("Ignoring potential hydrogen bond between atoms in same residue for:\n" +
-                            toString(i) + General.eol + 
+                            toString(i) + General.eol +
                             toString(j));
                          */
                         continue;
@@ -498,7 +499,7 @@ public class Atom extends GumboItem implements Serializable {
                     boundListBBond = (IntArrayList) bondAtomBIndex.getRidList( iInt,Index.LIST_TYPE_INT_ARRAY_LIST, null);
                     // Find the hydrogen(s) from the donor
                     boundHList.setSize(0);
-                    for (s=0;s<2;s++) {                        
+                    for (s=0;s<2;s++) {
                         if ( s==0) {
                             boundListBond = boundListABond;
                         } else {
@@ -521,8 +522,8 @@ public class Atom extends GumboItem implements Serializable {
                     foundHBBond = false;
                     for ( k=0;k<boundHList.size();k++) {
                         ridH = boundHList.get(k);
-                        if ( Calculation.isHydrogenBond(this, i, ridH, j, 
-                                    hbHADistance, hbDADistance, hbDHAAngle)) {                            
+                        if ( Calculation.isHydrogenBond(this, i, ridH, j,
+                                    hbHADistance, hbDADistance, hbDHAAngle)) {
                             foundHBBond = true;
                             break;
                         }
@@ -531,14 +532,14 @@ public class Atom extends GumboItem implements Serializable {
                         continue;
                     }
                     // Continue as bifurcated hb's exist too.
-                    
+
                     // Now check the other models using the same criteria, if any of the models
-                    // doesn't satisfy the criterium it's considered not a good bond.                                        
+                    // doesn't satisfy the criterium it's considered not a good bond.
                     boolean isValid = true;
                     for (int m=2;m<=modelCount;m++) {
                         k = modelSiblingIds[i][m-1]; // m-1 because models start numbering at 1.
-                        l = modelSiblingIds[j][m-1]; 
-                        int n = modelSiblingIds[ridH][m-1]; 
+                        l = modelSiblingIds[j][m-1];
+                        int n = modelSiblingIds[ridH][m-1];
                         if ( Defs.isNull( k) ) {
                             General.showError("Found a bad sibling for atom in first model for model: " + m + " " + toString(k));
                             return false;
@@ -547,8 +548,8 @@ public class Atom extends GumboItem implements Serializable {
                             General.showError("Found a bad sibling for atom in first model for model: " + m + " " + toString(l));
                             return false;
                         }
-                        if ( ! Calculation.isHydrogenBond(this, k, n, l, 
-                                    hbHADistance, hbDADistance, hbDHAAngle)) {  
+                        if ( ! Calculation.isHydrogenBond(this, k, n, l,
+                                    hbHADistance, hbDADistance, hbDHAAngle)) {
                             /**
                             General.showDebug("Ignoring hydrogen bond between atoms:\n" +
                                 toString(k) + General.eol +
@@ -579,8 +580,8 @@ public class Atom extends GumboItem implements Serializable {
             General.showOutput("Found number of new hydrogen bond candidates: " + gumbo.bond.selected.cardinality());
             //General.showOutput( gumbo.bond.toString(gumbo.bond.selected) );
             IndexHashedIntToMany onAtomA = (IndexHashedIntToMany) gumbo.bond.mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, Index.INDEX_TYPE_HASHED);
-//            IndexHashedIntToMany onAtomB = (IndexHashedIntToMany) gumbo.bond.mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, Index.INDEX_TYPE_HASHED);            
-            
+//            IndexHashedIntToMany onAtomB = (IndexHashedIntToMany) gumbo.bond.mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, Index.INDEX_TYPE_HASHED);
+
             // Check if the donor is in zero or two hydrogen bonds. Note that only water can be a twofold donor.
             for (int i=atomInFirstModelDonor.nextSetBit(0);i>=0;i=atomInFirstModelDonor.nextSetBit(i+1)) {
                 // The donor is always listed first for hydrogen bonds
@@ -589,9 +590,9 @@ public class Atom extends GumboItem implements Serializable {
                 // That's very fast and memory cheap but takes some more checking.
                 if ( bondList == null ) {
                     bondList = new IntArrayList();
-                }              
+                }
                 /**
-                General.showDebug("Found a potential hydrogen bond list:\n" + 
+                General.showDebug("Found a potential hydrogen bond list:\n" +
                     gumbo.bond.toString(PrimitiveArray.toBitSet( bondList,-1)));
                  */
                 for (x=bondList.size()-1;x>=0;x--) {
@@ -607,7 +608,7 @@ public class Atom extends GumboItem implements Serializable {
                         nameList[i] + "). Hydrogen bonds ("+bondList.size()+") read: ");
                     General.showWarning(General.eol + bondString);
                     //return false;
-                }                
+                }
             }
             // Check if the acceptor is in zero to two hydrogen bonds.
             //todo
@@ -615,16 +616,16 @@ public class Atom extends GumboItem implements Serializable {
             General.showThrowable(t);
             General.showError("Trying to restore state after exception");
 //            status = false;
-        }        
-        
-        
+        }
+
+
         General.showOutput("Found number of new hydrogen bonds: " + gumbo.bond.selected.cardinality());
         gumbo.bond.calculateValues( gumbo.bond.selected );
         return InOut.writeTextToFile(new File(summaryFileName),
                 gumbo.bond.toString( gumbo.bond.selected ),
-                true,false);               
+                true,false);
     }
-    
+
 
     /**
      * This method adds bonds to the soup based on element id.
@@ -633,19 +634,19 @@ public class Atom extends GumboItem implements Serializable {
      * The selected attribute of the Bond class will hold the newly added bonds.
      * Atoms without a set element id will be assumed to be non-bonding for this
      * routine.
-     * <P>The algorithm uses a method suggested by Gert Vriend. It uses the division of atoms into 
+     * <P>The algorithm uses a method suggested by Gert Vriend. It uses the division of atoms into
      * residues and only does the square interactions between those residues close enough for it's
      * atoms to be able to bound.
-     * The argument tolerance is the added distance to half the sum of radii involved that is still to be 
+     * The argument tolerance is the added distance to half the sum of radii involved that is still to be
      * considered a bond. 0.1 is recommended with atom radii defined in the class Chemistry.
      * NB ONLY bonds to the first model will be added. Use the information on model-related atoms
      * in the Atom class to find the others.
-     * @param resInMaster 
+     * @param resInMaster
      * @param tolerance 0.1 recommended. Maybe a null value specified so default will be taken.
      * @return true if successful. Can be successful without selected atoms and residues and
      *without calculating bonds.
      *
-     */    
+     */
     public boolean calcBond(BitSet resInMaster, float tolerance) {
 //        General.showOutput("Starting calcBond");
 //        boolean printProgress = true;
@@ -655,7 +656,7 @@ public class Atom extends GumboItem implements Serializable {
             General.showWarning("No residues in master selected so not able to do calcBond.");
             return true;
         }
-        
+
         BitSet bondRidSet = gumbo.bond.getBondListForResRidSet(resInMaster);
         if ( bondRidSet.cardinality()==0) {
 //            General.showDebug("No bonds found for given residues before doing calcBond");
@@ -692,21 +693,21 @@ public class Atom extends GumboItem implements Serializable {
         BitSet atomsInMasterTodo        = new BitSet();
         BitSet resInMasterTodo          = new BitSet();
         BitSet bondsPotentiallyTooMuch  = new BitSet();
-        
-        int i,j,ri,rj,k,l,x,in,jn;        
-        BitSet atomInFirstModelWithoutElement = PrimitiveArray.getRidsByValue( 
+
+        int i,j,ri,rj,k,l,x,in,jn;
+        BitSet atomInFirstModelWithoutElement = PrimitiveArray.getRidsByValue(
             elementId, Chemistry.ELEMENT_ID_UNKNOWN );
         atomInFirstModelWithoutElement.and( atomsInMaster );
         atomsInMasterTodo.or( atomsInMaster );
         atomsInMasterTodo.andNot( atomInFirstModelWithoutElement );
         resInMasterTodo.or( resInMaster );
-        
+
         int entryRID = gumbo.entry.getEntryId();
         if ( entryRID < 0 ) {
             General.showError("Failed to get single entry id");
             return false;
         }
-        BitSet modelsInEntry = gumbo.entry.getModelsInEntry(entryRID);        
+        BitSet modelsInEntry = gumbo.entry.getModelsInEntry(entryRID);
         if ( modelsInEntry == null ) {
             General.showError("Failed to do calcBond because failed to get the models in this entry for rid: " + entryRID);
             return false;
@@ -716,8 +717,8 @@ public class Atom extends GumboItem implements Serializable {
             General.showWarning("No models in entry so not able to do calcBond.");
             return true;
         }
-        
-        try {   
+
+        try {
             int maxRes = gumbo.res.mainRelation.sizeMax;
             float[] resRadius   = new float[maxRes]; // (overestimate) of radius of sphere around residue.
             int[][] resCloseTo  = new int[maxRes][]; // list of residues within certain distance
@@ -735,7 +736,7 @@ public class Atom extends GumboItem implements Serializable {
                     continue;
                 }
                 resAtoms[ri] = PrimitiveArray.toIntArray(rAtoms);
-                BitSet resAtomSet = PrimitiveArray.toBitSet(resAtoms[ri],-1);                
+                BitSet resAtomSet = PrimitiveArray.toBitSet(resAtoms[ri],-1);
                 //General.showDebug("Found atoms in residue:\n" + gumbo.res.toString(ri) + General.eol + toString(resAtomSet));
                 float[] tempPosition = getCenter(resAtomSet);
                 if ( tempPosition == null ) {
@@ -748,7 +749,7 @@ public class Atom extends GumboItem implements Serializable {
             }
             // Second calculate closeness residues using the radius of the residue (0 in case of a single atom)
             // and a measure for the longest bond to expect.
-            IntArrayList resCloseToList = new IntArrayList();            
+            IntArrayList resCloseToList = new IntArrayList();
             for (ri=resInMasterTodo.nextSetBit(0);ri>=0;ri=resInMasterTodo.nextSetBit(ri+1)) {
                 resCloseToList.setSize(0);
                 // do self comparison too so it gets stored
@@ -761,7 +762,7 @@ public class Atom extends GumboItem implements Serializable {
                 resCloseTo[ri] = PrimitiveArray.toIntArray( resCloseToList );
                 //General.showDebug("Found residues close:\n" + PrimitiveArray.toString( resCloseTo[ri]));
             }
-            
+
             gumbo.bond.selected.clear();
             int countAtomsChecked = 0;
             for (ri=resInMasterTodo.nextSetBit(0);ri>=0;ri=resInMasterTodo.nextSetBit(ri+1)) {
@@ -785,10 +786,10 @@ public class Atom extends GumboItem implements Serializable {
                         atomIRadius = Chemistry.radii[atomIElementId];
                         if ( Defs.isNull( atomIRadius )) {
                             continue;
-                        }                        
-                        float atomIRadiusAndTolerance = atomIRadius + tolerance; 
+                        }
+                        float atomIRadiusAndTolerance = atomIRadius + tolerance;
                         for (jn=0;jn<resAtomListBSize;jn++) {
-                            j = resAtomListB[jn];                        
+                            j = resAtomListB[jn];
                             //General.showDebug("Looking at atom j: " + j );
                             if ( (ri==rj) && (i>=j) ) { // prevent self bonds.
                                 continue;
@@ -800,16 +801,16 @@ public class Atom extends GumboItem implements Serializable {
                             atomJRadius = Chemistry.radii[atomJElementId];
                             if ( Defs.isNull( atomJRadius )) {
                                 continue;
-                            }                        
-                            // Might be faster to do a lookup in a pregenerated table                     
-                            distance = atomIRadiusAndTolerance + atomJRadius; 
+                            }
+                            // Might be faster to do a lookup in a pregenerated table
+                            distance = atomIRadiusAndTolerance + atomJRadius;
                             /** prevent to do the multiplication and square root. */
-                            if ( 
+                            if (
                                 ( Math.abs( xList[i] - xList[j]) > distance ) ||
                                 ( Math.abs( yList[i] - yList[j]) > distance ) ||
                                 ( Math.abs( zList[i] - zList[j]) > distance )) { // checking 2 or 3 seems to be optimum for speed.
                                 continue;
-                            }                            
+                            }
                             d = calcDistanceFast( i, j );
                             countAtomsChecked++;
                             /**
@@ -824,7 +825,7 @@ public class Atom extends GumboItem implements Serializable {
                             }
 
                             // Now check the other models using the same criteria, if any of the models
-                            // doesn't satisfy the criterium it's considered not a good bond.                                        
+                            // doesn't satisfy the criterium it's considered not a good bond.
                             isValid = true;
                             for (int m=2;m<=modelCount;m++) {
                                 k = modelSiblingIds[i][m-1]; // m-1 because models start numbering at 1.
@@ -842,7 +843,7 @@ public class Atom extends GumboItem implements Serializable {
                                     General.showDebug("Ignoring bond between atoms:\n" +
                                         toString(i) + General.eol +
                                         toString(j) + General.eol +
-                                        "because in model " + m + " the distance " + d_sibling + 
+                                        "because in model " + m + " the distance " + d_sibling +
                                         " is larger than " + distance);
                                     isValid = false;
                                     break;
@@ -865,15 +866,15 @@ public class Atom extends GumboItem implements Serializable {
                         }
                     }
                 }
-            }                
+            }
 //            if ( printProgress ) {
 //                General.showOutput( "\nDone. Checked number of potential pairs: " + countAtomsChecked);
 //            }
-            
+
 //            General.showOutput("Found number of new bond candidates: " + gumbo.bond.selected.cardinality());
             //General.showOutput( gumbo.bond.toString(gumbo.bond.selected) );
             IndexHashedIntToMany onAtomA = (IndexHashedIntToMany) gumbo.bond.mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, Index.INDEX_TYPE_HASHED);
-            IndexHashedIntToMany onAtomB = (IndexHashedIntToMany) gumbo.bond.mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, Index.INDEX_TYPE_HASHED);            
+            IndexHashedIntToMany onAtomB = (IndexHashedIntToMany) gumbo.bond.mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, Index.INDEX_TYPE_HASHED);
             for (i=atomsInMasterTodo.nextSetBit(0);i>=0;i=atomsInMasterTodo.nextSetBit(i+1)) {
                 IntArrayList bondListA = onAtomA.getRidList( i );
                 IntArrayList bondListB = onAtomB.getRidList( i );
@@ -890,7 +891,7 @@ public class Atom extends GumboItem implements Serializable {
                         bondListA.addAllOf( bondListB );
                     }
                 }
-                
+
                 if ( bondListA.size() > Chemistry.MAX_BONDS[elementId[i]] ) {
                     BitSet bondSet = PrimitiveArray.toBitSet(bondListA, -1);
                     String bondString = gumbo.bond.toString( bondSet );
@@ -900,11 +901,11 @@ public class Atom extends GumboItem implements Serializable {
                     bondsPotentiallyTooMuch.or( bondSet );
                     //General.showWarning("Atom reads: ");
                     //General.showWarning(General.eol + toString(i));
-                }                
+                }
                 // for printing later.
                 if ( bondListA.size() == 0 ) {
                     atomsWithoutBond.set(i);
-                }                
+                }
             }
 
         } catch ( Throwable t ) {
@@ -921,10 +922,10 @@ public class Atom extends GumboItem implements Serializable {
             General.showWarning("Got bonds that are potentially too much: " + bondsPotentiallyTooMuch.cardinality());
             General.showWarning(General.eol + gumbo.bond.toString(bondsPotentiallyTooMuch));
         }
-        
-        
-        
-        /** Restore to state as to before calling this method.        
+
+
+
+        /** Restore to state as to before calling this method.
         if ( ! PrimitiveArray.setValueByRids( elementId, atomInFirstModelWithoutElement, Chemistry.ELEMENT_ID_UNKNOWN)) {
             status = false;
         }
@@ -932,19 +933,19 @@ public class Atom extends GumboItem implements Serializable {
         //General.showOutput("Found new bonds: " + gumbo.bond.toString( gumbo.bond.selected));
 
         gumbo.bond.resetConvenienceVariables();
-        
+
         if ( ! status ) {
             General.showError("Failed to calcBond");
         }
         return status;
     }
-    
+
     /** Returns those residues for which there are atoms as given in the argument
      */
     public BitSet getResidueList(BitSet atomSelection) {
         BitSet result = new BitSet();
         for (int rid=atomSelection.nextSetBit(0);rid>=0;rid=atomSelection.nextSetBit(rid+1)) {
-            result.set( resId[rid] );            
+            result.set( resId[rid] );
         }
         return result;
     }
@@ -956,15 +957,15 @@ public class Atom extends GumboItem implements Serializable {
     private IntArrayList getAtomsInModel(int modelNumber, IntArrayList ridList) {
         IntArrayList result = new IntArrayList();
         result.setSize(ridList.size());
-        int ridListSize = ridList.size();    
+        int ridListSize = ridList.size();
         int modelId = modelNumber-1; // -1 because the model numbers start with 1.
         for (int i=0;i<ridListSize;i++) {
-            int newRid = modelSiblingIds[ridList.getQuick(i)][modelId]; 
+            int newRid = modelSiblingIds[ridList.getQuick(i)][modelId];
             result.setQuick(i,newRid);
         }
         return result;
     }
-    
+
     /** Using the sibling list to get the atom rid of master model.
      * Normally this should be inlined for speed but the method is
      * here to remind us.
@@ -972,14 +973,14 @@ public class Atom extends GumboItem implements Serializable {
     public int getMasterAtomRid(int atomRid) {
         return masterAtomId[atomRid];
     }
-    
+
     /**
      * This method calculates distance shorter than a certain value.
      * <P>
      * The selected attribute of the Distance class will hold the newly added distances.
      * <P>The algorithm is similar as in calcBond.
-     * NB all selected atoms in the first model of the selected entry will be 
-     * scanned for all models. E.g. if the atom isn't selected in 
+     * NB all selected atoms in the first model of the selected entry will be
+     * scanned for all models. E.g. if the atom isn't selected in
      *a consecutive model it will still be scanned for it.
      *<P>Make sure bonds are already calculated if you want to exclude bonded
      *contacts.
@@ -990,23 +991,23 @@ public class Atom extends GumboItem implements Serializable {
      *      only a few bonds, a value of 1 or larger is suggested.
      * @param minModels The minimum number of models in which the distance is smaller than the cutoff.
      * @param cutoff Distance under which contacts will be compiled.
-     */    
-    public boolean calcDistance(float cutoff, int minResDiff, int minModels, 
+     */
+    public boolean calcDistance(float cutoff, int minResDiff, int minModels,
                 boolean intraMolecular, boolean interMolecular) {
         General.showDebug("Starting calcDistance");
         boolean printProgress = false;
         boolean status = true;
 //        boolean isValid;
-        int i,j,ri,rj,x,in,jn;        
+        int i,j,ri,rj,x,in,jn;
 //        int distance_rid = -1;
         float d;
-        
+
         if ( (!intraMolecular)&&(!interMolecular) ) {
             General.showWarning("Nothing to calculate if both intra and inter molecular distances are to be ignored.");
             return true;
         }
         BitSet resInMasterTodo          = new BitSet();
-        
+
         int entryRID = gumbo.entry.getEntryId();
         if ( entryRID < 0 ) {
             General.showError("Failed to get single entry id");
@@ -1017,10 +1018,10 @@ public class Atom extends GumboItem implements Serializable {
             General.showError("Failed to get atoms in master model.");
             return false;
         }
-        atomsInMasterTodo.and(selected);        
-        resInMasterTodo = getResidueList( atomsInMasterTodo );     
+        atomsInMasterTodo.and(selected);
+        resInMasterTodo = getResidueList( atomsInMasterTodo );
         General.showDebug("Looking for closeness between " + resInMasterTodo.cardinality() + " residues in master model.");
-        BitSet modelsInEntry = gumbo.entry.getModelsInEntry(entryRID);        
+        BitSet modelsInEntry = gumbo.entry.getModelsInEntry(entryRID);
         if ( modelsInEntry == null ) {
             General.showError("Failed to do calcDistance because failed to get the models in this entry for rid: " + entryRID);
             return false;
@@ -1037,13 +1038,13 @@ public class Atom extends GumboItem implements Serializable {
         }
         IndexHashedIntToMany indexBondOnAtomA = (IndexHashedIntToMany) gumbo.bond.mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, Index.INDEX_TYPE_HASHED);
         IndexHashedIntToMany indexBondOnAtomB = (IndexHashedIntToMany) gumbo.bond.mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, Index.INDEX_TYPE_HASHED);
-        
-        try {   
+
+        try {
             int maxRes = gumbo.res.mainRelation.sizeMax;
             float[] resRadius   = new float[maxRes]; // (overestimate) of radius of sphere around residue.
             int[][] resAtoms    = new int[maxRes][]; // list of atoms making up the residue
             IndexHashedIntToMany indexAtomOnRes = (IndexHashedIntToMany) mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_SET_RES[ RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_HASHED);
-            // first calculate some info for the residues            
+            // first calculate some info for the residues
             for (ri=resInMasterTodo.nextSetBit(0);ri>=0;ri=resInMasterTodo.nextSetBit(ri+1)) {
                 //General.showDebug("Looking at residue A : " + gumbo.res.toString(ri));
                 IntArrayList rAtoms = indexAtomOnRes.getRidList(ri);
@@ -1059,12 +1060,12 @@ public class Atom extends GumboItem implements Serializable {
                 for (int m=1;m<=modelCount;m++) {                   // m is the model number
                     rj = ri;                                        // rj is the rid of the residue
                     IntArrayList sAtoms = rAtoms;
-                    if ( m != 1 ) {                    
+                    if ( m != 1 ) {
                         sAtoms = getAtomsInModel(m, rAtoms);
                         rj = resId[ sAtoms.getQuick(0) ];           // use the reference to the residue rid from the first atom in the residue
                     }
                     resAtoms[rj] = PrimitiveArray.toIntArray(sAtoms);
-                    BitSet resAtomSet = PrimitiveArray.toBitSet(resAtoms[rj],-1);                
+                    BitSet resAtomSet = PrimitiveArray.toBitSet(resAtoms[rj],-1);
                     //General.showDebug("Found atoms in residue (A):\n" +   toString(resAtomSet));
                     float[] tempPosition = getCenter(resAtomSet);
                     if ( tempPosition == null ) {
@@ -1078,18 +1079,18 @@ public class Atom extends GumboItem implements Serializable {
                 }
             }
             // Second calculate closeness residues using the radius of the residue (0 in case of a single atom)
-            IntArrayList resCloseToList = new IntArrayList(); 
+            IntArrayList resCloseToList = new IntArrayList();
             // Very compact data structure:
             HashOfHashes resCloseTo  = new HashOfHashes(); // list of residues within certain distance
             for (int m=1;m<=modelCount;m++) { // m is the model number
                 BitSet resTodo = resInMasterTodo;
                 if ( m != 1 ) {
                     resTodo = resInModelMTodo[m];
-                }                
+                }
                 for (ri=resTodo.nextSetBit(0);ri>=0;ri=resTodo.nextSetBit(ri+1)) {
                     resCloseToList.setSize(0);
                     int molRidI = gumbo.res.molId[ri];
-                    boolean inSameMol = true;                    
+                    boolean inSameMol = true;
                     // do self comparison too so it gets stored
                     for (rj=resTodo.nextSetBit(ri+1);rj>=0;rj=resTodo.nextSetBit(rj+1)) {
                         // Are they in the same molecule?
@@ -1105,7 +1106,7 @@ public class Atom extends GumboItem implements Serializable {
                         if ( inSameMol && (Math.abs(gumbo.res.number[rj]-gumbo.res.number[ri])<=minResDiff)) {
                             continue;
                         }
-                        
+
                         float dij = gumbo.res.calcDistanceFast(ri,rj);
                         if ( dij < ( resRadius[ri] + resRadius[rj] + cutoff)) {
                             resCloseToList.add( rj );
@@ -1115,7 +1116,7 @@ public class Atom extends GumboItem implements Serializable {
                     //General.showDebug("Found residues close:\n" + PrimitiveArray.toString( resCloseTo.get( new Integer(m), new Integer(ri))));
                 }
             }
-            
+
             gumbo.distance.selected.clear();
             int countAtomsChecked = 0;
             // Simply look for pairs of atoms in the master molecule that will be stored in:
@@ -1124,7 +1125,7 @@ public class Atom extends GumboItem implements Serializable {
                 BitSet resTodo = resInMasterTodo;
                 if ( m != 1 ) {
                     resTodo = resInModelMTodo[m];
-                }                            
+                }
                 for (ri=resTodo.nextSetBit(0);ri>=0;ri=resTodo.nextSetBit(ri+1)) {
                     //General.showDebug("Looking at residue ri: " + ri );
                     int[] resAtomListA = resAtoms[ri];
@@ -1144,18 +1145,18 @@ public class Atom extends GumboItem implements Serializable {
                             IntArrayList bondListAtomsA = indexBondOnAtomA.getRidList(iMaster);
                             IntArrayList bondedAtomsA = gumbo.bond.getAtomList(bondListAtomsA,1);
                             for (jn=0;jn<resAtomListBSize;jn++) {
-                                j = resAtomListB[jn];                        
+                                j = resAtomListB[jn];
                                 //General.showDebug("Looking at atom j: " + j );
                                 if ( (ri==rj) && (i>=j) ) { // prevent self contacts?
                                     continue;
                                 }
                                 /** prevent to do the multiplication and square root. */
-                                if ( 
+                                if (
                                     ( Math.abs( xList[i] - xList[j]) > cutoff ) ||
                                     ( Math.abs( yList[i] - yList[j]) > cutoff ) ||
                                     ( Math.abs( zList[i] - zList[j]) > cutoff )) { // checking 2 or 3 seems to be optimum for speed.
                                     continue;
-                                }                            
+                                }
                                 d = calcDistanceFast( i, j );
                                 countAtomsChecked++;
                                 /**
@@ -1170,8 +1171,8 @@ public class Atom extends GumboItem implements Serializable {
                                 }
                                 // exclude self contact (expensive so do last
                                 int jMaster = masterAtomId[j];
-                                IntArrayList bondListAtomsB = indexBondOnAtomB.getRidList(jMaster);                            
-                                IntArrayList bondedAtomsB = gumbo.bond.getAtomList(bondListAtomsB,0);     
+                                IntArrayList bondListAtomsB = indexBondOnAtomB.getRidList(jMaster);
+                                IntArrayList bondedAtomsB = gumbo.bond.getAtomList(bondListAtomsB,0);
                                 /**
                                 General.showDebug("Atoms with A: "+i+" "+iMaster+" "+toString(i)+" "+bondListAtomsA);
                                 General.showDebug("Atoms with B: "+j+" "+jMaster+" "+toString(j)+" "+bondListAtomsB);
@@ -1179,7 +1180,7 @@ public class Atom extends GumboItem implements Serializable {
                                 General.showDebug("Atoms bonded to B: "+toString(PrimitiveArray.toBitSet(bondedAtomsB,-1)));
                                 General.showDebug("");
                                  */
-                                if ( bondedAtomsA.contains(jMaster) || 
+                                if ( bondedAtomsA.contains(jMaster) ||
                                      bondedAtomsB.contains(iMaster)) {
                                     /**
                                     General.showDebug("Skipping bonded atoms based on master: ");
@@ -1188,22 +1189,22 @@ public class Atom extends GumboItem implements Serializable {
                                      */
                                     continue;
                                 }
-                                
+
                                 // flip a bit for the model in the pair of the atoms in the master
                                 Integer ii = new Integer(masterAtomId[i]);
                                 Integer jj = new Integer(masterAtomId[j]);
                                 BitSet goodPairModels = (BitSet) goodPairs.get(ii,jj);
                                 if ( goodPairModels == null ) {
                                     goodPairModels = new BitSet();
-                                    goodPairs.put( ii, jj, goodPairModels);                                    
+                                    goodPairs.put( ii, jj, goodPairModels);
                                 }
                                 goodPairModels.set(m);
                             }
                         }
                     }
-                }        
+                }
             }
-            if ( printProgress ) { 
+            if ( printProgress ) {
                 General.showOutput( "\nDone. Checked number of potential pairs: " + countAtomsChecked);
             }
             ArrayList keysA = new ArrayList(goodPairs.keySet());
@@ -1214,7 +1215,7 @@ public class Atom extends GumboItem implements Serializable {
                 HashMap map = (HashMap) goodPairs.get(ii);
                 ArrayList keysB = new ArrayList(map.keySet());
                 Collections.sort(keysB);
-                for (j=0;j<keysB.size();j++) {           
+                for (j=0;j<keysB.size();j++) {
                     Integer jj = (Integer) keysB.get(j);
                     BitSet goodPairModels = (BitSet) map.get(jj);
                     int goodPairModelCount = goodPairModels.cardinality();
@@ -1222,7 +1223,7 @@ public class Atom extends GumboItem implements Serializable {
                         continue;
                     }
                     int jjj  = jj.intValue();
-                    // Add a close contact. 
+                    // Add a close contact.
                     int dist_rid = gumbo.distance.add( iii, jjj, Defs.NULL_INT,  Defs.NULL_INT, Bond.BOND_TYPE_TENTATIVE );
                     if ( dist_rid < -1 ) {
                         String msg = "Failed to add a distance between atoms\n" +
@@ -1230,16 +1231,16 @@ public class Atom extends GumboItem implements Serializable {
                                         toString(jjj) + General.eol;
                         throw new Exception(msg);
                     }
-                }                
+                }
             }
-            
-            General.showOutput("Found number of new distances: " + gumbo.distance.selected.cardinality());            
+
+            General.showOutput("Found number of new distances: " + gumbo.distance.selected.cardinality());
         } catch ( Throwable t ) {
             General.showThrowable(t);
             General.showError("exception in Atom.calcDistance");
             status = false;
-        }                                
-        
+        }
+
         if ( ! gumbo.distance.calculateValues(gumbo.distance.selected, true)) {
             General.showError("Failed in calculating distances.");
             return false;
@@ -1250,14 +1251,14 @@ public class Atom extends GumboItem implements Serializable {
             return false;
         }
         General.showOutput("Found contacts below cutoff: " + cutoff + General.eol + msg);
-        
+
         if ( ! status ) {
             General.showError("Failed to calcDistance");
         }
         return status;
     }
-    
-    
+
+
     /** Returns a list of int[2] objects that are the rid and original
      *location in the array. The second int might not be that useful but
      *the comparator expects an object with 2 ints anyway, so might as well
@@ -1265,7 +1266,7 @@ public class Atom extends GumboItem implements Serializable {
      *E.g. a list of atom rids:
      *91,90,92 would perhaps be returned ordered as: [90,1], [91,0], [92,2]
      */
-    public ArrayList getSorted( IntArrayList a, Comparator c ) {       
+    public ArrayList getSorted( IntArrayList a, Comparator c ) {
         int size = a.size();
         int aRid;
         ArrayList atomsInvolved = new ArrayList( size );
@@ -1284,7 +1285,7 @@ public class Atom extends GumboItem implements Serializable {
         }
         return atomsInvolved;
     }
-    
+
     /** Returns a map of the natural order of the atoms.
      *E.g. a list of atom ids:
      *91,90,93,92 would perhaps be ordered 90,91,92,93
@@ -1293,56 +1294,56 @@ public class Atom extends GumboItem implements Serializable {
      *original element at postion 0 (91) should go to new position 1 etc.
      */
     public int[] getOrderMap( IntArrayList a) {
-        Comparator atomComparator = new ComparatorAtom(gumbo);         
+        Comparator atomComparator = new ComparatorAtom(gumbo);
         ArrayList atomsInvolved = getSorted(a, atomComparator);
         if ( atomsInvolved == null ) {
             return null;
         }
-        int size = a.size();        
+        int size = a.size();
         int[] map = new int[size];
         int oldPosI;
         for (int i=0;i<size;i++) {
             oldPosI = ((int[])atomsInvolved.get(i))[1];
             map[ oldPosI ] = i;
-        }     
+        }
         return map;
     }
 
-    
+
     /** Will order the atom rids in the input list.*/
-    public boolean order( IntArrayList a) {       
+    public boolean order( IntArrayList a) {
         if ( a == null ) {
             return false;
         }
         if ( a.size() <= 1 ) {
             return true;
         }
-        int[] sortMap = getOrderMap( a ); 
+        int[] sortMap = getOrderMap( a );
         if ( sortMap == null ) {
             General.showError("Failed to get sortMap");
             return false;
-        }        
+        }
         //General.showDebug("Sort map is: " + PrimitiveArray.toString( sortMap ));
         if ( ! PrimitiveArray.sortTogether( sortMap, new Object[] { a } ) ) {
             General.showError("Failed to sort IntArrayLists together");
             return false;
-        }        
+        }
         return true;
     }
-            
+
     /** Defaults to false for not having to consider all atoms. So will return 0 for
      *equal even though number of atoms in the list might be different.
      */
-    public int compare(IntArrayList a1, IntArrayList a2) {       
+    public int compare(IntArrayList a1, IntArrayList a2) {
         return compare( a1, a2, false );
     }
-        
 
-   /** Comparison given a list of rids within the array. Null rids will be last in the list. 
+
+   /** Comparison given a list of rids within the array. Null rids will be last in the list.
     *If the parameter considerAll is set to true then in case of equality on the
     *compared elements the longer list will last in the order.
      */
-    public int compare(IntArrayList a1, IntArrayList a2, boolean considerAll ) {       
+    public int compare(IntArrayList a1, IntArrayList a2, boolean considerAll ) {
         // compare each element until a difference was found.
         int minLength = Math.min( a1.size(), a2.size());
         if ( minLength == 0 ) {
@@ -1364,21 +1365,21 @@ public class Atom extends GumboItem implements Serializable {
     }
 
     /** Comparison given the rid within the array. Null rids will be last in the list. */
-    public int compare(int atomRid1, int atomRid2 ) {       
+    public int compare(int atomRid1, int atomRid2 ) {
         return compare(atomRid1, atomRid2, false, false);
     }
-    
-    /** Comparison given the rid within the array. Null rids will be last in the list. 
+
+    /** Comparison given the rid within the array. Null rids will be last in the list.
      *Optionally the entry and atom name can be ignored in the comparison.
      *Note that this method uses a -very- different sorting than the method setAtomIdsPerModel.
-     *The result is a negative integer if atomRid1 precedes atomRid2. 
+     *The result is a negative integer if atomRid1 precedes atomRid2.
      */
-    public int compare(int atomRid1, int atomRid2, boolean ignoreEntry, boolean ignoreAtomName) {       
-               
+    public int compare(int atomRid1, int atomRid2, boolean ignoreEntry, boolean ignoreAtomName) {
+
         //General.showDebug("**** Comparing atoms with rids: " + atomRid1 + ", " + atomRid2);
         if ( Defs.isNull( atomRid1 ) && Defs.isNull( atomRid2 ) ) {
             return 0;
-        }        
+        }
         if ( Defs.isNull( atomRid1 ) ) {
             return 1;
         }
@@ -1386,7 +1387,7 @@ public class Atom extends GumboItem implements Serializable {
             return -1;
         }
         int c1, c2;
-        
+
         /** Some more simple tests; remove if too expensive */
         if ( ! used.get(atomRid1) ) {
             General.showWarning("Trying compare with unused atomRid1: " + atomRid1);
@@ -1408,38 +1409,38 @@ public class Atom extends GumboItem implements Serializable {
             }
             return 1;
         }
-        
+
         // entry
         if ( ! ignoreEntry ) {
             c1 = gumbo.entry.number[ entryId[ atomRid1 ] ];
             c2 = gumbo.entry.number[ entryId[ atomRid2 ] ];
-            //General.showDebug("Entry: " + c1 + " and " + c2);        
+            //General.showDebug("Entry: " + c1 + " and " + c2);
             if ( c1 < c2 ) {
                 return -1;
-            } 
+            }
             if ( c1 > c2 ) {
                 return 1;
             }
         }
-        
+
         // model
         c1 = gumbo.model.number[ modelId[ atomRid1 ] ];
         c2 = gumbo.model.number[ modelId[ atomRid2 ] ];
-        //General.showDebug("Model: " + c1 + " and " + c2);        
+        //General.showDebug("Model: " + c1 + " and " + c2);
         if ( c1 < c2 ) {
             return -1;
-        } 
+        }
         if ( c1 > c2 ) {
             return 1;
         }
-        
+
         // mol
         c1 = gumbo.mol.number[ molId[ atomRid1 ] ];
         c2 = gumbo.mol.number[ molId[ atomRid2 ] ];
-        //General.showDebug("Mol  : " + c1 + " and " + c2);        
+        //General.showDebug("Mol  : " + c1 + " and " + c2);
         if ( c1 < c2 ) {
             return -1;
-        } 
+        }
         if ( c1 > c2 ) {
             return 1;
         }
@@ -1447,60 +1448,60 @@ public class Atom extends GumboItem implements Serializable {
         // residue
         c1 = gumbo.res.number[ resId[ atomRid1 ] ];
         c2 = gumbo.res.number[ resId[ atomRid2 ] ];
-        //General.showDebug("Res  : " + c1 + " and " + c2);        
+        //General.showDebug("Res  : " + c1 + " and " + c2);
         if ( c1 < c2 ) {
             return -1;
-        } 
+        }
         if ( c1 > c2 ) {
             return 1;
         }
-        
+
         // atom
         /**
         c1 = number[  atomRid1 ];
         c2 = number[  atomRid2 ];
-         
+
         if ( Defs.isNull( c1 ) || Defs.isNull( c2 ) ) {
          */
         if ( ! ignoreAtomName ) {
             String s1 = nameList[ atomRid1 ];
-            String s2 = nameList[ atomRid2 ];            
-            //General.showDebug("Atom  : " + s1 + " and " + s2);        
+            String s2 = nameList[ atomRid2 ];
+            //General.showDebug("Atom  : " + s1 + " and " + s2);
             if ( Defs.isNullString( s1) || Defs.isNullString( s2 ) ) {
                 return 0;
             }
 
             return s1.compareTo( s2 );
         }
-        
+
         return 0;
         /**
         }
-            
-        General.showDebug("Atom  : " + c1 + " and " + c2);        
+
+        General.showDebug("Atom  : " + c1 + " and " + c2);
         if ( c1 < c2 ) {
             return -1;
-        } 
+        }
         if ( c1 > c2 ) {
             return 1;
         }
-        
+
         return 0;
          */
-    } 
+    }
 
-    /** Comparison given the rid within the array. Null rids will be last in the list. 
+    /** Comparison given the rid within the array. Null rids will be last in the list.
      *Note that this method uses the author chain, and res but regular atom name.
-     *The result is a negative integer if atomRid1 precedes atomRid2. 
+     *The result is a negative integer if atomRid1 precedes atomRid2.
      */
-    public int compareAuthor(int atomRid1, int atomRid2, boolean ignoreEntry) {       
-                       
+    public int compareAuthor(int atomRid1, int atomRid2, boolean ignoreEntry) {
+
 //        General.showDebug("**** Comparing atoms with rids: " + atomRid1 + ", " + atomRid2);
 //        General.showDebug(toString(atomRid1,true));
 //        General.showDebug(toString(atomRid2,true));
         if ( Defs.isNull( atomRid1 ) && Defs.isNull( atomRid2 ) ) {
             return 0;
-        }        
+        }
         if ( Defs.isNull( atomRid1 ) ) {
             return 1;
         }
@@ -1508,7 +1509,7 @@ public class Atom extends GumboItem implements Serializable {
             return -1;
         }
         int c, c1, c2;
-        
+
         /** Some more simple tests; remove if too expensive */
         if ( ! used.get(atomRid1) ) {
             General.showWarning("Trying compare with unused atomRid1: " + atomRid1);
@@ -1529,39 +1530,39 @@ public class Atom extends GumboItem implements Serializable {
                 return -1;
             }
             return 1;
-        }                
-        
+        }
+
         // entry
         if ( ! ignoreEntry ) {
             c1 = gumbo.entry.number[ entryId[ atomRid1 ] ];
             c2 = gumbo.entry.number[ entryId[ atomRid2 ] ];
-//            General.showDebug("In compareAuthor: Entry: " + c1 + " and " + c2);        
+//            General.showDebug("In compareAuthor: Entry: " + c1 + " and " + c2);
             if ( c1 < c2 ) {
                 return -1;
-            } 
+            }
             if ( c1 > c2 ) {
                 return 1;
             }
         }
-        
+
         // model
         c1 = gumbo.model.number[ modelId[ atomRid1 ] ];
         c2 = gumbo.model.number[ modelId[ atomRid2 ] ];
-//        General.showDebug("In compareAuthor: Model: " + c1 + " and " + c2);        
+//        General.showDebug("In compareAuthor: Model: " + c1 + " and " + c2);
         if ( c1 < c2 ) {
             return -1;
-        } 
+        }
         if ( c1 > c2 ) {
             return 1;
         }
-        
+
 //        // mol
 //        c1 = gumbo.mol.number[ molId[ atomRid1 ] ];
 //        c2 = gumbo.mol.number[ molId[ atomRid2 ] ];
-//        //General.showDebug("Mol  : " + c1 + " and " + c2);        
+//        //General.showDebug("Mol  : " + c1 + " and " + c2);
 //        if ( c1 < c2 ) {
 //            return -1;
-//        } 
+//        }
 //        if ( c1 > c2 ) {
 //            return 1;
 //        }
@@ -1569,18 +1570,18 @@ public class Atom extends GumboItem implements Serializable {
 //        // residue
 //        c1 = gumbo.res.number[ resId[ atomRid1 ] ];
 //        c2 = gumbo.res.number[ resId[ atomRid2 ] ];
-//        //General.showDebug("Res  : " + c1 + " and " + c2);        
+//        //General.showDebug("Res  : " + c1 + " and " + c2);
 //        if ( c1 < c2 ) {
 //            return -1;
-//        } 
+//        }
 //        if ( c1 > c2 ) {
 //            return 1;
-//        }        
+//        }
 
         // mol
         String s1 = authMolNameList[ atomRid1 ];
-        String s2 = authMolNameList[ atomRid2 ];  
-//        General.showDebug("In compareAuthor: Mol  : [" + s1 + "] and [" + s2 + "]"); 
+        String s2 = authMolNameList[ atomRid2 ];
+//        General.showDebug("In compareAuthor: Mol  : [" + s1 + "] and [" + s2 + "]");
         // Decide if only one or none of them are null. They're considered equal if both are null.
         if ( !(Defs.isNull( s1 ) && Defs.isNull( s2 )) ) {
             if ( Defs.isNull( s1 ) ) {
@@ -1592,13 +1593,13 @@ public class Atom extends GumboItem implements Serializable {
             c = s1.compareTo(s2);
             if ( c != 0 ) {
                 return c;
-            } 
+            }
         }
 
         // residue
         s1 = authResIdList[ atomRid1 ];
-        s2 = authResIdList[ atomRid2 ];  
-//        General.showDebug("In compareAuthor: Res  : [" + s1 + "] and [" + s2 +"]");  
+        s2 = authResIdList[ atomRid2 ];
+//        General.showDebug("In compareAuthor: Res  : [" + s1 + "] and [" + s2 +"]");
         c = s1.compareTo(s2);
         if ( c != 0 ) {
             return c;
@@ -1617,15 +1618,15 @@ public class Atom extends GumboItem implements Serializable {
 //        return authAtomNameList[ atomRid1 ].compareTo(authAtomNameList[ atomRid2 ]);
 
         s1 = nameList[ atomRid1 ];
-        s2 = nameList[ atomRid2 ];            
-//        General.showDebug("In compareAuthor: Atom : [" + s1 + "] and [" + s2 +"]");  
+        s2 = nameList[ atomRid2 ];
+//        General.showDebug("In compareAuthor: Atom : [" + s1 + "] and [" + s2 +"]");
         if ( Defs.isNullString( s1) || Defs.isNullString( s2 ) ) {
             return 0;
         }
 
         return s1.compareTo( s2 );
-    } 
-    
+    }
+
     /** Order the atoms toDo according to a comparator class. This will create a column (if
      *not present already) with the name: DEFAULT_ATTRIBUTE_ORDER_ID. The models, mols, and residues
      *themselves need to be ordered first. Ordering always starts at startNumber, which
@@ -1634,21 +1635,21 @@ public class Atom extends GumboItem implements Serializable {
      *STAR files.
      */
     public boolean orderPerModelMolResAtom(BitSet toDo, Comparator atomComparator, int startNumber) {
-        
+
         // Keep one if it's already available.
-        if ( ! mainRelation.containsColumn( DEFAULT_ATTRIBUTE_ORDER_ID )) {            
+        if ( ! mainRelation.containsColumn( DEFAULT_ATTRIBUTE_ORDER_ID )) {
             if ( ! mainRelation.addColumnForOverallOrder()) {
                 General.showError("In Atom.orderPerModelMolResAtom failed to add column for overall order id");
                 return false;
-            }            
+            }
         }
-        
-        int[] orderIdModel  = gumbo.model.mainRelation.getColumnInt( Relation.DEFAULT_ATTRIBUTE_NUMBER );        
+
+        int[] orderIdModel  = gumbo.model.mainRelation.getColumnInt( Relation.DEFAULT_ATTRIBUTE_NUMBER );
         int[] orderIdMol    =   gumbo.mol.mainRelation.getColumnInt( Relation.DEFAULT_ATTRIBUTE_NUMBER );
         int[] orderIdRes    =   gumbo.res.mainRelation.getColumnInt( Relation.DEFAULT_ATTRIBUTE_NUMBER );
         int[] orderIdAtom   =             mainRelation.getColumnInt( Relation.DEFAULT_ATTRIBUTE_NUMBER );
         int[] orderIdAtom2  =             mainRelation.getColumnInt( Relation.DEFAULT_ATTRIBUTE_ORDER_ID );
-        if ( (orderIdModel == null ) || (orderIdMol == null ) || (orderIdRes == null ) 
+        if ( (orderIdModel == null ) || (orderIdMol == null ) || (orderIdRes == null )
             || (orderIdAtom == null ) || (orderIdAtom2 == null ) ) {
             General.showError("Failed to get required order columns from model, mol, res, and atom (2 ids) relations for sorting");
             return false;
@@ -1658,11 +1659,11 @@ public class Atom extends GumboItem implements Serializable {
          *time to code it.*/
         // Fill arrays
         int toDoSize = toDo.cardinality();
-        ArrayList list = new ArrayList( toDoSize ); /** Use capacity size for efficiency */        
-        
+        ArrayList list = new ArrayList( toDoSize ); /** Use capacity size for efficiency */
+
         for (int r=toDo.nextSetBit(0); r>=0; r=toDo.nextSetBit(r+1)) {
             // The 3 expensive new objects needed per atom: values, complexObject, ObjectIntPair
-            int[] values = new int[4];  
+            int[] values = new int[4];
             // fill the values
             values[0]        = orderIdModel[    modelId[r]];
             values[1]        = orderIdMol[      molId[r]];
@@ -1672,7 +1673,7 @@ public class Atom extends GumboItem implements Serializable {
             if ( pair == null ) {
                 General.showError("Code bug found in orderPerModelMolResAtom.");
                 return false;
-            }                
+            }
             list.add( pair );
         }
         /** bogus check but heck, never hurts */
@@ -1681,7 +1682,7 @@ public class Atom extends GumboItem implements Serializable {
             General.showError("Rows in relation found are: " + toDoSize + " and: " + list.size() );
             return false;
         }
-        
+
 //        General.showDebug("Prepared for orderPerModelMolResAtom (B)");
         try {
             Collections.sort(list, atomComparator);
@@ -1689,37 +1690,37 @@ public class Atom extends GumboItem implements Serializable {
             General.showThrowable(e);
             return false;
         }
-        
-        // Transfer back to original; reversing map        
+
+        // Transfer back to original; reversing map
         int n = startNumber + toDoSize - 1;
         for ( int r=toDoSize-1; r > -1; r-- ) { // r equals n shifted by startNumber but decrementing might be faster?
             ObjectIntPair pair = (ObjectIntPair) list.get(r);
             //General.showDebug("Renumbering atom with rid: " + pair.i);
             orderIdAtom2[pair.i] = n--;
-        }            
+        }
         return true;
     }
-    
+
     /**Unique sequential number within entry. Number the atoms according to row order map
      *starting at 1 for each new model.
      *Static method because it acts on the argument relation, not this class.
      *Returns true on success.
-     *Todo. Actually since the atoms can be scattered. The method needs to 
+     *Todo. Actually since the atoms can be scattered. The method needs to
      *renumber them per atomset of one model. No short cuts.
      *Note that this method uses -very- different sorting from the compare
      *method.
-     */     
+     */
     public static boolean setAtomIdsPerModel( Relation relation ) {
-        
+
         // Overwrite the local convenience variables. Watch out can be confusing.
 //        int[] modelId = relation.getColumnInt( Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RelationSet.RELATION_ID_COLUMN_NAME ]);
         int[] number  = relation.getColumnInt( Relation.DEFAULT_ATTRIBUTE_NUMBER );
-        
-//        if ( (modelId==null) ||(number==null)) {            
+
+//        if ( (modelId==null) ||(number==null)) {
 //            General.showWarning("Failed to get required columns in setAtomIdsPerModel");
 //            return false;
 //        }
-        
+
         int[] map = relation.getRowOrderMap(Relation.DEFAULT_ATTRIBUTE_ORDER_ID);
         if ( map == null ) {
             General.showWarning("Failed to get the row order sorted out; using physical ordering."); // not fatal
@@ -1729,13 +1730,13 @@ public class Atom extends GumboItem implements Serializable {
                 return false;
             }
         }
-        
+
         // The atoms are already ordered by model, mol, res, atom so easy to check.
         // Just need to use the order column too.
 //        int prevModelNum = -1; // never happens
         int atomId = 1; // starts at 1.
         int rowId = -1;
-        // Loop requires only 3 array lookups per atom! 
+        // Loop requires only 3 array lookups per atom!
         //General.showDebug("map: " + PrimitiveArray.toString(map));
         int s=0;
         for (int r=relation.used.nextSetBit(0); r>=0; r=relation.used.nextSetBit(r+1))  {
@@ -1750,14 +1751,14 @@ public class Atom extends GumboItem implements Serializable {
         }
         return true;
     }
-    
+
     /** Collapses the atoms in the list to a reduced set of atoms with pseudos
      *representing some. The statusList and pseudoNameList will be modified by
      *this routine, but the atomList remains untouched.
      *Returns true for success.
      *Needs to be a fast and optimized algorithm.
-     *The assumption is that the input statusList and pseudoNameList has size 
-     *the same as the atomList. 
+     *The assumption is that the input statusList and pseudoNameList has size
+     *the same as the atomList.
      *Will collaps to the biggest pseudo that has all atoms represented.
      *Will check if atoms are of the same residue.
      *
@@ -1783,22 +1784,22 @@ public class Atom extends GumboItem implements Serializable {
      *          update status of x and ys
      *          break to outer loop.
      */
-    public boolean collapseToPseudo( IntArrayList atomList, IntArrayList statusList, 
-        ObjectArrayList pseudoNameList, PseudoLib pseudoLib ) {        
+    public boolean collapseToPseudo( IntArrayList atomList, IntArrayList statusList,
+        ObjectArrayList pseudoNameList, PseudoLib pseudoLib ) {
         // There might not that much to be done.
         int atomListSize = atomList.size();
         if ( atomListSize < 2 ) {
             return true;
-        }       
+        }
 //        General.showDebug("Looking for pseudos in atom list of length: " + atomListSize);
         int[] elements = statusList.elements();
         Arrays.fill( elements, 0, elements.length, PseudoLib.DEFAULT_OK );// For now assume it didn't get replaced by a pseudo.
         BitSet atomsPseudoToFind = new BitSet();
         BitSet matchedAtoms = new BitSet();
-        
+
         /** Try each atom but the last*/
         for (int x=0;x<atomListSize-1;x++) {
-            int atomRIDUp = atomList.get(x); 
+            int atomRIDUp = atomList.get(x);
             if ( Defs.isNull( atomRIDUp ) ) {
                 continue;
             }
@@ -1807,16 +1808,16 @@ public class Atom extends GumboItem implements Serializable {
             String resNameUp    = gumbo.res.nameList[resRIDUp ];
 //            General.showDebug("Looking at atom: " + x + " " + toString(atomRIDUp));
             ArrayList psNamesUp = (ArrayList) pseudoLib.fromAtoms.get(resNameUp, atomNameUp );
-            // Does the atom occur in a known pseudo atom 
-            if ( psNamesUp == null ) { 
+            // Does the atom occur in a known pseudo atom
+            if ( psNamesUp == null ) {
 //                General.showDebug("Atom doesn't have pseudo" );
-                continue; 
+                continue;
             }
 //            General.showDebug("Found one or more pseudo atoms for atom: " + atomNameUp + " pseudos: " + Strings.toString(psNamesUp));
-            // Try to find the corresponding atoms for the pseudo atom.. 
+            // Try to find the corresponding atoms for the pseudo atom..
             // Pseudo atom are listed in the order of the number of constituting aotms (that's largest).
             // This garantees that e.g. VAL for HG11, QG will be chosen over MG1 if all 6 atoms
-            // of QG are indeed listed too.            
+            // of QG are indeed listed too.
             boolean foundAGoodPseudo = false;
             for (int p=0;p<psNamesUp.size();p++) {
                 String psName = (String) psNamesUp.get(p);
@@ -1833,16 +1834,16 @@ public class Atom extends GumboItem implements Serializable {
                     int atomRID = atomList.get(i);
                     if ( Defs.isNull( atomRID ) ) {
                         continue;
-                    }                
+                    }
                     // Next check typically fails on all but first iteration making double loop fast.
                     if ( statusList.getQuick(i) != PseudoLib.DEFAULT_OK ) {
 //                        General.showDebug("Already used atom so skipping this one -1-");
                         continue;
-                    }                    
+                    }
                     int resRID = resId[ atomRID ];
                     if ( resRID != resRIDUp ) { // The atoms need to be in first atom's residue.
                         continue;
-                    }                
+                    }
                     String atomName = nameList[ atomRID ];
                     int atomPseudoIndex = atomNamesInPseudo.indexOf( atomName ); // requires sequential scan of a list with less than 10 elements.
                     if ( atomPseudoIndex < 0 ) {
@@ -1862,7 +1863,7 @@ public class Atom extends GumboItem implements Serializable {
                     pseudoNameList.setQuick(x, psName);
                     // Mark this atom as replaced by pseudo atom.
                     // Mark all atoms as redundant.
-                    for (int j=matchedAtoms.nextSetBit(0);j>=0;j=matchedAtoms.nextSetBit(j+1)) { 
+                    for (int j=matchedAtoms.nextSetBit(0);j>=0;j=matchedAtoms.nextSetBit(j+1)) {
                         statusList.setQuick( j, PseudoLib.DEFAULT_REDUNDANT_BY_PSEUDO );
                         pseudoNameList.setQuick(j, psName); // new in order to get to the name faster for some cases.
                     }
@@ -1881,46 +1882,114 @@ public class Atom extends GumboItem implements Serializable {
             }
         } // END of loop over atoms x
         return true;
-    }            
-      
-    
+    }
+
+
+//    /** Return the SSA partner atomRid of a 2 atom pseudo if any. Look for a duplication of this functionality somewhere else.
+//     * Returns NULL_INT when none exists or
+//     * -1 for error.
+//     */
+////    public int getSsaPartner( int atomRid, boolean useSmallestAvailable ) {
+//    public int getSsaPartner( int atomRid ) {
+//        int resRid = resId[atomRid];
+//        String resName = gumbo.res.nameList[resRid];
+//        String atomName = nameList[atomRid];
+//
+//        PseudoLib pseudoLib = dbms.ui.wattosLib.pseudoLib; // Should be declared elsewhere or is this fast enough?
+//        ArrayList pseudoAtomNameList = (ArrayList) pseudoLib.fromAtoms.get(resName, atomName);
+//        if (pseudoAtomNameList == null) { // atoms is not in known pseudoatom.
+//            return Defs.NULL_INT;
+//        }
+//        // Use first by default
+//        int idxPseudoATom = 0;
+//        // not needed for simple ones we use here.
+////        if ( ! useSmallestAvailable ) {
+////            if ( pseudoAtomNameList.size() > 1 ) {
+////                idxPseudoATom = 1;
+////            }
+////        }
+//        String pseudoAtomName = (String) pseudoAtomNameList.get(idxPseudoATom);
+//        Integer pseudoTypeInteger = (Integer) pseudoLib.pseudoAtomType.get(resName, pseudoAtomName);
+//        int pseudoType = pseudoTypeInteger.intValue();
+//        if (!(pseudoType==PseudoLib.DEFAULT_PSEUDO_ATOM_ID_CH2_OR_NH2||
+//              pseudoType==PseudoLib.DEFAULT_PSEUDO_ATOM_ID_AROMAT_2H)) {
+//            return Defs.NULL_INT;
+//        }
+//
+//        Triplet triplet = new Triplet(pseudoAtomName, pseudoType, atomRid);
+//        if (!triplet.findOtherAtoms(dbms.ui)) {
+//            General.showWarning("In Atom#getSsaPartner failed to triplet.findOtherAtoms; ignoring this triplet.");
+//            return Defs.NULL_INT;
+//        }
+//        // Which one is result and which one is input?
+//        int[] atomRids = triplet.atomRids;
+//        if ( atomRids[1] == atomRid ) {
+//            return atomRids[0];
+//        }
+//        return atomRids[1];
+//        /** Alternatively, consider code like: */
+//    }
+
+    public int getSsaPartnerTry2( int atomRid ) {
+        int resRid = resId[atomRid];
+        String resName = gumbo.res.nameList[resRid];
+        String atomName = nameList[atomRid];
+
+        if ( !((resName.equals("PHE")||resName.equals("TYR"))&&atomName.equals("CD1")) ) {
+            General.showError("Failed to getSsaPartnerTry2 because not PHE/TYR:CD1 as input");
+            return -1;
+        }
+        String atomNameStereoSibling = "CD2";
+//        String atomNameStereoSibling = pseudoLib.getStereoSibling(resName, atomName, triplet.name);
+        if ( atomNameStereoSibling == null ) {
+            General.showError("Failed getSsaPartnerTry2 0");
+            return -1;
+        }
+        int atomRidStereoSibling = gumbo.atom.getRidByAtomNameAndResRid(atomNameStereoSibling,resRid);
+        if ( atomRidStereoSibling < 0 ) {
+            General.showError("Failed getSsaPartnerTry2 1");
+            return -1;
+        }
+        return atomRidStereoSibling;
+    }
+
     /**     */
-    public boolean resetConvenienceVariables() {        
+    public boolean resetConvenienceVariables() {
         super.resetConvenienceVariables();
         //General.showDebug("Now in resetConvenienceVariables in Atom");
         resId               = (int[])       mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_SET_RES[   RelationSet.RELATION_ID_COLUMN_NAME]);// Atom (starting with fkcs)
         molId               = (int[])       mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[   RelationSet.RELATION_ID_COLUMN_NAME]);
         modelId             = (int[])       mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RelationSet.RELATION_ID_COLUMN_NAME]);
         entryId             = (int[])       mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME]);
-        modelSiblingIds     = (int[][])     mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_MODEL_SIBLINGS);     
+        modelSiblingIds     = (int[][])     mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_MODEL_SIBLINGS);
         masterAtomId        = (int[])       mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_MASTER_RID);
         elementId           = (int[])       mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_ELEMENT_ID);                   // Atom (non fkcs)
         authMolNameList     = (String[])    mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME );
-        authMolNameListNR   =               mainRelation.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME );        
+        authMolNameListNR   =               mainRelation.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME );
         authResNameList     = (String[])    mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME );
-        authResNameListNR   =               mainRelation.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME );        
+        authResNameListNR   =               mainRelation.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME );
         authResIdList       = (String[])    mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID );
         authResIdListNR     =               mainRelation.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID );
         authAtomNameList    = (String[])    mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME );
-        authAtomNameListNR  =               mainRelation.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME);        
+        authAtomNameListNR  =               mainRelation.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME);
         pdbInsertionCodeList    = (String[])    mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE );
-        pdbInsertionCodeListNR  =               mainRelation.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE);        
-        occupancy           = (float[])     mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY);       
-        bfactor             = (float[])     mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_BFACTOR);       
+        pdbInsertionCodeListNR  =               mainRelation.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_PDB_INSERTION_CODE);
+        occupancy           = (float[])     mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_OCCUPANCY);
+        bfactor             = (float[])     mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_BFACTOR);
         canHydrogenBond     =               mainRelation.getColumnBit( CAN_HYDROGEN_BOND );
         isHBDonor           =               mainRelation.getColumnBit( IS_HB_DONOR );
         isHBAccep           =               mainRelation.getColumnBit( IS_HB_ACCEP );
-        
-        
-        if ( resId == null || molId == null || modelId == null || entryId == null 
+
+
+        if ( resId == null || molId == null || modelId == null || entryId == null
                 || modelSiblingIds == null
                 || masterAtomId == null
-                || elementId == null 
-          || authMolNameList == null || authMolNameListNR == null 
-          || authResNameList == null || authResNameListNR == null 
-          || authResIdList == null 
+                || elementId == null
+          || authMolNameList == null || authMolNameListNR == null
+          || authResNameList == null || authResNameListNR == null
+          || authResIdList == null
           || authAtomNameList == null || authAtomNameListNR == null
-          || pdbInsertionCodeList == null || pdbInsertionCodeListNR == null          
+          || pdbInsertionCodeList == null || pdbInsertionCodeListNR == null
           || occupancy == null || bfactor == null
           || canHydrogenBond == null
           || isHBDonor == null
@@ -1929,9 +1998,9 @@ public class Atom extends GumboItem implements Serializable {
             return false;
         }
         return true;
-    }            
-    
-    
+    }
+
+
     /** Return the entry, model, mol, res, and atom ids as a string.*/
     public String toString( ArrayList orgAtomsSorted, boolean showAuthorInfo ) {
         int rid;
@@ -1954,8 +2023,8 @@ public class Atom extends GumboItem implements Serializable {
     /** Convenience method.*/
     public String toString( BitSet todo) {
         return toString( todo, false );
-    }    
-    
+    }
+
     /** Return the entry, model, mol, res, and atom ids as a string.
      * Returns null on error.*/
     public String toString( BitSet todo, boolean showAuthorInfo ) {
@@ -1965,14 +2034,14 @@ public class Atom extends GumboItem implements Serializable {
         // Order the atoms on models, mols, residues, and atoms.
         // Set the order column to nulls so the map later on will only contain the atoms needed.
         mainRelation.setValueByColumn(Relation.DEFAULT_ATTRIBUTE_ORDER_ID, Defs.NULL_INT);
-        Comparator atomComparator = new ComparatorAtomPerModelMolResAtom();        
+        Comparator atomComparator = new ComparatorAtomPerModelMolResAtom();
         if ( ! orderPerModelMolResAtom(todo, atomComparator, 0)) {
             return null;
         }
         int[] map = mainRelation.getRowOrderMap(-1); // -1 for default ordering.
         if ( map == null )  {
             General.showError("Failed to get order map");
-            
+
         }
         StringBuffer sb = new StringBuffer();
         for (int i=0;i<map.length;i++) {
@@ -1982,25 +2051,25 @@ public class Atom extends GumboItem implements Serializable {
         }
         return sb.toString();
     }
-    
+
     /** Convenience method.*/
     public String toString( int atomRid ) {
         return toString( atomRid, false );
-    }   
+    }
 
     /** Convenience method.*/
     public String toString( int atomRid, boolean showAuthorInfo ) {
         return toString( atomRid, true, true, true, showAuthorInfo  );
-    }   
+    }
 
     /** Convenience method.*/
-    public String toString( int atomRid, boolean showMeaning, 
+    public String toString( int atomRid, boolean showMeaning,
             boolean showModel, boolean showEntry ) {
         return toString( atomRid, showMeaning, showModel, showEntry, false  );
     }
-    
+
     /** Return the entry, model, mol, res, and atom ids as a string.*/
-    public String toString( int atomRid, boolean showMeaning, 
+    public String toString( int atomRid, boolean showMeaning,
             boolean showModel, boolean showEntry, boolean showAuthorInfo ) {
         if ( atomRid < 0 ) {
             General.showError("Can't do toString for atom rid < 0");
@@ -2011,7 +2080,7 @@ public class Atom extends GumboItem implements Serializable {
         int molNumber   = gumbo.mol.number[   molId[ atomRid ]];
         int resNumber   = gumbo.res.number[   resId[ atomRid ]];
         String resName  = gumbo.res.nameList[ resId[ atomRid ]];
-        String name     = nameList[ atomRid ];        
+        String name     = nameList[ atomRid ];
         //sb.append( "Atom: " + name + " Res: " + resNumber + "(" + resName + ")  Mol: " + molNumber + " Model: " + modelNumber + " Entry: " + entryNumber);
         Parameters p = new Parameters(); // for printf
         p.add( name );
@@ -2024,19 +2093,19 @@ public class Atom extends GumboItem implements Serializable {
         }
         StringBuffer sb = new StringBuffer();
         sb.append( Format.sprintf(fmt,p));
-        
+
         if ( showAuthorInfo ) {
             String chainId  = authMolNameList[ atomRid ];
             String resNumb  = authResIdList[   atomRid ];
                    resName  = authResNameList[ atomRid ];
-                   name     = authAtomNameList[atomRid ];        
+                   name     = authAtomNameList[atomRid ];
             if ( Defs.isNull(chainId)) {
                 chainId = Defs.NULL_STRING_DOT;
             }
             p.add( name);
             p.add( resNumb);
             p.add( resName);
-            p.add( chainId);            
+            p.add( chainId);
             fmt = " [%-4s %3s(%4s) %3s]";
             sb.append( Format.sprintf(fmt,p));
         }
@@ -2048,7 +2117,7 @@ public class Atom extends GumboItem implements Serializable {
             }
             sb.append( Format.sprintf(fmt,p));
         }
-        
+
         if ( showEntry ) {
             p.add( entryNumber);
             fmt = " Entry: %2d";
@@ -2058,15 +2127,15 @@ public class Atom extends GumboItem implements Serializable {
             sb.append( Format.sprintf(fmt,p));
         }
         return sb.toString();
-    }   
-    
+    }
+
     /** Return the atom info by residue.*/
     public String toStringAtom( int rid ) {
         if ( rid < 0 ) {
             General.showError("Can't do toString for atom rid < 0");
             return null;
         }
-        String name     = nameList[ rid ];        
+        String name     = nameList[ rid ];
         float  x        = xList[ rid ];
         float  y        = yList[ rid ];
         float  z        = zList[ rid ];
@@ -2076,9 +2145,9 @@ public class Atom extends GumboItem implements Serializable {
         p.add( x );
         p.add( y );
         p.add( z );
-        
-        return Format.sprintf( "%4s %8.3f %8.3f %8.3f ", p);        
-    }   
+
+        return Format.sprintf( "%4s %8.3f %8.3f %8.3f ", p);
+    }
 
     /*
      *@see Biochemistry
@@ -2086,14 +2155,14 @@ public class Atom extends GumboItem implements Serializable {
     public boolean isInStandardResidue(int rid) {
         return Biochemistry.commonResidueNameAA_NA.containsKey( gumbo.res.nameList[resId[rid]]);
     }
-    
-    
+
+
     /** Returns the set of atoms in todo that are in standard residues
      *@see Biochemistry
      */
     public BitSet getStandardResidueAtoms( BitSet todo ) {
         BitSet result = new BitSet();
-        result.or(todo);    
+        result.or(todo);
         for (int rid=todo.nextSetBit(0);rid>=0;rid=todo.nextSetBit(rid+1)) {
             if ( ! isInStandardResidue(rid)) {
                 result.clear(rid); // infrequent
@@ -2102,39 +2171,39 @@ public class Atom extends GumboItem implements Serializable {
         return result;
     }
 
-    
+
     /** Add atoms for regular amino (and nucleic acids perhaps)
      */
     public boolean addAtomsByEntry( int orgEntryId, int nomEntryId ) {
 //        int countRenamed  = 0;
         int countNotFound = 0;
         int MAX_ATOMS_TO_SHOW = 50;
-        
-        BitSet orgAtoms = SQLSelect.selectBitSet(mainRelation.dbms, mainRelation, 
-                Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME], 
+
+        BitSet orgAtoms = SQLSelect.selectBitSet(mainRelation.dbms, mainRelation,
+                Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME],
                 SQLSelect.OPERATION_TYPE_EQUALS, new Integer(orgEntryId), false);
-        BitSet nomAtoms = SQLSelect.selectBitSet(mainRelation.dbms, mainRelation, 
-                Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME], 
+        BitSet nomAtoms = SQLSelect.selectBitSet(mainRelation.dbms, mainRelation,
+                Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME],
                 SQLSelect.OPERATION_TYPE_EQUALS, new Integer(nomEntryId), false);
         int orgAtomsCount = orgAtoms.cardinality();
         int nomAtomsCount = nomAtoms.cardinality();
-        
+
         General.showOutput("Will look for atoms to add all models.");
         General.showOutput("Entry to add to   has number of atoms : " + orgAtomsCount);
         General.showOutput("Entry to add from has number of atoms : " + nomAtomsCount);
-        
+
         // filter out the atoms from non standard residues.
         BitSet nomAtomsStandardResidues = getStandardResidueAtoms(nomAtoms);
         int nomAtomsCountStandardResidues = nomAtomsStandardResidues.cardinality();
         int nomAtomsCountNonStandardResidues = nomAtomsCount - nomAtomsCountStandardResidues;
         if ( nomAtomsCountNonStandardResidues > 0 ) {
-            General.showWarning("Skipping number of atoms in non-standard residues: " + nomAtomsCountNonStandardResidues);            
+            General.showWarning("Skipping number of atoms in non-standard residues: " + nomAtomsCountNonStandardResidues);
             nomAtoms.and(nomAtomsStandardResidues);
         }
-        
+
         // Get nom atoms already present as determined by coordinates xyz
-        BitSet nomAtomsPresent = new BitSet();                
-        HashMap orgAtomMap = getMapOnXYZ(orgAtoms);   
+        BitSet nomAtomsPresent = new BitSet();
+        HashMap orgAtomMap = getMapOnXYZ(orgAtoms);
         if ( orgAtomMap == null ) {
             General.showError("Failed getMapOnXYZ");
             return false;
@@ -2152,8 +2221,8 @@ public class Atom extends GumboItem implements Serializable {
         }
         int nomCountAtomsPresent = nomAtomsPresent.cardinality();
         if ( nomCountAtomsPresent > 0 ) {
-            General.showOutput("Skipping atoms in new entry that are already present in old as determined by coordinates: " + nomCountAtomsPresent);            
-            nomAtoms.andNot(nomAtomsPresent);                
+            General.showOutput("Skipping atoms in new entry that are already present in old as determined by coordinates: " + nomCountAtomsPresent);
+            nomAtoms.andNot(nomAtomsPresent);
         }
 
         /** Check to see if nom atoms are in old entry but perhaps just a bit
@@ -2163,10 +2232,10 @@ public class Atom extends GumboItem implements Serializable {
          */
         BitSet nomAtomsPresent2 = new BitSet();
         IntArrayList orgAtomsIntArrayList = PrimitiveArray.toIntArrayList( orgAtoms );
-        Comparator atomComparator = new ComparatorAuthorAtomWithoutEntry(gumbo);        
+        Comparator atomComparator = new ComparatorAuthorAtomWithoutEntry(gumbo);
         ArrayList orgAtomsSorted = getSorted(orgAtomsIntArrayList, atomComparator);
-//        boolean showAuthorInfo = true;        
-//        General.showDebug("Sorted org atoms (by author chain id and residue number[string], and regular atom name) are: \n" + 
+//        boolean showAuthorInfo = true;
+//        General.showDebug("Sorted org atoms (by author chain id and residue number[string], and regular atom name) are: \n" +
 //                toString(orgAtomsSorted, showAuthorInfo));
         int[] nomAtomObject = new int[2];
         for (int rid=nomAtoms.nextSetBit(0);rid>=0;rid=nomAtoms.nextSetBit(rid+1)) {
@@ -2174,18 +2243,18 @@ public class Atom extends GumboItem implements Serializable {
             int insertPoint = Collections.binarySearch(orgAtomsSorted,nomAtomObject,atomComparator);
             // Return value >=0 means the object was found.
             if ( insertPoint >= 0 ) {
-//                General.showDebug( "The new atom is already present at insert point: " + 
+//                General.showDebug( "The new atom is already present at insert point: " +
 //                        insertPoint + " , probably off on some by coordinate: " + toString(rid,true));
                 nomAtomsPresent2.set(rid);
             } else {
-//                General.showDebug( "New atom: " + toString(rid,true));                
+//                General.showDebug( "New atom: " + toString(rid,true));
             }
         }
         int nomCountAtomsPresent2 = nomAtomsPresent2.cardinality();
         if ( nomCountAtomsPresent2 > 0 ) {
-            General.showOutput("Skipping atoms in new entry that are present already as determined by name: " + nomCountAtomsPresent2 );            
-            General.showOutput("Coordinates are perhaps a bit off.");            
-            nomAtoms.andNot(nomAtomsPresent2);                
+            General.showOutput("Skipping atoms in new entry that are present already as determined by name: " + nomCountAtomsPresent2 );
+            General.showOutput("Coordinates are perhaps a bit off.");
+            nomAtoms.andNot(nomAtomsPresent2);
         }
         nomAtomsCount = nomAtoms.cardinality();
         if ( nomAtomsCount == 0 ) {
@@ -2201,11 +2270,11 @@ public class Atom extends GumboItem implements Serializable {
         if ( totalAtoms != 0 ) {
             perAdded = 100f*nomAtomsCount/totalAtoms;
         }
-        General.showOutput( 
+        General.showOutput(
             "Initial total   : " + orgAtomsCount + " atoms" + General.eol +
             " will try adding: " + nomAtomsCount + " atoms, (" + perAdded + " % added atoms over the total number of atoms."
         );
-        
+
         // Add atoms but do NOT create the residues even if that means not adding atoms.
         // So let's find the residue by looking for any existing atom in both
         // with the same coordinate.
@@ -2219,17 +2288,17 @@ public class Atom extends GumboItem implements Serializable {
         for (int rid=nomAtoms.nextSetBit(0);rid>=0;rid=nomAtoms.nextSetBit(rid+1)) {
             orgRidInt = null;
             nomResRid = resId[rid];
-            nomAtomsRes = SQLSelect.selectBitSet(dbms, mainRelation, 
-                Gumbo.DEFAULT_ATTRIBUTE_SET_RES[ RelationSet.RELATION_ID_COLUMN_NAME], 
+            nomAtomsRes = SQLSelect.selectBitSet(dbms, mainRelation,
+                Gumbo.DEFAULT_ATTRIBUTE_SET_RES[ RelationSet.RELATION_ID_COLUMN_NAME],
                 SQLSelect.OPERATION_TYPE_EQUALS, new Integer(nomResRid), false);
             if ( nomAtomsRes == null ) {
                 General.showError("Failed to get list of atoms for residue: " + gumbo.res.toString(nomResRid));
-                General.showWarning("While looking at atom              :\n" + toString(rid) );                
+                General.showWarning("While looking at atom              :\n" + toString(rid) );
                 return false;
             }
             if ( nomAtomsRes.nextSetBit(0) < 0 ) {
                 General.showWarning("Got empty list of atoms for residue: " + gumbo.res.toString(nomResRid));
-                General.showWarning("Skipping addition of this atom              :\n" + toString(rid) );                
+                General.showWarning("Skipping addition of this atom              :\n" + toString(rid) );
                 continue;
             }
             //General.showDebug("Got new atoms in same residue:\n" + toString(nomAtomsRes));
@@ -2238,13 +2307,13 @@ public class Atom extends GumboItem implements Serializable {
                 Object key = getKeyXYZ( rid_stable_atom );
                 orgRidInt = (Integer) orgAtomMap.get( key );
                 //General.showDebug("Checking new atom for any related atom in org set:\n" + toString(rid_stable_atom));
-                if ( orgRidInt != null ) { 
+                if ( orgRidInt != null ) {
                     break;
                 }
             }
             if ( orgRidInt == null ) {
                 General.showWarning("Failed to match ANY org atom with new residue:\n" + gumbo.res.toString(resId[rid]));
-                General.showWarning("Skipping addition of this atom              :\n" + toString(rid) );                
+                General.showWarning("Skipping addition of this atom              :\n" + toString(rid) );
                 continue;
             }
             ridOrgFound = orgRidInt.intValue();
@@ -2266,47 +2335,47 @@ public class Atom extends GumboItem implements Serializable {
             gumbo.entry.modelsSynced.clear(rid_entry);
         }
         mainRelation.cancelAllReservedRows(); // not all atoms might have been added.
-        
+
         // Final report.
-        orgAtoms = SQLSelect.selectBitSet(mainRelation.dbms, mainRelation, 
-                Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME], 
-                SQLSelect.OPERATION_TYPE_EQUALS, new Integer(orgEntryId), false);        
-        General.showOutput( "Added " + (orgAtoms.cardinality()-orgAtomsCount) + " atoms of the attempted " + nomAtomsCount);                
+        orgAtoms = SQLSelect.selectBitSet(mainRelation.dbms, mainRelation,
+                Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME],
+                SQLSelect.OPERATION_TYPE_EQUALS, new Integer(orgEntryId), false);
+        General.showOutput( "Added " + (orgAtoms.cardinality()-orgAtomsCount) + " atoms of the attempted " + nomAtomsCount);
         return true;
     }
 
-    
+
     /** Correct the atom nomenclature for regular amino and nucleic acids
      */
     public boolean renameByEntry( int orgEntryId, int nomEntryId ) {
-        
+
         int countRenamed  = 0;
         int countNotFound = 0;
-        
-        BitSet orgAtoms = SQLSelect.selectBitSet(mainRelation.dbms, mainRelation, 
-                Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME], 
+
+        BitSet orgAtoms = SQLSelect.selectBitSet(mainRelation.dbms, mainRelation,
+                Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME],
                 SQLSelect.OPERATION_TYPE_EQUALS, new Integer(orgEntryId), false);
-        BitSet nomAtoms = SQLSelect.selectBitSet(mainRelation.dbms, mainRelation, 
-                Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME], 
+        BitSet nomAtoms = SQLSelect.selectBitSet(mainRelation.dbms, mainRelation,
+                Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME],
                 SQLSelect.OPERATION_TYPE_EQUALS, new Integer(nomEntryId), false);
         int orgAtomsCount = orgAtoms.cardinality();
         int nomAtomsCount = nomAtoms.cardinality();
-        
+
         if ( orgAtomsCount != nomAtomsCount ) {
             General.showWarning("Will consider to rename number of atoms in this entry: " + orgAtomsCount);
             General.showWarning("Using number of atoms in the other entry             : " + nomAtomsCount);
             General.showWarning("For correcting the atom nomenclature; the number of atoms aren't the same so check the results");
         }
-        
+
         // filter out the atoms from non standard residues.
         BitSet nomAtomsStandardResidues = getStandardResidueAtoms(nomAtoms);
-	int nomAtomsCountStandardResidues = nomAtomsStandardResidues.cardinality();
+    int nomAtomsCountStandardResidues = nomAtomsStandardResidues.cardinality();
         int nomAtomsCountNonStandardResidues = nomAtomsCount - nomAtomsCountStandardResidues;
         if ( nomAtomsCountNonStandardResidues > 0 ) {
-            General.showWarning("Skipping atoms of non-standard residues: " + nomAtomsCountNonStandardResidues);            
+            General.showWarning("Skipping atoms of non-standard residues: " + nomAtomsCountNonStandardResidues);
         }
         nomAtoms.and(nomAtomsStandardResidues);
-        
+
         HashMap nomAtomMap = getMapOnXYZ(nomAtoms);
         //General.showDebug( "Map: " + Strings.toString( nomAtomMap ));
         // Instead of doing one by one intern the whole non-redundant list.
@@ -2314,7 +2383,7 @@ public class Atom extends GumboItem implements Serializable {
             General.showError("failed to take original names to author names at once");
             return false;
         }
-        
+
         for (int rid=orgAtoms.nextSetBit(0);rid>=0;rid=orgAtoms.nextSetBit(rid+1)) {
             Object key = getKeyXYZ( rid );
             //General.showDebug("Got key: " + key);
@@ -2326,7 +2395,7 @@ public class Atom extends GumboItem implements Serializable {
             }
             if ( ! nameList[rid].equals( nameList[ nomRidInt.intValue() ] )) {
                 // Since the 'new' names are already in the nameList so no need to update
-                General.showDebug("Renaming atom: " + 
+                General.showDebug("Renaming atom: " +
                     toString(rid) + " to: " + nameList[ nomRidInt.intValue() ]);
                 authAtomNameList[rid] = nameList[rid];
                 nameList[        rid] = nameList[ nomRidInt.intValue() ];
@@ -2335,14 +2404,14 @@ public class Atom extends GumboItem implements Serializable {
         }
         float perFound   = 100f * (orgAtomsCount-countNotFound) / (float) orgAtomsCount;
         float perRenamed = 100f * countRenamed                  / (float) orgAtomsCount;
-        General.showOutput( 
+        General.showOutput(
             "From total : " + orgAtomsCount + " atoms" + General.eol +
             "found      : " + (orgAtomsCount-countNotFound) + " atoms, (" + perFound   + " %)" + General.eol +
             "renamed    : " + countRenamed                  + " atoms, (" + perRenamed + " %)" + General.eol
         );
         return true;
     }
-    
+
     /** Does a simple search by index and then by scan inside the residue.
      * Return int null in case for error or -1 for not found.
      */
@@ -2350,7 +2419,7 @@ public class Atom extends GumboItem implements Serializable {
         IndexHashedIntToMany indexAtomOnRes = (IndexHashedIntToMany) mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_SET_RES[ RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_HASHED);
         IntArrayList rAtoms = indexAtomOnRes.getRidList(resRid);
         if ( rAtoms == null ) {
-            General.showError( "Failed to get list of atoms for residue: " + 
+            General.showError( "Failed to get list of atoms for residue: " +
                     gumbo.res.toString(resRid));
             return -1;
         }
@@ -2374,21 +2443,21 @@ public class Atom extends GumboItem implements Serializable {
             General.showWarning("Ignoring mass for unknown elementid of atom:"+toString(i));
             return 0f;
         }
-        
+
         return Chemistry.ELEMENT_MASSES[elId];
     }
 
     /**
      * This method calculates and shows dihedrals for all selected atoms.
-     * @return True for success 
-     */    
+     * @return True for success
+     */
     public boolean calcDihe(String summaryFileName) {
 //        General.showDebug("Starting calcDihedral");
         String relName = "DihedralListByRes";
         if ( dbms.containsRelation(relName)) {
             dbms.removeRelation(dbms.getRelation(relName));
         }
-        
+
         DihedralListByRes tT = null;
         try {
             tT = new DihedralListByRes(relName,dbms);
@@ -2396,25 +2465,25 @@ public class Atom extends GumboItem implements Serializable {
             General.showThrowable(e);
             return false;
         }
-        
+
 //        int maxRes = gumbo.res.mainRelation.sizeMax;
-        
+
         int entryRID = gumbo.entry.getEntryId();
         if ( entryRID < 0 ) {
             General.showError("Failed to get single entry id");
             return false;
         }
         String entryName = gumbo.entry.nameList[entryRID];
-        
+
         BitSet atomsInMasterTodo = gumbo.entry.getAtomsInMasterModel();
         if ( atomsInMasterTodo == null ) {
             General.showError("Failed to get atoms in master model.");
             return false;
         }
-        atomsInMasterTodo.and(selected);        
-        BitSet resInMasterTodo = getResidueList( atomsInMasterTodo );     
+        atomsInMasterTodo.and(selected);
+        BitSet resInMasterTodo = getResidueList( atomsInMasterTodo );
 //        General.showDebug("Looking for dihedrals in " + resInMasterTodo.cardinality() + " residue(s) in master model.");
-        BitSet modelsInEntry = gumbo.entry.getModelsInEntry(entryRID);        
+        BitSet modelsInEntry = gumbo.entry.getModelsInEntry(entryRID);
         if ( modelsInEntry == null ) {
             General.showError("Failed to do calcDihedral because failed to get the models in this entry for rid: " + entryRID);
             return false;
@@ -2427,10 +2496,10 @@ public class Atom extends GumboItem implements Serializable {
 //        }
 //        IndexHashedIntToMany indexBondOnAtomA = (IndexHashedIntToMany) gumbo.bond.mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, Index.INDEX_TYPE_HASHED);
 //        IndexHashedIntToMany indexBondOnAtomB = (IndexHashedIntToMany) gumbo.bond.mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, Index.INDEX_TYPE_HASHED);
-        
+
 //        int numbRes = resInMasterTodo.cardinality();
         IndexHashedIntToMany indexAtomOnRes = (IndexHashedIntToMany) mainRelation.getIndex( Gumbo.DEFAULT_ATTRIBUTE_SET_RES[ RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_HASHED);
-        // first calculate some info for the residues            
+        // first calculate some info for the residues
         // Inefficient to have the outer loop over models but that's the output requirement and easiest
         //  to program.
         for (int m=1;m<=modelCount;m++) {                       // m is the model number
@@ -2445,13 +2514,13 @@ public class Atom extends GumboItem implements Serializable {
                     General.showError("list of atoms todo is empty for residue: " + gumbo.res.toString(ri));
                     return false;
                 }
-                int atom_rid = rAtoms.getQuick(0); 
+                int atom_rid = rAtoms.getQuick(0);
                 int res_rid = gumbo.atom.resId[ atom_rid ];
                 int mol_rid = gumbo.atom.molId[ atom_rid ];
                 int resNumber   = gumbo.res.number[    res_rid];
                 String resName  = gumbo.res.nameList[  res_rid];
                 int molNumber   = gumbo.mol.number[    mol_rid];
-                
+
                 boolean isAA = Biochemistry.commonResidueNameAA.containsKey(resName);
                 boolean isNA = Biochemistry.commonResidueNameNA.containsKey(resName);
                 AtomLib atomLib = dbms.ui.wattosLib.atomLib;
@@ -2465,7 +2534,7 @@ public class Atom extends GumboItem implements Serializable {
                     if ( polType.equals("na") &&
                                  (compId.equals("py") && Biochemistry.ResiduePyrimidine.contains(resName)) ||
                                  (compId.equals("pu") && Biochemistry.ResiduePurine.contains(resName))) {
-                        specialNAmatch = true;                        
+                        specialNAmatch = true;
                     }
 //                    General.showDebug("specialNAmatch: " + specialNAmatch);
                     if (!   ( resName.equals(compId) ||
@@ -2473,21 +2542,21 @@ public class Atom extends GumboItem implements Serializable {
                             ( isNA && polType.equals("na") && compId.equals(".")) ||
                             specialNAmatch )) {
 //                        General.showDebug("Skip those that do not apply: " + Strings.toString(DIHEDRAL_LIST[d]));
-                        continue;                    
+                        continue;
                     }
-                    
-                    
+
+
                     IntArrayList iAtoms = new IntArrayList();
                     // find the atoms
                     boolean atomsFound = true;
 //                    int molNumber2 = molNumber;
 //                    int resNumber2 = resNumber;
 //                    String resName2 = resName;
-                    
-                    for (int a=0;a<4;a++) { 
+
+                    for (int a=0;a<4;a++) {
 //                        General.showDebug("Working on atom: " + a);
                         String atomName  = DIHEDRAL_LIST[d][AtomLib.IDX_ATOM_ID_1    +a];
-                        String compSeqID = DIHEDRAL_LIST[d][AtomLib.IDX_COMP_SEQ_ID_1+a];                        
+                        String compSeqID = DIHEDRAL_LIST[d][AtomLib.IDX_COMP_SEQ_ID_1+a];
                         int res_rid_a = res_rid;
                         if ( ! Defs.isNullString(compSeqID)) {
                             char ch = compSeqID.charAt(0);
@@ -2506,13 +2575,13 @@ public class Atom extends GumboItem implements Serializable {
                                     General.showError("Residue not found: " + compSeqID);
                                     General.showError("Failed to find residue info for seq char: " + ch);
                                     return false;
-                                }                                    
-                            }                            
+                                }
+                            }
                         }
                         if ( res_rid_a < 0 ) {
 //                            General.showDebug("Failed to find neighbouring residue: " + compSeqID);
                             atomsFound = false;
-                            break;                            
+                            break;
                         }
                         int a_idx = getRidByAtomNameAndResRid(atomName, res_rid_a);
                         if ( a_idx < 0 ) {
@@ -2526,19 +2595,19 @@ public class Atom extends GumboItem implements Serializable {
                     if ( ! atomsFound ) {
                         continue;
                     }
-    
-//                    General.showDebug("found first model atoms: "+toString(PrimitiveArray.toBitSet(iAtoms))); 
+
+//                    General.showDebug("found first model atoms: "+toString(PrimitiveArray.toBitSet(iAtoms)));
                     IntArrayList sAtoms = getAtomsInModel(m, iAtoms);
                     if ( sAtoms == null ) {
                         General.showCodeBug("Failed to get atom idx for dihedral: " + Strings.toString(DIHEDRAL_LIST[d]));
                         return false;
                     }
-                    float value = (float) ( Geometry.CF * gumbo.atom.calcDihedral( 
+                    float value = (float) ( Geometry.CF * gumbo.atom.calcDihedral(
                             sAtoms.getQuick(0),
                             sAtoms.getQuick(1),
                             sAtoms.getQuick(2),
                             sAtoms.getQuick(3)));
-                    
+
                     int row = tT.getNewRowId();
                     tT.setValue(row, Relation.DEFAULT_ATTRIBUTE_ORDER_ID,           row);
 //                    tT.setValue(row, "_DebugRows",          row);
@@ -2551,8 +2620,8 @@ public class Atom extends GumboItem implements Serializable {
 //                    tT.setValue(row, "_Comp_seq_ID2",       resNumber2);
 //                    tT.setValue(row, "_Comp_ID2",           resName2);
                     tT.setValue(row, "_Angle_name",         angleName);
-                    tT.setValue(row, "_Angle_value",        value);                    
-                }                    
+                    tT.setValue(row, "_Angle_value",        value);
+                }
             }
         }
         General.showOutput("Found number of dihedrals: " + tT.sizeRows );
@@ -2565,7 +2634,7 @@ public class Atom extends GumboItem implements Serializable {
 
         StarNode topNode = new StarNode();
         DataBlock db = new DataBlock();
-        db.title = entryName;        
+        db.title = entryName;
         topNode.datanodes.add(db);
         SaveFrame sf = new SaveFrame();
         sf.title = "common_dihedral";
@@ -2577,7 +2646,7 @@ public class Atom extends GumboItem implements Serializable {
         }
         return true;
     }
-    
+
 
     /**
      * Modify the atom names from 1HD2 to HD21 and vica versa. See:
@@ -2593,7 +2662,7 @@ the atom name."""
      * @return
      */
     public boolean swapPostFixedOrdinalsAtomName(boolean usePostFixedOrdinalsAtomName) {
-        // 
+        //
         String name = null;
         StringBuffer sb = new StringBuffer();
         int atomRID=selected.nextSetBit(0);
@@ -2610,7 +2679,7 @@ the atom name."""
                 sb.setCharAt(0, name.charAt(name.length()-1));
                 sb.insert(   1, name, 0, name.length()-1);
                 nameList[atomRID] = nameListNR.intern( sb.toString() );
-            }            
+            }
         }
         return true;
     }
@@ -2632,23 +2701,23 @@ the atom name."""
         boolean hasFree         = false;
         boolean hasDisulfide    = false;
         boolean hasOtherBound   = false;
-                
+
         calcBond(resInMaster, 0.1f);
-        
-        BitSet resRidCysSet = SQLSelect.selectBitSet(dbms, gumbo.res.mainRelation, Relation.DEFAULT_ATTRIBUTE_NAME, 
+
+        BitSet resRidCysSet = SQLSelect.selectBitSet(dbms, gumbo.res.mainRelation, Relation.DEFAULT_ATTRIBUTE_NAME,
                 SQLSelect.OPERATION_TYPE_EQUALS, "CYS", false);
         resRidCysSet.and(resInMaster);
 //        General.showDebug("Found number of cys in model: " + resRidCysSet.cardinality());
         if ( resRidCysSet.cardinality() == 0 ) {
             return Biochemistry.THIOL_STATE_NOT_PRESENT;
         }
-        
+
         for (int resRidCys=resRidCysSet.nextSetBit(0);resRidCys>=0;resRidCys=resRidCysSet.nextSetBit(resRidCys+1)) {
             BitSet atomRidSGSet = SQLSelect.selectCombinationBitSet(dbms, mainRelation,
-                    Relation.DEFAULT_ATTRIBUTE_NAME, 
-                    SQLSelect.OPERATION_TYPE_EQUALS, "SG", 
-                    Gumbo.DEFAULT_ATTRIBUTE_SET_RES[  RELATION_ID_COLUMN_NAME], 
-                    SQLSelect.OPERATION_TYPE_EQUALS, new Integer(resRidCys), 
+                    Relation.DEFAULT_ATTRIBUTE_NAME,
+                    SQLSelect.OPERATION_TYPE_EQUALS, "SG",
+                    Gumbo.DEFAULT_ATTRIBUTE_SET_RES[  RELATION_ID_COLUMN_NAME],
+                    SQLSelect.OPERATION_TYPE_EQUALS, new Integer(resRidCys),
                     SQLSelect.OPERATOR_AND, false);
             atomRidSGSet.and(atomSet);
 //            General.showDebug("Found number of SG in Cys residue (should be 1 or less): " + atomRidSGSet.cardinality());
@@ -2658,13 +2727,13 @@ the atom name."""
                 General.showDebug("No SG atom in Cys residue found; assuming the Cys thiol state of the entry is unknown");
                 return Biochemistry.THIOL_STATE_UNKNOWN;
             }
-            BitSet bondRidSetFromS = SQLSelect.selectBitSet(dbms, gumbo.bond.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, 
+            BitSet bondRidSetFromS = SQLSelect.selectBitSet(dbms, gumbo.bond.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID,
                     SQLSelect.OPERATION_TYPE_EQUALS, new Integer(atomRidSG), false);
-            BitSet bondRidSetToS   = SQLSelect.selectBitSet(dbms, gumbo.bond.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, 
+            BitSet bondRidSetToS   = SQLSelect.selectBitSet(dbms, gumbo.bond.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID,
                     SQLSelect.OPERATION_TYPE_EQUALS, new Integer(atomRidSG), false);
-//            General.showDebug("Found number of atom bound FROM this SG in residue rid: " + resRidCys + 
+//            General.showDebug("Found number of atom bound FROM this SG in residue rid: " + resRidCys +
 //                    " is: " +bondRidSetFromS.cardinality());
-//            General.showDebug("Found number of atom bound TO   this SG in residue rid: " + resRidCys + 
+//            General.showDebug("Found number of atom bound TO   this SG in residue rid: " + resRidCys +
 //                    " is: " +bondRidSetToS.cardinality());
             int i=0;
             BitSet[] bondRidSetList = new BitSet[] { bondRidSetFromS, bondRidSetToS, null };
@@ -2695,7 +2764,7 @@ the atom name."""
                         thisResHasOtherBound = true;
                     }
                 }
-                i++;                
+                i++;
             }
             if (!( thisResHasDisulfide || thisResHasOtherBound )) {
                 hasFree = true;
@@ -2706,12 +2775,12 @@ the atom name."""
 //                General.showDebug("Found other bound thiol on   : " + gumbo.res.toString(resRidCys));
             }
         }
-        
-        
+
+
 //        General.showDebug("hasFree          : " + hasFree);
 //        General.showDebug("hasDisulfide     : " + hasDisulfide);
 //        General.showDebug("hasOtherBound    : " + hasOtherBound);
-        
+
         if ( hasFree ) {
             if ( hasDisulfide ) {
                 if ( hasOtherBound ) {
@@ -2723,9 +2792,9 @@ the atom name."""
                 if ( hasOtherBound ) {
                     return Biochemistry.THIOL_STATE_FREE_AND_OTHER_BOUND;
                 } else {
-                    General.showDebug("Found THIOL_STATE_ALL_FREE");
+//                    General.showDebug("Found THIOL_STATE_ALL_FREE");
                     return Biochemistry.THIOL_STATE_ALL_FREE;
-                    
+
                 }
             }
         } else {
@@ -2741,16 +2810,16 @@ the atom name."""
                 } else {
                     General.showCodeBug("There are Cys but they are not any of the 3 states; an error for sure");
                     return -1;
-                    
+
                 }
-            }            
-        }        
+            }
+        }
     }
 
     public void swapNames(int atomRid1, int atomRid2) {
         String tmpStr = nameList[ atomRid1 ];
         nameList[ atomRid1 ] = nameList[ atomRid2 ];
-        nameList[ atomRid2 ] = tmpStr;        
+        nameList[ atomRid2 ] = tmpStr;
     }
 
     /** Takes the first numerical char at position 2 and swaps it
@@ -2767,23 +2836,23 @@ the atom name."""
             sb.setCharAt(2, '1');
         } else {
             General.showCodeBug("Expected a 1 or 2 as the third char in atom name: " + tmpStr);
-            return false;              
-        }    
+            return false;
+        }
         nameList[ atomRidExtra ] = nameListNR.intern( sb.toString());
-        return true;        
+        return true;
     }
 
     /** Convenience method */
-    public int add(String name, double[] coor, int resId) {        
+    public int add(String name, double[] coor, int resId) {
         int elId = Chemistry.getElementId(name);
-        float[] coorf = new float[] { 
-                (float) coor[0], 
-                (float) coor[1], 
+        float[] coorf = new float[] {
+                (float) coor[0],
+                (float) coor[1],
                 (float) coor[2]};
-        int atomRid = add(name, 
-                true, coorf, Defs.NULL_FLOAT, 
+        int atomRid = add(name,
+                true, coorf, Defs.NULL_FLOAT,
                 elId, 1.0f, Defs.NULL_FLOAT,
-                null, null, null, null, 
+                null, null, null, null,
                 resId, null);
 //        General.showDebug("Added: " + toString(atomRid));
         return atomRid;
@@ -2804,10 +2873,10 @@ the atom name."""
 //        if ( gumbo.res.isTerminal(resId[atomRid]) ) {
 //            if ( Biochemistry.TERMINAL_ATOM_NAME_MAP.containsKey( nameList[atomRid] )) {
 //                return true;
-//            } 
+//            }
 //        }
 //        return false;
-//    }    
+//    }
 
     /** Order is lost */
     public BitSet getMasterRidSet(BitSet know) {
@@ -2835,7 +2904,7 @@ the atom name."""
             General.showCodeBug("failed to get modelSiblingIds for atom:");
             General.showCodeBug(toString(atomRidMaster));
             return -1;
-        }        
+        }
         return list[modelNumber-1];
     }
 
@@ -2846,7 +2915,7 @@ the atom name."""
 
         if ( ! mainRelation.removeRowsCascading(toBeRemoved,false)) {
             General.showCodeBug("Failed to removeRowsCascading at removeAtoms");
-            return false;            
+            return false;
         }
         if ( ! gumbo.entry.syncModels(gumbo.entry.getEntryId())) {
             General.showCodeBug("Failed to syncModels after removeAtoms");
@@ -2854,7 +2923,7 @@ the atom name."""
         }
         return true;
     }
-    
+
     /** Selects atoms; algorithm can be speeded up much by only checking 1 model. */
     public boolean selectAtomsByNameRegExp(String nameRegExp) {
         selected.clear();
@@ -2863,9 +2932,8 @@ the atom name."""
                 selected.set(rid);
             }
         }
-        
+
         General.showOutput("Selected number of atoms: " + selected.cardinality());
         return true;
-    }    
+    }
 }
- 
