@@ -27,7 +27,6 @@ import Wattos.Database.Indices.IndexHashedIntToMany;
 import Wattos.Soup.Comparator.ComparatorAtom;
 import Wattos.Soup.Comparator.ComparatorAtomPerModelMolResAtom;
 import Wattos.Soup.Comparator.ComparatorAuthorAtomWithoutEntry;
-import Wattos.Soup.Constraint.Triplet;
 import Wattos.Star.DataBlock;
 import Wattos.Star.SaveFrame;
 import Wattos.Star.StarNode;

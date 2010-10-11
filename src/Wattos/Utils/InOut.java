@@ -248,7 +248,7 @@ public class InOut {
             prompt = "Enter a name (with path if outside cwd or url) of an existing file";
         }
 
-        String tmpName = Strings.getInputString(in, prompt);
+        String tmpName = Strings.getInputString(in, prompt, null);
         if (tmpName == null) {
             General.showWarning("invalid input string: null");
             return null;
@@ -265,7 +265,7 @@ public class InOut {
         if (prompt == null) {
             prompt = "Enter a name (with path if outside cwd or url) of a file";
         }
-        String tmpName = Strings.getInputString(in, prompt);
+        String tmpName = Strings.getInputString(in, prompt, null);
         if (tmpName == null) {
             General.showWarning("invalid input string: null");
             return null;

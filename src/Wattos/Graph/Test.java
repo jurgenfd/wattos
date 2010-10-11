@@ -94,7 +94,7 @@ public class Test implements Serializable {
         int n=1;
         ListElement target = graphList;
         if(graphCount>1){
-            n=Strings.getInputInt(in, "Which graph? ("+graphCount+" total): ");
+            n=Strings.getInputInt(in, "Which graph? ("+graphCount+" total): ", null);
             for(int i=1;i<n;i++){
                 target=target.next;
             }
@@ -106,7 +106,7 @@ public class Test implements Serializable {
         DirectedGraph g =
         (DirectedGraph)target.hangingVertexOrEdge;
         BigInteger b =
-        new BigInteger(Strings.getInputString(in, "Enter BigInteger value: "));
+        new BigInteger(Strings.getInputString(in, "Enter BigInteger value: ", null));
         boolean result = g.addVertex(b);
         if(result==false) return;
         ListElement hanger = new ListElement(b);
@@ -123,7 +123,7 @@ public class Test implements Serializable {
         int k;
         ListElement target = graphList;
         if(graphCount>1){
-            n=Strings.getInputInt(in, "Which graph? ("+graphCount+" total): ");
+            n=Strings.getInputInt(in, "Which graph? ("+graphCount+" total): ", null);
             for(int i=1;i<n;i++){
                 target=target.next;
             }
@@ -159,7 +159,7 @@ public class Test implements Serializable {
         }while((target!=null)&&(!b));
         BigInteger targetV=(BigInteger)target.hangingVertexOrEdge;
         General.showOutput(targetV+" : "+g.hasVertex(targetV));
-        k=Strings.getInputInt(in,"Enter a weight for this edge: ");
+        k=Strings.getInputInt(in,"Enter a weight for this edge: ", null);
         String name =Strings.getInputString("Enter a name for this edge: ");
         
         moo = g.addEdge(sourceV,targetV,k,name);
@@ -184,7 +184,7 @@ public class Test implements Serializable {
         if ( n == -1 ) {
             n=1;
             if(graphCount>1){
-                n=Strings.getInputInt(in, "Which graph? ("+graphCount+" total) ");
+                n=Strings.getInputInt(in, "Which graph? ("+graphCount+" total) ", null);
             }
         }
         for(int i=1;i<n;i++){
@@ -205,7 +205,7 @@ public class Test implements Serializable {
         int n=1;
         ListElement target = graphList;
         if(graphCount>1){
-            n=Strings.getInputInt(in, "Which graph? ("+graphCount+" total) ");
+            n=Strings.getInputInt(in, "Which graph? ("+graphCount+" total) ", null);
             for(int i=1;i<n;i++){
                 target=target.next;
             }
@@ -232,7 +232,7 @@ public class Test implements Serializable {
         int n2=1;
         ListElement target = graphList;
         if(graphCount>1){
-            n1=Strings.getInputInt(in, "First graph? ("+graphCount+" total)");
+            n1=Strings.getInputInt(in, "First graph? ("+graphCount+" total)", null);
             for(int i=1;i<n1;i++){
                 target=target.next;
             }
@@ -245,7 +245,7 @@ public class Test implements Serializable {
         (DirectedGraph)target.hangingVertexOrEdge;
         target = graphList;
         if(graphCount>1){
-            n2=Strings.getInputInt(in, "Second graph? ("+graphCount+" total) ");
+            n2=Strings.getInputInt(in, "Second graph? ("+graphCount+" total) ", null);
             for(int i=1;i<n2;i++){
                 target=target.next;
             }
@@ -267,7 +267,7 @@ public class Test implements Serializable {
         int n=1;
         ListElement target = graphList;
         if(graphCount>1){
-            n=Strings.getInputInt(in, "Which graph? ("+graphCount+") ");
+            n=Strings.getInputInt(in, "Which graph? ("+graphCount+") ", null);
             for(int i=1;i<n;i++){
                 target=target.next;
             }
@@ -310,7 +310,7 @@ public class Test implements Serializable {
     
     public void doBreathFirstSearch() {
         DirectedGraph x = (DirectedGraph) graphList.hangingVertexOrEdge;
-        String startVertexObject = Strings.getInputString( in, "Give vertex id from which to start the search: ");
+        String startVertexObject = Strings.getInputString( in, "Give vertex id from which to start the search: ", null);
         x.doBreathFirstSearch(startVertexObject);
     }
     
@@ -415,7 +415,7 @@ public class Test implements Serializable {
         
         Test t = new Test();
         
-        char c = Strings.getInputChar(in, t.gp);
+        char c = Strings.getInputChar(in, t.gp, null);
         
         while(true){
             switch(c){
@@ -442,7 +442,7 @@ public class Test implements Serializable {
                 case '3':{t.fillWithExample_3_cyclic();break;}
                 case 'q':{t.exit();}
             }
-            c=Strings.getInputChar(in, t.gp);
+            c=Strings.getInputChar(in, t.gp, null);
         }
     }    
 }

@@ -259,8 +259,8 @@ public class StarDictionary implements Serializable {
 
             FIRST_ROW_WITH_DATA = 1;
             LAST_ROW_WITH_DATA = values.length - 1;
-            General.showDebug("Data starts at row:  "+FIRST_ROW_WITH_DATA);
-            General.showDebug("Data ends after row: "+LAST_ROW_WITH_DATA);
+//            General.showDebug("Data starts at row:  "+FIRST_ROW_WITH_DATA);
+//            General.showDebug("Data ends after row: "+LAST_ROW_WITH_DATA);
 
 
             /** Create bogus items to start */

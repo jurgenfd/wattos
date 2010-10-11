@@ -857,10 +857,10 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                 return false;
             }
         } else {
-            General.showWarning("Disabled syncing over models.");
-            General.showWarning("This might lead to inconsistencies in Wattos internal data model.");
-            General.showWarning("Needs testing for sure.");
-            General.showWarning("The code will definitely not work when reading in restraints on top of partily missing atoms.");
+            General.showDebug("Disabled syncing over models.");
+            General.showDebug("This might lead to inconsistencies in Wattos internal data model.");
+            General.showDebug("Needs testing for sure.");
+            General.showDebug("The code will definitely not work when reading in restraints on top of partily missing atoms.");
         }
 
 

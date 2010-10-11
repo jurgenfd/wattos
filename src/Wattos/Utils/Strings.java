@@ -12,12 +12,13 @@ import java.io.*;
 import java.util.*;
 import com.braju.format.*;              // printf equivalent
 
+import Wattos.CloneWars.UserInterface;
 import Wattos.Database.*;
 import java.lang.reflect.Method;
 
 /**
  * One of the largest classes in Wattos. Static utilities for dealing with String.
- *E.g. getting input from a BufferedReader, 
+ *E.g. getting input from a BufferedReader,
  * @author Jurgen F. Doreleijers
  * @version 1.0
  */
@@ -37,13 +38,13 @@ public class Strings {
     public static Pattern p_parseDouble;
     public static Matcher m_parseDouble;
     public static Matcher m_whitespace;
-    
-     
-    public static String EOL            = General.eol; 
+
+
+    public static String EOL            = General.eol;
 
     /** Used by getInputChar method */
     public static final char INVALID_CHAR_FOR_ANSWER = '\u0000';
-    
+
     public static final Pattern EOL_MAC = Pattern.compile("\\r", Pattern.MULTILINE);
     public static final Pattern EOL_DOS = Pattern.compile("\\r\\n", Pattern.MULTILINE);
     public static final Pattern EOL_UNIX = Pattern.compile("([^\\r])(\\n)", Pattern.MULTILINE);
@@ -72,12 +73,12 @@ public class Strings {
         "                   ",
         "                    "          //20
     };
-    
+
     static {
         // Don't use grouping (e.g. use 1000 i.s.o. 1,000)
         nf.setGroupingUsed(false);
         p.autoClear(true);
-        
+
         //Old style using apaches'
         try {
             re_parseDouble  = new RE("[DF]", RE.MATCH_CASEINDEPENDENT);
@@ -89,27 +90,27 @@ public class Strings {
         } catch ( RESyntaxException e) {
             General.showError("Code error: RESyntaxException in parseDouble etc.:" + e.toString() );
         }
-//        fieldPositionDummy =  new FieldPosition(0);        
+//        fieldPositionDummy =  new FieldPosition(0);
         /** Using new regexp in standard java 1.4...
          */
-        
+
         // New style using standard Java API
         try {
             p_whitespace  = Pattern.compile("\\s");
             p_parseDouble = Pattern.compile("[DF]", Pattern.CASE_INSENSITIVE);
-            m_parseDouble = p_parseDouble.matcher("");                        
-            m_whitespace  = p_whitespace.matcher("");                        
+            m_parseDouble = p_parseDouble.matcher("");
+            m_whitespace  = p_whitespace.matcher("");
         } catch ( PatternSyntaxException e ) {
-            General.showThrowable(e);            
+            General.showThrowable(e);
         }
     }
-    
+
     public static String dos2unix(String text) {
         return EOL_DOS.matcher(text).replaceAll("\n");
     }
     public static String unix2dos(String text) {
         return EOL_UNIX.matcher(text).replaceAll("$1\r\n");
-    } 
+    }
     public static String mac2unix(String text) {
         return EOL_MAC.matcher(text).replaceAll("\n");
     }
@@ -123,7 +124,7 @@ public class Strings {
             General.showWarning("In Objects.append found a new length of zero");
             return null;
         }
-        
+
         String[] result = new String[a.length+b.length];
         System.arraycopy(a,0,result,0,a.length);
         System.arraycopy(b,0,result,a.length,b.length);
@@ -150,17 +151,17 @@ public class Strings {
             General.showThrowable(e);
             return null;
         }
-        
+
         if ( l == null ) { // No line read meaning text was all empty
             result[0] = 0;
             result[1] = 0;
             return result;
         }
         result[0] = lnr.getLineNumber()-1;
-        result[1] = l.length();   
+        result[1] = l.length();
         return result;
     }
-    
+
     /** all but the positionEnd character number are inclusive.
      */
     public static String getBlock( String txt, int[] positionBegin, int[] positionEnd ) {
@@ -171,7 +172,7 @@ public class Strings {
         try {
             String line = lnr.readLine();
             while ( line != null ) {
-                if ( (lineNumber >= positionBegin[0])  && 
+                if ( (lineNumber >= positionBegin[0])  &&
                      (lineNumber <= positionEnd[0]) ) {
                     // consider (fragment of) line
                     int idxBegin = 0;
@@ -187,28 +188,28 @@ public class Strings {
                         result.append(General.eol);
                     }
                 }
-                lineNumber = lnr.getLineNumber();                
+                lineNumber = lnr.getLineNumber();
                 line = lnr.readLine();
             }
         } catch ( Exception e ) {
             General.showThrowable(e);
             return null;
-        }        
-        return result.toString();        
+        }
+        return result.toString();
     }
-    
-    
-    
+
+
+
     /** Must be a very fast routine. Returns a non-redundant String of given size containing
      * only spaces.
      */
     public static String getSpacesString(int size) {
         if ( size < spaceStringList.length ) {
             return spaceStringList[size]; // hardcoded list of unique objects is much faster.
-        }        
+        }
         return createStringOfXTimesTheCharacter(' ',size);
     }
-    
+
     /** Must be a very fast routine. Provide a empty or filled StringBuffer to reuse.
      *Reusing the stringbuffer does not always save time or memory.
      *If colContainsAQuotedValue is set then unquoted values will leave some space e.g.
@@ -222,12 +223,12 @@ public class Strings {
 </PRE>
      *Note:
      *  - that numbers are usually not quoted and right aligned.
-     *  - routine assumes caller already checked if the text is of target length 
+     *  - routine assumes caller already checked if the text is of target length
      *      already and the text is not null and has at least 1 character.
      */
-    public static boolean growToSize(String text, boolean leftAlign, 
+    public static boolean growToSize(String text, boolean leftAlign,
             char[] charsReusable, boolean colContainsAQuotedValue ) {
-        
+
         //sbReusable.setLength(maxSizeElementsCol);
         Arrays.fill(charsReusable,' ');
         /**
@@ -259,7 +260,7 @@ public class Strings {
             //spacesStringLength -= 2;
         }
         int dstBegin = 0;
-        
+
         //String emptySpaces = getSpacesString( spacesStringLength );
         if ( leftAlign ) {
             if ( specialPaddingNeeded ) {
@@ -270,10 +271,10 @@ public class Strings {
             if ( specialPaddingNeeded ) {
                 dstBegin--;
             }
-        }           
+        }
         text.getChars(0, text.length(), charsReusable, dstBegin);
         return true;
-    }    
+    }
 
     public static boolean equalsIgnoreWhiteSpace( String s1, String s2) {
         String s1Mod = s1.replaceAll("\\s","");
@@ -282,9 +283,9 @@ public class Strings {
 //        General.showDebug("s2Mod: " + s2Mod);
         return s1Mod.equals(s2Mod);
     }
-    
+
     /** From textual representation of single to multiple lines.
-    public static ArrayList getLines( String txt ) {        
+    public static ArrayList getLines( String txt ) {
 
         ArrayList lines = new ArrayList();
 
@@ -298,7 +299,7 @@ public class Strings {
         }
         int line_start  = 0;
         int txt_len     = txt.length();
-        
+
         while ( line_start < txt_len ) {
             General.showOutput("line_start: [" + line_start + "]" );
             boolean matched = re.match( txt, line_start );
@@ -308,14 +309,14 @@ public class Strings {
                 lines.add( line );
                 break;
             }
-            int startWholeExpr  = re.getParenStart(0);        
+            int startWholeExpr  = re.getParenStart(0);
             int endWholeExpr    = re.getParenEnd(0);
             String line = txt.substring( line_start, startWholeExpr );
             General.showOutput("Line: [" + line + "]" );
             lines.add( line );
             line_start = endWholeExpr + 1;
         }
-        
+
         return lines;
     }
 
@@ -325,7 +326,7 @@ public class Strings {
     public static String getClassName( Object o ) {
         return o.getClass().getName();
     }
-    
+
 
     /** Concatenates the elements from a and b
      */
@@ -335,7 +336,7 @@ public class Strings {
         System.arraycopy(b, 0, c, a.length, b.length);
         return c;
     }
-    
+
     /** Append space to a string in order to fill up the length asked for
      */
     public static String makeStringOfLength( String in, int length ) {
@@ -343,9 +344,9 @@ public class Strings {
         Arrays.fill(c, ' ');
         StringBuffer sb = new StringBuffer(new String(c));
         sb.insert(0,in);
-        return sb.toString();        
+        return sb.toString();
     }
-    
+
     /** TODO: analyze and fix the inconsistency here of 1 being true and
      *0 being true at Defs.possibleWaysToSayYesLowerCaseArray
      */
@@ -353,7 +354,7 @@ public class Strings {
         if ( in == null ) {
             return false;
         }
-        if ( in.equalsIgnoreCase("T") || 
+        if ( in.equalsIgnoreCase("T") ||
              in.equalsIgnoreCase(Defs.STRING_TRUE) ||
              in.equalsIgnoreCase("yes") ||
              in.equalsIgnoreCase("y") ||
@@ -363,9 +364,9 @@ public class Strings {
         }
         return false;
     }
-    
+
     /** Probably in api already somewhere? Inspired by Perl's chomp.
-     *This one cuts off any leading and trailing white spaces. 
+     *This one cuts off any leading and trailing white spaces.
      *Obsolete; use String.trim().
      *@see java.lang.String#trim
      */
@@ -392,7 +393,7 @@ public class Strings {
     public static boolean changeNullsToEmpties( String[][] in ) {
         int rows = in.length;
         int columns = in[0].length;
-    
+
         for (int c=0;c<columns;c++) {
             for (int r=0;r<rows;r++) {
                 if ( in[r][c] == null ) {
@@ -416,9 +417,9 @@ public class Strings {
     }
 
     /** From textual representation of single to multiple lines.
-     */    
-    public static String createStringOfXTimesTheCharacter ( char c, int count ) {        
-        /** Slow implementation: 
+     */
+    public static String createStringOfXTimesTheCharacter ( char c, int count ) {
+        /** Slow implementation:
         StringBuffer sb = new StringBuffer( count );
         for (int i=0;i<count;i++) {
             sb.append(c);
@@ -429,17 +430,17 @@ public class Strings {
         String s = new String( stringie );
         return s;
     }
-        
+
 
     /** From textual representation of single to multiple lines.
-     */    
-    public static ArrayList getLines( String txt ) {        
+     */
+    public static ArrayList getLines( String txt ) {
 
         String[] lines = Strings.re_getLines.split( txt );
-        
+
         ArrayList al = new ArrayList();
         al.addAll( Arrays.asList( lines ) );
-        
+
         return al;
     }
 
@@ -453,7 +454,7 @@ public class Strings {
         }
         return line.substring(0, pos);
     }
-    
+
     /** Returns the sentence without the first word of a line as separated by a space. Doesn't
      *work with tabs etc. for speed reasons. Single space separation logic only.
      *If there is only 1 word then the empty string is returned.
@@ -465,7 +466,7 @@ public class Strings {
         }
         return line.substring(pos+1).trim();
     }
-    
+
     /** Returns the second word of a line as separated by a space. Doesn't
      *work with tabs etc. for speed reasons. Single space separation logic only.
      */
@@ -480,11 +481,11 @@ public class Strings {
                 return line.substring(pos+1);
             } else {
                 return line;
-            }            
+            }
         }
         return line.substring(pos, pos2);
     }
-    
+
    /** Splits input on ',' and converts to integer values.
      */
     public static int[] splitWithAllReturnedIntegers( String txt, char delim ) {
@@ -506,7 +507,7 @@ public class Strings {
         return result;
     }
 
-    /** Split each string in the list and append it. 
+    /** Split each string in the list and append it.
      */
     public static String[] splitAllNoEmpties( String[] txt, String regexp) {
         if ( txt == null ) {
@@ -514,26 +515,26 @@ public class Strings {
         }
         StringArrayList tmp = new StringArrayList();
         for (int i=0;i<txt.length;i++) {
-            String t = txt[i];            
+            String t = txt[i];
             String[] r = t.split(regexp);
             StringArrayList s = new StringArrayList( Arrays.asList(r));
             for (int j=s.size()-1;j>=0;j--) {
                 String rr = s.getString(j);
                 if ( rr.length() ==0) {
                     s.remove(j);
-                }                
+                }
             }
             tmp.addAll( s );
-        }        
+        }
         return tmp.toStringArray();
     }
-    
+
     /** Return elements even if they're empty. So:
      *a|b|c -> "a", "b", "c" and
      *||    -> "", "", "" if | is the delimiter.
      *Returns a list with 1 empty string when the input is an empty string.
-     */    
-    public static String[] splitWithAllReturned( String txt, char delim ) {        
+     */
+    public static String[] splitWithAllReturned( String txt, char delim ) {
 
         if ( txt == null ) {
             return null;
@@ -545,10 +546,10 @@ public class Strings {
         if ( txt_length == 0 ) {
             al.add( "" );
         }
-        
+
         int start_position_look = 0;
         while ( start_position_look < txt_length ) {
-            int delim_position = txt.indexOf(delim, start_position_look);            
+            int delim_position = txt.indexOf(delim, start_position_look);
             //General.showOutput("Looking from position: " + start_position_look + " found: " + delim_position);
             if ( delim_position != -1 ) {
                 // New delimiter found
@@ -568,7 +569,7 @@ public class Strings {
                 // No new delimiter found; exit point
                 al.add( txt.substring( start_position_look ));
                 break;
-            }            
+            }
         }
         String[] word_list = new String[ al.size() ];
         for (int i=0;i<al.size();i++) {
@@ -579,7 +580,7 @@ public class Strings {
 
     /** Calls substring method for each element if the element is at least
      *that long.
-     */    
+     */
     public static void doSubstr( String[] list, int startIdx, int endIdx) {
         for (int i=0;i<list.length;i++) {
             if ( list[i] != null && list[i].length() > startIdx ) {
@@ -591,10 +592,10 @@ public class Strings {
             }
         }
     }
-    
+
     /** Calls substring method for each element if the element is at least
      *that long.
-     */    
+     */
     public static void doSubstr( String[] list, int startIdx) {
         for (int i=0;i<list.length;i++) {
             if ( list[i] != null && list[i].length() > startIdx ) {
@@ -606,12 +607,12 @@ public class Strings {
             }
         }
     }
-    
+
     /** Changes a '.' value to Defs.NULL_STRING_NULL
-     */    
+     */
     public static void dot2Null( String[] list ) {
         for (int i=list.length-1;i>=0;i--) {
-            String v = list[i]; 
+            String v = list[i];
             if ( v == null ) {
                 continue;
             }
@@ -627,16 +628,16 @@ public class Strings {
             }
         }
     }
-    
+
     /** Changes a '.' value to Defs.NULL_STRING_NULL
-     */    
+     */
     public static void dot2Null( String[][] lol ) {
         for (int i=lol.length-1;i>=0;i--) {
             dot2Null( lol[i] );
         }
     }
-    
-    
+
+
     /** Very simplistic wrapper. Doesn't consider spaces to be special. Doesn't
      *account for tabs, eols etc. Use freely for that's what it's worth
      */
@@ -647,24 +648,24 @@ public class Strings {
         if ( input.length() <= margin ) {
             return input + EOL;
         }
-            
+
         StringBuffer sb = new StringBuffer();
         int startIndex = 0;
         int endIndex = 0;
-        while ( startIndex < input.length()) {            
+        while ( startIndex < input.length()) {
             endIndex = startIndex + margin;
             if ( endIndex > (input.length() -1) ) {
                 sb.append( input.substring( startIndex ) );
             } else {
                 sb.append( input.substring( startIndex, endIndex ) );
-            }                 
+            }
             sb.append( EOL );
             startIndex += margin;
         }
-        return sb.toString();         
+        return sb.toString();
     }
     /** From textual representation of single to multiple lines.
-    public static ArrayList getLines( String txt ) {        
+    public static ArrayList getLines( String txt ) {
 
         RE re = null;
         try {
@@ -675,11 +676,11 @@ public class Strings {
             System.exit(1);
         }
         String[] lines = re.split( txt );
-        
+
         ArrayList al = convertRegularArrayToArrayList( lines );
         return al;
     }
-     */    
+     */
 
     /** Concatenate an array of strings to one string.
      * If the input is empty; an empty string will be returned and a warning will be
@@ -696,7 +697,7 @@ public class Strings {
         if ( str.length == 0 ) {
             General.showWarning("concatenate got empty input");
         }
-        for ( int i=0;i<str.length;i++ ) { 
+        for ( int i=0;i<str.length;i++ ) {
             String next = (String) str[i];
             //General.showOutput("Concatenate ["+next+"]");
             sb.append(next);
@@ -721,19 +722,19 @@ public class Strings {
         if ( (input == null) || (input.length() == 0)) {
             return input;
         }
-        
+
         String result = input;
         result = p_whitespace.matcher(input).replaceAll(String.valueOf(replacementForWhiteSpace));
         return result;
     }
-    
+
     /** Delete any white space.
      */
     public static String deleteAllWhiteSpace( String input ) {
         if ( (input == null) || (input.length() == 0)) {
             return input;
         }
-        
+
         String result = p_whitespace.matcher(input).replaceAll("");
         return result;
     }
@@ -768,10 +769,10 @@ public class Strings {
         if ( (input == null) || (input.length() == 0)) {
             return input;
         }
-        
+
         return input.replace(replacementForWhiteSpace, ' ');
     }
-    
+
     /** Generates attributes for the properties like needed in a table
      For all attributes it holds that the value must be quoted in the string
      itself if needed. E.g. Use "2" and "\"two\"".
@@ -783,19 +784,19 @@ public class Strings {
             String key = i.next().toString();
             sb.append( key + "=" + p.getProperty(key) );
             if ( i.hasNext() )
-                sb.append(" "); 
+                sb.append(" ");
         }
         return(sb.toString());
     }
-    
+
     /** Assumes very little quoting needs to be done;
      *for now NONE. Assumes the average word length is 10 for efficiency.
      */
     public static String toCsv( String[][] in ) {
         int rows = in.length;
-        int columns = in[0].length;        
+        int columns = in[0].length;
         StringBuffer sb = new StringBuffer(rows*columns*10);
-        for (int r=0;r<rows;r++) {                
+        for (int r=0;r<rows;r++) {
             sb.append( in[r][0] );
             for (int c=1;c<columns;c++) {
                 sb.append( ',' );
@@ -809,7 +810,7 @@ public class Strings {
         if ( expectedCount != count ) {
             General.showError("expectedCountComma ("+expectedCount+") != countComma ("+count+")");
             General.showError("Improve routine Wattos.Utils.Strings.toCsv");
-	    return null;
+        return null;
         }
         //General.showDebug("expectedCountComma ("+expectedCount+") == countComma ("+count+")");
         expectedCount = rows; // no eol before eof
@@ -817,14 +818,14 @@ public class Strings {
         if ( expectedCount != count ) {
             General.showError("expectedCountEol ("+expectedCount+") != countEol ("+count+")");
             General.showError("Improve routine Wattos.Utils.Strings.toCsv");
-	    return null;
+        return null;
         }
         //General.showDebug("expectedCountEol ("+expectedCount+") == countEol ("+count+")");
         return sb.toString();
     }
 
-    
-    /** Reinterprets a string from 16 bit to 16 bit but doing the 
+
+    /** Reinterprets a string from 16 bit to 16 bit but doing the
      *conversion on each 2 bytes using the US-ASCII encoding scheme.
      */
     public static String toASCII( String input ) {
@@ -837,18 +838,18 @@ public class Strings {
         } catch ( UnsupportedEncodingException e ) {
             General.showThrowable(e);
         }
-        
+
         return output;
     }
-    
-    
+
+
     /** Compares two strings in the ASCII encoding. E.g.
      *<PRE>
      * "u",      "?" : false
      *</PRE>
-     *Note that the question mark is special because any non ASCII character 
+     *Note that the question mark is special because any non ASCII character
      *will be mapped to it and then the comparison is done.
-     */ 
+     */
     public static boolean areASCIISame( String one, String two ) {
         String one_ascii = toASCII( one );
         String two_ascii = toASCII( two );
@@ -858,7 +859,7 @@ public class Strings {
             return false;
         }
     }
-    
+
     public static boolean writeToFile( String text, String filename ) {
         if ( text == null )
             return false;
@@ -877,14 +878,14 @@ public class Strings {
         }
         return true;
     }
-    
-    
-    /** Looks to see if the string contains only digits.     */ 
+
+
+    /** Looks to see if the string contains only digits.     */
     public static boolean areDigits( String chk_string  ) {
         return re_areDigits.match( chk_string );
     }
 
-    
+
     /** Checks if the string could be a pdb id like "1brv".
      * See regular expression in the code.
      * @param chk_string input
@@ -906,7 +907,7 @@ public class Strings {
         int bmrb_id = -1;
         try {
             bmrb_id = Integer.parseInt( bmrb_id_str );
-        } catch ( Throwable t ) {            
+        } catch ( Throwable t ) {
         }
         if ( (bmrb_id < 1 ) || ( bmrb_id > 9999) ) {
             return false;
@@ -916,7 +917,7 @@ public class Strings {
 
     public static boolean isPdbEntryLoL( String[][] lol ) {
         for (int r=lol.length-1;r>=0;r--) {
-            String[] list = lol[r];        
+            String[] list = lol[r];
             if ( list == null ) {
                 continue;
             }
@@ -929,7 +930,7 @@ public class Strings {
         }
         return true;
     }
-    
+
     public static boolean isPdbEntryList( String[] list) {
         for (int i=list.length-1;i>=0;i--) {
             if ( ! is_pdb_code( list[i])) {
@@ -939,9 +940,9 @@ public class Strings {
         }
         return true;
     }
-    
-    
-    /** Returns null if not a valid pdb code can be returned 
+
+
+    /** Returns null if not a valid pdb code can be returned
      * Accepted formats are:
      * 1brv.pdb
      * /s/1brv.ent
@@ -953,7 +954,7 @@ public class Strings {
         if ( fn == null ) {
             return null;
         }
-        
+
         String regExp = ".*?(.{4})\\.(ent|pdb|txt|)";
         Pattern p = null;
         try {
@@ -963,7 +964,7 @@ public class Strings {
             return null;
         }
         Matcher m = p.matcher(fn);
-        
+
         if ( ! (m.matches())) {
             General.showWarning("Failed to get a valid pdb id from file name because missmatch with expression: " + regExp);
             return null;
@@ -983,7 +984,7 @@ public class Strings {
      * @return The string that the user gave.
      */
     public static String getInputString( String prompt )
-    {        
+    {
         if ( prompt == null ) {
             prompt = "";
         }
@@ -1009,17 +1010,17 @@ public class Strings {
             reply = reply.replaceAll("^\\s+","");
             reply = reply.replaceAll("\\s+$","");
         }
-        General.showDebug("Read a reply: [" + reply + "]");
+//        General.showDebug("Read a reply: [" + reply + "]");
         return reply;
     }
 
     /** Convert a properties class to a string by calling it's store method.
-     *Will return null on error. Will return "{}" string if no properties 
+     *Will return null on error. Will return "{}" string if no properties
      *have been defined.
      *Counterpart of next method.
      */
     public static String getProperties( Properties p )
-    {        
+    {
         String result = null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
@@ -1033,13 +1034,13 @@ public class Strings {
     }
 
     /** Convert a properties class to a string by calling it's toString method.
-     *Will return null on error. Will return empty string if no properties 
+     *Will return null on error. Will return empty string if no properties
      *have been defined. Because the values will be used in a csv formatted
      *file the comma's will be replaced by a semi colon.
      *Counterpart of next method.
      */
     public static String getPropertiesNoBrackets( Properties p )
-    {             
+    {
         String result = p.toString();
         /** Strip brackets */
         result = result.substring(1,result.length()-1);
@@ -1051,34 +1052,35 @@ public class Strings {
      *Counterpart of get method. Note that it's allowed to pass a null or empty
      *String.
      */
-    public static Properties setProperties( String input_properties )    
+    public static Properties setProperties( String input_properties )
     {
         Properties result = new Properties();
-        
+
         if ( input_properties == null || input_properties.length() == 0 ) {
             return result;
         }
-        
-        byte[] ba = input_properties.getBytes();       
+
+        byte[] ba = input_properties.getBytes();
         ByteArrayInputStream bais = new ByteArrayInputStream( ba );
-        
+
         try {
             result.load(bais);
         } catch ( IOException e ) {
             General.showThrowable(e);
         }
-        return result;               
+        return result;
     }
-    
+
     /** Get a line of input from System.in after asking the prompt as given.
      * Error status is indicated by return value being null. Note that
      * the InOut.END_OF_FILE_ENCOUNTERED value will be returned if that's the case.
      * Will remove leading and trailing whitespace.
      * @param prompt Prompt the user with this string.
+     * @param ui TODO
      * @return The string that the user gave.
      */
-    public static String getInputString( BufferedReader in, String prompt )
-    {        
+    public static String getInputString( BufferedReader in, String prompt, UserInterface ui )
+    {
         if ( prompt == null ) {
             prompt = "";
         }
@@ -1088,10 +1090,12 @@ public class Strings {
         }
         //General.showOutput("Now in: getInputString( BufferedReader in, String prompt )");
         String reply;
-	// This bufferedreader is set to read Standard Input (keyboard)
+    // This bufferedreader is set to read Standard Input (keyboard)
         // There is a problem with reading multiple lines
         // Prompt
-        General.showOutput( prompt );
+//        if ( ui == null || ui.interactiveSession ) {
+//            General.showOutput( prompt );
+//        }
         try {
             reply = in.readLine();
             if ( reply == null ) {
@@ -1106,7 +1110,7 @@ public class Strings {
             General.showError( "Prompt was: [" + prompt +"]");
             return null;
         }
-        reply = reply.trim();                
+        reply = reply.trim();
 //        General.showDebug("getInputString read: " + reply);
         return reply;
     }
@@ -1120,34 +1124,35 @@ public class Strings {
      * @param prompt Prompt the user with this string. The prompt will be appended
      * with the possible answers.
      * @param allowed_strings Allowed answers.
+     * @param ui TODO
      * @return The string that the user gave and exists in the
      * allowed_strings.
      */
     public static String getInputString( String prompt, ArrayList allowed_strings )
-    {   
+    {
         if ( prompt == null ) {
             prompt = "";
         }
         //General.showOutput("Now in: getInputString( String prompt, ArrayList allowed_strings )");
         // Prevent an infinite loop
-        int max_prompts = MAX_PROMPTS; 
+        int max_prompts = MAX_PROMPTS;
         int prompt_id = 0;
-        
+
         // The following should not be one of the allowed strings
         String result="bogus_very_unlikely_to_be_entered";
         Object[] strings = allowed_strings.toArray();
         String allows=concatenate( strings, "/");
-        
+
         while ( (prompt_id < max_prompts ) && ! allowed_strings.contains(result) ) {
             result = getInputString( prompt + " ("+allows+"): " );
             prompt_id++;
         }
         General.showDebug("getInputString read: " + result);
-        
+
         return result;
     }
 
-    
+
     /** Get a line of input from System.in
      * Error status is indicated by return value being null
      * Only values that will be allowed as input are present in the array
@@ -1156,23 +1161,24 @@ public class Strings {
      * @param prompt Prompt the user with this string. The prompt will be appended
      * with the possible answers.
      * @param allowed_strings Allowed answers.
+     * @param ui TODO
      * @return The string that the user gave and exists in the
      * allowed_strings.
      */
-    public static String getInputString( BufferedReader in, String prompt, ArrayList allowed_strings )
-    {        
+    public static String getInputString( BufferedReader in, String prompt, ArrayList allowed_strings, UserInterface ui )
+    {
         if ( prompt == null ) {
             prompt = "";
         }
         // Prevent an infinite loop
-        int max_prompts = MAX_PROMPTS; 
+        int max_prompts = MAX_PROMPTS;
         int prompt_id = 0;
         // The following should not be one of the allowed strings
         String reply="bogus";
         Object[] strings = allowed_strings.toArray();
         String allows=concatenate( strings, "/");
         while ( (prompt_id < max_prompts ) && ! allowed_strings.contains(reply)) {
-            reply = getInputString( in, prompt + " ("+allows+"): " );
+            reply = getInputString( in, prompt + " ("+allows+"): ", ui );
             prompt_id++;
         }
         return reply;
@@ -1186,7 +1192,7 @@ public class Strings {
      * with the possible answers (y/n).
      * @return <CODE>true</CODE> if user answered 'y'.
      */
-    public static boolean getInputBoolean( String prompt ) {        
+    public static boolean getInputBoolean( String prompt ) {
         if ( prompt == null ) {
             prompt = "";
         }
@@ -1196,20 +1202,20 @@ public class Strings {
         allows.add("n");
         String reply = getInputString( prompt, allows );
         //General.showOutput("Reply :[" + reply + "]");
-        
+
         if (( reply == null ) || (reply == InOut.END_OF_FILE_ENCOUNTERED)) {
-            General.showError( "in: getInputBoolean\nAssuming answer was false");            
+            General.showError( "in: getInputBoolean\nAssuming answer was false");
             return false;
         }
-        
+
         boolean result = true;
         if ( ! reply.equals("y") ) {
             result = false;
         }
         General.showDebug("getInputChar read: " + result);
         return result;
-    }   
-    
+    }
+
     /** Get a boolean input from System.in
      * There is no way to catch errors.
      * In case of error the value returned is false, so schedule action safely
@@ -1218,7 +1224,7 @@ public class Strings {
      * with the possible answers (y/n).
      * @return <CODE>true</CODE> if user answered 'y'.
      */
-    public static boolean getInputBoolean( BufferedReader in, String prompt ) {        
+    public static boolean getInputBoolean( BufferedReader in, String prompt ) {
         if ( prompt == null ) {
             prompt = "";
         }
@@ -1226,11 +1232,11 @@ public class Strings {
         ArrayList allows = new ArrayList();
         allows.add("y");
         allows.add("n");
-        String reply = getInputString( in, prompt, allows );
+        String reply = getInputString( in, prompt, allows, null );
 
         if (( reply == null ) || (reply == InOut.END_OF_FILE_ENCOUNTERED)) {
-            General.showError( "in: getInputBoolean\nAssuming answer was false");            
-            General.showError( "prompt was: [" + prompt + "]");            
+            General.showError( "in: getInputBoolean\nAssuming answer was false");
+            General.showError( "prompt was: [" + prompt + "]");
             return false;
         }
         boolean result = true;
@@ -1239,27 +1245,28 @@ public class Strings {
         }
         General.showDebug("getInputChar read: " + result);
         return result;
-    }   
-    
+    }
+
     /** Get a boolean input from System.in
      * There is no way to catch errors.
      * In case of error the value returned is false, so schedule action safely
      * to that specification.
      * @param prompt Prompt the user with this string. The prompt will be appended
      * with the possible answers (y/n).
+     * @param ui TODO
      * @return <CODE>true</CODE> if user answered 'y'.
      */
-    public static char getInputChar( BufferedReader in, String prompt ) {        
+    public static char getInputChar( BufferedReader in, String prompt, UserInterface ui ) {
         if ( prompt == null ) {
             prompt = "";
         }
-        String reply = getInputString( in, prompt );
+        String reply = getInputString( in, prompt, ui );
 
         if (( reply == null ) || (reply == InOut.END_OF_FILE_ENCOUNTERED)) {
             General.showError( "in: getInputChar\nAssuming answer was a INVALID_CHAR_FOR_ANSWER");
             return INVALID_CHAR_FOR_ANSWER;
         }
-        
+
         if ( reply.length() == 0 ) {
             General.showError( "in: getInputChar; empty input.\nAssuming answer was a INVALID_CHAR_FOR_ANSWER");
             return INVALID_CHAR_FOR_ANSWER;
@@ -1271,26 +1278,27 @@ public class Strings {
         }
         General.showDebug("getInputChar read: " + result);
         return result;
-    }   
-    
+    }
+
 
     /** Get a int input from System.in
      * @param prompt Prompt the user with this string.
+     * @param ui TODO
      */
-    public static int getInputInt( BufferedReader in, String prompt ) {        
-        
+    public static int getInputInt( BufferedReader in, String prompt, UserInterface ui ) {
+
         if ( prompt == null ) {
             prompt = "";
         }
         // Prevent an infinite loop
-        int max_prompts = MAX_PROMPTS; 
+        int max_prompts = MAX_PROMPTS;
         int prompt_id = 0;
-        
+
         int result = 999;
-        
+
         boolean done = false;
         while ( (prompt_id < max_prompts ) && ! done ) {
-            String reply = getInputString( in, prompt );
+            String reply = getInputString( in, prompt, ui );
             if (( reply == null ) || (reply == InOut.END_OF_FILE_ENCOUNTERED)) {
                 continue;
             }
@@ -1300,28 +1308,29 @@ public class Strings {
             } catch ( NumberFormatException e ) {
                 General.showOutput("NumberFormatException\n" + e.toString() );
             }
-            prompt_id++;            
-        }        
+            prompt_id++;
+        }
         return (result);
-    }   
-    
+    }
+
     /** Get a float input.
      * @param prompt Prompt the user with this string.
+     * @param ui TODO
      */
-    public static float getInputFloat( BufferedReader in, String prompt ) {        
-        
+    public static float getInputFloat( BufferedReader in, String prompt, UserInterface ui ) {
+
         if ( prompt == null ) {
             prompt = "";
         }
         // Prevent an infinite loop
-        int max_prompts = MAX_PROMPTS; 
+        int max_prompts = MAX_PROMPTS;
         int prompt_id = 0;
-        
+
         float result = 999;
-        
+
         boolean done = false;
         while ( (prompt_id < max_prompts ) && ! done ) {
-            String reply = getInputString( in, prompt );
+            String reply = getInputString( in, prompt, ui );
             if (( reply == null ) || (reply == InOut.END_OF_FILE_ENCOUNTERED)) {
                 continue;
             }
@@ -1331,13 +1340,13 @@ public class Strings {
             } catch ( NumberFormatException e ) {
                 General.showOutput("NumberFormatException\n" + e.toString() );
             }
-            prompt_id++;            
+            prompt_id++;
         }
         General.showDebug("getInputFloat read: " + result);
         return result;
-    }   
-    
-    
+    }
+
+
     /** Replaces text with other text based on a Properties mapping.
      *The strings may include regular expressions.
      *Order of substitutions shouldn't matter.
@@ -1352,7 +1361,7 @@ public class Strings {
         }
         return(result);
     }
-            
+
     /** Replaces a match of a regular expression with a given string.
      If no matches of the regular expression then the string will be
      returned unchanged. If the regular expression doesn't compile
@@ -1377,7 +1386,7 @@ public class Strings {
      */
     public static boolean replace( String[] list, String in, String out ) {
         Pattern p= null;
-        Matcher m= null;        
+        Matcher m= null;
         try {
             p = Pattern.compile(in);
         } catch ( PatternSyntaxException e) {
@@ -1395,27 +1404,27 @@ public class Strings {
         return true;
     }
 
-    
+
     /** Returns a string without html tags and trimmed for white space chars.
      */
     public static String stripHtml( String input ) {
         // Do multiple substitutions if matches present
         String result = Strings.re_stripHtml.subst(input, EMPTY_STRING);
         result = result.trim();
-        return(result);        
+        return(result);
     }
 
     /* Setting a new or old parameter pair and removing all pairs with the
      *same parameter name that might have existed.
     public static String setUrlQueryParameterPair( String query,
         String parameter_name, String parameter_value ) {
-        
+
         String result = query;
-        
+
         String parameter_pair_expression = "(?|&)" + parameter_name + "=[\s";
         base_query_url = Strings.replace(query, , EMPTY_STRING);
-        base_query_url = base_query_url + "&request_type=\"file_set\"";        
-        
+        base_query_url = base_query_url + "&request_type=\"file_set\"";
+
         return ( result );
     }
      */
@@ -1434,22 +1443,22 @@ public class Strings {
     /** Convenience function that reuses objects.
      */
     public static String sprintf(int v, String format) {
-        return Format.sprintf( format, p.add( v ));        
+        return Format.sprintf( format, p.add( v ));
     }
     /** Convenience function that reuses objects.
      */
     public static String sprintf(double v, String format) {
-        return Format.sprintf( format, p.add( v ));        
+        return Format.sprintf( format, p.add( v ));
     }
     /** Convenience function that reuses objects.
      */
     public static String sprintf(float v, String format) {
-        return Format.sprintf( format, p.add( v ));        
+        return Format.sprintf( format, p.add( v ));
     }
     /** Convenience function that reuses objects.
      */
     public static String sprintf(String v, String format) {
-        return Format.sprintf( format, p.add( v ));        
+        return Format.sprintf( format, p.add( v ));
     }
 
     /** Will convert a string to double, even for the case were a d or f
@@ -1457,7 +1466,7 @@ public class Strings {
      *as regular expressions are slow if many are needed. Alternatively the re
      *could be stored as a class object.
      */
-    public static double parseDouble( String svalue ) throws NumberFormatException {            
+    public static double parseDouble( String svalue ) throws NumberFormatException {
         String new_str = "E";
         // Old style using Apache
         if ( Strings.re_parseDouble.match(svalue) ) {
@@ -1472,11 +1481,11 @@ public class Strings {
         double dvalue = Double.parseDouble(svalue);
         return dvalue;
     }
-            
+
     /**
      * Turns array of bytes into string representing each byte as
      * a two digit unsigned hex number.
-     * 
+     *
      * @param hash Array of bytes to convert to hex-string
      * @return  Generated hex string
      * Originally authored by Santeri Paavolainen, Helsinki Finland 1996
@@ -1489,7 +1498,7 @@ public class Strings {
         for (int i=0; i<hash.length; i++){
             int intVal = hash[i] & 0xff;
             if (intVal < 0x10){
-                // append a zero before a one digit hex 
+                // append a zero before a one digit hex
                 // number to make it two digits.
                 buf.append("0");
             }
@@ -1498,7 +1507,7 @@ public class Strings {
         return buf.toString();
     }
 
-    /** slower method 
+    /** slower method
     public static int countChars( String line, char c ) {
         int count = 0;
         if ( line == null ) {
@@ -1510,7 +1519,7 @@ public class Strings {
                 count++;
             }
         }
-        return count;                    
+        return count;
     }
      */
 
@@ -1520,43 +1529,43 @@ public class Strings {
         if ( in == null ) {
             return 0;
         }
-        int count = 0;   
+        int count = 0;
         int idx = in.indexOf(c, 0 );
         while ( idx >= 0 ) {
             count++;
             idx = in.indexOf(c, idx+1 );
         }
-        return count;                    
+        return count;
     }
-    
+
     /** How often does the regexp match the line? REturn -1 on error.
      */
     public static int countStrings( String line, String regexp_sub_seq ) {
         Pattern p_sub_seq;
         Matcher m_sub_seq;
-        
+
         try {
-            p_sub_seq = Pattern.compile(regexp_sub_seq, Pattern.COMMENTS);            
+            p_sub_seq = Pattern.compile(regexp_sub_seq, Pattern.COMMENTS);
             m_sub_seq = p_sub_seq.matcher("");
         } catch ( PatternSyntaxException e ) {
-            General.showThrowable(e);    
+            General.showThrowable(e);
             return -1;
         }
-        
-        return countStrings( line, m_sub_seq );                    
+
+        return countStrings( line, m_sub_seq );
     }
-    
+
     /** How often does the regexp match the line? REturn -1 on error.
      */
-    public static int countStrings( String line, Matcher m_sub_seq ) {        
+    public static int countStrings( String line, Matcher m_sub_seq ) {
         if (line == null) {
             return -1;
-        }        
+        }
         if ( line.length()== 0 ) {
             General.showWarning("Senseless to count from an empty string");
             return 0;
         }
-        
+
         m_sub_seq.reset(line);
         int count = 0;
         int posStart = 0;
@@ -1565,9 +1574,9 @@ public class Strings {
             posStart = m_sub_seq.end();
             //General.showDebug("Matched group: " + m_sub_seq.group());
         }
-        return count;                    
+        return count;
     }
-    
+
     /** Count the length of a string if the tabs are expanded as defined.
      *E.g. "a\tbbb\tc\td" will be of length 13 when tabwidth is 4 because the subsequent
      *tabs expand to 3, 1, and 3 characters; + the 6 regular ones makes
@@ -1576,18 +1585,18 @@ public class Strings {
     public static int countStringLengthWithTabs( String line, int tabwidth ) {
         int cur_pos_with_tabs       = 0;
         int line_length             = line.length();
-                
+
         if ( line == null || line_length < 1 ) {
             return 0;
         }
         for (int cur_pos=0;cur_pos<line_length;cur_pos++) {
-            if ( line.charAt(cur_pos) == '\t' ) { 
+            if ( line.charAt(cur_pos) == '\t' ) {
                 cur_pos_with_tabs += tabwidth - ( cur_pos_with_tabs % tabwidth );
             } else {
                 cur_pos_with_tabs++;
-            }            
+            }
         }
-        return cur_pos_with_tabs;                    
+        return cur_pos_with_tabs;
     }
 
     /**Same as String.subString but doesn't throw the exceptions when
@@ -1603,14 +1612,14 @@ public class Strings {
         if ( end > line.length()) {
             end = line.length();
         }
-        return line.substring(start, end);   
+        return line.substring(start, end);
     }
 
     /**Assumes the tab width
      *is set to 8 characters. See method of same name.
      */
     public static String substringInterpetTabs( String line, int start, int end ) {
-        int tabwidth = 8;  
+        int tabwidth = 8;
         return substringInterpetTabs( line, start, end, tabwidth );
     }
 
@@ -1620,7 +1629,7 @@ public class Strings {
      * border then it is excluded from the returned string. A tab on the right border is included.
      *The tab is either repeated or not but not expanded to any number of spaces.
      * Code adapted from Lei Yin.
-     * E.g.: 
+     * E.g.:
      * <PRE>
         ("1\t2", 0, 2, 4) -> "1\t"
      *  ("1\t2", 1, 2, 4) -> "\t"
@@ -1639,25 +1648,25 @@ public class Strings {
         if ( line == null ) {
             return line;
         }
-        
+
         int line_length             = line.length();
-        /** Set the defaults to be matching from beginning to end 
+        /** Set the defaults to be matching from beginning to end
          */
         int start_pos               = 0;
-        int end_pos                 = line_length;   
+        int end_pos                 = line_length;
         boolean foundStart          = false;
         boolean foundEnd            = false;
-        
-        
+
+
         if ( line_length < 1 ) {
             return line;
         }
-        
+
         /** Speed things up by early return */
         if ( start_pos_with_tabs == 0 ) {
             foundStart = true;
         }
-                
+
         /** Speed things up by early return */
         if ( end_pos_with_tabs == -1 ) {
             // Old code was stupid. No need to count...
@@ -1668,16 +1677,16 @@ public class Strings {
         }
 
         if ( start_pos_with_tabs > end_pos_with_tabs ) {
-            General.showError("start > end for pos with tabs: " + 
+            General.showError("start > end for pos with tabs: " +
                 start_pos_with_tabs + ", " + end_pos_with_tabs);
             General.showError("line in:["+line+"]");
             Error e =new Error();
             General.showThrowable(e);
             return null;
         }
-        
+
         for (int cur_pos=0;cur_pos<line_length;cur_pos++) {
-            /** No need to look for something already found 
+            /** No need to look for something already found
              */
             if ( foundStart && foundEnd )  {
                 break;
@@ -1690,16 +1699,16 @@ public class Strings {
                 end_pos = cur_pos;
                 foundEnd = true;
             }
-            if ( line.charAt(cur_pos) == '\t' ) { 
+            if ( line.charAt(cur_pos) == '\t' ) {
                 cur_pos_with_tabs += tabwidth - ( cur_pos_with_tabs % tabwidth );
             } else {
                 cur_pos_with_tabs++;
-            }            
-        }            
+            }
+        }
         // Sanity checks:
-        if (    start_pos   < 0 || 
-                start_pos   >= line_length || 
-                end_pos     < 0 || 
+        if (    start_pos   < 0 ||
+                start_pos   >= line_length ||
+                end_pos     < 0 ||
                 end_pos     > line_length ||
                 start_pos > end_pos ) {
             General.showError("some code bug in routine: substringInterpetTabs");
@@ -1716,13 +1725,13 @@ public class Strings {
         // Now take the substring with the real character positions:
         return line.substring( start_pos, end_pos );
     }
-    
+
     /** Issues an error message saying this class can not be initiated */
     public Strings() {
         General.showWarning("Don't try to initiate Strings class");
     }
 
-    
+
     /** Finds the string position or returns -1. Not used; not tested.
      */
     public static int indexOf(String[] values, String value) {
@@ -1732,17 +1741,17 @@ public class Strings {
             }
         }
         return -1;
-    }                               
-        
+    }
+
 
     /** Finds the highest precision from an array of string values by
      *doing a lookup of the index of the first found dot.
      */
     public static int getHighestPrecision(String[] values) {
-        
+
         int precision = 0;
         int max_precision = 0;
-        
+
         for (int i=0;i<values.length;i++ ) {
             String value = values[i];
             try{
@@ -1772,7 +1781,7 @@ public class Strings {
         }
         return result;
     }
-            
+
     public static String[] toLowerCase(String[] strs ) {
         String[] result = new String[strs.length];
         for (int i=0;i<strs.length;i++) {
@@ -1782,16 +1791,16 @@ public class Strings {
         }
         return result;
     }
-            
+
     public static void toLowerCase(ArrayList strs ) {
-	int length = strs.size();
+    int length = strs.size();
         for (int i=0;i<length;i++) {
             if ( strs.get(i) != null ) {
                 strs.set(i, ((String)strs.get(i)).toLowerCase());
             }
         }
     }
-    
+
     public static String[] trim(String[] strs ) {
         String[] result = new String[strs.length];
         for (int i=0;i<strs.length;i++) {
@@ -1801,7 +1810,7 @@ public class Strings {
         }
         return result;
     }
-            
+
     /** Routine to right align the strings preserving the length of
      *the string when including white spaces.
      *This is a slow routine. Not suitable for 10**6 strings.
@@ -1815,14 +1824,14 @@ public class Strings {
         }
         return result;
     }
-    
+
     public static String toRightAlign(String str ) {
-        
+
         int str_length = str.length();
         if ( str_length == 0 ) {
             return str;
         }
-        
+
         // Count the numbe of whitespace on the left which
         // will be the required shift.
         int shift = 0;
@@ -1831,7 +1840,7 @@ public class Strings {
             shift++;
             idx--;
         }
-        
+
         if ( shift == 0 ) {
             return str;
         }
@@ -1842,19 +1851,19 @@ public class Strings {
         }
         return new String(result);
     }
-    
-        
-    
-            
-    
+
+
+
+
+
     public static String[] translateValuesToLowerAndUpper(String[] distances_in) {
-        
+
         String[] distances_out = { EMPTY_STRING, EMPTY_STRING };
         String d       = distances_in[0];
         String dminus  = distances_in[1];
         String dplus   = distances_in[2];
         int precision = Wattos.Utils.Strings.getHighestPrecision( distances_in );
-        
+
         //Handling dollar character '$' prepended to a distance value
         if (d.startsWith("$") || dminus.startsWith("$") || dplus.startsWith("$")) {
             if (d.startsWith("$")) {
@@ -1914,14 +1923,14 @@ public class Strings {
 
 
     /** Append the string representation to the stringbuffer prepending it with
-     *spaces if needed to make the buffer 'stringSize' longer. 
+     *spaces if needed to make the buffer 'stringSize' longer.
      */
     public static void appendRightAlign(long l, StringBuffer sb, int stringSize ) {
        int length_before = sb.length();
        sb.append(l);
        rightAllignInStringBuffer( sb, length_before, stringSize);
     }
-       
+
 
     /**
      *WARNING: caller has to make sure that the stringSize isn't smaller than
@@ -1932,8 +1941,8 @@ public class Strings {
        doubleToString.appendFormatted(sb, d, fractionSize, '.', ',', 3, '-', '\uffff');
        rightAllignInStringBuffer( sb, length_before, stringSize);
     }
-    
-    
+
+
     private static void rightAllignInStringBuffer(StringBuffer sb, int length_before, int stringSize ) {
        int length_after = sb.length();
        //byte length_diff = (byte) (length_after - length_before);
@@ -1971,10 +1980,10 @@ public class Strings {
            default:
                break;
        }
-       return;       
+       return;
     }
 
-        
+
     public static String toString(Method m ) {
         StringBuffer sb = new StringBuffer();
         String methodString = m.getName();
@@ -1983,13 +1992,13 @@ public class Strings {
         sb.append("   Return Type: " + returnString+General.eol);
         Class[] parameterTypes = m.getParameterTypes();
         sb.append("   Parameter Types:");
-        for (int k = 0; k < parameterTypes.length; k ++) {            
+        for (int k = 0; k < parameterTypes.length; k ++) {
             sb.append(" " + parameterTypes[k].getName());
-        }    
+        }
         return sb.toString();
     }
-    
-    
+
+
     public static String toString(Object[] a ) {
         return toString(a, false, true );
     }
@@ -2003,7 +2012,7 @@ public class Strings {
         }
         return result.toString();
     }
-    
+
     /** Will even work when objects are null */
     public static String toString(Object[] a, boolean printEOLAfterEach ) {
         boolean useBrackets = true;
@@ -2011,17 +2020,17 @@ public class Strings {
     }
 
     /** Will even work when objects are null */
-    public static String toString(Object[] a, boolean printEOLAfterEach, 
+    public static String toString(Object[] a, boolean printEOLAfterEach,
         boolean useBrackets ) {
         return toString( a, printEOLAfterEach, useBrackets, ";" );
     }
-    
+
     /** Will even work when objects are null */
-    public static String toString(Object[] a, boolean printEOLAfterEach, 
+    public static String toString(Object[] a, boolean printEOLAfterEach,
         boolean useBrackets, String separator ) {
         if ( a == null ) {
             return null;
-        }        
+        }
         if ( a.length == 0 ) {
             if ( useBrackets ) {
                 return "[empty]";
@@ -2029,7 +2038,7 @@ public class Strings {
                 return "empty";
             }
         }
-        
+
         StringBuffer result = new StringBuffer();
         if ( useBrackets ) {
             result.append('[');
@@ -2049,12 +2058,12 @@ public class Strings {
             result.append(']');
         }
         return result.toString();
-    }    
+    }
 
     public static String toString(HashMap m ) {
         return toString(m, false );
     }
-    
+
     public static String toString(HashMap m, boolean showHashes ) {
         if ( m == null ) {
             return null;
@@ -2063,14 +2072,14 @@ public class Strings {
         int hash;
         String value;
         int size_print_max = 100;
-        
+
         List keys = new ArrayList(Arrays.asList( m.keySet().toArray() ));
         Collections.sort(keys);
-        
+
         StringBuffer sb = new StringBuffer();
         sb.append( Format.sprintf( "There are %d keys:\n", p.add( keys.size() )) );
         Iterator i = keys.iterator();
-        while ( i.hasNext() ) {            
+        while ( i.hasNext() ) {
             key = i.next();
             hash = key.hashCode();
             Object o = m.get( key );
@@ -2084,13 +2093,13 @@ public class Strings {
             }
             // Don't show more than 1 line
             if ( value.indexOf('\n') != -1 ) {
-                value = value.substring(0,value.indexOf('\n')) + "[...]";            
+                value = value.substring(0,value.indexOf('\n')) + "[...]";
             }
             if ( showHashes ) {
                 sb.append( Format.sprintf( "%-25s (%11d): %-s\n", p.add( key ).add( hash ).add( value )) );
             } else {
                 sb.append( Format.sprintf( "%-25s: %-s\n",        p.add( key ).add(             value )) );
-            }                
+            }
         }
         return sb.toString();
     }
@@ -2101,12 +2110,12 @@ public class Strings {
         }
         return toString(c,false);
     }
-    
-    
+
+
     public static String toString(Enumeration e ) {
         return toString( PrimitiveArray.toArrayList(e) );
     }
-    
+
     public static String toString(ArrayList c ) {
         if ( c == null ) {
             return null;
@@ -2114,7 +2123,7 @@ public class Strings {
         Collection cl = (Collection) c;
         return toString(cl,false);
     }
-    
+
     /** Simply calls another toString method */
     public static String toString(Collection c, boolean printEOLAfterEach  ) {
         if ( c == null ) {
@@ -2123,25 +2132,25 @@ public class Strings {
         Object[] l = c.toArray();
         return toString(l,printEOLAfterEach);
     }
-    
+
     /** Dumb method */
     public static String[] toStringArray( Collection c ) {
-        // If the collection makes any guarantees as to what order its elements are 
+        // If the collection makes any guarantees as to what order its elements are
         //returned by its iterator, this method must return the elements in the same order.
         if ( c == null ) {
             return null;
         }
-        Object[] a = c.toArray(); 
+        Object[] a = c.toArray();
         String[] r = new String[a.length];
         for (int i=0;i<a.length;i++) {
             r[i] = a[i].toString();
-        }            
+        }
         return r;
     }
-    
+
     /** dumb method */
     public static String[] toStringArray( Object[] c ) {
-        // If the collection makes any guarantees as to what order its elements are 
+        // If the collection makes any guarantees as to what order its elements are
         //returned by its iterator, this method must return the elements in the same order.
         if ( c == null ) {
             return null;
@@ -2153,10 +2162,10 @@ public class Strings {
             } else {
                 r[i] = null;
             }
-        }            
+        }
         return r;
     }
-    
+
     /** Returns the longest string in the array or null if no valid string was encountered. */
     public static String longestString( String[] a ) {
         if ( a == null ) {
@@ -2170,10 +2179,10 @@ public class Strings {
                 maxLenght = tmp.length(); // slow but infrequent to double call
                 result = tmp;
             }
-        }            
+        }
         return result;
     }
-    
+
     /** Returns the length of the longest string in the array. Null references for
      *strings will cause a core.
      */
@@ -2184,9 +2193,9 @@ public class Strings {
                 longestLength = s[i].length();
             }
         }
-        return longestLength;                
+        return longestLength;
     }
- 
+
     /** From an array of strings take those whose bit is set in selected variable
      *but only those who haven't been taken already; i.e. are distinct.
      *If the assumption holds that the string pointers in the array are the
@@ -2198,7 +2207,7 @@ public class Strings {
      *But could be more efficient if scan is eliminated; see Database.SQLSelect code.
      *Make it faster by using same distinct algo as for int index.
      */
-    
+
     public static String[] getDistinctSorted( String[] stringList, BitSet selected ) {
         if ( stringList == null ) {
             General.showCodeBug("Input string list should not be null in Strings.getDistinct");
@@ -2221,8 +2230,8 @@ public class Strings {
         Set keys = map.keySet();
         Object[] resultObjectList = keys.toArray();
         Arrays.sort( resultObjectList );
-        String[] result = Strings.toStringArray( resultObjectList );          
-        return result;        
+        String[] result = Strings.toStringArray( resultObjectList );
+        return result;
     }
 
     public static String toString( boolean b ) {
@@ -2231,7 +2240,7 @@ public class Strings {
         }
         return Relation.FALSE;
     }
-    
+
         /** Show a little debug info on environment     */
     public static String toString( Map m ) {
         StringBuffer sb = new StringBuffer();
@@ -2239,7 +2248,7 @@ public class Strings {
         ArrayList al = new ArrayList();
         al.addAll(k);
         Collections.sort(al);
-        
+
         for ( Iterator i=al.iterator(); i.hasNext();) {
             String key = (String) i.next();
             Parameters p = new Parameters(); // Printf parameters
@@ -2249,7 +2258,7 @@ public class Strings {
             sb.append( General.eol );
         }
         return sb.toString();
-    }       
+    }
 
     /** Fast convenience method. Callers assures the item is not null and has
      *at least 1 character */
@@ -2262,7 +2271,7 @@ public class Strings {
         }
         return false;
     }
-    
+
     public static boolean isAsciiDigit(char ch) {
         int c = (int)ch;
         if ( c >= 48 && c <= 57 ) {
@@ -2278,10 +2287,10 @@ public class Strings {
             return null;
         }
         /** Code could be optimized a bit by not materializing over and over...
-         */        
+         */
         ByteArrayOutputStream baos = new ByteArrayOutputStream ();
         OutputStreamWriter out = null;
-        try {            
+        try {
             out = new OutputStreamWriter(baos);
             //General.showDebug("Encoding: " + out.getEncoding());
             // web app failed here when encoding "Cp850" was given.
@@ -2290,11 +2299,11 @@ public class Strings {
             return baos.toByteArray();
         } catch ( Exception e ) {
             General.showThrowable(e);
-        }        
-        return null;        
+        }
+        return null;
     }
-    /** 
-     * 
+    /**
+     *
      * @param o
      * @return
      */
@@ -2327,6 +2336,6 @@ public class Strings {
                 }
             }
         }
-        
-    }    
+
+    }
 }

@@ -83,7 +83,7 @@ public class MRInterloop {
 
         while ( ! Strings.is_pdb_code(pdb_entry_id) ) {
             pdb_entry_id = Strings.getInputString( in,
-            "Give entry code (e.g.: 1brv) to do first (or . for first): " );
+            "Give entry code (e.g.: 1brv) to do first (or . for first): ", null );
 
             if ( pdb_entry_id.equals(".") ) {
                 pdb_entry_id = (String) entries_ref.get(0);
@@ -155,7 +155,7 @@ public class MRInterloop {
         ArrayList entries_ref     = null;
         while ( docr_fred_db_dir == null ) {
             docr_fred_db_dir = Strings.getInputString( in,
-                    "Give directory name with entries to load: " );
+                    "Give directory name with entries to load: ", null );
             if ( docr_fred_db_dir == null ) {
                 General.showWarning("failed to get a directory name");
                 continue;
@@ -182,7 +182,7 @@ public class MRInterloop {
         while ( ! Strings.is_pdb_code(pdb_entry_id) )
         {
             pdb_entry_id = Strings.getInputString( in,
-                "Give entry code (e.g.: 1brv) to do first (or . for first): " );
+                "Give entry code (e.g.: 1brv) to do first (or . for first): ", null );
 
             if ( pdb_entry_id.equals(".") ) {
                 pdb_entry_id = (String) entries_ref.get(0);
@@ -291,7 +291,7 @@ public class MRInterloop {
                 "Enter directory name in OS specific notation\n" +
                 "E.g. for unix:     /share/tmp\n" +
                 "E.g. for windows:  S:\\tmp\n" +
-                "here: " );
+                "here: ", null );
             // Check if dir exists and is a dir
             isGoodDir = true;
             File f = new File( dump_dir );
@@ -311,7 +311,7 @@ public class MRInterloop {
 
         if ( do_incremental_only ) {
             int max_number_days_old = Strings.getInputInt( in,
-                "Enter the maximum number of days the file may be old? :");
+                "Enter the maximum number of days the file may be old? :", null);
             entries_ref     = getEntriesFromClassifiedMRFilesNewerThanDays( max_number_days_old );
         } else {
             // Get the entry list in db
@@ -343,11 +343,11 @@ public class MRInterloop {
         {
             if ( single_annotate ) {
                 pdb_entry_id = Strings.getInputString( in,
-                    "Give entry code (e.g.: 1brv) to do: " );
+                    "Give entry code (e.g.: 1brv) to do: ", null );
             }
             else {
                 pdb_entry_id = Strings.getInputString( in,
-                    "Give entry code (e.g.: 1brv) to do: " );
+                    "Give entry code (e.g.: 1brv) to do: ", null );
             }
             if ( ! Strings.is_pdb_code(pdb_entry_id) ) {
                 General.showWarning("Entry code given doesn't look like a PDB code");
@@ -810,7 +810,7 @@ public class MRInterloop {
 
         int star_version = NmrStar.STAR_VERSION_INVALID;
         while ( star_version == NmrStar.STAR_VERSION_INVALID ) {
-            star_version = Strings.getInputInt(in, "Give NMR-STAR version id: 2.1.1(0), 3.0(1), 3.1(2)");
+            star_version = Strings.getInputInt(in, "Give NMR-STAR version id: 2.1.1(0), 3.0(1), 3.1(2)", null);
             if ( ( star_version < 0 ) || (star_version > 2 )) {
                 General.showWarning("star version should be in range [0,2] but given: " + star_version );
                 star_version = NmrStar.STAR_VERSION_INVALID;
@@ -818,7 +818,7 @@ public class MRInterloop {
         }
 
         while ( mr_convert_dir == null ) {
-            mr_convert_dir = Strings.getInputString(in, "Give input dir?");
+            mr_convert_dir = Strings.getInputString(in, "Give input dir?", null);
             File file = new File( mr_convert_dir );
             if ( ! ( file.exists() && file.isDirectory() ) ) {
                 General.showWarning("dir doesn't exist or isn't a dir: " + mr_convert_dir );
@@ -827,7 +827,7 @@ public class MRInterloop {
         }
 
         while ( str_convert_dir == null ) {
-            str_convert_dir = Strings.getInputString(in, "Give output dir?");
+            str_convert_dir = Strings.getInputString(in, "Give output dir?", null);
             File file = new File( str_convert_dir );
             if ( ! ( file.exists() && file.isDirectory() ) ) {
                 General.showWarning("dir doesn't exist or isn't a dir: " + str_convert_dir );
@@ -854,11 +854,11 @@ public class MRInterloop {
         {
             if ( single_annotate ) {
                 pdb_entry_id = Strings.getInputString( in,
-                    "Give entry code (e.g.: 1brv) to annotate: " );
+                    "Give entry code (e.g.: 1brv) to annotate: ", null );
             }
             else {
                 pdb_entry_id = Strings.getInputString( in,
-                    "Give entry code (e.g.: 1brv or .) to start annotation with: " );
+                    "Give entry code (e.g.: 1brv or .) to start annotation with: ", null );
             }
             // Just use the first one if a . is given.
             if ( pdb_entry_id.endsWith(".") ) {
@@ -961,7 +961,7 @@ public class MRInterloop {
         while ( repeat ) {
             String mode = Strings.getInputString( in,
                 "Load database (y)\ndump database(n)\nconvert all MR files in directory(c) or\n" +
-                "load DOCR/FRED db files (l) ", options);
+                "load DOCR/FRED db files (l) ", options, null);
             if ( mode.startsWith("y") ) {
                 loadLoop(g, classi);
             } else if ( mode.startsWith("n")) {
