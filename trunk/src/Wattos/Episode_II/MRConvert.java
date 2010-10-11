@@ -252,7 +252,7 @@ public class MRConvert {
         
         if ( do_incremental_only ) {
             int max_number_days_old = Strings.getInputInt( in,
-            "Enter the maximum number of days the entries may be old? :");
+            "Enter the maximum number of days the entries may be old? :", null);
             entries_ref     = getEntriesFromClassifiedMRFilesNewerThanDays( max_number_days_old );
         } else {
             // Get the entry list in db
@@ -279,7 +279,7 @@ public class MRConvert {
             "Use all from above (y) or specify your own list(n)");
         if ( ! use_all ) {
             String user_entry_list_string = Strings.getInputString(in,
-                "Enter list of entries space/comma separated: " );
+                "Enter list of entries space/comma separated: ", null );
             user_entry_list_string = user_entry_list_string.replace(',', ' '); // just for the heck of it.
             General.showDebug("Transformed to : " +user_entry_list_string);
             StringTokenizer tokens = new StringTokenizer( user_entry_list_string, 
@@ -302,7 +302,7 @@ public class MRConvert {
         // Pick the entry to do (first)
         while ( ! Strings.is_pdb_code(pdb_entry_id) ) {
             pdb_entry_id = Strings.getInputString( in,
-            "Give entry code (e.g.: 1brv) to do (or . for first): " );
+            "Give entry code (e.g.: 1brv) to do (or . for first): ", null );
             if ( pdb_entry_id.equals(".") ) {
                 pdb_entry_id = (String) entries_ref.get(0);
             }
@@ -332,7 +332,7 @@ public class MRConvert {
             General.rotateCollectionToFirst(entries_togo, pdb_entry_id);
             // Remove the last element until done.
             int entries_togo_max = Strings.getInputInt( in,
-            "Give maximum number of entries to do (0-" + entries_togo.size() + ") : " );
+            "Give maximum number of entries to do (0-" + entries_togo.size() + ") : ", null );
             while ( entries_togo.size() > entries_togo_max ) {
                 entries_togo.remove(entries_togo.size()-1);
             }

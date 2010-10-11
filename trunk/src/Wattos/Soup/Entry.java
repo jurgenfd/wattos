@@ -1124,7 +1124,7 @@ public class Entry extends GumboItem implements Serializable {
             for (int i = modelSetToRemove.nextSetBit(0); i >= 0; i=modelSetToRemove.nextSetBit(i+1)) {
                 int modelNumber = gumbo.model.number[i];
                 if ( modelNumber > modelCountAllowed ) {
-                    General.showDebug("Removing model number: " + modelNumber);
+//                    General.showDebug("Removing model number: " + modelNumber);
                     gumbo.model.mainRelation.removeRowCascading(i, true); // Cascades and removes indices automatically.
                 }
             }
@@ -1133,7 +1133,7 @@ public class Entry extends GumboItem implements Serializable {
                 General.showError("Failed to get even an empty set of models LEFT in truncateEnsembleToMaxResidues");
                 return false;
             }
-            General.showOutput("Model count left:               " + modelSetLeft.cardinality());
+//            General.showOutput("Model count left:               " + modelSetLeft.cardinality());
         }
         return true;
     }
@@ -1148,16 +1148,14 @@ public class Entry extends GumboItem implements Serializable {
         int modelCount = modelSet.cardinality();
         int modelCountToRemove = Math.max( modelCount - maxModelCountTotal, 0 );
 
-        General.showOutput("Model count:                    " + modelCount);
-        General.showOutput("Model count allowed:            " + maxModelCountTotal);
-        General.showOutput("Model count to remove:          " + modelCountToRemove);
-
+        General.showOutput("Model count " + modelCount + " with allowed: " + maxModelCountTotal+
+                " and to remove: " + modelCountToRemove);
         if (modelCountToRemove > 0) {
             BitSet modelSetToRemove = (BitSet) modelSet.clone();
             for (int i = modelSetToRemove.nextSetBit(0); i >= 0; i=modelSetToRemove.nextSetBit(i+1)) {
                 int modelNumber = gumbo.model.number[i];
                 if ( modelNumber > maxModelCountTotal ) {
-                    General.showDebug("Removing model number: " + modelNumber);
+//                    General.showDebug("Removing model number: " + modelNumber);
                     gumbo.model.mainRelation.removeRowCascading(i, true); // Cascades and removes indices automatically.
                 }
             }
@@ -1166,7 +1164,7 @@ public class Entry extends GumboItem implements Serializable {
                 General.showError("Failed to get even an empty set of models LEFT in truncateEnsembleToMaxModels");
                 return false;
             }
-            General.showOutput("Model count left:               " + modelSetLeft.cardinality());
+//            General.showOutput("Model count left:               " + modelSetLeft.cardinality());
         }
         return true;
     }

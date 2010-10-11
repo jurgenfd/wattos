@@ -4536,12 +4536,12 @@ public class File31 {
                 thiolState = Biochemistry.THIOL_STATE_UNKNOWN;
             }
         } else {
-            General.showWarning("Not deducing thiol state of molecule since it was not synced");
+//            General.showWarning("Not deducing thiol state of molecule since it was not synced");
         }
         TagTable tTAssemblyIntro = (TagTable) sFAssembly.get(0);
         tTAssemblyIntro.setValue(0, tagNameAssemblyNumber_of_components, molSet.cardinality());
-        tTAssemblyIntro.setValue(0, tagNameAssemblyOrganic_ligands, res.getOrganic_ligands(allResSet));
-        tTAssemblyIntro.setValue(0, tagNameAssemblyMetal_ions, atom.getMetalIons(atomSet));
+//        tTAssemblyIntro.setValue(0, tagNameAssemblyOrganic_ligands, res.getOrganic_ligands(allResSet));
+//        tTAssemblyIntro.setValue(0, tagNameAssemblyMetal_ions, atom.getMetalIons(atomSet));
         tTAssemblyIntro.setValue(0, tagNameAssemblyMolecular_mass, mol.getMass(molSet));
         tTAssemblyIntro.setValue(0, tagNameAssemblyParamagnetic, Defs.NULL_STRING_DOT);
         tTAssemblyIntro.setValue(0, tagNameAssemblyThiol_state, Biochemistry.thiolStateEnumerationAsInStar[thiolState]);

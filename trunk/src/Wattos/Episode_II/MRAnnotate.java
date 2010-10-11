@@ -18,7 +18,7 @@ import Wattos.Utils.*;
  *Main program for annotating MR files for PDB entries. Tips for JEdit usage: - If you get messages like:
  * STDERR>2:42:05 PM [error] KeyEventTranslator: Invalid key stroke: Redefine the keyboard shortcut to something like
  * ESC.
- * 
+ *
  * @author Jurgen F. Doreleijers
  * @version 0.1
  */
@@ -33,7 +33,7 @@ public class MRAnnotate {
 
     /**
      * Start annotations in a loop.
-     * 
+     *
      * @param g
      *            Global info for example on the location of files and preferred text editor.
      * @param classification
@@ -256,7 +256,7 @@ public class MRAnnotate {
     /**
      * Annotate one entry. User will be informed of whether the annotation conforms to allowed changes and will be given
      * the option to correct any mishaps remaining in the specified text editor.
-     * 
+     *
      * @param pdb_entry_id
      *            The PDB entry code of the MR file to be annotated.
      * @param archive_id
@@ -462,7 +462,7 @@ public class MRAnnotate {
     /**
      * Remove a bunch of mr files from a directory. Will print a line mentioning the delete for each entry. Assumes
      * standard naming scheme for entries as usual.
-     * 
+     *
      * @param dir
      *            Directory from which the MR files are to be deleted.
      * @param entries_todelete
@@ -489,7 +489,7 @@ public class MRAnnotate {
     /**
      * Remove a bunch of entry dirs from a directory. Will print a line mentioning the delete for each entry. Assumes
      * standard naming scheme for entries as usual.
-     * 
+     *
      * @param dir
      *            Directory from which the MR files are to be deleted.
      * @param entries_todelete
@@ -518,7 +518,7 @@ public class MRAnnotate {
      * Remove a bunch of mr files from the database. Will print a line mentioning the delete for each entry. Assumes
      * standard naming scheme for entries as usual meaning that the mrfiles should have the detail value set to:
      * FILE_DETAIL_CLASSIFIED
-     * 
+     *
      * @param entries_todelete
      *            List of entry codes for which the MR files are to be deleted.
      * @return <CODE>true</CODE> only if all operations were successful.
@@ -542,7 +542,7 @@ public class MRAnnotate {
 
     /**
      * Uses <code>removeMRFiles</code> but will first list the files to be deleted and will then ask for confirmation.
-     * 
+     *
      * @param dir
      *            Directory from which the MR files are to be deleted.
      * @param entries_todelete
@@ -575,7 +575,7 @@ public class MRAnnotate {
 
     /**
      * Uses <code>removeMRFiles</code> but will first list the files to be deleted and will then ask for confirmation.
-     * 
+     *
      * @param dir
      *            Directory from which the MR files are to be deleted.
      * @param entries_todelete
@@ -608,7 +608,7 @@ public class MRAnnotate {
 
     /**
      * Uses <code>removeMRFiles</code> but will first list the files to be deleted and will then ask for conformation.
-     * 
+     *
      * @param entries_todelete
      *            List of entry codes for which the MR files are to be deleted.
      * @return <CODE>true</CODE> only if all operations were successful.
@@ -641,7 +641,7 @@ public class MRAnnotate {
      * Will look for all entry directories in a given directory and those for which xxxx seems to be a valid PDB code
      * will use them. It will issue warnings for files where xxxx doesn't seem to be a PDB code. Expects a hierarchy
      * like /ab/1abc/1abc.str.gz. where it will return entries for all dirs like /ab/1abc
-     * 
+     *
      * @param dir
      *            Directory from which the files are to be taken.
      * @return List of entries in the directory for which there are files named as described. The list of PDB entry
@@ -694,7 +694,7 @@ public class MRAnnotate {
      * Will look for all files named xxxx.mr in the given directory and those for which xxxx seems to be a valid PDB
      * code will use them as an PDB MR file. It will issue warnings for files ending with .mr for which xxxx doesn't
      * seem to be a PDB code.
-     * 
+     *
      * @param dir
      *            Directory from which the MR files are to be taken.
      * @return List of entries in the directory for which there are files named as described. The list of PDB entry
@@ -742,7 +742,7 @@ public class MRAnnotate {
     /**
      * Will look for all mrfiles in the database that have the standard details: mrfile.details =
      * SQL_Episode_II.FILE_DETAIL_CLASSIFIED
-     * 
+     *
      * @return List of entries in the directory for which there are files named as described. The list of PDB entry
      *         codes returned is sorted too.
      */
@@ -758,7 +758,7 @@ public class MRAnnotate {
 
     /**
      * The entry point for the program MRAnnotator.
-     * 
+     *
      * @param args
      *            Ignored.
      */
