@@ -16,7 +16,7 @@ check,completeness,distance,NOE_completeness_statistics,-,-,Y,-,-,-,-,-,-,X,-,-,
 coordinate,alignment tensor,n/a,unknown_sf_category,-,-,Y,X,X,X,X,X,X,-,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,-,-,X,-,-,-,-,-,-
 coordinate,initial,n/a,MR_file_coordinate_initial,-,-,Y,X,X,X,X,X,X,-,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,-,-,X,-,-,-,-,-,-
 coordinate,ensemble,n/a,MR_file_coordinate_initial,-,-,Y,X,X,X,X,X,X,-,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,-,-,X,-,-,-,-,-,-
-coupling constant,n/a,n/a,coupling_constants,Y,-,-,X,X,X,X,X,X,-,X,X,-,X,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,X,-,-,-,-
+coupling constant,n/a,n/a,coupling_constants,Y,-,-,X,X,X,X,X,X,-,X,X,X,X,-,-,X,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,X,-,-,-,-
 dihedral angle,n/a,n/a,torsion_angle_constraints,Y,-,-,X,X,X,X,X,X,-,X,2,402,X,202,X,102,X,X,X,X,-,-,302,X,X,X,X,X,-,-,-,X,X,X,-,-,-
 dihedral combo,ambi,n/a,torsion_angle_constraints,Y,-,-,X,X,X,X,X,X,-,X,2,402,X,202,X,102,X,X,X,X,-,-,302,X,X,X,X,X,-,-,-,X,X,X,-,-,-
 dipolar coupling,n/a,n/a,dipolar_coupling_constraints,Y,-,-,X,X,X,X,X,X,-,X,3,403,-,X,-,103,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,X,X,-,-,X,-
