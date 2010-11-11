@@ -56,4 +56,14 @@ public class InOutTest extends TestCase {
         General.showOutput("Found number of files: " + list.length);
         assertTrue(list.length>0);
     }
+
+    public void testGetstatusoutput() {
+        String cmd = "ls -al *.txt"; // there is a .txt file in $WATTOSROOT
+        String[] result = OSExec.getstatusoutput(cmd);
+        General.showOutput("result: " + Strings.toString(result));
+        assertEquals( result[0], "0"); // status ok
+        assertEquals( result[2], ""); // no error message
+    }
+
+
 }

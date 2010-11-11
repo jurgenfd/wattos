@@ -42,6 +42,16 @@ public class Dates {
         return date_str;
     }
 
+    /** Returns a string in a formatting used in python time.asctime()
+     */
+    public static String getDateLikePythonAscTime( Date d )
+    {
+        DateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy");
+        String date_str = format.format(d);
+        return date_str;
+    }
+
+
     /** Returns a string without html tags and trimmed for white space chars.
      */
     public static String getDateWithoutFunnyChars() {
