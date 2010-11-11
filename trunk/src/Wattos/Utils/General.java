@@ -10,13 +10,19 @@
 
 package Wattos.Utils;
 
+import Wattos.CloneWars.UserInterface;
+import Wattos.Database.Defs;
+
 import com.braju.format.*;              // printf equivalent
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.jar.Attributes;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 
 /** Static settings and methods for output stream handling, memory reporting, etc.
  *The show... methods should always end with a non-empty line and one that indicates
@@ -490,4 +496,111 @@ never used so don't define here.
             java.text.DateFormat.FULL, java.text.DateFormat.FULL).format(new java.util.Date());
         General.showError(string + date);
     }
+
+
+    public static String[] getProcessIdAndHostName() {
+        RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
+        // Get name representing the running Java virtual machine.
+        // It returns something like 6460@AURORA. Where the value
+        // before the @ symbol is the PID.
+        String jvmName = bean.getName();
+//        General.showOutput("Name = " + jvmName);
+        // Extract the PID by splitting the string returned by the
+        // bean.getName() method.
+//        long pid = Long.valueOf(jvmName.split("@")[0]);
+//        General.showOutput("PID  = " + pid);
+        String[] result = jvmName.split("@");
+        return result;
+    }
+
+    /**
+     * @return revision number (int) or null if the revision isn't known. It depends on svn being available on the system.
+     *
+     */
+    public static int getSvnRevision() {
+
+        String wattosRootDirStr = InOut.getEnvVar("WATTOSROOT");
+
+        if ( wattosRootDirStr == null ) {
+            General.showError("Without set WATTOSROOT variable can't getSvnRevision");
+            return Defs.NULL_INT;
+        }
+        String cmd = "svn info " + wattosRootDirStr;
+        String[] result = OSExec.getstatusoutput(cmd);
+        if (! result[0].equals("0")) {
+            General.showError("Failed to run svn info");
+            return Defs.NULL_INT;
+        }
+        if (! result[2].equals("")) {
+            General.showError("Got error from svn info. Returned in last element of string array " + Strings.toString(result));
+            return Defs.NULL_INT;
+        }
+        ArrayList lineList = Strings.getLines(result[1]);
+        for (int i=0;i<lineList.size();i++) {
+            String line = (String) lineList.get(i);
+            if  (line.startsWith("Revision:")) {
+                String[] split = line.split(" ");
+                if ( split.length < 2 ) {
+                    General.showError("Got error from svn info on line with revision: [" + line + "]");
+                    return Defs.NULL_INT;
+                }
+                int wattosRevision = Integer.valueOf(split[split.length-1]);
+                return wattosRevision;
+            }
+        }
+        General.showDebug("Failed get svn revision.");
+        return Defs.NULL_INT;
+    }
+
+
+    public static String getStartMessage() {
+//      Copy catted from xplor via CING
+//      user = "jd"
+//      on   = "Stella.local (darwin/32bit/2cores/2.6.6)
+//      at   = "(3676) 29-Oct-08 15:36:22
+      String user = System.getProperty("user.name", "Unknown user");
+      String osType = System.getProperty("os.name", "Unknown os name");
+      osType = osType.replaceAll(" ", "");
+      String javaVersion = System.getProperty("java.version");
+
+      String[] pidAndHostNameList = getProcessIdAndHostName();
+      long pid = Long.valueOf(pidAndHostNameList[0]);
+      String machine = pidAndHostNameList[1];
+
+      int ncpus = Runtime.getRuntime().availableProcessors();
+      String bitNumber = System.getProperty("os.arch", "Unknown os arch");
+      Parameters p = new Parameters();
+      p.add(machine);
+      p.add(osType);
+      p.add(bitNumber);
+      p.add(ncpus);
+      p.add(javaVersion);
+      String on = Format.sprintf("%s (%s/%s/%scores/%s)",p);
+      Date now = new java.util.Date();
+      String at = Dates.getDateLikePythonAscTime( now );
+      at = "("+pid+") " + at;
+
+      p.add(user);
+      p.add(on);
+      p.add(at);
+      String result = Format.sprintf("User: %s on: %-42s at: %32s",p);
+
+      int thisYear = 1900 + now.getYear();
+      String copyright_years = "1999-" + thisYear; // Never have to update this again...
+//      String[] authorList      = new String[]  { "Jurgen F. Doreleijers", "jurgend@cmbi.ru.nl"};
+//    String wattosRevisionUrl = "http://code.google.com/p/wattos/source/detail?r=";
+
+      String versionStr = UserInterface.WATTOS_VERSION;
+      int svnRevision = getSvnRevision();
+      if ( ! Defs.isNull( svnRevision )){
+            versionStr += " (r"+ svnRevision + ") ";
+      }
+      String header =
+      "======================================================================================================\n" +
+      "| Wattos: Programs for Structural Biology & NMR        version " + versionStr + "JFD,GWV,ELU " + copyright_years + " |\n"+
+      "======================================================================================================";
+
+      return header + '\n' + result;
+  }
+
 }

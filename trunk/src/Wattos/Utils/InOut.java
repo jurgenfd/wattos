@@ -1390,6 +1390,7 @@ public class InOut {
     /**
      * Class is adapted from http://www.rgagnon.com/javadetails/java-0150.html. JDK1.5 has a System.getenv("PATH") so
      * that could be easier still.
+     * Setting up the runtime instance allow us to retrieve env by shell rather than java.
      */
     public static Properties getEnvVars() {
         // General.showDebug("Doing getEnvVars");
