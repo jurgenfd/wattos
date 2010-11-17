@@ -268,6 +268,10 @@ public class Relation implements Serializable  {
      *a routine like (at the moment only): getNextReservedRow.
      */
     public static final int         DEFAULT_VALUE_INDICATION_RELATION_MAX_SIZE_GREW     = -2;
+    /** Value indicating that the column is not sorted consecutively. */
+    public static final int         DEFAULT_VALUE_INDICATION_COLUMN_CONSECUTIVE     = -1;
+    /** Value indicating that the column sorting test encountered an error. */
+    public static final int         DEFAULT_VALUE_INDICATION_COLUMN_ORDER_CHECK_ERROR   = -2;
 
 
     /** Name of the relation */
@@ -3865,6 +3869,35 @@ public class Relation implements Serializable  {
         return true;
     }
 
+    /**
+     * Renumber a column to new values if previously existing.
+     *Returns false if there was an error.
+     *Returns true on success.
+     */
+    public boolean renumberRowsByOffset( String columnName, int offset ) {
+
+        if ( ! containsColumn( columnName ) ) {
+            General.showError("Failed renumberRowsByOffset as the column to renumber: " +
+                columnName + " doesn't exist in this relation: " + name );
+            return false;
+        }
+
+        int[] column = getColumnInt( columnName );
+        if ( column == null ) {
+            General.showCodeBug("Failed to get an int[] column in renumberRowsByOffset for name: " + columnName);
+            return false;
+        }
+
+        int value = Defs.NULL_INT;
+        for (int i=this.used.nextSetBit(0); i>=0; i=this.used.nextSetBit(i+1))  {
+            value = column[i];
+            if ( Defs.isNull(value) ) {
+                continue;
+            }
+            column[i] += offset;
+        }
+        return true;
+    }
 
     /** Convenience method */
     public int[] getRowOrderMap( String label ) {
@@ -4872,38 +4905,74 @@ public class Relation implements Serializable  {
     }
 
     /** Checks if the ordering in the column is natural e.g. starting from one and skipping no number going
-     up. If the argument is null then the default column will be checked. Returns false if no such
-     column is present. Method does allow for gaps in the relation.
-     *Returns true if column is empty (no rows used).
-     */
-    public boolean isSortedFromOneInColumn( String label ) {
-        if ( label == null ) {
+    up. If the argument is null then the default column will be checked. Returns false if no such
+    column is present. Method does allow for gaps in the relation.
+    *Returns true if column is empty (no rows used).
+    */
+   public boolean isSortedFromOneInColumn( String label ) {
+       if ( label == null ) {
+           label = DEFAULT_ATTRIBUTE_ORDER_ID;
+       }
+       if ( ! containsColumn(label) ) {
+           General.showError( "Not isSortedFromOneInColumn because column not present: " + label);
+           return false;
+       }
+
+       Object column = getColumn(label);
+       if ( getColumnDataType(label) != DATA_TYPE_INT ) {
+           General.showCodeBug("Data type not supported in isSortedFromOneInColumn " +
+               dataTypeList[getColumnDataType(label)] + " for column: " + label);
+           return false;
+       }
+       int[] col = (int[]) column;
+       int k = 1;
+       for (int i=used.nextSetBit(0); i>=0; )  {
+           if ( col[i] != k ) {
+               //General.showDebug("In column: " + label + " on used row: " + i + " value was not sorted");
+               //General.showDebug("Expected: " + k + " but found: " + col[i]);
+               return false;
+           }
+           k++;
+           i=used.nextSetBit(i+1);
+       }
+       return true;
+   }
+
+   /** Checks if the ordering in the column is consecutive.
+   *Returns row idx for violating row or -1 if all ok, -2 for error.
+   */
+  public int isConsecutiveInColumn( String label ) {
+        if (label == null) {
             label = DEFAULT_ATTRIBUTE_ORDER_ID;
         }
-        if ( ! containsColumn(label) ) {
-            General.showError( "Not isSortedFromOneInColumn because column not present: " + label);
-            return false;
+        if (!containsColumn(label)) {
+            General.showError("Not isConsecutiveInColumn because column not present: " + label);
+            return DEFAULT_VALUE_INDICATION_COLUMN_ORDER_CHECK_ERROR;
         }
 
         Object column = getColumn(label);
-        if ( getColumnDataType(label) != DATA_TYPE_INT ) {
-            General.showCodeBug("Data type not supported in isSortedFromOneInColumn " +
-                dataTypeList[getColumnDataType(label)] + " for column: " + label);
-            return false;
+        if (getColumnDataType(label) != DATA_TYPE_INT) {
+            General.showCodeBug("Data type not supported in isConsecutiveInColumn "
+                    + dataTypeList[getColumnDataType(label)] + " for column: " + label);
+            return DEFAULT_VALUE_INDICATION_COLUMN_ORDER_CHECK_ERROR;
         }
         int[] col = (int[]) column;
-        int k = 1;
-        for (int i=used.nextSetBit(0); i>=0; )  {
-            if ( col[i] != k ) {
-                //General.showDebug("In column: " + label + " on used row: " + i + " value was not sorted");
-                //General.showDebug("Expected: " + k + " but found: " + col[i]);
-                return false;
+        int firstUsedRowIdx = used.nextSetBit(0);
+        int k = col[firstUsedRowIdx];
+        for (int i = used.nextSetBit(0); i >= 0; i = used.nextSetBit(i + 1)) {
+            int l = col[i];
+            if (l == k)
+                continue;
+            if (l == k + 1) {
+                k += 1;
+                continue;
             }
-            k++;
-            i=used.nextSetBit(i+1);
+            General.showDebug("In column: " + label + " on used row: " + i + " value was not sorted");
+            General.showDebug("Expected: " + k + " (or one higher) but found: " + l);
+            return i;
         }
-        return true;
-    }
+        return DEFAULT_VALUE_INDICATION_COLUMN_CONSECUTIVE;
+  }
 
     /** Returns true if all elements in given column are of the same value
      *given. Returns false for many reasons; e.g. column doesn't exist or
@@ -5355,7 +5424,7 @@ public class Relation implements Serializable  {
 
             for (int c=0;c<columns;c++) {
                 String columnName = "column_label_" + c;
-		String dataTypeStr = "STRING";
+        String dataTypeStr = "STRING";
                 if ( dtd != null ) {
                     columnName  = dtd.getValueString(c, "columnName");
                     columnName = columnName.trim();
