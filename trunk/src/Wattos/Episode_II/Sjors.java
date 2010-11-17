@@ -20,7 +20,7 @@ public class Sjors extends javax.swing.JFrame {
     static private Classification classi = null;
     static private MRSTARFile mrf = null;
     static private StarFilter ff = null;
-    static private final String BMRB_URL = "http://www.bmrb.wisc.edu"; 
+    static private final String BMRB_URL = "http://www.bmrb.wisc.edu";
     static private ByteArrayOutputStream out = null;
     static private PrintStream pout = null;
     static private String fn = null;
@@ -36,32 +36,32 @@ public class Sjors extends javax.swing.JFrame {
         Sjors.actionListener = actionListener;
         init();
     }
-    
+
     public boolean init() {
         General.verbosity = General.verbosityDebug;
         //General.verbosity = General.verbosityNothing;
         out = new ByteArrayOutputStream();
         pout = new PrintStream(out,true);
         General.setOut(pout);
-        General.showOutput("Wattos ["+Wattos.CloneWars.UserInterface.WATTOS_VERSION+"]");
-                
+//        General.showOutput("Wattos ["+Wattos.CloneWars.UserInterface.WATTOS_VERSION+"]");
+
         ff = new StarFilter();
 
         classi = new Classification();
-        String location = "Data/classification.csv";                    
+        String location = "Data/classification.csv";
         boolean status = classi.readFromCsvFile( location );
         if (! status) {
             General.showError("in Classification.main found:");
             General.showError("reading classification file.");
             System.exit(1);
-        }        
+        }
         initComponents();
         setComboBoxTypesEnabled(false);
         jRadioButton1.setEnabled(false);
-        messageBoardCheckStdOut(); 
+        messageBoardCheckStdOut();
         return true;
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -121,7 +121,7 @@ public class Sjors extends javax.swing.JFrame {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 System.out.println("Shutting down...");
                 System.exit(0);
-              }            
+              }
         });
 
         getAccessibleContext().setAccessibleDescription("STAR Java Omtovenaar RestraintS");
@@ -525,7 +525,7 @@ public class Sjors extends javax.swing.JFrame {
         General.showOutput("Now in handlerWindowClosing");
         General.showError("Now in handlerWindowClosing");
         if ( actionListener != null ) {
-            actionListener.actionPerformed(null); 
+            actionListener.actionPerformed(null);
         }
 //        isActive = false; // checked in the main so it doesn't exit.
     }//GEN-LAST:event_handlerWindowClosing
@@ -617,7 +617,7 @@ public class Sjors extends javax.swing.JFrame {
 
     private void jButtonParseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonParseActionPerformed
         mrf = new MRSTARFile();
-        
+
         Object program  = jComboBoxProgram.getSelectedItem();
         Object type     = jComboBoxType.getSelectedItem();
         Object subtype  = jComboBoxSubtype.getSelectedItem();
@@ -629,7 +629,7 @@ public class Sjors extends javax.swing.JFrame {
             return;
         }
         String[] argsStr = Strings.toStringArray( args );
-        
+
         // READ
         messageBoardAdd("Parsing file: " + file.toString());
         messageBoardCheckStdOut(); // flush the stream to the log text pane.
@@ -649,11 +649,11 @@ public class Sjors extends javax.swing.JFrame {
             messageBoardAddError("Error parsing file.");
             return;
         }
-        
+
         messageBoardCheckStdOut(); // flush the stream to the log text pane.
         int[] logPositionEnd = Strings.getEndPosition( log.getText());
         //messageBoardAdd("Found logPositionEnd: " + PrimitiveArray.toString(logPositionEnd));
-        
+
         String logTxt = Strings.getBlock( log.getText(), logPositionBegin, logPositionEnd );
        // messageBoardAdd("Found log block: [" + logTxt + "]");
 
@@ -664,11 +664,11 @@ public class Sjors extends javax.swing.JFrame {
         }
         messageBoardAdd("Parsed "+s[0]+" restraints, "+s[1]+" comments and "+s[2]+" errors.");
         if ( s[0] == 0 ) {
-            messageBoardAddError("Parsing found no restraints");            
-        } 
+            messageBoardAddError("Parsing found no restraints");
+        }
         if ( s[2] != 0 ) {
-            messageBoardAddError("Save the file and inspect any parse errors.");            
-        }        
+            messageBoardAddError("Save the file and inspect any parse errors.");
+        }
         jButtonSave.setEnabled(true);
         return;
     }//GEN-LAST:event_jButtonParseActionPerformed
@@ -681,23 +681,23 @@ public class Sjors extends javax.swing.JFrame {
         fc.addChoosableFileFilter(ff);
         //fc.setAcceptAllFileFilterUsed(false);
 
-        
+
         if ( file != null ) {
             File f_new = InOut.changeFileNameExtension(file,"str");
             if ( f_new != null ) {
                 fc.setSelectedFile(f_new);
             } else {
-                messageBoardAddError("Failed to rename extension of previous selected file: [" + file.toString());                
+                messageBoardAddError("Failed to rename extension of previous selected file: [" + file.toString());
             }
         } else {
             messageBoardAddError("Failed to get previous selected file.");
         }
-        
+
         int returnVal = fc.showSaveDialog(Sjors.this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             outfile = fc.getSelectedFile();
             jTextFieldOutputFile.setText(outfile.toString());
-            
+
             if ( outfile.exists() && (!outfile.canWrite()) ) {
                 messageBoardAddError("File exists but is not writable: " + outfile.getName());
                 return;
@@ -706,7 +706,7 @@ public class Sjors extends javax.swing.JFrame {
                 messageBoardAddError("File expected is a directory: " + outfile.getName());
                 return;
             }
-            
+
             messageBoardAdd("Saving parsed restraints to: " + outfile.getName());
             boolean status = false;
             try {
@@ -738,7 +738,7 @@ public class Sjors extends javax.swing.JFrame {
         log.append(out.toString());
         out.reset();
     }
-    
+
     /** Defaults to red */
     private void messageBoardAddError( String msg ) {
         messageBoardAdd("ERROR: " + msg,Color.RED);
@@ -748,7 +748,7 @@ public class Sjors extends javax.swing.JFrame {
     private void messageBoardAdd( String msg) {
         messageBoardAdd(msg,null);
     }
-    
+
     /** Defaults to black */
     private void messageBoardAdd( String msg, java.awt.Color c) {
         messageBoardCheckStdOut();
@@ -759,7 +759,7 @@ public class Sjors extends javax.swing.JFrame {
         status.setForeground(c);
         status.setText(msg);
     }
-    
+
     /** Defaults to red */
     private void messageBoardAddThrowable( Throwable t ) {
         messageBoardCheckStdOut();
@@ -769,8 +769,8 @@ public class Sjors extends javax.swing.JFrame {
         String msg = "Found throwable error."+newline+stw.toString();
         messageBoardAddError(msg);
     }
-    
-    
+
+
     private void setAllTypes() {
         jComboBoxProgram.setModel(  getPossiblePrograms());
         jComboBoxType.setModel(     getPossibleTypes());
@@ -781,31 +781,31 @@ public class Sjors extends javax.swing.JFrame {
     }
 
     private void setComboBoxTypesEnabled( boolean v ) {
-        jComboBoxProgram.setEnabled(v);        
-        jComboBoxType.setEnabled(v);        
-        jComboBoxSubtype.setEnabled(v);        
-        jComboBoxFormat.setEnabled(v);                
+        jComboBoxProgram.setEnabled(v);
+        jComboBoxType.setEnabled(v);
+        jComboBoxSubtype.setEnabled(v);
+        jComboBoxFormat.setEnabled(v);
     }
-    
+
     public DefaultComboBoxModel getPossiblePrograms() {
         ArrayList a = new ArrayList(classi.conversionPossibilities.keySet());
         a.add(0,null);
         if ( a.contains("AMBER") ) {
             a.remove("AMBER");
         }
-        Object[] items = a.toArray();        
+        Object[] items = a.toArray();
         DefaultComboBoxModel result = new DefaultComboBoxModel(items);
         return result;
     }
-    
+
     public DefaultComboBoxModel getPossibleTypes() {
         Object key1 = jComboBoxProgram.getSelectedItem();
-        HashOfHashes HoH = (HashOfHashes) classi.conversionPossibilities.get(key1);        
+        HashOfHashes HoH = (HashOfHashes) classi.conversionPossibilities.get(key1);
         Object[] items = {};
         if ( HoH != null ) {
             ArrayList a = new ArrayList(HoH.keySet());
             a.add(0,null);
-            items = a.toArray();        
+            items = a.toArray();
         }
         DefaultComboBoxModel result = new DefaultComboBoxModel(items);
         if ( result.getSize() == 2 ) {
@@ -821,7 +821,7 @@ public class Sjors extends javax.swing.JFrame {
         if ( H != null ) {
             ArrayList a = new ArrayList(H.keySet());
             a.add(0,null);
-            items = a.toArray();        
+            items = a.toArray();
         }
         DefaultComboBoxModel result = new DefaultComboBoxModel(items);
         if ( result.getSize() == 2 ) {
@@ -835,7 +835,7 @@ public class Sjors extends javax.swing.JFrame {
         Object key2 = jComboBoxType.getSelectedItem();
         Object key3 = jComboBoxSubtype.getSelectedItem();
         // make a copy of the list because we'll mute.
-        ArrayList H = (ArrayList) classi.conversionPossibilities.get(key1,key2,key3);        
+        ArrayList H = (ArrayList) classi.conversionPossibilities.get(key1,key2,key3);
         //messageBoardAdd("possible formats from HoHoH: " + Strings.toString(H),null);
         Object[] items = {};
         if ( H != null ) {
@@ -846,11 +846,11 @@ public class Sjors extends javax.swing.JFrame {
         DefaultComboBoxModel result = new DefaultComboBoxModel(items);
         if ( result.getSize() == 2 ) {
             result.setSelectedItem(result.getElementAt(1));
-            jButtonParse.setEnabled(true); // this is for when it gets set automatically.            
+            jButtonParse.setEnabled(true); // this is for when it gets set automatically.
         }
         return result;
     }
-    
+
     public boolean getPossibleLowerbound() {
         Object key1 = jComboBoxProgram.getSelectedItem();
         Object key2 = jComboBoxType.getSelectedItem();
@@ -863,7 +863,7 @@ public class Sjors extends javax.swing.JFrame {
         }
         return false;
     }
-        
+
     /**
      * @param args the command line arguments
      */
@@ -874,7 +874,7 @@ public class Sjors extends javax.swing.JFrame {
             }
         });
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser fc;
     private javax.swing.JButton jButton1;
