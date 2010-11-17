@@ -91,7 +91,7 @@ public class MRGridServlet extends HttpServlet {
         /** Set the desired verbosity level */
         General.setVerbosityToDebug();
         General.showDebug("Now in initDb");
-        General.showDebug("Wattos version: " + UserInterface.WATTOS_VERSION);
+//        General.showDebug("Wattos version: " + UserInterface.WATTOS_VERSION);
         System.setOut(System.err);
         General.showDebug("this message to System.out after redirect");
         g.setDbUserNameDerivedVariables(); // perhaps the db user name changed?

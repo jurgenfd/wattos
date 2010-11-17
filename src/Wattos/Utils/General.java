@@ -590,14 +590,15 @@ never used so don't define here.
 //      String[] authorList      = new String[]  { "Jurgen F. Doreleijers", "jurgend@cmbi.ru.nl"};
 //    String wattosRevisionUrl = "http://code.google.com/p/wattos/source/detail?r=";
 
-      String versionStr = UserInterface.WATTOS_VERSION;
+//      String versionStr = UserInterface.WATTOS_VERSION;
+      String versionStr = "";
       int svnRevision = getSvnRevision();
       if ( ! Defs.isNull( svnRevision )){
-            versionStr += " (r"+ svnRevision + ") ";
+            versionStr += "r"+ svnRevision + " ";
       }
       String header =
       "======================================================================================================\n" +
-      "| Wattos: Programs for Structural Biology & NMR        version " + versionStr + "JFD,GWV,ELU " + copyright_years + " |\n"+
+      "| Wattos: Programs for Structural Biology & NMR spectroscopy      version " + versionStr + "JFD,GWV,ELU " + copyright_years + " |\n"+
       "======================================================================================================";
 
       return header + '\n' + result;
