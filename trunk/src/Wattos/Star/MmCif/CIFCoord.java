@@ -415,17 +415,39 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
 
         // ENTRY
         // MODEL
-        int modelCountMax = 1;
+        // Maximum number of models found
+        int modelCountMax = 1; // check if there are gaps in the model numbering.
+//        int modelCountOffset = 0;
         if ( tTCoor != null ) { // Make just one model if there's no coordinates.
-            // Check to see the first is 1
-            if ( tTCoor.getValueInt(0, tagNameAtomModelId) != 1 ) {
-                General.showError("The models need to be numbered starting at 1 but found:" + tTCoor.getValueInt(0, tagNameAtomModelId));
+            int modelCountMin = 1; // check if there are gaps in the model numbering.
+            // This wouldn't work with gaps in relation but since the data is read consecutively from
+            // the star file it always works.
+            // The models need to be numbered consecutive but not necessarily starting at 1.
+            modelCountMin = tTCoor.getValueInt(0, tagNameAtomModelId);
+            modelCountMax = tTCoor.getValueInt(tTCoor.sizeRows-1, tagNameAtomModelId);
+
+            // All actions below don't need to be fast because it doesn't happen often.
+            if ( modelCountMin > modelCountMax ) {
+                General.showError("First model number " + modelCountMin+ " is less than last model number " + modelCountMin);
                 return false;
             }
-            // Last model's number
-            // this wouldn't work with gaps in relation but since the data is read consequetively from
-            // the star file it always works.
-            modelCountMax = tTCoor.getValueInt(tTCoor.sizeRows-1, tagNameAtomModelId);
+            int violatingRowIdx = tTCoor.isConsecutiveInColumn(tagNameAtomModelId);
+            if ( violatingRowIdx == Relation.DEFAULT_VALUE_INDICATION_COLUMN_ORDER_CHECK_ERROR) {
+                General.showError("Model numbers failed to be checked for consecutiveness");
+                return false;
+            }
+            if ( violatingRowIdx != Relation.DEFAULT_VALUE_INDICATION_COLUMN_CONSECUTIVE) {
+                General.showError("Model numbers not consecutive for the first time for atom coordinates:\n" + tTCoor.toStringRow(violatingRowIdx));
+                return false;
+            }
+            int modelCountOffset = 1 - modelCountMin; // Number to add to go from CIF model number to Wattos.
+            if ( modelCountOffset != 0 ) {
+                if ( ! tTCoor.renumberRowsByOffset( tagNameAtomModelId, modelCountOffset ) ) {
+                    General.showError("Model numbers could not be shifted by modelCountOffset" + modelCountOffset);
+                    return false;
+                }
+                modelCountMax += modelCountOffset;
+            }
         }
 
         // MOLECULES
@@ -642,7 +664,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                     int firstAtomRid = atomSet.nextSetBit(0);
 //                    General.showDebug("Looking at coor table for record: " + tTCoor.toStringRow(firstAtomRid, false));
                     if ( firstAtomRid < 0 ) {
-                        General.showWarning("Failed to find any atom in first model for entity: " + entityId);
+                        General.showWarning("Failed to find any atom in model "+modelCount+" for entity: " + entityId);
                         General.showWarning("This was found in for instance entry 1j6t for the PO3 group and was reported in NRG issue 157");
 //                        atomSetNotInFirstModel.set(firstAtomRid);
 //                        General.showWarning("Increased number of these atoms to: " + atomSetNotInFirstModel.cardinality());
@@ -669,7 +691,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                                     SQLSelect.OPERATION_TYPE_EQUALS,"O",false);
                             atomOSet.and(atomSet); // only within this specific entity
                             int water_count = atomOSet.cardinality();
-    //                        General.showDebug("Found number of oxygen atoms indicating a water molecule: "+water_count);
+//                            General.showDebug("Found number of oxygen atoms indicating a water molecule: "+water_count);
                             rid_res[modelCount][molCount] = new int[water_count+1]; // assign last dimension within.
                             for ( int atomRid=atomOSet.nextSetBit(0);atomRid>=0;atomRid = atomOSet.nextSetBit(atomRid+1)) {
                                 tTCoor.setValue(atomRid, tagNameAtomResId, new Integer(resCount));
@@ -858,9 +880,9 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
             }
         } else {
             General.showDebug("Disabled syncing over models.");
-            General.showDebug("This might lead to inconsistencies in Wattos internal data model.");
-            General.showDebug("Needs testing for sure.");
-            General.showDebug("The code will definitely not work when reading in restraints on top of partily missing atoms.");
+//            General.showDebug("This might lead to inconsistencies in Wattos internal data model.");
+//            General.showDebug("Needs testing for sure.");
+//            General.showDebug("The code will definitely not work when reading in restraints on top of partly missing atoms.");
         }
 
 
