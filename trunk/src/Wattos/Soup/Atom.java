@@ -965,6 +965,20 @@ public class Atom extends GumboItem implements Serializable {
         return result;
     }
 
+    /** Using the sibling list to get the atom rids of model related siblings. Make sure
+     *the sibling list is set. Make sure the model number is within range. No checks done
+     *by this routine.
+     */
+    public BitSet getAllModelAtomsFromMasterModelAtomRids(BitSet ridSet) {
+        BitSet result = new BitSet();
+        for (int atomRid=ridSet.nextSetBit(0);atomRid>=0;atomRid=ridSet.nextSetBit(atomRid+1)) {
+            int[] al = modelSiblingIds[atomRid];
+            PrimitiveArray.setBitSetByIntArray( al, result);
+        }
+        return result;
+    }
+
+
     /** Using the sibling list to get the atom rid of master model.
      * Normally this should be inlined for speed but the method is
      * here to remind us.
@@ -2859,7 +2873,7 @@ the atom name."""
 
     /** Convenience method */
     public boolean calcBond() {
-        BitSet resInMaster = gumbo.entry.getResInMasterModel();
+        BitSet resInMaster = gumbo.entry.getResInMasterModel(true);
         if ( resInMaster == null ) {
             General.showError("Failed to get the master atoms");
             return false;

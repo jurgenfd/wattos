@@ -375,7 +375,7 @@ blabla
                 String helpHtml        = values[r][ columnIdx[7] ];
                 // Parent menu to be set later for wattos command
                 WattosCommand command = new WattosCommand( null, commandName, shortcut, description, helpHtml);
-                //General.showDebug(" adding to menu a command with name: " + command.name);
+//                General.showOutput(" adding to menu a command with name: " + command.name);
                 addCommand( menuNames, command );
             }
         } catch ( Throwable t ) {
@@ -385,9 +385,9 @@ blabla
         Collections.sort( mainMenuCommandNames );
 
         /** Some debugging: */
-        //General.showDebug("Read number of commands and menus: " + mainMenuCommandNames.size());
-//        String longestString = Strings.longestString( Strings.toStringArray(mainMenuCommandNames));
-        //General.showDebug("Longest commands and menus is    : " + longestString + " at length: " + longestString.length());
+//        General.showOutput("Read number of commands and menus: " + mainMenuCommandNames.size());
+        String longestString = Strings.longestString( Strings.toStringArray(mainMenuCommandNames));
+//        General.showOutput("Longest commands and menus is    : " + longestString + " at length: " + longestString.length());
 
 
         return true;

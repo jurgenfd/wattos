@@ -94,6 +94,10 @@ public class Gumbo extends RelationSoS implements Serializable {
     public static String      DEFAULT_ATTRIBUTE_ATOM_C_ID            = "atom_C_id";
     public static String      DEFAULT_ATTRIBUTE_ATOM_D_ID            = "atom_D_id";
 
+    public static String      DEFAULT_ATTRIBUTE_EMPTY_RANGES_STR            = Defs.NULL_STRING_DOT;
+    public static String      DEFAULT_ATTRIBUTE_CV_RANGES_STR               = "cv";
+    public static String      DEFAULT_ATTRIBUTE_AUTO_RANGES_STR             = "auto";
+    public static String      DEFAULT_ATTRIBUTE_ALL_RANGES_STR              = "all";
 
     static {
         RelationSet.setDerivedNames( DEFAULT_ATTRIBUTE_SET_ATOM );
@@ -175,8 +179,8 @@ public class Gumbo extends RelationSoS implements Serializable {
      *atoms, residues, etc. Tries to correct the situation if asked to do so.
      */
     public boolean check( boolean makeCorrections ) {
-	// Overall checking status.
-	boolean status = true;
+        // Overall checking status.
+        boolean status = true;
 
         // Within a model do atoms have the same coordinates? And other checks in the future.
         int m=model.selected.nextSetBit(0);

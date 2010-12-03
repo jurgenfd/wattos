@@ -723,7 +723,7 @@ public class Completeness {
 
 
     /** Analyzes the first selected entry for completeness of selected distance constraints
-     *with respect to selected atoms.
+     *with respect to selected atoms. Residue and model selection needs to be done thru atom selection.
      * Reset the completeness lib first in the ui if needed to change from standard.
      *If there are no observable atoms in the coordinate list (e.g. entry 8drh) no
      *results will be generated but the return status will still be true for success.

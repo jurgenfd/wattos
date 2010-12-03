@@ -20,13 +20,6 @@
 
 
     <target name="init" description="init">
-        <tstamp>
-            <format property="wattos_version" pattern="yyyyMMdd-HHmm" />
-        </tstamp>
-        <echo message="Initiating Wattos version: ${wattos_version}" />
-        <!--
-        <antcall target="set_version" />
-        -->
         <if>
             <equals arg1="${isProduction}" arg2="1" />
             <then>
@@ -189,7 +182,7 @@
         <!-- <echo message="classpath: ${build.dir}:${javac.classpath}:${j2ee.platform.classpath}"/>
     -->
 
-        <for list="CalcDihConstrViolation.wcf" param="fn">
+        <for list="CheckCompleteness.wcf" param="fn">
             <sequential>
                 <echo message="Executing macro: ${macros.local.dir}/@{fn}" />
                 <java jvm="${platform.java}" fork="true" failonerror="false" resultproperty="result" maxmemory="512m" classname="Wattos.CloneWars.UserInterface" dir="${test_data.local.dir}" input="${macros.local.dir}/@{fn}" output="${tmp.local.dir}/@{fn}.log" timeout="240000">
@@ -222,12 +215,6 @@
     <target name="report_errors" if="error_list">
         <echo message="${error_list}" />
     </target>
-    <!--
-    <target name="set_version" >
-        <replaceregexp file="${src.dir}/Wattos/CloneWars/UserInterface.java"
-            match="String WATTOS_VERSION=(.*)" replace='String WATTOS_VERSION="${wattos_version}";' byline="true" />
-    </target>
-    -->
     <!--
     ======================
     JAVADOC SECTION
@@ -349,40 +336,6 @@
         </scp>
     </target>
 
-    <!--
-    ======================
-    WEB APP SECTION
-    ======================
-    -->
-    <target name="webapp-install" depends="init,jar,home-cp,webapp-jar-cp,webapp-resources-cp" description="Publishes the Wattos jar. Manual restart of server still needed.">
-        <echo message="Make sure the following two remote directories are open for writing:" />
-        <echo message="${webapp.web.usermachine}:${webapp.web.dir}/${webapp.lib.dir}" />
-        <echo message="${webapp.web.usermachine}:${webapp.web.dir}/${scripts.local.dir}" />
-    </target>
-
-    <target name="webapp-jar-cp" depends="init">
-        <echo message="Installing Wattos jar(s) to webapp engine: ${webapp.web.usermachine}:${webapp.web.dir}/${webapp.lib.dir}" />
-        <scp todir="${webapp.web.usermachine}:${webapp.web.dir}/${webapp.lib.dir}" port="${home.web.port}" keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}">
-            <!-- Normally all jars need copying -->
-            <fileset dir="${lib.local.dir}" includes="*.jar" />
-            <!-- <fileset dir="${lib.local.dir}"  includes="Wattos.jar"/> -->
-        </scp>
-    </target>
-
-    <target name="webapp-resources-cp" depends="init">
-        <echo message="Installing jnlp, giffies and html to webapp engine" />
-        <scp todir="${webapp.web.usermachine}:${webapp.web.dir}/${scripts.local.dir}" port="${home.web.port}" keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}">
-            <fileset dir="${scripts.local.dir}" includes="*.jnlp" />
-            <fileset dir="${macros.local.dir}" includes="*.wcf" />
-        </scp>
-    </target>
-
-    <target name="macro-resources-cp" depends="init">
-        <echo message="Installing macros to webapp engine" />
-        <scp todir="${webapp.web.usermachine}:${webapp.web.dir}/${macros.local.dir}" keyfile="${home.web.keyfile}" knownhosts="${home.web.knownhosts}" passphrase="${home.web.passphrase}">
-            <fileset dir="${macros.local.dir}" includes="*.wcf" />
-        </scp>
-    </target>
 
     <!--
     ====================

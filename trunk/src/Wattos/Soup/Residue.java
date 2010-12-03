@@ -23,6 +23,7 @@ import Wattos.Database.SQLSelect;
 import Wattos.Database.Indices.Index;
 import Wattos.Database.Indices.IndexSortedString;
 import Wattos.Utils.General;
+import Wattos.Utils.HashOfLists;
 import Wattos.Utils.PrimitiveArray;
 import Wattos.Utils.StringArrayList;
 import Wattos.Utils.StringSet;
@@ -55,21 +56,21 @@ import com.braju.format.Parameters;
  * 'old/original residue number' concept.
  * <P>
  * Mappings<BR>
- * 
+ *
  * <PRE>
- * 
+ *
  * Wattos NMRSTAR 3.0 number _Entity_comp_index.Num pdb_number . id
  * _Entity_poly_seq.Comp_index_num (for polymers only)
- * 
+ *
  * </PRE>
- * 
+ *
  * <PRE>
- * 
+ *
  * Wattos PDB formatted files number created on the fly pdb_number pdb res
  * number id pdb res number
- * 
+ *
  * </PRE>
- * 
+ *
  * @author Jurgen F. Doreleijers
  * @version 1
  */
@@ -349,14 +350,14 @@ public class Residue extends GumboItem implements Serializable {
     }
 
     /**
-     * Returns the list of atoms in given residue
+     * Returns the list of atoms in given residue set.
      */
     public BitSet getAtoms(BitSet ridSet) {
         return SQLSelect.selectBitSet(dbms, gumbo.atom.mainRelation,
                 Gumbo.DEFAULT_ATTRIBUTE_SET_RES[RELATION_ID_COLUMN_NAME],
                 SQLSelect.OPERATION_TYPE_EQUALS, ridSet, false);
     }
-    
+
     /**
      * Convenience method. Returns NULL in case of none found.
      */
@@ -474,7 +475,7 @@ public class Residue extends GumboItem implements Serializable {
      * CST if this ever occurs).
      * <LI>Routine will print results but not store them for now.
      * </OL>
-     * 
+     *
      * The algorithm is simple.
      * <OL>
      * <LI>Loop1 over all selected bases Bx of the one selected entry (using
@@ -491,13 +492,13 @@ public class Residue extends GumboItem implements Serializable {
      * <LI>EndLoop1
      * <LI>
      * </OL>
-     * 
+     *
      * <P>
      * The 45 degree maximum angle between the base normals is as suggested by:
      * Ban,N., Nissen,P., Hansen,J., Moore,P.B. and Steitz,T.A. (2000). The
      * complete atomic structure of the large ribosomal subunit at 2.4 A
      * resolution. Science 289, 905-920. NB
-     * 
+     *
      * @see Entry#calcHydrogenBond
      * @param resInMaster
      *            residues in the master model
@@ -769,9 +770,9 @@ public class Residue extends GumboItem implements Serializable {
 
         /**
          * entry code entity code A residue number A residue name A
-         * 
+         *
          * entity code B residue number B residue name B
-         * 
+         *
          * 1jj2 1 19 G 2 469 C
          */
         Relation rel = null;
@@ -792,7 +793,7 @@ public class Residue extends GumboItem implements Serializable {
         if ( resultSize == 0 ) {
             General.showOutput("No sets of co-planar bases found", resultSize);
         } else {
-            rel.getNewRows(resultSize); 
+            rel.getNewRows(resultSize);
             General.showOutput("Results contains number of sets of co-planar bases: "
                             + resultSize);
     //        General.showOutput("Results with internal residue numbering:\n"
@@ -809,7 +810,7 @@ public class Residue extends GumboItem implements Serializable {
                     rel.setValue(i, 3 + (j * 3), nameList[resIdx]);
                     j++;
                 }
-            }            
+            }
             General.showOutput("Writing results to file: " + location);
             if ( ! rel.writeCsvFile(location, true)) {
                 General.showError("Failed to write");
@@ -839,7 +840,7 @@ public class Residue extends GumboItem implements Serializable {
         BitSet bs = getAtoms(j);
         for (int i=bs.nextSetBit(0);i>=0;i=bs.nextSetBit(i+1)) {
             float mass = gumbo.atom.getMass(i);
-            result += mass;            
+            result += mass;
         }
         return result;
     }
@@ -851,14 +852,14 @@ public class Residue extends GumboItem implements Serializable {
      * @return
      */
     public int getNeighbour(int res_rid, int distance) {
-        int resNumber = number[res_rid] + distance;        
+        int resNumber = number[res_rid] + distance;
         int molRid = molId[res_rid];
         BitSet residuesInSameMol = SQLSelect.selectCombinationBitSet(
                 gumbo.dbms,
                 mainRelation,
                 Relation.DEFAULT_ATTRIBUTE_NUMBER,                                    SQLSelect.OPERATION_TYPE_EQUALS, new Integer(resNumber),
                 Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[RelationSet.RELATION_ID_COLUMN_NAME], SQLSelect.OPERATION_TYPE_EQUALS, new Integer(molRid),
-                   SQLSelect.OPERATOR_AND, false );                
+                   SQLSelect.OPERATOR_AND, false );
         return residuesInSameMol.nextSetBit(0);
     }
 
@@ -868,8 +869,8 @@ public class Residue extends GumboItem implements Serializable {
     }
 
     /** Thru the atom sibling list get another model's residue rid for the given residue rid
-     * Remember first model is numbered zero.  
-     * */ 
+     * Remember first model is numbered zero.
+     * */
     public int getResRidFromModel( int resRid, int modelId ) {
         BitSet atomRidSet = getAtoms(resRid);
         if ( atomRidSet == null ) {
@@ -883,13 +884,13 @@ public class Residue extends GumboItem implements Serializable {
             General.showError(toString(resRid));
             return Defs.NULL_INT;
         }
-        int atomRidSpecificModel = gumbo.atom.modelSiblingIds[ atomRidFirstInRes ][ modelId ]; 
-        int  resRidSpecificModel = gumbo.atom.resId[ atomRidSpecificModel ]; 
+        int atomRidSpecificModel = gumbo.atom.modelSiblingIds[ atomRidFirstInRes ][ modelId ];
+        int  resRidSpecificModel = gumbo.atom.resId[ atomRidSpecificModel ];
 //        General.showDebug("Found for resRid: "+resRid+" resRidSpecificModel: "+ resRidSpecificModel+" for modelId: " + modelId + " and atomRidFirstInRes " + atomRidFirstInRes);
-        return resRidSpecificModel;                        
+        return resRidSpecificModel;
     }
 
-    /** Adds missing atoms based on TopologyLib for common residues. 
+    /** Adds missing atoms based on TopologyLib for common residues.
      * Adapted from PyMol algorithm in modules/chempy/place.py I presume
      * Greg Warren wrote it some time ago and in 2007 he mentioned
      * it was actually not being used in PyMol.
@@ -901,15 +902,15 @@ public class Residue extends GumboItem implements Serializable {
      * <P>
      * NB <li>Topology is nowhere near perfect and needs optimalization for
      * e.g. clashes aren't prevented.
-     * <li> Algorithm could work for adding all atoms if just one atom in the residue is 
+     * <li> Algorithm could work for adding all atoms if just one atom in the residue is
      * present but it's only tested on proteins and only adding protons.
      * <li> I think the algorithm could be much simpler and less repetitive
      * if only 1 atom in each round would be added. It would be a little slower
      * but probably not an issue.
-     * 
+     *
      * TODO: fix the algorithm for:
      * - OPs to P in nucleic acids.
-     * - HB Val  
+     * - HB Val
      * */
     public boolean addMissingAtoms(BitSet resInMaster) {
         double TET_TAN = 1.41;
@@ -920,7 +921,7 @@ public class Residue extends GumboItem implements Serializable {
         Bond    topBond     = topGumbo.bond;
         Atom    topAtom     = topGumbo.atom;
         Residue topRes      = topGumbo.res;
-                
+
         int resRidMaster=resInMaster.nextSetBit(0);
         if ( resRidMaster <0 ) {
             General.showOutput("No residues found in master skipping checkAtomNomenclature in Residue");
@@ -938,7 +939,7 @@ public class Residue extends GumboItem implements Serializable {
         BitSet atomsAddedAllCycles = new BitSet();
         /** First cycle will be numbered one */
         int ncycle = 0;
-                
+
         while ( true ) { // Iterate until no more atoms are added once.
             if ( ncycle != 0 ) {
                 if ( ! gumbo.entry.syncModels(entryRid)) {
@@ -958,13 +959,13 @@ public class Residue extends GumboItem implements Serializable {
             for (int i=0;i<need.length;i++) {
                 need[i] = new ArrayList();
             }
-            
+
             for (resRidMaster=resInMaster.nextSetBit(0);resRidMaster>=0;resRidMaster=resInMaster.nextSetBit(resRidMaster+1)) {
 //                General.showDebug("Working on master residue:");
 //                General.showDebug(toString(resRidMaster));
                 boolean isN_TerminalRes = isN_Terminal(resRidMaster);
                 boolean isC_TerminalRes = isC_Terminal(resRidMaster);
-                
+
                 BitSet atomSetMasterRes = getAtoms(resRidMaster);
                 if ( atomSetMasterRes.nextSetBit(0) < 0 ) {
     //                General.showDebug("Skipping residue without coordinate atoms");
@@ -974,42 +975,42 @@ public class Residue extends GumboItem implements Serializable {
                 for (int atomRid=atomSetMasterRes.nextSetBit(0);atomRid>=0;atomRid=atomSetMasterRes.nextSetBit(atomRid+1)) {
                     knownAtomNamesThisResidue.put(gumbo.atom.nameList[atomRid], null);
                 }
-                
+
                 String resName = nameList[resRidMaster];
                 boolean isCys_Res = resName.equals("CYS");
                 boolean isHis_Res = resName.equals("HIS");
-                BitSet resRidSetTop = SQLSelect.selectBitSet(topDbms, topRes.mainRelation, 
-                        Relation.DEFAULT_ATTRIBUTE_NAME, SQLSelect.OPERATION_TYPE_EQUALS, 
+                BitSet resRidSetTop = SQLSelect.selectBitSet(topDbms, topRes.mainRelation,
+                        Relation.DEFAULT_ATTRIBUTE_NAME, SQLSelect.OPERATION_TYPE_EQUALS,
                         resName, false);
                 int resRidTop = resRidSetTop.nextSetBit(0);
                 if ( resRidTop < 0 ) {
                     // Residue unknown to topology info
-                    continue; 
+                    continue;
                 }
                 /** Atoms in topologies residue */
-                BitSet atomRidResListTop = SQLSelect.selectBitSet(topDbms, topAtom.mainRelation, 
-                        Gumbo.DEFAULT_ATTRIBUTE_SET_RES[RELATION_ID_COLUMN_NAME], SQLSelect.OPERATION_TYPE_EQUALS, 
+                BitSet atomRidResListTop = SQLSelect.selectBitSet(topDbms, topAtom.mainRelation,
+                        Gumbo.DEFAULT_ATTRIBUTE_SET_RES[RELATION_ID_COLUMN_NAME], SQLSelect.OPERATION_TYPE_EQUALS,
                         new Integer(resRidTop), false);
                 /** For all atoms in real residue */
                 for (int atomRid=atomSetMasterRes.nextSetBit(0);atomRid>=0;atomRid=atomSetMasterRes.nextSetBit(atomRid+1)) {
 //                    General.showDebug("Working from known atom: " + gumbo.atom.toString(atomRid));
                     String atomName1 = gumbo.atom.nameList[atomRid];
                     /** The equivalent atom in topology residue; small table gives fast look up. */
-                    BitSet atomRidListTop = SQLSelect.selectBitSet(topDbms, topAtom.mainRelation, 
-                            Relation.DEFAULT_ATTRIBUTE_NAME, SQLSelect.OPERATION_TYPE_EQUALS, 
+                    BitSet atomRidListTop = SQLSelect.selectBitSet(topDbms, topAtom.mainRelation,
+                            Relation.DEFAULT_ATTRIBUTE_NAME, SQLSelect.OPERATION_TYPE_EQUALS,
                             atomName1, false);
                     atomRidListTop.and(atomRidResListTop);
                     int atomRidTop = atomRidListTop.nextSetBit(0);
                     if ( atomRidTop < 0 ) {
 //                        General.showDebug("Failed to find equivalent atom in wi topology; skipping this atom");
 //                        General.showDebug(gumbo.atom.toString(atomRid));
-                        continue; 
+                        continue;
                     }
-                    BitSet bondRidListA = SQLSelect.selectBitSet(topDbms, topBond.mainRelation, 
-                            Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, SQLSelect.OPERATION_TYPE_EQUALS, 
-                            new Integer(atomRidTop), false);                
-                    BitSet bondRidListB = SQLSelect.selectBitSet(topDbms, topBond.mainRelation, 
-                            Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, SQLSelect.OPERATION_TYPE_EQUALS, 
+                    BitSet bondRidListA = SQLSelect.selectBitSet(topDbms, topBond.mainRelation,
+                            Gumbo.DEFAULT_ATTRIBUTE_ATOM_A_ID, SQLSelect.OPERATION_TYPE_EQUALS,
+                            new Integer(atomRidTop), false);
+                    BitSet bondRidListB = SQLSelect.selectBitSet(topDbms, topBond.mainRelation,
+                            Gumbo.DEFAULT_ATTRIBUTE_ATOM_B_ID, SQLSelect.OPERATION_TYPE_EQUALS,
                             new Integer(atomRidTop), false);
                     BitSet bondRidListBoth = (BitSet) bondRidListA.clone();
                     bondRidListBoth.or(bondRidListB);
@@ -1021,9 +1022,9 @@ public class Residue extends GumboItem implements Serializable {
 //                    General.showDebug(topBond.toString(bondRidListA));
 //                    General.showDebug("For this atom found bonds B: ");
 //                    General.showDebug(topBond.toString(bondRidListB));
-    
+
                     /** List of atom top rids with missing coordinates bonded to this atom */
-                    BitSet miss = new BitSet(); 
+                    BitSet miss = new BitSet();
                     /** List of regular atom rids known */
                     BitSet know = new BitSet(); //
                     BitSet[] bondRidLoL = new BitSet[] { bondRidListA, bondRidListB };
@@ -1035,19 +1036,19 @@ public class Residue extends GumboItem implements Serializable {
                         }
                         for (int b=bondRidList.nextSetBit(0);b>=0;b=bondRidList.nextSetBit(b+1)) {
                             int bondedAtomTopRid = bonded_atom_id_list[b];
-                            String atomBondedName = topAtom.nameList[bondedAtomTopRid];                            
+                            String atomBondedName = topAtom.nameList[bondedAtomTopRid];
                             if ( isN_TerminalRes && Biochemistry.N_TERMINAL_ATOM_NAME_MAP.containsKey( atomBondedName )) {
 //                                General.showDebug("Skipping recalculation of below N terminal atoms for residue:");
 //                                General.showDebug( toString(resRidMaster));
 //                                General.showDebug( topAtom.toString(bondedAtomTopRid));
                                 continue;
-                            }                                
+                            }
                             if ( isC_TerminalRes && Biochemistry.C_TERMINAL_ATOM_NAME_MAP.containsKey( atomBondedName )) {
 //                                General.showDebug("Skipping recalculation of below C terminal atoms for residue:");
 //                                General.showDebug( toString(resRidMaster));
 //                                General.showDebug( topAtom.toString(bondedAtomTopRid));
                                 continue;
-                            }               
+                            }
                             if ( isCys_Res && atomBondedName.equals("HG") ) {
                                 if ( bondRidListBoth.cardinality()>=2 ) {
 //                                    General.showDebug("Cys doesn't need extra HG");
@@ -1064,8 +1065,8 @@ public class Residue extends GumboItem implements Serializable {
 //                                General.showDebug("His gets no HD1 as to prevent unusual charged state");
                                 continue;
                             }
-                            
-                            if ( knownAtomNamesThisResidue.containsKey(atomBondedName)) {                                
+
+                            if ( knownAtomNamesThisResidue.containsKey(atomBondedName)) {
                                 int bondedAtomRid = getAtomRid(atomSetMasterRes, atomBondedName);
                                 know.set(bondedAtomRid);
                             } else {
@@ -1074,7 +1075,7 @@ public class Residue extends GumboItem implements Serializable {
                         }
                     }
                     int nmiss = miss.cardinality();
-                    if ( nmiss > 0 ) {                        
+                    if ( nmiss > 0 ) {
 //                        General.showDebug("Finding atom with "+nmiss+" missing neighbor(s):");
 //                        General.showDebug(gumbo.atom.toString(atomRid));
 //                        General.showDebug("Missing:");
@@ -1085,13 +1086,13 @@ public class Residue extends GumboItem implements Serializable {
                         store.add(new Integer(atomRid));
                         store.add(miss);
                         store.add(know);
-                        /**append the missing atom idx list to the right element in the need list. 
+                        /**append the missing atom idx list to the right element in the need list.
                         e.g. if 2 atoms are missing it will be added to the need[1]*/
                         need[nmiss-1].add(store);
                     }
                 }
             } // done with getting 4 lists
-            
+
 //          For recalculating the backbone amide H rewrite the know list from CA to: CA and C from the preceding residue.
             for (int a=0;a<need[0].size();a++) {
                 ArrayList store = (ArrayList) need[0].get(a);
@@ -1103,7 +1104,7 @@ public class Residue extends GumboItem implements Serializable {
                 int atomRidH = miss.nextSetBit(0);
                 if (! topAtom.nameList[atomRidH].equals("H")) {
                     continue;
-                }                
+                }
                 BitSet know = (BitSet) store.get(2);
                 int resPrevRid = getNeighbour(gumbo.atom.resId[atom1Rid], -1);
                 if ( resPrevRid < 0 ) {
@@ -1112,7 +1113,7 @@ public class Residue extends GumboItem implements Serializable {
                 }
                 int atomRidC = gumbo.atom.getRidByAtomNameAndResRid("C", resPrevRid);
                 if ( atomRidC < 0 ) {
-                    General.showCodeBug("Didn't expect no C in preceding residue but I guess it's possible; coordinate for this backbone amide will be bad");                    
+                    General.showCodeBug("Didn't expect no C in preceding residue but I guess it's possible; coordinate for this backbone amide will be bad");
                     continue;
                 }
                 know.set(atomRidC);
@@ -1123,8 +1124,8 @@ public class Residue extends GumboItem implements Serializable {
 //                General.showDebug("Known B:");
 //                General.showDebug(gumbo.atom.toString(know));
             }
-            
-            
+
+
             /** At this point we know which atoms are missing for all models too because the
              * atoms were sync-ed. The easiest way with least amount of programming is to extend the need
              * list to include the other model's atom ids too.
@@ -1159,19 +1160,19 @@ public class Residue extends GumboItem implements Serializable {
                         ArrayList storeNextModel = new ArrayList();
                         needThis.add( storeNextModel );
                         storeNextModel.add( new Integer( modelSiblingAtomIds[m]));
-                        storeNextModel.add( miss.clone());                        
+                        storeNextModel.add( miss.clone());
                         BitSet knowNextModel = new BitSet();
-                        storeNextModel.add( knowNextModel );                        
+                        storeNextModel.add( knowNextModel );
                         for (int k=know.nextSetBit(0);k>=0;k=know.nextSetBit(k+1)) {
                             knowNextModel.set( gumbo.atom.modelSiblingIds[k][m]);
                         }
 //                        General.showDebug("Needed ["+i+"] extra for model: "+(m+1)+" atom: " + gumbo.atom.toString(modelSiblingAtomIds[m]));
-                    }                    
+                    }
                 }
             }
-            
-            
-            
+
+
+
             BitSet atomsAddedThisCycle = new BitSet();
 
             // ---1--- missing only ONE atom
@@ -1181,15 +1182,15 @@ public class Residue extends GumboItem implements Serializable {
                 int atom1Rid = ((Integer) store.get(0)).intValue(); // atom idx of anchor; atom with known coordinates
 //                General.showDebug("Doing anchor atom " +a + " that needs only ONE atom added: " + gumbo.atom.toString(atom1Rid));
                 BitSet miss = (BitSet) store.get(1);
-                BitSet know = (BitSet) store.get(2);                
+                BitSet know = (BitSet) store.get(2);
                 int resRid = gumbo.atom.resId[atom1Rid];
                 String resName = nameList[resRid];
                 String atomName1 = gumbo.atom.nameList[atom1Rid];
                 int atom2Rid = miss.nextSetBit(0); // FIRST atom idx with missing coor.
                 String atomName2 = topAtom.nameList[atom2Rid];
-                
+
                 double bondLenght = topBond.getBondLength(resName, atomName1, atomName2);
-                
+
                 /** JFD Is the known coordinate atom's type in a nonlinear arrangement?
                 E.g. OW is nonlinear but others are: tetrahedral and planar
                 dictionaries are used for fast lookup
@@ -1206,115 +1207,115 @@ public class Residue extends GumboItem implements Serializable {
                         int atom4Rid = near[1];
                         if (atom3Type==AtomLibAmber.DEFAULT_ATOM_TYPE_PLANAR_ID) {
 //                          # At this point atoms could be in a TYR:
-//                          #    1 OH the anchor             
+//                          #    1 OH the anchor
 //                          #    2 HH the unknown                 OH<-d1-CZ-d2->CE1
 //                          #    3 CZ the secondary with          |
 //                          #    4 CE1 helper both known.         |p2,v?
 //                          #                                     HH
-                            double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid); 
+                            double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid);
                             double[] p0 = Geometry3D.normalize(d1);
                             double[] d2 = gumbo.atom.getVector( atom4Rid, atom3Rid);
-                            /** p1 is the vector defining the plane of all involved atoms */ 
-                            double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0)); 
-                            /** p2 is the vector that almost points to the new bond; it's in the p1 defined plane */ 
+                            /** p1 is the vector defining the plane of all involved atoms */
+                            double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0));
+                            /** p2 is the vector that almost points to the new bond; it's in the p1 defined plane */
                             double[] p2 = Geometry3D.normalize( Geometry3D.crossProduct(p0,p1));
-                            /** Next op is needed for getting the 120 degree bond angles */ 
+                            /** Next op is needed for getting the 120 degree bond angles */
                             double[] v  = Geometry3D.scale( p2,TRI_TAN );
 //                            General.showDebug("v : " + Geometry3D.vectorToString(v));
                                      v =  Geometry3D.normalize( Geometry3D.add( p0, v ));
                             double[] coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                                     Geometry3D.scale(v,bondLenght));
-                            int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                            int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                             atomsAddedThisCycle.set(newAtomIdx);
                         } else { // Ser, Cys, Thr hydroxyl hydrogens
 //                             # At this point atoms could be in a CYS:
-//                             #    1 SG Anchor           4      3      1     2  
+//                             #    1 SG Anchor           4      3      1     2
 //                             #    2 HG The unknown     CA--d2->CB-----SG----HG
-//                             #    3 CB the secondary with          
-//                             #    4 CA helper both known.          
+//                             #    3 CB the secondary with
+//                             #    4 CA helper both known.
                             /** # same direction as CA-CB */
                             double[] d2 = gumbo.atom.getVector( atom3Rid, atom4Rid);
                             double[] v  = Geometry3D.normalize( d2 );
                             double[] coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
-                                    Geometry3D.scale(v,bondLenght));                            
-                            int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                                    Geometry3D.scale(v,bondLenght));
+                            int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                             atomsAddedThisCycle.set(newAtomIdx);
                         } // end of 3 is planar check
                     // when no known secondaries with it's neighbours known could be found but there are known
-                    } else if ( know.nextSetBit(0) >= 0 ) { 
+                    } else if ( know.nextSetBit(0) >= 0 ) {
                         double[] d2 = new double[] { 1,0,0 };
                         int atom3Rid = know.nextSetBit(0);
 //                        int atom3Type = gumbo.atom.type[gumbo.atom.masterAtomId[ atom3Rid]];
 //                        General.showDebug("Atom 3 is of type: " + AtomLibAmber.DEFAULT_ATOM_TYPE_STRING_LIST[atom3Type]);
 //                                         At this point atoms could be in a PHE:
-//                                             1 CD1 the anchor             
+//                                             1 CD1 the anchor
 //                                             2 HD1 the unknown                 CD1<p0-CE1
 //                                             3 CE1 the secondary with          |
 //                                                                               |p2,v?
-//                                                                               HD1                        
-                        double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid); 
+//                                                                               HD1
+                        double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid);
                         double[] p0 = Geometry3D.normalize(d1);
-                        /** # if p0 is same as assumed d2 this will give the zero vector */ 
-                        double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0)); 
-                        /** Next op is needed for getting the 120 degree bond angles */ 
+                        /** # if p0 is same as assumed d2 this will give the zero vector */
+                        double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0));
+                        /** Next op is needed for getting the 120 degree bond angles */
                         double[] v  = Geometry3D.scale( p1,TET_TAN );
                                  v  = Geometry3D.normalize( Geometry.sub( p0,v ));
                         /** above condition will place the HD1 on top of CD1. */
                         double[] coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                                 Geometry3D.scale(v,bondLenght));
-                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                         atomsAddedThisCycle.set(newAtomIdx);
                     } else { // placed on a random position at bond length if no attached atom was known.
-                        double[] coor = Geometry3D.randomSphere( gumbo.atom.getVector( atom1Rid), bondLenght);                        
-                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                        double[] coor = Geometry3D.randomSphere( gumbo.atom.getVector( atom1Rid), bondLenght);
+                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                         atomsAddedThisCycle.set(newAtomIdx);
                     }
                 } else if ( atom1Type == AtomLibAmber.DEFAULT_ATOM_TYPE_TETRAHEDRAL_ID ) {
 //                  General.showDebug("Now in common case for like a MET HA, VAL HB, ..");
                   //                  # At this point atoms could be in a MET:
-                  //                  #                                  CB or something 
-                  //                  #    1 CA Anchor           3       1      4  
+                  //                  #                                  CB or something
+                  //                  #    1 CA Anchor           3       1      4
                   //                  #    2 HA  The unknown     N---d1--CA-d2--C
                   //                  #    3 CA                          |
-                  //                  #    4 SG                          HA 2 
+                  //                  #    4 SG                          HA 2
                   //                  # At this point atoms could be in a VAL:
-                  //                  #                                  
-                  //                  #    1 CB Anchor           3       1      4  
+                  //                  #
+                  //                  #    1 CB Anchor           3       1      4
                   //                  #    2 HG  The unknown    CA---d1--CB-d2--CG1
                   //                  #    3 CA                          |
                   //                  #    4 CG1                         HG 2
-                  int atom3Rid = know.nextSetBit(0);                    
+                  int atom3Rid = know.nextSetBit(0);
                   int atom4Rid = know.nextSetBit(atom3Rid+1);
 //                  General.showDebug("Atom 3: " + gumbo.atom.toString(atom3Rid));
 //                  General.showDebug("Atom 4: " + gumbo.atom.toString(atom4Rid));
                   double[] v  = Geometry3D.getNullVector();
-                  double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid); 
+                  double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid);
                   double[] d2 = gumbo.atom.getVector( atom1Rid, atom4Rid);
                            v  = Geometry3D.add( Geometry3D.normalize( d1),Geometry3D.normalize(d2));
-                  double[] p0 = Geometry3D.normalize( v ); 
-                  double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0)); 
+                  double[] p0 = Geometry3D.normalize( v );
+                  double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0));
                            v  = Geometry3D.scale( p1,TET_TAN ); // TODO: for VAL HB this should be minus factor.
                   double[] v2  = Geometry3D.normalize( Geometry3D.add( p0,v ));
                   double[] coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                           Geometry3D.scale(v2,bondLenght));
-                  if ( gumbo.atom.isCloseTo( coor, know, .8f)) { 
+                  if ( gumbo.atom.isCloseTo( coor, know, .8f)) {
 //                      General.showDebug("Found at least one atom too close; going opposite.");
                       v    = Geometry3D.scale( p1,-TET_TAN );
                       v2   = Geometry3D.normalize( Geometry3D.add( p0,v ));
-                      coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),                      
+                      coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                               Geometry3D.scale(v2,bondLenght));
                   }
                   // TODO: check for clash? and if so; pick minus factor?
-                  int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                  int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                   atomsAddedThisCycle.set(newAtomIdx);
 //                  General.showDebug("Added atom: " + gumbo.atom.toString(newAtomIdx));
 //                } else if ( atom1Type == AtomLibAmber.DEFAULT_ATOM_TYPE_PLANAR_ID ) {
 //                    General.showDebug("Now in common case for like a MET N for calculating it's amide proton");
 //                    //                  # At this point atoms could be in a MET:
-//                    //                  #    1 N Anchor                    1      3    4  
+//                    //                  #    1 N Anchor                    1      3    4
 //                    //                  #    2 H   The unknown            -N-d2--CA----C
 //                    //                  #    3 CA                          |
-//                    //                  #    4 C                           H  2 
+//                    //                  #    4 C                           H  2
 //                    int[] near = findKnownSecondary(atom1Rid,know);
 //                    if ( near == null ) {
 //                        General.showCodeBug("Didn't expect no nears for planar anchor: " + gumbo.atom.toString(atom1Rid));
@@ -1322,32 +1323,32 @@ public class Residue extends GumboItem implements Serializable {
 //                    }
 //                    int atom3Rid = near[0];
 //                    int atom4Rid = near[1];
-//                    double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid); 
+//                    double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid);
 //                    double[] p0 = Geometry3D.normalize(d1);
 //                    double[] d2 = gumbo.atom.getVector( atom4Rid, atom3Rid);
-//                    double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0)); 
+//                    double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0));
 //                    double[] p2 = Geometry3D.normalize( Geometry3D.crossProduct(p0,p1));
 //                    double[] v  = Geometry3D.scale( p2,-TRI_TAN );
 //                             v  = Geometry3D.normalize( Geometry3D.add( p0,v ));
 //                    double[] coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
 //                            Geometry3D.scale(v,bondLenght));
-//                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+//                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
 //                    atomsAddedThisCycle.set(newAtomIdx);
                 } else if ( know.nextSetBit(0) > 0 ) { // linear sum...amide, tbu, etc
                     double[] v = Geometry3D.getNullVector();
                     for (int b=know.nextSetBit(0);b>=0;b=know.nextSetBit(b+1)) {
-                        double[] d = gumbo.atom.getVector( atom1Rid, b); 
-                        v  = Geometry3D.add( v,Geometry3D.normalize(d) );                        
+                        double[] d = gumbo.atom.getVector( atom1Rid, b);
+                        v  = Geometry3D.add( v,Geometry3D.normalize(d) );
                     }
                     v  = Geometry3D.normalize(v);
                     double[] coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                             Geometry3D.scale(v,bondLenght));
-                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
-                    atomsAddedThisCycle.set(newAtomIdx);                    
+                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
+                    atomsAddedThisCycle.set(newAtomIdx);
                 } else {
-                    double[] coor = Geometry3D.randomSphere( gumbo.atom.getVector( atom1Rid), bondLenght);                        
-                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
-                    atomsAddedThisCycle.set(newAtomIdx);                    
+                    double[] coor = Geometry3D.randomSphere( gumbo.atom.getVector( atom1Rid), bondLenght);
+                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
+                    atomsAddedThisCycle.set(newAtomIdx);
                 }
             } // end of adding ONE
 
@@ -1358,14 +1359,14 @@ public class Residue extends GumboItem implements Serializable {
                 ArrayList store = (ArrayList) need[1].get(a);
                 int atom1Rid = ((Integer) store.get(0)).intValue(); // atom idx of anchor; atom with known coordinates
                 BitSet miss = (BitSet) store.get(1);
-                BitSet know = (BitSet) store.get(2);                
+                BitSet know = (BitSet) store.get(2);
                 int resRid = gumbo.atom.resId[atom1Rid];
                 String resName = nameList[resRid];
                 String atomName1 = gumbo.atom.nameList[atom1Rid];
                 int atom2Rid = miss.nextSetBit(0); // FIRST atom idx with missing coor.
-                String atomName2 = topAtom.nameList[atom2Rid];                
+                String atomName2 = topAtom.nameList[atom2Rid];
                 double bondLenght = topBond.getBondLength(resName, atomName1, atomName2);
-                
+
                 int atom1Type = gumbo.atom.type[gumbo.atom.masterAtomId[ atom1Rid]];
 //                General.showDebug(gumbo.atom.toString(atom1Rid));
                 if ( Defs.isNull(atom1Type)) {
@@ -1379,107 +1380,107 @@ public class Residue extends GumboItem implements Serializable {
 //                        General.showDebug("Found near: " + near );
                         int atom3Rid = near[0];
                         int atom4Rid = near[1];
-                        double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid); 
+                        double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid);
                         double[] p0 = Geometry3D.normalize(d1);
                         double[] d2 = gumbo.atom.getVector( atom4Rid, atom3Rid);
-                        double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0)); 
+                        double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0));
                         double[] p2 = Geometry3D.normalize( Geometry3D.crossProduct(p0,p1));
                         double[] v  = Geometry3D.scale( p2,TRI_TAN );
                                  v  = Geometry3D.normalize( Geometry3D.add( p0,v ));
                         double[] coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                                 Geometry3D.scale(v,bondLenght));
-                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                         atomsAddedThisCycle.set(newAtomIdx);
                                  v  = Geometry3D.scale( p2, -TRI_TAN );
                                  v  = Geometry3D.normalize( Geometry3D.add( p0,v ));
                         int atom2Rid2 = miss.nextSetBit(atom2Rid+1); // SECOND atom idx with missing coor.
-                        String atomName22 = topAtom.nameList[atom2Rid2];                
-                        double bondLenght2 = topBond.getBondLength(resName, atomName1, atomName22);                                 
+                        String atomName22 = topAtom.nameList[atom2Rid2];
+                        double bondLenght2 = topBond.getBondLength(resName, atomName1, atomName22);
                         double[] coor2 = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                              Geometry3D.scale(v,bondLenght2));
-                        int newAtomIdx2 = gumbo.atom.add(atomName22, coor2, resRid);   
+                        int newAtomIdx2 = gumbo.atom.add(atomName22, coor2, resRid);
                         atomsAddedThisCycle.set(newAtomIdx2);
                     } else if ( know.nextSetBit(0) >= 0 ) {// no 1-4 found
-//                        General.showDebug("Found NO near but have a know.");                        
+//                        General.showDebug("Found NO near but have a know.");
                         double[] d2 = new double[] { 1,0,0 };
                         int atom3Rid = know.nextSetBit(0);
-                        double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid); 
+                        double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid);
                         double[] p0 = Geometry3D.normalize(d1);
-                        double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0)); 
+                        double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0));
                         double[] p2 = Geometry3D.normalize( Geometry3D.crossProduct(p0,p1));
                         double[] v  = Geometry3D.scale( p2,TRI_TAN );
                                  v  = Geometry3D.normalize( Geometry.sub( p0,v ));
                         double[] coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                                 Geometry3D.scale(v,bondLenght));
-                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                         atomsAddedThisCycle.set(newAtomIdx);
                                 v  = Geometry3D.scale( p2, -TRI_TAN );
                                 v  = Geometry3D.normalize( Geometry3D.add( p0,v ));
                         int atom2Rid2 = miss.nextSetBit(atom2Rid+1); // SECOND atom idx with missing coor.
-                        String atomName22 = topAtom.nameList[atom2Rid2];                
-                        double bondLenght2 = topBond.getBondLength(resName, atomName1, atomName22);                                 
+                        String atomName22 = topAtom.nameList[atom2Rid2];
+                        double bondLenght2 = topBond.getBondLength(resName, atomName1, atomName22);
                         double[] coor2 = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                             Geometry3D.scale(v,bondLenght2));
-                        int newAtomIdx2 = gumbo.atom.add(atomName22, coor2, resRid);   
+                        int newAtomIdx2 = gumbo.atom.add(atomName22, coor2, resRid);
                         atomsAddedThisCycle.set(newAtomIdx2);
                     } else { // Doesn't calculate the second.
-                        double[] coor = Geometry3D.randomSphere( gumbo.atom.getVector( atom1Rid), bondLenght);                        
-                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                        double[] coor = Geometry3D.randomSphere( gumbo.atom.getVector( atom1Rid), bondLenght);
+                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                         atomsAddedThisCycle.set(newAtomIdx);
-                    }                        
+                    }
                 } else if ( know.cardinality()>=2 ) {
 //                    General.showDebug("Now in common case for like a Cys HB2");
 //                        # At this point atoms could be in a CYS:
-//                        #    1 CB Anchor           3       1      4  
+//                        #    1 CB Anchor           3       1      4
 //                        #    2 HB2 The unknown     CA--d1--CB-d2--SG
 //                        #    3 CA                          |
 //                        #    4 SG                          HB2 (and HB3 later)
-                    int atom3Rid = know.nextSetBit(0);                    
+                    int atom3Rid = know.nextSetBit(0);
                     int atom4Rid = know.nextSetBit(atom3Rid+1);
                     double[] v  = Geometry3D.getNullVector();
-                    double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid); 
+                    double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid);
                     double[] d2 = gumbo.atom.getVector( atom1Rid, atom4Rid);
                              v  = Geometry3D.add( Geometry3D.normalize( d1),Geometry3D.normalize(d2));
-                    double[] p0 = Geometry3D.normalize( v ); 
-                    double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0)); 
+                    double[] p0 = Geometry3D.normalize( v );
+                    double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0));
                              v  = Geometry3D.scale( p1,TET_TAN );
                              v  = Geometry3D.normalize( Geometry3D.add( p0,v ));
                     double[] coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                             Geometry3D.scale(v,bondLenght));
-                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                     atomsAddedThisCycle.set(newAtomIdx);
                              v  = Geometry3D.scale( p1, -TET_TAN );
                              v  = Geometry3D.normalize( Geometry3D.add( p0,v ));
                     int atom2Rid2 = miss.nextSetBit(atom2Rid+1); // SECOND atom idx with missing coor.
-                    String atomName22 = topAtom.nameList[atom2Rid2];                
-                    double bondLenght2 = topBond.getBondLength(resName, atomName1, atomName22);                                 
+                    String atomName22 = topAtom.nameList[atom2Rid2];
+                    double bondLenght2 = topBond.getBondLength(resName, atomName1, atomName22);
                     double[] coor2 = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                          Geometry3D.scale(v,bondLenght2));
-                    int newAtomIdx2 = gumbo.atom.add(atomName22, coor2, resRid);   
-                    atomsAddedThisCycle.set(newAtomIdx2);                    
+                    int newAtomIdx2 = gumbo.atom.add(atomName22, coor2, resRid);
+                    atomsAddedThisCycle.set(newAtomIdx2);
                 } else {
                     if ( know.cardinality()==1) {
                         double[] d2 = new double[] { 1,0,0 };
                         int atom3Rid = know.nextSetBit(0);
-                        double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid); 
+                        double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid);
                         double[] p0 = Geometry3D.normalize(d1);
-                        double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0)); 
+                        double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0));
                         double[] v  = Geometry3D.scale( p1,TET_TAN );
                                  v  = Geometry3D.normalize( Geometry3D.add( p0,v ));
                         double[] coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                                 Geometry3D.scale(v,bondLenght));
-                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                         atomsAddedThisCycle.set(newAtomIdx);
                         //TODO: add the second atom here e.g. for OP1/OP2 added on P?
                     } else { // blind
-                        double[] coor = Geometry3D.randomSphere( gumbo.atom.getVector( atom1Rid), bondLenght);                        
-                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
-                        atomsAddedThisCycle.set(newAtomIdx);                        
+                        double[] coor = Geometry3D.randomSphere( gumbo.atom.getVector( atom1Rid), bondLenght);
+                        int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
+                        atomsAddedThisCycle.set(newAtomIdx);
                     }
-                    //#JFD not really needed to add second atom now right? It can be done in next round.                    
+                    //#JFD not really needed to add second atom now right? It can be done in next round.
                 }
             } // end of adding TWO
-            
+
             // ---3--- missing three atoms
             ntodo = 3;
             for (int a=0;a<need[ntodo-1].size();a++) {
@@ -1487,55 +1488,55 @@ public class Residue extends GumboItem implements Serializable {
                 ArrayList store = (ArrayList) need[ntodo-1].get(a);
                 int atom1Rid = ((Integer) store.get(0)).intValue(); // atom idx of anchor; atom with known coordinates
                 BitSet miss = (BitSet) store.get(1);
-                BitSet know = (BitSet) store.get(2);                
+                BitSet know = (BitSet) store.get(2);
                 int resRid = gumbo.atom.resId[atom1Rid];
                 String resName = nameList[resRid];
                 String atomName1 = gumbo.atom.nameList[atom1Rid];
                 int atom2Rid = miss.nextSetBit(0); // FIRST atom idx with missing coor.
-                String atomName2 = topAtom.nameList[atom2Rid];                
+                String atomName2 = topAtom.nameList[atom2Rid];
                 double bondLenght = topBond.getBondLength(resName, atomName1, atomName2);
-                
+
                 int[] near = findKnownSecondary(atom1Rid,know);
                 if ( near != null ) {
                     int atom3Rid = near[0];
                     int atom4Rid = near[1];
                     /**   # At this point atoms could be in a VAL:
-//                        #    1 CG1 Anchor      4    3       1        
+//                        #    1 CG1 Anchor      4    3       1
 //                        #    2 HG11 Unknown    CA--CB--d1--CG1
 //                        #    3 CB                          |
 //                        #    4 CA                          HG11   2                     */
-                    double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid); 
+                    double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid);
                     double[] p0 = Geometry3D.normalize(d1);
                     double[] d2 = gumbo.atom.getVector( atom4Rid, atom3Rid);
-                    double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0)); 
+                    double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0));
                     double[] p2 = Geometry3D.normalize( Geometry3D.crossProduct(p0,p1));
                     double[] v  = Geometry3D.scale( p2,-TET_TAN );
                              v  = Geometry3D.normalize( Geometry3D.add( p0,v ));
                     double[] coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                             Geometry3D.scale(v,bondLenght));
-                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                     atomsAddedThisCycle.set(newAtomIdx);
                 } else if ( know.nextSetBit(0) >= 0 ) {// fall-back
                     /** Note the the python code referenced p0 which wasn't defined yet. */
                     double[] d2 = new double[] { 1,0,0 };
                     int atom3Rid = know.nextSetBit(0);
-                    double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid); 
+                    double[] d1 = gumbo.atom.getVector( atom1Rid, atom3Rid);
                     double[] p0 = Geometry3D.normalize(d1);
-                    double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0)); 
+                    double[] p1 = Geometry3D.normalize( Geometry3D.crossProduct(d2,p0));
                     double[] v  = Geometry3D.scale( p1,TET_TAN );
                              v  = Geometry3D.normalize( Geometry3D.add( p0,v ));
                     double[] coor = Geometry3D.add( gumbo.atom.getVector( atom1Rid),
                             Geometry3D.scale(v,bondLenght));
-                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                     atomsAddedThisCycle.set(newAtomIdx);
                 } else { //  worst case: add one and get rest next time around
-                    double[] coor = Geometry3D.randomSphere( gumbo.atom.getVector( atom1Rid), bondLenght);                        
-                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                    double[] coor = Geometry3D.randomSphere( gumbo.atom.getVector( atom1Rid), bondLenght);
+                    int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                     atomsAddedThisCycle.set(newAtomIdx);
-                }                        
+                }
             } // end of adding THREE
-            
-            
+
+
             // ---4--- missing four atoms
             ntodo = 4;
             for (int a=0;a<need[ntodo-1].size();a++) {
@@ -1547,15 +1548,15 @@ public class Residue extends GumboItem implements Serializable {
                 String resName = nameList[resRid];
                 String atomName1 = gumbo.atom.nameList[atom1Rid];
                 int atom2Rid = miss.nextSetBit(0); // FIRST atom idx with missing coor.
-                String atomName2 = topAtom.nameList[atom2Rid];                
+                String atomName2 = topAtom.nameList[atom2Rid];
                 double bondLenght = topBond.getBondLength(resName, atomName1, atomName2);
                 /** add coordinate and get the rest next time around */
-                double[] coor = Geometry3D.randomSphere( gumbo.atom.getVector( atom1Rid), bondLenght);                        
-                int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);   
+                double[] coor = Geometry3D.randomSphere( gumbo.atom.getVector( atom1Rid), bondLenght);
+                int newAtomIdx = gumbo.atom.add(atomName2, coor, resRid);
                 atomsAddedThisCycle.set(newAtomIdx);
-            }                
-            
-            
+            }
+
+
             atomsAddedAllCycles.or(atomsAddedThisCycle);
             gumbo.resetConvenienceVariables();
             gumbo.removeAllIndices();
@@ -1581,13 +1582,13 @@ public class Residue extends GumboItem implements Serializable {
 //        General.showOutput(gumbo.atom.toString(atomsAddedAllCycles));
         return true;
     }
-    
-    /** Returns null if none found 
+
+    /** Returns null if none found
     Finds none or two atoms with one of them being in the known list
     and the other one also has known coordinates and is preferably not
     a hydrogen.
     Note that special care needs to be given to the fact that bond info
-    is defined on master atoms only; i.e. the first model in an entry.    
+    is defined on master atoms only; i.e. the first model in an entry.
     */
     private int[] findKnownSecondary(int atomAnchorRid, BitSet know) {
         int atomAnchorMasterRid = gumbo.atom.masterAtomId[ atomAnchorRid ];
@@ -1596,13 +1597,13 @@ public class Residue extends GumboItem implements Serializable {
 //        General.showDebug("findKnownSecondary known         : " + gumbo.atom.toString(know));
 //        General.showDebug("findKnownSecondary anchor master : " + gumbo.atom.toString(atomAnchorMasterRid));
 //        General.showDebug("findKnownSecondary known master  : " + gumbo.atom.toString(knowMaster));
-        
+
         /** Store none preferred hydrogens as secondaries in case no other were found */
         ArrayList h_list = new ArrayList();
 //        General.showDebug(gumbo.bond.toString(gumbo.bond.used));
         /** Starting at 1 for model 1 */
         int modelNumber = gumbo.model.number[ gumbo.atom.modelId[atomAnchorRid] ];
-        for (int atomRidMasterKnown=knowMaster.nextSetBit(0);atomRidMasterKnown>=0;atomRidMasterKnown=knowMaster.nextSetBit(atomRidMasterKnown+1)) {            
+        for (int atomRidMasterKnown=knowMaster.nextSetBit(0);atomRidMasterKnown>=0;atomRidMasterKnown=knowMaster.nextSetBit(atomRidMasterKnown+1)) {
             BitSet bondRidList = gumbo.bond.getBondListForAtomRid( atomRidMasterKnown );
 //            General.showDebug("Found number of bonds: " + bondRidList.cardinality());
             int atomRidKnown = gumbo.atom.getAtomRidFromMasterRidAndModelNumber( atomRidMasterKnown, modelNumber);
@@ -1613,8 +1614,8 @@ public class Residue extends GumboItem implements Serializable {
                     atom2MasterRid = gumbo.bond.atom_B_Id[bondRid];
                 }
                 int atom2Rid = gumbo.atom.getAtomRidFromMasterRidAndModelNumber( atom2MasterRid, modelNumber);
-//                General.showDebug("     to master atom: " + gumbo.atom.toString(atom2MasterRid));                
-//                General.showDebug("     to        atom: " + gumbo.atom.toString(atom2Rid));                
+//                General.showDebug("     to master atom: " + gumbo.atom.toString(atom2MasterRid));
+//                General.showDebug("     to        atom: " + gumbo.atom.toString(atom2Rid));
                 if ( atom2MasterRid != atomAnchorMasterRid ) {
                     // Obviously atom 2 has real coordinates already.
                     if ( gumbo.atom.elementId[atom2MasterRid] != Chemistry.ELEMENT_ID_HYDROGEN ) {
@@ -1625,8 +1626,8 @@ public class Residue extends GumboItem implements Serializable {
                     } else {
                         h_list.add( new int[] { atomRidKnown, atom2Rid } );
                     }
-                }                
-            }                        
+                }
+            }
         }
         if (h_list.size()>0) {
             int[] ar = (int[] ) h_list.get(0);
@@ -1639,7 +1640,7 @@ public class Residue extends GumboItem implements Serializable {
         return null;
     }
 
-    /** Corrects when asked. All models will be done for the given master residues. 
+    /** Corrects when asked. All models will be done for the given master residues.
      * */
     public boolean checkAtomNomenclature(boolean doCorrect, BitSet resInMaster) {
         int swapCount = 0;
@@ -1677,7 +1678,7 @@ public class Residue extends GumboItem implements Serializable {
 //                General.showDebug(toString(resRid));
                 BitSet atomSet = getAtoms(resRid);
                 String resName = nameList[resRid];
-                
+
                 HashMap recordListByResName = (HashMap) atomNomenLib.recordList.get(resName);
                 if ( recordListByResName == null ) {
                     continue;
@@ -1698,11 +1699,11 @@ public class Residue extends GumboItem implements Serializable {
                             case AtomNomenLib.DEFAULT_PROCHIRAL_DEFINITIONS_OXYGENS_ON_PHOSPHATES:
                             case AtomNomenLib.DEFAULT_PROCHIRAL_DEFINITIONS_ISOPROPYL_CH3_2_ON_VAL_AND_LEU: {
                                 // Example as if from e.g. PRO CB
-                                int atomRidHB2  = getAtomRid (atomSet, recordAtomList.getString(0)); 
-                                int atomRidHB3  = getAtomRid (atomSet, recordAtomList.getString(1)); 
+                                int atomRidHB2  = getAtomRid (atomSet, recordAtomList.getString(0));
+                                int atomRidHB3  = getAtomRid (atomSet, recordAtomList.getString(1));
                                 int atomRidCB   = getAtomRid (atomSet, recordAtomList.getString(2)); // not really needed.
-                                int atomRidCA   = getAtomRid (atomSet, recordAtomList.getString(3)); 
-                                int atomRidCG   = getAtomRid (atomSet, recordAtomList.getString(4)); 
+                                int atomRidCA   = getAtomRid (atomSet, recordAtomList.getString(3));
+                                int atomRidCG   = getAtomRid (atomSet, recordAtomList.getString(4));
                                 /** Special cased PRO non-N-term below to avoid warning on missing atoms.*/
                                 if ( stereoType==AtomNomenLib.DEFAULT_PROCHIRAL_DEFINITIONS_SEC_AMINO_NH2_ON_PRO_N_TERMINUS &&
                                         resName.equals("PRO") && (getNeighbour(resRid, -1)>=0)) {
@@ -1725,7 +1726,7 @@ public class Residue extends GumboItem implements Serializable {
                                     General.showWarning(toString(resRid));
                                     General.showWarning("This atom record list:");
                                     General.showWarning(recordAtomList.toString());
-                                    continue;                        
+                                    continue;
                                 }
                                 if ( stereoType == AtomNomenLib.DEFAULT_PROCHIRAL_DEFINITIONS_OXYGENS_ON_PHOSPHATES ) {
                                     // Make sure we get the previous atoms' O3' Not so easy.
@@ -1742,19 +1743,19 @@ public class Residue extends GumboItem implements Serializable {
                                         General.showWarning(toString(resRid));
                                         General.showWarning("This atom record list:");
                                         General.showWarning(recordAtomList.toString());
-                                        continue;                        
+                                        continue;
                                     }
                                 }
 //                                General.showDebug("Checking stereo atom type: " + stereoType + " : " + gumbo.atom.toString(atomRidCB));
                                 double correctAngle = gumbo.atom.calcDihedral(
-                                        atomRidHB2, 
-                                        atomRidHB3, 
-                                        atomRidCA, 
-                                        atomRidCG); 
+                                        atomRidHB2,
+                                        atomRidHB3,
+                                        atomRidCA,
+                                        atomRidCG);
                                 double incorrectAngle = gumbo.atom.calcDihedral(
                                         atomRidHB3,
-                                        atomRidHB2, 
-                                        atomRidCA, 
+                                        atomRidHB2,
+                                        atomRidCA,
                                         atomRidCG);
                                 // toMinusPIPlusPIRange was called already
                                 final double refAngleType0 = 72;
@@ -1768,7 +1769,7 @@ public class Residue extends GumboItem implements Serializable {
                                 }
                                 double diffCorrectAngle   = Geometry.differenceAngles(correctAngle,  refAngle);
                                 double diffIncorrectAngle = Geometry.differenceAngles(incorrectAngle,refAngle);
-                                
+
                                 if ( Math.abs( diffCorrectAngle ) > Math.abs( diffIncorrectAngle ) ) {
 //                                    General.showDebug(gumbo.atom.toString(atomRidHB2));
 //                                    General.showDebug(gumbo.atom.toString(atomRidHB3));
@@ -1784,27 +1785,27 @@ public class Residue extends GumboItem implements Serializable {
                                         gumbo.atom.swapNames( atomRidHB2, atomRidHB3 );
                                         for (int k=5;k<recordAtomList.size();k++) {
                                             String atomNameExtra = recordAtomList.getString(k);
-                                            int atomRidExtra  = getAtomRid (atomSet, atomNameExtra); 
+                                            int atomRidExtra  = getAtomRid (atomSet, atomNameExtra);
                                             if ( Defs.isNull(atomRidExtra) ) {
                                                 General.showWarning("Atom not found for swappping: " +atomNameExtra);
                                                 continue;
-                                            } 
+                                            }
                                             General.showDebug(gumbo.atom.toString(atomRidExtra));
                                             gumbo.atom.swapNameForStereo( atomRidExtra );
                                         }
                                     }
                                 }
                                 break;
-                            }                                                       
-                            case AtomNomenLib.DEFAULT_PROCHIRAL_DEFINITIONS_AROMATIC_C_AND_H_ON_PHE_AND_TYR: 
-                            case AtomNomenLib.DEFAULT_PROCHIRAL_DEFINITIONS_GUANIDINE_NH2_2_ON_ARG: 
-                            case AtomNomenLib.DEFAULT_PROCHIRAL_DEFINITIONS_OXYGENS_ON_ASP_GLU__AND_C_TERMINUS: 
+                            }
+                            case AtomNomenLib.DEFAULT_PROCHIRAL_DEFINITIONS_AROMATIC_C_AND_H_ON_PHE_AND_TYR:
+                            case AtomNomenLib.DEFAULT_PROCHIRAL_DEFINITIONS_GUANIDINE_NH2_2_ON_ARG:
+                            case AtomNomenLib.DEFAULT_PROCHIRAL_DEFINITIONS_OXYGENS_ON_ASP_GLU__AND_C_TERMINUS:
                             case AtomNomenLib.DEFAULT_PROCHIRAL_DEFINITIONS_AMIDE_NH2_ON_ASN_GLN_ARG_AND_NUCLEIC_ACIDS: {
                                 // Example as if from GLN NE2
-                                int atomRidHE21 = getAtomRid (atomSet, recordAtomList.getString(0)); 
-                                int atomRidHE22 = getAtomRid (atomSet, recordAtomList.getString(1)); 
-                                int atomRidCG   = getAtomRid (atomSet, recordAtomList.getString(2)); 
-                                int atomRidCD   = getAtomRid (atomSet, recordAtomList.getString(3)); 
+                                int atomRidHE21 = getAtomRid (atomSet, recordAtomList.getString(0));
+                                int atomRidHE22 = getAtomRid (atomSet, recordAtomList.getString(1));
+                                int atomRidCG   = getAtomRid (atomSet, recordAtomList.getString(2));
+                                int atomRidCD   = getAtomRid (atomSet, recordAtomList.getString(3));
                                 int atomRidNE2  = getAtomRid (atomSet, recordAtomList.getString(4));
                                 if (    Defs.isNull(atomRidHE21) ||
                                         Defs.isNull(atomRidHE21) ||
@@ -1815,7 +1816,7 @@ public class Residue extends GumboItem implements Serializable {
                                     General.showWarning(toString(resRid));
                                     General.showWarning("This atom record list:");
                                     General.showWarning(recordAtomList.toString());
-                                    continue;                        
+                                    continue;
                                 }
                                 if ( stereoType == AtomNomenLib.DEFAULT_PROCHIRAL_DEFINITIONS_OXYGENS_ON_ASP_GLU__AND_C_TERMINUS ) {
                                     String atomNameHydroxyl = "HD2";
@@ -1828,17 +1829,17 @@ public class Residue extends GumboItem implements Serializable {
                                         continue;
                                     }
                                 }
-                                
+
 //                                General.showDebug("Checking stereo atom type: " + stereoType + " : " + gumbo.atom.toString(atomRidNE2));
                                 double correctAngle = gumbo.atom.calcDihedral(
-                                        atomRidCG, 
-                                        atomRidCD, 
-                                        atomRidNE2, 
-                                        atomRidHE21); 
+                                        atomRidCG,
+                                        atomRidCD,
+                                        atomRidNE2,
+                                        atomRidHE21);
                                 double incorrectAngle = gumbo.atom.calcDihedral(
                                         atomRidCG,
-                                        atomRidCD, 
-                                        atomRidNE2, 
+                                        atomRidCD,
+                                        atomRidNE2,
                                         atomRidHE22);
                                 if (  Math.abs( correctAngle ) > Math.abs( incorrectAngle ) ) {
 //                                    General.showDebug(gumbo.atom.toString(atomRidCG));
@@ -1855,7 +1856,7 @@ public class Residue extends GumboItem implements Serializable {
                                         gumbo.atom.swapNames( atomRidHE21, atomRidHE22 );
                                         for (int k=5;k<recordAtomList.size();k++) { // loop content not always executed.
                                             String atomNameExtra = recordAtomList.getString(k);
-                                            int atomRidExtra  = getAtomRid (atomSet, atomNameExtra); 
+                                            int atomRidExtra  = getAtomRid (atomSet, atomNameExtra);
                                             if ( Defs.isNull(atomRidExtra) ) {
                                                 General.showWarning("Atom not found for swappping: " +atomNameExtra);
                                                 continue;
@@ -1887,7 +1888,7 @@ public class Residue extends GumboItem implements Serializable {
 
     /** Simply looks for neighbours on both sides and does the logic */
     public boolean isTerminal(int rid) {
-        return (getNeighbour(rid, -1) < 0) || 
+        return (getNeighbour(rid, -1) < 0) ||
                (getNeighbour(rid,  1) < 0);
     }
     /** Simply looks for N-term neighbours */
@@ -1897,5 +1898,138 @@ public class Residue extends GumboItem implements Serializable {
     /** Simply looks for C-term neighbours */
     public boolean isC_Terminal(int rid) {
         return getNeighbour(rid, 1) < 0;
+    }
+
+    /**
+     * Convenience method.
+     * @param ranges
+     * @return
+     */
+    public boolean selectResiduesByRangesExp(String ranges) {
+        return selectResiduesByRangesExp( ranges, false, true);
+    }
+
+    /**
+     * See cing.core.molecule#_rangesStr2list
+     *
+     * Note in Wattos we'll only operate on master model.
+     * @param ranges only using single character chain ids.
+     * @param selectAtomsToo After a successful selection of residues the contained atoms will form the atom selection (all models).
+     * @return true on success
+     */
+    public boolean selectResiduesByRangesExp(String ranges, boolean showSelected, boolean selectAtomsToo) {
+        selected.clear();
+        boolean status = true;
+
+        String rangesCollapsed = ranges.replace(" ", "");
+        BitSet resInMaster = gumbo.entry.getResInMasterModel(false); // false so we don't limit to selected residues; they just got cleared.
+        if ( resInMaster == null ) {
+            General.showError("Failed to get the master residues");
+            return false;
+        }
+//        General.showDebug("resInMaster count: " + resInMaster.cardinality());
+
+        if ( rangesCollapsed.equals(Gumbo.DEFAULT_ATTRIBUTE_EMPTY_RANGES_STR) ||
+                rangesCollapsed.equals(Gumbo.DEFAULT_ATTRIBUTE_ALL_RANGES_STR) ||
+                rangesCollapsed.equals(Gumbo.DEFAULT_ATTRIBUTE_AUTO_RANGES_STR) ||
+                rangesCollapsed.length() == 0 ||
+                Defs.isNull(rangesCollapsed) ) {
+            selected.or(resInMaster);
+        } else {
+            String[] rangeStrList = Strings.splitWithAllReturned( rangesCollapsed, ',' );
+            if ( rangeStrList == null ) {
+                General.showError("In selectResiduesByRangesExp failed to parse string into ',' seperated string values" );
+                return false;
+            }
+
+//            # hashes by keys to use
+            HashOfLists resNumDict = new HashOfLists();
+
+            for (int resRid = resInMaster.nextSetBit(0); resRid >= 0; resRid = resInMaster.nextSetBit(resRid + 1)) {
+                Integer resNumInt = new Integer(number[resRid]);
+                resNumDict.put( resNumInt, -1,new Integer(resRid) ); // keep appending to the end.
+            }
+//            General.showDebug("Residue dict: " + resNumDict.toString());
+
+
+            for (int i=0;i<rangeStrList.length;i++) {
+                if ( ! status ) {
+                    break;
+                }
+                String rangeStr = rangeStrList[i];
+//                General.showDebug("rangeStr: [" + rangeStr + "]");
+                String chainId = null; // indicates no chain id present
+
+                char firstChar = rangeStr.charAt(0);
+                if ( ! (Character.isDigit(firstChar) || firstChar == '-')) {
+                    if (rangeStr.charAt(1) != '.') {
+                        General.showError("In selectResiduesByRangesExp failed to find '.'." );
+                        General.showError("Code is written to accept single char chain ids. Will continue by selecting all." );
+                        status = false;
+                        break;
+                    }
+                    chainId = rangeStr.substring(0,1);
+                    rangeStr = rangeStr.substring(2);
+                }
+//                General.showDebug("rangeStr: ["+rangeStr+"] chainId ["+chainId+"]");
+                int[] rangeIntList = Strings.asci2list(rangeStr);
+
+                if ( rangeIntList == null || rangeIntList.length == 0 ) {
+                    General.showWarning("Failed to Strings.asci2list in selectResiduesByRangesExp for rangeStr: " + rangeStr);
+                    status = false;
+                    break;
+                }
+
+                for (int j=0;j<rangeIntList.length;j++) {
+                    int resNum = rangeIntList[j];
+                    Integer resNumInt = new Integer(resNum);
+                    if ( resNumDict.containsKey(resNumInt)) {
+                        ArrayList resIdxList = (ArrayList) resNumDict.get(resNumInt);
+                        if ( resIdxList == null ) {
+                            General.showError("In selectResiduesByRangesExp failed to resNumDict.get(resNumInt) for resNum: " + resNumInt );
+                            General.showError("Input: ["+ranges+"]");
+                            status = false;
+                            break;
+                        }
+                        for (int k=0;k<resIdxList.size();k++) {
+                            Integer rInt = (Integer) resIdxList.get( k );
+                            int r = rInt.intValue();
+                            int c = molId[r];
+//                            String rChainName = gumbo.mol.nameList[c]; // Not the right thingie
+                            String rasymId = gumbo.mol.asymId[c];
+
+//                            General.showDebug("rChainName: ["+rChainName+"]");
+//                            General.showDebug("rasymId:    ["+rasymId+"]");
+                            if ((chainId == null) || rasymId.equals( chainId)) {
+//                                General.showDebug("residue: "+ this.toString(r)+" chainId: " + chainId);
+                                selected.set(r);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if ( ! status ) {
+            General.showError("Input: ["+ranges+"]");
+            selected.or(resInMaster);
+        }
+        General.showOutput("Selected number of residues: " + selected.cardinality());
+        if ( showSelected ) {
+            String message = "Selected residue ranges:\n" + this.toString(selected);
+            General.showOutput(message);
+        }
+        if ( selectAtomsToo ) {
+            int atomCountSelectedStart = gumbo.atom.selected.cardinality();
+            General.showDebug("In residue.selectResiduesByRangesExp       found selected atoms: "+ atomCountSelectedStart);
+            gumbo.atom.selected = getAtoms(selected);
+            int atomCountSelectedFirst = gumbo.atom.selected.cardinality();
+            General.showDebug("In residue.selectResiduesByRangesExp first found selected atoms: "+ atomCountSelectedFirst);
+            gumbo.atom.selected = gumbo.atom.getAllModelAtomsFromMasterModelAtomRids(gumbo.atom.selected);
+            int atomCountSelectedEnd = gumbo.atom.selected.cardinality();
+            General.showDebug("In residue.selectResiduesByRangesExp changed     selected atoms : "+atomCountSelectedStart+" to:"+
+                    atomCountSelectedEnd);
+        }
+        return status;
     }
 }

@@ -98,7 +98,7 @@ public class Entry extends GumboItem implements Serializable {
     /** @see Residue#calcCoPlanarBasesSet
      */
     public boolean calcCoPlanarBasesSet( float calcCoPlanarBasesSet, boolean onlyWC, String location ) {
-        BitSet resInMaster = getResInMasterModel();
+        BitSet resInMaster = getResInMasterModel(true);
         if ( resInMaster == null ) {
             General.showError("Failed to get the master residues");
             return false;
@@ -129,7 +129,7 @@ public class Entry extends GumboItem implements Serializable {
     /** @see Residue#addMissingAtoms
      */
     public boolean addMissingAtoms() {
-        BitSet resInMaster = getResInMasterModel();
+        BitSet resInMaster = getResInMasterModel(true);
         if ( resInMaster == null ) {
             General.showError("Failed to get the master res");
             return false;
@@ -144,7 +144,7 @@ public class Entry extends GumboItem implements Serializable {
     /** @see Residue#calcHydrogenBond
      */
     public boolean checkAtomNomenclature(boolean  doCorrect) {
-        BitSet resInMaster = getResInMasterModel();
+        BitSet resInMaster = getResInMasterModel(true);
         if ( resInMaster == null ) {
             General.showError("Failed to get the master res");
             return false;
@@ -158,7 +158,7 @@ public class Entry extends GumboItem implements Serializable {
 
     /** See Atom.calcBond */
     public boolean calcBond( float tolerance) {
-        BitSet resInMaster = getResInMasterModel();
+        BitSet resInMaster = getResInMasterModel(true);
         if ( resInMaster == null ) {
             General.showError("Failed to get the master atoms");
             return false;
@@ -224,8 +224,9 @@ public class Entry extends GumboItem implements Serializable {
 
     /** Returns the residues in the first model of the selected entry or null in case of an error.
      *Those residues should also be 'selected'.
+     * @param useSelected TODO
      */
-    public BitSet getResInMasterModel() {
+    public BitSet getResInMasterModel(boolean useSelected) {
         int entryRID = getEntryId();
         if ( entryRID < 0 ) {
             General.showError("In getResInMasterModel; Failed to find just one selected entry.");
@@ -242,10 +243,43 @@ public class Entry extends GumboItem implements Serializable {
             General.showError("Failed to do getResInMasterModel because failed to get the atoms in first model for this entry for rid: " + entryRID);
             return null;
         }
-        resInMasterModel.and( gumbo.res.selected );
-//        int resCountMasterModel = resInMasterModel.cardinality();
-//        General.showDebug("Found number of residues in master model: " + resCountMasterModel);
+        if ( useSelected ) {
+            resInMasterModel.and( gumbo.res.selected );
+        }
+        if ( false ) {
+            int resCountMasterModel = resInMasterModel.cardinality();
+            General.showDebug("Found number of residues in master model: " + resCountMasterModel);
+        }
         return resInMasterModel;
+    }
+
+
+    /** Returns the mols in the first model of the selected entry or null in case of an error.
+     * @param useSelected Those chains should also be 'selected' if useSelected is set as it is by default.
+     */
+    public BitSet getMolInMasterModel(boolean useSelected) {
+        int entryRID = getEntryId();
+        if ( entryRID < 0 ) {
+            General.showError("In getMolInMasterModel; Failed to find just one selected entry.");
+            return null;
+        }
+        int modelOneRid = getMasterModelId( entryRID );
+        if ( modelOneRid < 0 ) {
+            General.showError("Failed to do getMolInMasterModel because failed to get the first model's rid");
+            return null;
+        }
+        BitSet molInMasterModel = SQLSelect.selectBitSet(dbms, gumbo.mol.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[RelationSet.RELATION_ID_COLUMN_NAME],
+            SQLSelect.OPERATION_TYPE_EQUALS, new Integer( modelOneRid ), false);
+        if ( molInMasterModel == null ) {
+            General.showError("Failed to do getMolInMasterModel because failed to get the mols in first model for this entry for rid: " + entryRID);
+            return null;
+        }
+        if ( useSelected ) {
+            molInMasterModel.and( gumbo.mol.selected );
+        }
+        int molCountMasterModel = molInMasterModel.cardinality();
+        General.showDebug("Found number of mol in master model: " + molCountMasterModel);
+        return molInMasterModel;
     }
 
 
@@ -257,8 +291,6 @@ public class Entry extends GumboItem implements Serializable {
         if ( ! status ) {
             General.showWarning("entry.readPdbFormattedFile was unsuccessful. Failed to read pdb formatted file");
             return false;
-        } else {
-            General.showOutput("Read total number of atoms from PDB formatted coordinate list: "+gumbo.atom.used.cardinality());
         }
         int currentEntryId = getEntryId();
         // Sync the atoms over the models in the entry.
@@ -1106,7 +1138,7 @@ public class Entry extends GumboItem implements Serializable {
             return false;
         }
         int modelCount = modelSet.cardinality();
-        BitSet resMasterModelSet = getResInMasterModel();
+        BitSet resMasterModelSet = getResInMasterModel(true);
         int resCountSingleModel = resMasterModelSet.cardinality();
         int resCountTotal = resCountSingleModel * modelCount;
         int modelCountAllowed = maxResidueCountTotal / resCountSingleModel;
