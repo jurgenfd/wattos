@@ -1,4 +1,4 @@
-/* 
+/*
  * PdbFile.java
  *
  * Created on November 15, 2002, 2:53 PM
@@ -24,7 +24,7 @@ import Wattos.Utils.CharArray;
 import Wattos.Utils.General;
 import Wattos.Utils.Strings;
 
- 
+
 
 /** Methods for fast read/write of PDB formatted coordinate files.
  * Reading PDB entry 3EZB (17 Mb) takes 3 seconds and a formatted write to STAR takes 15 seconds.<BR>
@@ -56,7 +56,7 @@ import Wattos.Utils.Strings;
  * @version 1
  */
 public class PdbFile {
-    
+
     public char[]    DEFAULT_OCCUPANCY                       = "  1.00".toCharArray();
     public char[]    DEFAULT_TEMPERATURE_FACTOR              = "  0.00".toCharArray();
     public char[]    DEFAULT_SEGMENT_IDENTIFIER              = "    ".toCharArray();
@@ -65,7 +65,7 @@ public class PdbFile {
     public char[]    DEFAULT_ATOM                            = "ATOM  ".toCharArray();
     public char[]    DEFAULT_RESIDUE_TYPE                    = "ALA ".toCharArray();
     public char      DEFAULT_CHAIN_ID                        = 'A';
-   
+
     public int BUFFER_SIZE = 32 * 1024;
 
     public static final char[] RECORD_ATOM      = "ATOM  ".toCharArray();
@@ -73,7 +73,7 @@ public class PdbFile {
     public static final char[] RECORD_SEQRES    = "SEQRES".toCharArray();
     public static final char[] RECORD_MODEL     = "MODEL ".toCharArray();
     public static final char[] RECORD_TER       = "TER".toCharArray(); // can be 3 chars or more
-    
+
     public String atomNomenclatureFlavor;
 
     /** Estimated maximum length of one line (atom) in pdb file.
@@ -82,7 +82,7 @@ public class PdbFile {
 
     /** BEGIN BLOCK COPY FROM Wattos.Soup.PdbFile */
     public DBMS         dbms;
-    public Gumbo        gumbo;    
+    public Gumbo        gumbo;
     public Atom         atom;
     public Residue      res;
     public Molecule     mol;
@@ -93,24 +93,24 @@ public class PdbFile {
     public Relation     molMain;
     public Relation     modelMain;
     public Relation     entryMain;
-    
+
     int currentAtomId   = -1;
     int currentResId    = -1;
     int currentMolId    = -1;
     int currentModelId  = -1;
     int currentEntryId  = -1;
     /** END BLOCK */
-    
+
     /** Creates new PdbFile */
     public PdbFile( DBMS dbms ) {
         this.dbms = dbms;
-        initConvenienceVariables();        
-    } 
+        initConvenienceVariables();
+    }
 
     /** BEGIN BLOCK FOR SETTING LOCAL CONVENIENCE VARIABLES COPY FROM Wattos.Soup.PdbFile */
     public boolean initConvenienceVariables() {
-        
-        atomMain = dbms.getRelation( Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[RelationSet.RELATION_ID_MAIN_RELATION_NAME] );        
+
+        atomMain = dbms.getRelation( Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[RelationSet.RELATION_ID_MAIN_RELATION_NAME] );
         if ( atomMain == null ) {
             General.showError("failed to find the atom main relation");
             return false;
@@ -119,12 +119,12 @@ public class PdbFile {
         if ( atom == null ) {
             General.showError("failed to find atom RelationSet");
             return false;
-        }        
+        }
         gumbo = (Gumbo) atom.getRelationSoSParent();
         if ( gumbo == null ) {
             General.showError("failed to find the gumbo RelationSoS");
             return false;
-        }        
+        }
         atom    = gumbo.atom;
         res     = gumbo.res;
         mol     = gumbo.mol;
@@ -138,12 +138,12 @@ public class PdbFile {
         return true;
     }
     /** END BLOCK */
-    
+
     /** Returns true on success.
 <PRE> From the PDB web site:
 http://www.rcsb.org/pdb/docs/format/pdbguide2.2/guide2.2_frame.html
 Record Format
- 
+
 COLUMNS        DATA TYPE       FIELD         DEFINITION
 ---------------------------------------------------------------------------------
 6    1 -  6        Record name     "ATOM  "
@@ -180,7 +180,7 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
             "Alternatively, one can rewrite the script in Java...;-)"
             );
 
-        Relation atomMain = gumbo.atom.mainRelation;        
+        Relation atomMain = gumbo.atom.mainRelation;
         if ( atomMain == null ) {
             General.showError("found a null reference for the atom relation.");
             return false;
@@ -189,16 +189,16 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
         char[] buf = new char[ LENGTH_MAX_LINE ];
         StringBuffer sb = new StringBuffer( 3 * 8 );
         Arrays.fill( buf, ' '); // zap a line.
-        
+
         File f = new File( file_name );
         General.showOutput("Writing file: " + file_name );
-        
+
         System.arraycopy( DEFAULT_ATOM,                  0, buf, 0, 6 );
         buf[                                            21]                 = DEFAULT_CHAIN_ID;
         System.arraycopy( DEFAULT_OCCUPANCY,             0, buf,54, 6 );
         System.arraycopy( DEFAULT_TEMPERATURE_FACTOR,    0, buf,60, 6 );
         System.arraycopy( DEFAULT_SEGMENT_IDENTIFIER,    0, buf,72, 4 );
-        
+
         System.arraycopy( DEFAULT_CHARGE,                0, buf,78, 2 );
         buf[                                            80]                 = '\n'; // default is unix eol.
 
@@ -207,7 +207,7 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
         char[] atomNamePdbCharArray = new char[4];
         int prevResId = Defs.NULL_INT;
         String residueName;
-        try {             
+        try {
             BufferedWriter w = new BufferedWriter( new FileWriter(f), BUFFER_SIZE );
             int atom_count = 1;
             int residueNumber;
@@ -237,8 +237,8 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
                     residueNumber = res.number[currentResId];
                     residueName   = res.nameList[currentResId];
                     //System.arraycopy(residueName.toCharArray(), 0, buf,         17, 4 );
-                    CharArray.insertLeftAlign(  residueName,   buf,             17, 4);                    
-                    CharArray.insertRightAlign( residueNumber, buf,             22, 4);                    
+                    CharArray.insertLeftAlign(  residueName,   buf,             17, 4);
+                    CharArray.insertRightAlign( residueNumber, buf,             22, 4);
                 }
                 if ( atomNamePdb != null ) {
                     atomNamePdbCharArray = atomNamePdb.toCharArray();
@@ -250,16 +250,16 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
                 if ( atom_count > 99999 ) { // quick hack todo: take out.
                     atom_count = 1;
                 }
-                CharArray.insertRightAlign( atom_count, buf,                6, 5);                
+                CharArray.insertRightAlign( atom_count, buf,                6, 5);
                 System.arraycopy( atomNamePdbCharArray, 0, buf,            12, 4);
-                
-                sb.setLength(0); // empty buffer                       
+
+                sb.setLength(0); // empty buffer
                 // Put the floats into a stringbuffer and then into the buf
                 Strings.appendRightAlign(atom.xList[i], sb, 8, 3);
                 Strings.appendRightAlign(atom.yList[i], sb, 8, 3);
-                Strings.appendRightAlign(atom.zList[i], sb, 8, 3);                
+                Strings.appendRightAlign(atom.zList[i], sb, 8, 3);
                 sb.getChars(0,24,buf,30);
-                
+
                 int element_id = atom.elementId[ i ];
                 if ( element_id == Defs.NULL_INT ) {
                     buf[76] = ' ';
@@ -269,7 +269,7 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
                     buf[76] = tmp.charAt(0);
                     buf[77] = tmp.charAt(1);
                 }
-                
+
                 // Transfer a line to buffered output stream from buffer.
                 w.write(buf);
                 atom_count++;
@@ -283,36 +283,39 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
             General.showError("I/O error: " +  e_io.getMessage() );
             return false;
         }
-        
+
         //General.showOutput("Number of atom written: " +  atom.size );
         return true;
     }
-    
-    
+
+
     /** Speed check
         * 3ezb 200,000 atoms in 40 models, 2 chains, 344 residues;5,000 atoms 17 Mb file, Clore
         *Reading takes 1.6 seconds on whelk (single 3 GHz Pentium IV).
         *
      */
-    public boolean readFile(URL url, String atomNomenclatureFlavor ) {        
+    public boolean readFile(URL url, String atomNomenclatureFlavor ) {
         this.atomNomenclatureFlavor = atomNomenclatureFlavor;
         PdbFileReader pfr = new PdbFileReader(dbms);
         boolean status = pfr.myReader2( url );
-        if ( ! status ) {
+        if ( status ) {
+            int readCount = gumbo.atom.used.cardinality();
+            General.showOutput("Read "+readCount+" atoms from PDB resource: "+url.toString());
+        } else {
             General.showError( "PdbFile readFile is unsuccessfull" );
         }
         return status;
     }
 
-    
+
     /** Sometimes the atom name ends with a digit in which case the
-     *number at the end may go to the end: 
+     *number at the end may go to the end:
      *"HD21" -> "1HD2"
      *"N"    -> " N  "
      *"1HA"  -> "1HA "
      *"HB3"  -> " HB3"
      *"H5''" -> "'H5'" // for nucleic acids
-     *"0"    -> "0   " // which would be invalid 
+     *"0"    -> "0   " // which would be invalid
      *The input may have spaces but may not be the empty string.
      */
     public static String translateAtomNameToPdb( String inputName ) {
@@ -324,7 +327,7 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
         char lastChar       = result.charAt(stringLength-1);
         char firstChar      = result.charAt(0);
 
-        if ( Character.isDigit( firstChar ) || (firstChar == '\'') ) {            
+        if ( Character.isDigit( firstChar ) || (firstChar == '\'') ) {
             // Repetive code for efficiency.
             switch ( stringLength ) {
                 case 1:
@@ -341,7 +344,7 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
                 }
             }
         }
-        
+
         // Not that common
         if ( (stringLength == 4 ) && (Character.isDigit( lastChar ) || (lastChar == '\''))) {
                 return lastChar + result.substring(0,3);
@@ -362,15 +365,15 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
             }
         }
     }
-        
-    /** Sometimes the atom name starts with a digit which needs to go 
-     * to the back: 
+
+    /** Sometimes the atom name starts with a digit which needs to go
+     * to the back:
      *"1HD2" -> "HD21"
      *"1HB " -> " HB1"
      *" H  " -> " H  "
      *"'H5'" -> "H5''"   // for nucleic acids
      *Only looks at first 4 chars.
-     */     
+     */
     public static void translateAtomNameFromPdb( char[] buf, int startIdx ) {
         char digit = buf[startIdx];
         // Check if it's a digit.
@@ -387,20 +390,20 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
                 buf[startIdx+2] = buf[startIdx+3];
                 buf[startIdx+3] = digit;
             }
-        }        
+        }
     }
-     
+
     /** See namesake method although algorithm is completely different. The
      input should not contain whitespace.
      */
     public static String translateAtomNameFromPdb( String name ) {
         char ch = name.charAt(0);
-        if ( Character.isDigit( ch ) || (ch=='\'') || (ch=='\"')) { 
+        if ( Character.isDigit( ch ) || (ch=='\'') || (ch=='\"')) {
             return name.substring(1,name.length()) + ch;
         }
-        return name;        
-    }    
-    
+        return name;
+    }
+
     /** Sometimes the residue has a trailing sign indicating charge:
      * "HIS+" -> "HIS". The sign will be removed if present.
      */
@@ -410,7 +413,7 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
              buf[ startIdx + 3 ] = ' ';
         }
     }
-    
+
     /** Sometimes the residue has a trailing sign indicating charge:
      * "HIS+" -> "HIS". The sign will be removed if present.
      */
@@ -422,7 +425,7 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
         }
         return buf;
     }
-    
+
     /** Sometimes the residue has a trailing sign in the charge string:
      * "1-" -> -1.0e+00.
      */
@@ -439,11 +442,11 @@ COLUMNS        DATA TYPE       FIELD         DEFINITION
             return (float) c;
         }
         if ( !( c == ' ' && buf[startIdx+1] == ' ' )) {
-            General.showWarning("Failed to translate the atom charge to a float value for String: [" + 
-                new String( buf,startIdx, 2) + "]");            
+            General.showWarning("Failed to translate the atom charge to a float value for String: [" +
+                new String( buf,startIdx, 2) + "]");
             General.showWarning("For line: " +
-                new String( buf,startLineIdx, 80) + "]"); 
+                new String( buf,startLineIdx, 80) + "]");
         }
         return Defs.NULL_FLOAT;
-    }            
+    }
 }

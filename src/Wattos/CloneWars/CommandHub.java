@@ -1187,6 +1187,33 @@ public class CommandHub implements Serializable {
         return true;
     }
 
+    /**
+     * SelectResiduesByRangesExp
+     */
+    public boolean SelectResiduesByRangesExp() {
+        int maxTries = 0;
+        String ranges = null;
+        String prompt = "Enter ranges for residue selection. ( 6-13,29-45 for example): ";
+        while ( ranges == null && maxTries < UserInterface.DEFAULT_MAXIMUM_NUMBER_OF_TRIES_ON_INPUT ) {
+            ranges = Strings.getInputString(UserInterface.in, prompt, null);
+            maxTries++;
+        }
+        Boolean selectAtomsToo = Boolean.valueOf( Strings.getInputBoolean(UserInterface.in, "Should atoms be selected as well (y suggested)"));
+        Boolean doList = Boolean.valueOf( Strings.getInputBoolean(UserInterface.in, "Should selected residues be listed (n suggested)"));
+
+        Object[] methodArgs = {
+                ranges,
+                selectAtomsToo.booleanValue(),
+                doList.booleanValue()
+        };
+        General.showOutput( "Doing SelectResiduesByRangesExp with arguments: " + PrimitiveArray.toString( methodArgs ) );
+        if ( ! res.selectResiduesByRangesExp(ranges, doList.booleanValue(), selectAtomsToo.booleanValue())) {
+            General.showError("Failed to atom.selectAtomsByNameRegExp");
+            return false;
+        }
+        return true;
+    }
+
     /** Swaps atom nomenclature if asked.
      */
     public boolean CheckAtomNomenclature() {

@@ -39,16 +39,16 @@ public class StringsTest extends TestCase {
     }
 
     public void testStringArrayListDuplicates() {
-    	General.setVerbosityToDebug();
-    	StringArrayList in = new StringArrayList();
-    	StringArrayList expResult = new StringArrayList();
-    	in.add("1brv");
-    	in.add("1brv");
-    	expResult.add("1brv");
-    	StringArrayList result = in.duplicates();
-    	General.showDebug("in:     " +           in.toString());
-    	General.showDebug("result: "    +    result.toString());
-    	General.showDebug("expResult: " + expResult.toString());
+        General.setVerbosityToDebug();
+        StringArrayList in = new StringArrayList();
+        StringArrayList expResult = new StringArrayList();
+        in.add("1brv");
+        in.add("1brv");
+        expResult.add("1brv");
+        StringArrayList result = in.duplicates();
+        General.showDebug("in:     " +           in.toString());
+        General.showDebug("result: "    +    result.toString());
+        General.showDebug("expResult: " + expResult.toString());
         assertEquals(expResult, result);
     }
 

@@ -4446,7 +4446,7 @@ public class File31 {
         int molRID = mol.selected.nextSetBit(0);
         boolean molecularSystemDescriptionToWrite = false;
         if (molRID < 0) {
-            General.showWarning("No molecules selected so no molecular system description written.");
+            General.showDebug("No molecules selected so no molecular system description written.");
         } else {
             molecularSystemDescriptionToWrite = true;
         }
@@ -4859,14 +4859,12 @@ public class File31 {
                 // the
                 // dcs in this list
                 if ((map != null) && (map.length != dcCountTotal)) {
-                    General
-                            .showWarning("Trying to get an order map but failed to give back the correct number of elements: "
+                    General.showDebug("Trying to get an order map but failed to give back the correct number of elements: "
                                     + dcCountTotal + " instead found: " + map.length);
                     map = null;
                 }
                 if (map == null) {
-                    General
-                            .showWarning("Failed to get the row order sorted out for distance constraints; using physical ordering."); // not
+                    General.showDebug("Failed to get the row order sorted out for distance constraints; using physical ordering."); // not
                     // fatal
                     map = PrimitiveArray.toIntArray(dcSet);
                     if (map == null) {

@@ -20,6 +20,7 @@ ListProp
 #Match restraints to soup by regular STAR tags. (y suggested)
 #Match restraints to soup by author atom and residue names etc. (n suggested; only previous or this can and must be set)
 #Remove unlinked restraints (y suggested)
+#Sync over models; removing inconsistent atoms (true suggested)
 ReadEntryNMRSTAR
 1brv_DOCR_small.str.gz
 y
@@ -27,23 +28,31 @@ y
 y
 n
 y
+y
 
 
-CheckCompleteness                
-3                
-2                    
-6                  
+
+SelectResiduesByRangesExp
+16-29
+y
+y
+
+
+CheckCompleteness
+3
+2
+6
 8
 2
 3
 2
-1.0    
+1.0
 1
-1      
+1
 y
-ob_standard.str                  
+ob_standard.str
 tmp_dir/1brv_DOCR_compl_sum.str
-n                    
+n
 tmp_dir/1brv_DOCR_compl
 
 Quit

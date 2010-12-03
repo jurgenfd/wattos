@@ -66,9 +66,9 @@ import com.braju.format.Parameters;
  * @version 1
  */
 public class DistConstr extends ConstrItem implements Serializable {
-    
+
     private static final long serialVersionUID = -1207795172754062330L;
-    
+
     /** The logical operations are dealt with through ints rather than strings
      *for efficiency
      */
@@ -78,7 +78,7 @@ public class DistConstr extends ConstrItem implements Serializable {
     public static final int DEFAULT_LOGICAL_OPERATION_ID_SYMM              = 2;
     public static final int DEFAULT_LOGICAL_OPERATION_ID_XOR               = 3;
     public static final String[] DEFAULT_LOGICAL_OPERATION_NAMES              = { "OR", "AND", "SYMM", "XOR"};
-    
+
     public static HashMap classString2Int= new HashMap(); // To get linear look up times.
     public static final int DEFAULT_CLASS_UNDETERMINED         = 0;
     public static final int DEFAULT_CLASS_INTRA                = 1;
@@ -88,78 +88,78 @@ public class DistConstr extends ConstrItem implements Serializable {
     public static final int DEFAULT_CLASS_INTER                = 5;
     public static final int DEFAULT_CLASS_MIXED                = 6; // Mixture of the above
     public static final String[] DEFAULT_CLASS_NAMES           = { "undetermined", "intraresidue", "sequential", "medium-range", "long-range", "intermolecular", "mixed"};
-    
+
     /** Default cutoff for reporting violations
      */
     public static final float CUTOFF_REPORTING_VIOLATIONS = .5f;
-    
+
     /** Index of the lower, target, upper, and theoretical bound value in the standard array returned */
     public static final int LOW_IDX = 0;
     public static final int TAR_IDX = 1;
     public static final int UPP_IDX = 2;
     public static final int THE_IDX = 3;
-    
+
     /** A constraint is considered to be in the class of medium range constraints when it is no more
      *than 4 residues apart, according to IUPAC defs.
      */
     public static int MEDIUM_BORDER = 4;
-    
+
     /** Used for surplus */
     public static final String DEFAULT_UPP_THEO = "upp_theo";
     public static final String DEFAULT_LOW_THEO = "low_theo";
-    
+
     /** Convenience variables */
     public Relation    distConstrAtom;
     public Relation    distConstrMemb;
     public Relation    distConstrNode;
     public Relation    distConstrViol;
-    
+
     public int[]       entryIdMain;                     // refs to entry
     public int[]       entryIdViol;
     public int[]       entryIdNode;
     public int[]       entryIdMemb;
     public int[]       entryIdAtom;
-    
+
     public int[]       dcListIdMain;                     // refs to dcList
     public int[]       dcListIdViol;
     public int[]       dcListIdNode;
     public int[]       dcListIdMemb;
     public int[]       dcListIdAtom;
-    
+
     public int[]       dcMainIdViol;                     // refs to dcMain
     public int[]       dcMainIdNode;
     public int[]       dcMainIdMemb;
     public int[]       dcMainIdAtom;
-    
+
     public int[]       dcNodeIdMemb;                     // refs to dcNode
     public int[]       dcNodeIdAtom;
-    
+
     public int[]       dcMembIdAtom;                     // refs to dcMemb
-    
+
     public int[]       atomIdAtom;                       // refs to atom
     public int[]       dcIdAtom;
-    
+
     //public int[]       dcListIdMain;                    defined through super class.
     public int[]       numbNode;
     public int[]       numbMemb;
     //public int[]       numbAtom;
     //public int[]       numbViol;                    // To expect?
     public int[]       orderAtom;
-    
+
     public float[]     violUppMax;              // non-fkcs in dcMain
     public int[]       violUppMaxModelNum;      // could be a fkc but not implemented as such
     public float[]     violLowMax;
     public int[]       violLowMaxModelNum;
     public BitSet      hasUnLinkedAtom;         // set to false if any atom in constraint could NOT be linked. true otherwise.
     public float[]     distTheo;                // distance over selected models for completeness analysis.
-    
-    
+
+
     public int[]       modelIdViol;                 // fkcs in dcViol.
     /** See xplor v 4.0 manual formula 18.1-4 */
     public float[]     distance;                    // non-fkcs in dcViol. Doesn't have a meaning in case of xplor's "high dim"
     /** See xplor v 4.0 manual formula 18.9 */
     public float[]     violation;                   // positive violation is a violation of the upper bound and negative one is on lower bound
-    
+
     public int[]       nodeId;
     public int[]       downId;                       // non-fkcs in dcNode could have been modelled as fkcs but not done!
     public int[]       rightId;                      // they do refer to node id's and not the rid.
@@ -171,7 +171,7 @@ public class DistConstr extends ConstrItem implements Serializable {
     public StringSet   peakIdListNR;
     public float[]     weight;
     public float[]     contribution;
-    
+
     public String[]    authMolNameList;              // non-fkcs in dcAtom
     public StringSet   authMolNameListNR;           // Only the first atom contains actual references, the other refs are null.
     public String[]    authResNameList;
@@ -180,7 +180,7 @@ public class DistConstr extends ConstrItem implements Serializable {
     public StringSet   authResIdListNR;
     public String[]    authAtomNameList;
     public StringSet   authAtomNameListNR;
-    
+
     public String[]    atomNameList;
     public StringSet   atomNameListNR;
     public int[]       resIdList;
@@ -188,20 +188,20 @@ public class DistConstr extends ConstrItem implements Serializable {
     public StringSet   resNameListNR;
     public int[]       molIdList;
     public int[]       entityIdList;
-    
-    
-    
+
+
+
     static {
         for (int i=0;i<DEFAULT_LOGICAL_OPERATION_NAMES.length;i++) {
             logicalOperationString2Int.put( DEFAULT_LOGICAL_OPERATION_NAMES[i], new Integer(i));
         }
     }
-    
+
     public DistConstr(DBMS dbms, RelationSoS relationSoSParent) {
         super(dbms, relationSoSParent);
         resetConvenienceVariables();
     }
-    
+
     /** The relationSetName is a parameter so non-standard relation sets
      *can be created; e.g. AtomTmp with a relation named AtomTmpMain etc.
      */
@@ -211,15 +211,15 @@ public class DistConstr extends ConstrItem implements Serializable {
         constr = (Constr) relationSoSParent;
         resetConvenienceVariables();
     }
-    
+
     public boolean init(DBMS dbms) {
         //General.showDebug("now in Atom.init()");
         super.init(dbms);
         //General.showDebug("back in Atom.init()");
-        
+
         name = Constr.DEFAULT_ATTRIBUTE_SET_DC[RELATION_ID_SET_NAME];
         String relationName = null;
-        
+
         // MAIN RELATION in addition to the ones in gumbo item.
         if ( true ) {
             //General.showDebug("Adding columns and fkcs to relation dc_main");
@@ -231,7 +231,7 @@ public class DistConstr extends ConstrItem implements Serializable {
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_VIOL_LOW_MAX_MODEL_NUM,                              new Integer(DATA_TYPE_INT));
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_HAS_UNLINKED_ATOM,                                   new Integer(DATA_TYPE_BIT));
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_DIST_THEORETICAL,                                    new Integer(DATA_TYPE_FLOAT));
-            
+
             DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_SET_DC_LIST[ RelationSet.RELATION_ID_COLUMN_NAME ] );
             DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[    RelationSet.RELATION_ID_COLUMN_NAME ] );
             DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_VIOL_MAX);
@@ -240,10 +240,10 @@ public class DistConstr extends ConstrItem implements Serializable {
             DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_VIOL_LOW_MAX_MODEL_NUM);
             DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_HAS_UNLINKED_ATOM );
             DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_DIST_THEORETICAL );
-            
+
             DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Constr.DEFAULT_ATTRIBUTE_SET_DC_LIST[ RelationSet.RELATION_ID_COLUMN_NAME ],    Constr.DEFAULT_ATTRIBUTE_SET_DC_LIST[    RELATION_ID_MAIN_RELATION_NAME]});
             DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[    RelationSet.RELATION_ID_COLUMN_NAME ],    Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[       RELATION_ID_MAIN_RELATION_NAME]});
-            
+
             Relation relation = null;
             relationName = Constr.DEFAULT_ATTRIBUTE_SET_DC[RELATION_ID_MAIN_RELATION_NAME];
             try {
@@ -252,7 +252,7 @@ public class DistConstr extends ConstrItem implements Serializable {
                 General.showThrowable(e);
                 return false;
             }
-            
+
             // Create the fkcs without checking that the columns exist yet.
             DEFAULT_ATTRIBUTE_FKCS = ForeignKeyConstrSet.createFromRelation(dbms, DEFAULT_ATTRIBUTE_FKCS_FROM_TO, relationName);
             relation.insertColumnSet( 0, DEFAULT_ATTRIBUTES_TYPES, DEFAULT_ATTRIBUTES_ORDER,
@@ -260,7 +260,7 @@ public class DistConstr extends ConstrItem implements Serializable {
             addRelation( relation );
             mainRelation = relation;
         }
-        
+
         // NODE RELATION
         if ( true ) {
             //General.showDebug("Adding columns and fkcs to relation dc_node");
@@ -272,14 +272,14 @@ public class DistConstr extends ConstrItem implements Serializable {
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_DOWN_ID,                            new Integer(DATA_TYPE_INT));
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_RIGHT_ID,                           new Integer(DATA_TYPE_INT));
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_LOGIC_OP,                           new Integer(DATA_TYPE_INT));
-            
+
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_TARGET,                              new Integer(DATA_TYPE_FLOAT));
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_UPP_BOUND,                           new Integer(DATA_TYPE_FLOAT));
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_LOW_BOUND,                           new Integer(DATA_TYPE_FLOAT));
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_PEAK_ID,                             new Integer(DATA_TYPE_STRINGNR));
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_WEIGHT,                              new Integer(DATA_TYPE_FLOAT));
             DEFAULT_ATTRIBUTES_TYPES.put( Constr.DEFAULT_ATTRIBUTE_CONTRIBUTION,                        new Integer(DATA_TYPE_FLOAT));
-            
+
             DEFAULT_ATTRIBUTES_ORDER = new ArrayList();
             DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_SET_DC[      RelationSet.RELATION_ID_COLUMN_NAME ] );
             DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_SET_DC_LIST[ RelationSet.RELATION_ID_COLUMN_NAME ] );
@@ -288,14 +288,14 @@ public class DistConstr extends ConstrItem implements Serializable {
             DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_DOWN_ID);
             DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_RIGHT_ID);
             DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_LOGIC_OP);
-            
+
             DEFAULT_ATTRIBUTES_ORDER.add(Constr.DEFAULT_ATTRIBUTE_TARGET      );
             DEFAULT_ATTRIBUTES_ORDER.add(Constr.DEFAULT_ATTRIBUTE_UPP_BOUND   );
             DEFAULT_ATTRIBUTES_ORDER.add(Constr.DEFAULT_ATTRIBUTE_LOW_BOUND   );
             DEFAULT_ATTRIBUTES_ORDER.add(Constr.DEFAULT_ATTRIBUTE_PEAK_ID     );
             DEFAULT_ATTRIBUTES_ORDER.add(Constr.DEFAULT_ATTRIBUTE_WEIGHT      );
             DEFAULT_ATTRIBUTES_ORDER.add(Constr.DEFAULT_ATTRIBUTE_CONTRIBUTION);
-            
+
             DEFAULT_ATTRIBUTE_FKCS_FROM_TO = new ArrayList();
             DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Constr.DEFAULT_ATTRIBUTE_SET_DC[      RelationSet.RELATION_ID_COLUMN_NAME ],    Constr.DEFAULT_ATTRIBUTE_SET_DC[         RELATION_ID_MAIN_RELATION_NAME]});
             DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Constr.DEFAULT_ATTRIBUTE_SET_DC_LIST[ RelationSet.RELATION_ID_COLUMN_NAME ],    Constr.DEFAULT_ATTRIBUTE_SET_DC_LIST[    RELATION_ID_MAIN_RELATION_NAME]});
@@ -315,7 +315,7 @@ public class DistConstr extends ConstrItem implements Serializable {
             addRelation( relation );
             distConstrNode = relation;
         }
-        
+
         // VIOL RELATION
         if ( true ) {
             //General.showDebug("Adding columns and fkcs to relation dc_viol");
@@ -353,7 +353,7 @@ public class DistConstr extends ConstrItem implements Serializable {
             addRelation( relation );
             distConstrViol = relation;
         }
-        
+
         // MEMBER RELATION
         if ( true ) {
             //General.showDebug("Adding columns and fkcs to relation dc_member");
@@ -389,8 +389,8 @@ public class DistConstr extends ConstrItem implements Serializable {
             addRelation( relation );
             distConstrMemb = relation;
         }
-        
-        
+
+
         // ATOM RELATION
         if ( true ) {
             //General.showDebug("Adding columns and fkcs to relation dc_atom");
@@ -405,14 +405,14 @@ public class DistConstr extends ConstrItem implements Serializable {
             DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME,                                        new Integer(DATA_TYPE_STRINGNR));
             DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID,                                          new Integer(DATA_TYPE_STRINGNR));
             DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME,                                       new Integer(DATA_TYPE_STRINGNR));
-            
+
             DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_ATOM_NAME,                                            new Integer(DATA_TYPE_STRINGNR));
             DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_RES_ID,                                               new Integer(DATA_TYPE_INT));
             DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_RES_NAME,                                             new Integer(DATA_TYPE_STRINGNR));
             DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_MOL_ID,                                               new Integer(DATA_TYPE_INT));
             DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_ENTITY_ID,                                            new Integer(DATA_TYPE_INT));
             DEFAULT_ATTRIBUTES_TYPES.put( Relation.DEFAULT_ATTRIBUTE_ORDER_ID,                                          new Integer(DATA_TYPE_INT));
-            
+
             DEFAULT_ATTRIBUTES_ORDER = new ArrayList();
             DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[     RelationSet.RELATION_ID_COLUMN_NAME ] );
             DEFAULT_ATTRIBUTES_ORDER.add( Constr.DEFAULT_ATTRIBUTE_DC_MEMB_ID                                         );
@@ -453,7 +453,7 @@ public class DistConstr extends ConstrItem implements Serializable {
                 return false;
             }
             addRelation( distConstrAtom );
-            
+
             // Adjust for the fact that not all atom refs need to be valid.
             ForeignKeyConstr fkc = dbms.foreignKeyConstrSet.getForeignKeyConstrFrom(relationName, Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[     RelationSet.RELATION_ID_COLUMN_NAME ]);
             if ( fkc == null ) {
@@ -464,19 +464,19 @@ public class DistConstr extends ConstrItem implements Serializable {
         }
         return true;
     }
-    
+
     /**     */
     public boolean resetConvenienceVariables() {
         super.resetConvenienceVariables();
         //General.showDebug("Now in resetConvenienceVariables in DistConstr");
-        
+
         if ( true ) {
             entryIdMain          =             mainRelation.getColumnInt(    Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[  RELATION_ID_COLUMN_NAME]);
             entryIdAtom          =             distConstrAtom.getColumnInt(  Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[  RELATION_ID_COLUMN_NAME]);
             entryIdNode          =             distConstrNode.getColumnInt(  Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[  RELATION_ID_COLUMN_NAME]);
             entryIdMemb          =             distConstrMemb.getColumnInt(  Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[  RELATION_ID_COLUMN_NAME]);
             entryIdViol          =             distConstrViol.getColumnInt(  Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[  RELATION_ID_COLUMN_NAME]);
-            
+
             dcListIdMain          =             mainRelation.getColumnInt(    Constr.DEFAULT_ATTRIBUTE_SET_DC_LIST[  RELATION_ID_COLUMN_NAME]);
             dcListIdAtom          =             distConstrAtom.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_DC_LIST[  RELATION_ID_COLUMN_NAME]);
             dcListIdMemb          =             distConstrMemb.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_DC_LIST[  RELATION_ID_COLUMN_NAME]);
@@ -493,18 +493,18 @@ public class DistConstr extends ConstrItem implements Serializable {
             dcIdAtom              =             distConstrAtom.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_SET_DC[      RELATION_ID_COLUMN_NAME ]);
             numbNode              =             distConstrNode.getColumnInt(  Relation.DEFAULT_ATTRIBUTE_NUMBER );
             numbMemb              =             distConstrMemb.getColumnInt(  Relation.DEFAULT_ATTRIBUTE_NUMBER );
-            
+
             violUppMax            = (float[])   mainRelation.getColumn(     Constr.DEFAULT_ATTRIBUTE_VIOL_MAX );
             violLowMax            = (float[])   mainRelation.getColumn(     Constr.DEFAULT_ATTRIBUTE_VIOL_LOW_MAX );
             violUppMaxModelNum    =             mainRelation.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_VIOL_UPP_MAX_MODEL_NUM );
             violLowMaxModelNum    =             mainRelation.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_VIOL_LOW_MAX_MODEL_NUM );
             hasUnLinkedAtom       =             mainRelation.getColumnBit(  Constr.DEFAULT_ATTRIBUTE_HAS_UNLINKED_ATOM );
             distTheo              = (float[])   mainRelation.getColumn(     Constr.DEFAULT_ATTRIBUTE_DIST_THEORETICAL );
-            
+
             modelIdViol           =             distConstrViol.getColumnInt(  Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RelationSet.RELATION_ID_COLUMN_NAME ] );
             distance              = (float[])   distConstrViol.getColumn(     Constr.DEFAULT_ATTRIBUTE_DISTANCE );
             violation             = (float[])   distConstrViol.getColumn(     Constr.DEFAULT_ATTRIBUTE_VIOLATION );
-            
+
             nodeId                =             distConstrNode.getColumnInt(  Relation.DEFAULT_ATTRIBUTE_NUMBER );
             downId                =             distConstrNode.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_DOWN_ID );
             rightId               =             distConstrNode.getColumnInt(  Constr.DEFAULT_ATTRIBUTE_RIGHT_ID );
@@ -516,7 +516,7 @@ public class DistConstr extends ConstrItem implements Serializable {
             peakIdListNR            =             distConstrNode.getColumnStringSet( Constr.DEFAULT_ATTRIBUTE_PEAK_ID);
             weight                  = (float[])   distConstrNode.getColumn(     Constr.DEFAULT_ATTRIBUTE_WEIGHT );
             contribution            = (float[])   distConstrNode.getColumn(     Constr.DEFAULT_ATTRIBUTE_CONTRIBUTION );
-            
+
             authMolNameList     = (String[])    distConstrAtom.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME );
             authMolNameListNR   =               distConstrAtom.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_MOL_NAME );
             authResNameList     = (String[])    distConstrAtom.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_NAME );
@@ -525,7 +525,7 @@ public class DistConstr extends ConstrItem implements Serializable {
             authResIdListNR     =               distConstrAtom.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_RES_ID );
             authAtomNameList    = (String[])    distConstrAtom.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME );
             authAtomNameListNR  =               distConstrAtom.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_AUTH_ATOM_NAME);
-            
+
             atomNameList     = (String[])    distConstrAtom.getColumn(           Gumbo.DEFAULT_ATTRIBUTE_ATOM_NAME );
             atomNameListNR   =               distConstrAtom.getColumnStringSet(  Gumbo.DEFAULT_ATTRIBUTE_ATOM_NAME );
             resNameList      = (String[])    distConstrAtom.getColumn(           Gumbo.DEFAULT_ATTRIBUTE_RES_NAME );
@@ -534,7 +534,7 @@ public class DistConstr extends ConstrItem implements Serializable {
             molIdList        = distConstrAtom.getColumnInt(           Gumbo.DEFAULT_ATTRIBUTE_MOL_ID );
             entityIdList     = distConstrAtom.getColumnInt(           Gumbo.DEFAULT_ATTRIBUTE_ENTITY_ID );
             orderAtom        = distConstrAtom.getColumnInt(           Relation.DEFAULT_ATTRIBUTE_ORDER_ID );
-            
+
             if (
                     entryIdMain          == null ||
                     entryIdViol          == null ||
@@ -600,7 +600,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         //General.showDebug("Done dc resetConvenienceVariables");
         return true;
     }
-    
+
     /** Simple function. Returns Defs.NULL_STRING_NULL if id is null.
      *Returns a descriptive string when the id is not in the known range.
      */
@@ -614,7 +614,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         General.showError("failed to match logical operation to string representation for logical operation id: " + id);
         return "NO match logical operation to string representation for logical operation id: " + id;
     }
-    
+
     /**
      * A Write new nodes, members and atoms.
      * B Return the the old nodes so they and their members and redundant dc atoms (those not updated) by a list of node rids
@@ -622,11 +622,11 @@ public class DistConstr extends ConstrItem implements Serializable {
      */
     boolean setContributions( int currentDCId,
             ArrayList contributions, IntArrayList dcNodes ) {
-        
+
         //General.showDebug("Doing setContributions on currentDCId: " + currentDCId );
         int currentDCListId = dcListIdMain[   currentDCId ];
         int currentEntryId  = entryIdMain[    currentDCId ];
-        
+
         // Step A
         int nodeCount = contributions.size();
         int membCount = nodeCount*2;
@@ -638,7 +638,7 @@ public class DistConstr extends ConstrItem implements Serializable {
             General.showError("Didn't expect that there are no atoms left after reordering contributions");
             return false;
         }
-        
+
         //General.showDebug("Will create new nodes: " + nodeCount);
         //General.showDebug("Will create new membs: " + membCount);
         //General.showDebug("Will create new atoms: " + atomCount);
@@ -665,7 +665,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         for ( int nodeNumber = 1; nodeNumber <= nodeCount; nodeNumber++ ) {
             currentDCNodeId = dcNodesNew.nextSetBit( currentDCNodeId + 1 );
             //General.showDebug( "**********for node number: " + nodeNumber + " rid: " + currentDCNodeId );
-            
+
             if ( nodeCount > 1 ) {
                 if ( nodeNumber == 1 ) {
                     logicalOperationInt = DEFAULT_LOGICAL_OPERATION_ID_OR;
@@ -685,8 +685,8 @@ public class DistConstr extends ConstrItem implements Serializable {
                 downI               = Defs.NULL_INT;
                 rightI              = Defs.NULL_INT;
             }
-            
-            
+
+
             //General.showDebug( "Dc node is a constraint node and not a logical node." );
             // The next copy takes care of all attributes like contribution, weight, etc.
             //General.showDebug("Doing copy node row from: " + constrNodeRIDOrg + " to: " + currentDCNodeId);
@@ -694,7 +694,7 @@ public class DistConstr extends ConstrItem implements Serializable {
                 General.showError( "Failed to do copy row on dc node table from/to: " + constrNodeRIDOrg + "/" + currentDCNodeId);
                 return false;
             }
-            
+
             /** already done.
              * dcMainIdNode[    currentDCNodeId ] = currentDCId;
              * dcListIdNode[    currentDCNodeId ] = currentDCListId;
@@ -704,13 +704,13 @@ public class DistConstr extends ConstrItem implements Serializable {
             downId[          currentDCNodeId ] = downI;
             rightId[         currentDCNodeId ] = rightI;
             logicalOp[       currentDCNodeId ] = logicalOperationInt;
-            
+
             if ( ! Defs.isNull( logicalOperationInt ) ) { // only continue here if there is no logical operation set.
                 //return true;
                 //General.showDebug("Not creating members, atoms, etc. for logical op. node");
                 continue;
             }
-            
+
             Object[] contrib = (Object[]) contributions.get(k++); // k is only incremented after get and only for constraint nodes.
             //General.showDebug("Contribution: " + PrimitiveArray.toStringMakingCutoff( contrib ));
             for (int m=1;m<=2;m++) {
@@ -744,7 +744,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         } // end of loop over nodes.
         return true;
     }
-    
+
     /** Return the contributions for the given dc rid as they appear in the internal table but now in an object oriented way.*/
     ArrayList getContributions( int currentDCId, IndexSortedInt indexMembAtom, IndexSortedInt indexNodeMemb , IndexSortedInt indexMainNode, boolean returnIndividualContributions ) {
         //General.showDebug("Doing getContributions for constraint with rid: " + currentDCId );
@@ -754,20 +754,20 @@ public class DistConstr extends ConstrItem implements Serializable {
         Integer currentDCIdInteger = new Integer(currentDCId);
 //        int currentDCListId = dcListIdMain[   currentDCId ];
 //        int currentEntryId  = entryIdMain[    currentDCId ];
-        
+
         IntArrayList dcNodes = (IntArrayList) indexMainNode.getRidList(  currentDCIdInteger, Index.LIST_TYPE_INT_ARRAY_LIST, null);
         int dcNodesSize = dcNodes.size();
         if ( dcNodesSize < 1 ) {
             General.showError("Got less than 1 node for constraint");
             return null;
         }
-        
+
         ArrayList contributions = new ArrayList(dcNodesSize);
         // FOR EACH NODE
         for ( int currentDCNodeBatchId=0;currentDCNodeBatchId<dcNodesSize; currentDCNodeBatchId++) {
             int currentDCNodeId = dcNodes.getQuick( currentDCNodeBatchId );
             //General.showDebug("Doing node with rid: " + currentDCNodeId );
-            
+
             // For each constraint node (those with distance etc but without logic) add the distance info to
             // the distance star loop.
             int logOp = logicalOp[currentDCNodeId];
@@ -788,7 +788,7 @@ public class DistConstr extends ConstrItem implements Serializable {
             int currentDCMembId  = dcMembs.get(currentDCMembBatchId);
             int currentDCMembIdJ = dcMembs.get(currentDCMembBatchId+1);
             //General.showDebug("Working from member with RID: " + currentDCMembId);
-            
+
             IntArrayList dcAtomRids = (IntArrayList) indexMembAtom.getRidList(
                     new Integer(currentDCMembId), Index.LIST_TYPE_INT_ARRAY_LIST, null );
             //General.showDebug("dcAtomRids: " + PrimitiveArray.toStringMakingCutoff( dcAtomRids ));
@@ -811,7 +811,7 @@ public class DistConstr extends ConstrItem implements Serializable {
                 return null;
             }
             //General.showDebug("Working from member with RID: " + currentDCMembIdJ);
-            
+
             IntArrayList dcAtomRidsJ = (IntArrayList) indexMembAtom.getRidList(
                     new Integer(currentDCMembIdJ), Index.LIST_TYPE_INT_ARRAY_LIST, null );
             //General.showDebug("dcAtomRidsJ: " + PrimitiveArray.toStringMakingCutoff( dcAtomRidsJ ));
@@ -873,9 +873,9 @@ public class DistConstr extends ConstrItem implements Serializable {
 
         if ( ! mainRelation.insertColumn("tmpMaxViol",Relation.DATA_TYPE_FLOAT,null)) {
             General.showError("Failed to insertColumn tmpMaxViol");
-            return false;            
+            return false;
         }
-        
+
         try {         // encapsulate because we want to remove the tmp column just inserted.
             float[] maxViolOverallTmp = mainRelation.getColumnFloat("tmpMaxViol");
             float[] maxViolOverall = PrimitiveArray.getMax( violLowMax, violUppMax );
@@ -910,14 +910,14 @@ public class DistConstr extends ConstrItem implements Serializable {
             /** a different way of looking at it */
             BitSet result = SQLSelect.selectBitSet(dbms,mainRelation,"tmpMaxViol",SQLSelect.OPERATION_TYPE_GREATER_THAN_OR_EQUAL,
                     new Float(cutoffValue),false);
-            
-            
+
+
             General.showOutput("There are " + result.cardinality() + " restraints with violations > " + cutoffValue);
             General.showOutput("Will remove " + toRemove.cardinality() + " restraints with violations > " + cutoffValue);
             if ( result.cardinality() > toRemove.cardinality() ) {
                 General.showWarning("There are more violatins over the threshold than will be removed");
             }
-            
+
             BitSet checkSet = (BitSet) toRemove.clone();
             checkSet.andNot(result);
             if ( checkSet.cardinality() != 0 ) {
@@ -947,8 +947,8 @@ public class DistConstr extends ConstrItem implements Serializable {
             if ( ! mainRelation.removeRowsCascading(toRemove,false)) {
                     String txt = "Failed to remove violations.";
 //                    General.showError(txt);
-                    throw new Exception(txt);                
-            }            
+                    throw new Exception(txt);
+            }
         } catch ( Throwable t ) {
             General.showThrowable(t);
             encounteredFatalError = true;
@@ -956,9 +956,9 @@ public class DistConstr extends ConstrItem implements Serializable {
 //        General.showDebug("Removing tmp column");
         if ( mainRelation.removeColumn("tmpMaxViol") == null ) {
             General.showError("Failed to mainRelation.removeColumn(\"tmpMaxViol\")");
-            return false;            
+            return false;
         }
-        
+
 //        General.showDebug("Exiting filter routine.");
         return ! encounteredFatalError;
     }
@@ -980,7 +980,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         // Show only the selected ones.
         boolean showViolations = true;
         boolean showTheo = false;
-        
+
         String msg = toSTAR(selected, cutoffValue, showViolations, showTheo);
         if ( msg == null ) {
             General.showError("Failed to do constr.toSTAR");
@@ -991,7 +991,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         }
         return true;
     }
-    
+
     /** Return a bitset of selected constraints in which the absolute value of the violation is
      *at least the value given for at least one model.
      *Returns null on failure. Note that in the current implementation the violation is always
@@ -1000,19 +1000,19 @@ public class DistConstr extends ConstrItem implements Serializable {
      *
      */
     public BitSet getSelectionWithViolation( float max_viol_report ) {
-        
+
         if ( ! calcViolation() ) {
             General.showError("Failed to calcDistance.");
             return null;
         }
-        
+
         BitSet result = new BitSet();
         IndexSortedInt indexMainViol = (IndexSortedInt) distConstrViol.getIndex(Constr.DEFAULT_ATTRIBUTE_SET_DC[ RelationSet.RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_SORTED);
         if ( indexMainViol == null ) {
             General.showCodeBug("Failed to get all indexes.");
             return null;
         }
-        
+
         // FOR EACH CONSTRAINT
         for (int currentDCId = selected.nextSetBit(0);currentDCId>=0;currentDCId = selected.nextSetBit(currentDCId+1)) {
             IntArrayList dcViols = (IntArrayList) indexMainViol.getRidList(  new Integer(currentDCId),
@@ -1035,7 +1035,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         }
         return result;
     }
-    
+
     /** Convenience method that returns the 4 numbers */
     public float[] getLowTargetUppTheoBound( int rid ) {
         float[] result = new float[4];
@@ -1052,42 +1052,42 @@ public class DistConstr extends ConstrItem implements Serializable {
         result[THE_IDX] = distTheo[ rid ];
         return result;
     }
-    
-    
+
+
     /** Convenience method
      */
     public boolean calcViolation() {
         return calcViolation(selected, CUTOFF_REPORTING_VIOLATIONS);
     }
-    
-    
+
+
     /** Calculate the averaged distance for the each given constraint in all
      *selected models and puts all as new entries in the violation
      *relation. The violation will often be zero.
-     *Presumes the model sibling atoms are ok if initialized. 
+     *Presumes the model sibling atoms are ok if initialized.
      * Skips constraints with unknown atoms.
      */
     public boolean calcViolation(BitSet todo, float cutoff) {
-        
+
         int todoCount = todo.cardinality();
 //        StringBuffer sb = new StringBuffer();
-        
+
         if ( todoCount == 0 ) {
             General.showWarning("No distance constraints selected in toSTAR.");
             return true;
         }
-        
+
         BitSet dcListRids = getDCListSetFromDCSet(todo);
         if ( dcListRids == null ) {
             General.showError("Failed getDCListSetFromDCSet");
             return false;
         }
-        
+
         if ( dcListRids.cardinality() == 0 ) {
             General.showWarning("Got empty set from getDCListSetFromDCSet.");
             return true;
         }
-        
+
         for ( int currentDCListId=dcListRids.nextSetBit(0);currentDCListId>=0;currentDCListId=dcListRids.nextSetBit(currentDCListId+1)) {
             if ( ! constr.dcList.calcViolation(todo,currentDCListId,cutoff)) {
                 General.showError("Failed to calcDistance for dc list: " + currentDCListId);
@@ -1099,8 +1099,8 @@ public class DistConstr extends ConstrItem implements Serializable {
         }
         return true;
     }
-    
-    
+
+
     /** Calculate the averaged distance for the given constraint in all
      *given models.
      *Presumes the model sibling atoms are ok if initialized.
@@ -1112,18 +1112,18 @@ public class DistConstr extends ConstrItem implements Serializable {
      *the restraint has unlinked atoms or a failure to find all atoms.
      */
     public float[] calcDistance(int currentDCId, int[] selectedModelArray  ) {
-        
+
         IndexSortedInt indexMembAtom = (IndexSortedInt) distConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_MEMB_ID,                                    Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexNodeMemb = (IndexSortedInt) distConstrMemb.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_NODE_ID,                                    Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexMainNode = (IndexSortedInt) distConstrNode.getIndex(Constr.DEFAULT_ATTRIBUTE_SET_DC[ RelationSet.RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_SORTED);
-        
+
         if ( indexMembAtom == null ||
                 indexNodeMemb == null ||
                 indexMainNode == null ) {
             General.showCodeBug("Failed to get all indexes.");
             return null;
         }
-        
+
         int currentDCNodeId         = Defs.NULL_INT;
         //int currentDCId             = Defs.NULL_INT;
         int currentDCListId         = Defs.NULL_INT;
@@ -1160,7 +1160,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         }
         float[] result = new float[modelCount];
         result[0] = Defs.NULL_FLOAT; // Indication of the restraint has unlinked atoms or a failure to find all atoms.
-        
+
         if ( hasUnLinkedAtom.get( currentDCId )) {
             General.showDetail("Skipping distance calculation for constraint at rid: " + currentDCId + " because not all atoms are linked." );
             return result;
@@ -1173,17 +1173,17 @@ public class DistConstr extends ConstrItem implements Serializable {
         Integer currentDCIdInteger = new Integer(currentDCId);
         IntArrayList dcNodes = (IntArrayList) indexMainNode.getRidList(  currentDCIdInteger, Index.LIST_TYPE_INT_ARRAY_LIST, null);
         //General.showDebug("Found the following rids of nodes in constraint: " + PrimitiveArray.toStringMakingCutoff( dcNodes ));
-        
+
         int dCNodeNumber = 1;
         // Define a list of n constraint nodes with 2 sets of atoms so elements are of type IntArrayList[2]
         ArrayList atomsInvolved = new ArrayList();
-        
-        
+
+
         // FOR EACH NODE
         for ( int currentDCNodeBatchId=0;currentDCNodeBatchId<dcNodes.size(); currentDCNodeBatchId++) {
             currentDCNodeId = dcNodes.getQuick( currentDCNodeBatchId ); // quick enough?;-)
             //General.showDebug("Using distance constraint node: " + dCNodeNumber + " at rid: " + currentDCNodeId );
-            
+
             // For each constraint node (those with distance etc but without logic) add the distance info to
             // the distance star loop.
             int logOp = logicalOp[currentDCNodeId];
@@ -1198,7 +1198,7 @@ public class DistConstr extends ConstrItem implements Serializable {
             // Assumption at this point is that the constraint nodes are OR-ed. Change code here to
             // allow different type of trees.
             //General.showDebug( "Dc node is a constraint node and not a logical node." );
-            
+
             // FOR BOTH MEMBER (usually just 2)
             IntArrayList dcMembs = (IntArrayList) indexNodeMemb.getRidList(  new Integer(currentDCNodeId),
                     Index.LIST_TYPE_INT_ARRAY_LIST, null);
@@ -1210,7 +1210,7 @@ public class DistConstr extends ConstrItem implements Serializable {
             int currentDCMembIdA = dcMembs.get(0);
             int currentDCMembIdB = dcMembs.get(1);
             //General.showDebug("Working on members with RID: " + currentDCMembIdA + " and " + currentDCMembIdB);
-            
+
             IntArrayList dcAtomsA = (IntArrayList) indexMembAtom.getRidList(  new Integer(currentDCMembIdA),
                     Index.LIST_TYPE_INT_ARRAY_LIST, null);
             IntArrayList dcAtomsB = (IntArrayList) indexMembAtom.getRidList(  new Integer(currentDCMembIdB),
@@ -1258,7 +1258,7 @@ public class DistConstr extends ConstrItem implements Serializable {
             General.showWarning("Failed to find all atoms in constraint: " + currentDCId + "That should have been recorded before.");
             return result;
         }
-        
+
         // When the set of atoms involved is collected for the first model, the other models can easily be done too.
         // FOR EACH selected MODEL
         for ( int currentModelId=0; currentModelId<modelCount; currentModelId++) {
@@ -1284,7 +1284,7 @@ public class DistConstr extends ConstrItem implements Serializable {
                 //General.showDebug("Found the following rids of atoms in model in member B: " + PrimitiveArray.toStringMakingCutoff( dcAtomsBNew ));
                 atomsInvolvedModel.add(new IntArrayList[] {dcAtomsANew, dcAtomsBNew});
             }
-            
+
             float dist = gumbo.atom.calcDistance( atomsInvolvedModel, avgMethod, numberMonomers );
             if ( Defs.isNull( dist ) ) {
                 General.showError("Failed to calculate the distance for constraint: " + currentDCId + " in model: " + (currentModelId+1) + " will try other models.");
@@ -1294,7 +1294,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         } // end of loop per model
         return result;
     }
-    
+
     /** Simple function */
     private int countAtoms( ArrayList contributions ) {
         int atomCount = 0;
@@ -1308,7 +1308,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         }
         return atomCount;
     }
-    
+
     /** Sort the todo elements in this list. The number attribute will be renumbered to start with offset.
      *The following types of sorts will be executed.
      *atoms, members, nodes and constraints within this selection
@@ -1321,7 +1321,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         int todoSize = todo.cardinality();
         General.showDebug("Sorting constraints numbered: " + todoSize);
         IntArrayList dcNodesToBeRemoved = new IntArrayList( todo.length()*3 ); // 3 is a conservative estimate, might be more.
-        
+
         //General.showDebug("Starting routine: setSelectionDoubles_Type_2");
         IndexSortedInt indexMembAtom = (IndexSortedInt) distConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_MEMB_ID,                                    Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexNodeMemb = (IndexSortedInt) distConstrMemb.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_NODE_ID,                                    Index.INDEX_TYPE_SORTED);
@@ -1360,7 +1360,7 @@ public class DistConstr extends ConstrItem implements Serializable {
             General.showError("After cascading remove expected some removes (new/old): " + distConstrNode.sizeRows +"/" + dcNodeSizeOld);
             return false;
         }
-        
+
         if ( ! sort(todo, offset)) {
             General.showError("Failed to do sort of constraints");
             return false;
@@ -1375,7 +1375,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         }
         return true;
     }
-    
+
     /** Assumes the constraints are already sorted by node, member, and atom.
      */
     private boolean sort(BitSet todo, int offset) {
@@ -1394,7 +1394,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         }
         return true;
     }
-    
+
     /** Orders the contributions (nodes) by the atoms making them. It will also order the atoms
      *within each contribution left/right and even order within one side (left or right member).
      */
@@ -1435,7 +1435,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         showContributions( contributions );
         return true;
     }
-    
+
     /** Swap elements concurrently */
     private static boolean sortContributionLeftRight(ArrayList contributions, int i) {
         Object[] contrib = (Object[]) contributions.get(i);
@@ -1447,7 +1447,7 @@ public class DistConstr extends ConstrItem implements Serializable {
         contrib[3] = tmp;
         return true;
     }
-    
+
     /** show them */
     static void showContributions( ArrayList contributions ) {
         for (int i=0;i<contributions.size();i++) {
@@ -1455,25 +1455,25 @@ public class DistConstr extends ConstrItem implements Serializable {
             //General.showDebug("*** Contribution " + i + " :" + PrimitiveArray.toStringMakingCutoff( contrib ));
         }
     }
-    
+
     /** Convenience method */
     public String toString(int rid) {
         boolean showViolations = false;
         boolean showTheos = false;
         return toString(rid, showViolations, showTheos);
     }
-    
-    
+
+
     /** Convenience method */
     public String toString(int rid, boolean showViolations, boolean showTheos) {
         BitSet tmpSet = new BitSet();
         tmpSet.set( rid );
         return toString(tmpSet, showViolations, showTheos);
     }
-    
-    
+
+
     /** The supported output formats for xplor include Aria's:
-ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 53 and name HE1 )) 3.600 1.700 1.700 peak 6 weight 0.10000E+01 volume 0.14383E-02 ppm1 4.578 ppm2 9.604 CV 1 
+ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 53 and name HE1 )) 3.600 1.700 1.700 peak 6 weight 0.10000E+01 volume 0.14383E-02 ppm1 4.578 ppm2 9.604 CV 1
   OR { 6} (( segid "SLP " and resid 83 and name HB )) (( segid "SH3 " and resid 53 and name HE1 ))
      * @param format TODO
      */
@@ -1487,7 +1487,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             return false;
         }
         int currentDCId;
-        int dcCount = 0;                
+        int dcCount = 0;
 
         int dcCountTotal = dcSet.cardinality();
         if ( dcCountTotal == 0 ) {
@@ -1495,9 +1495,9 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             return true;
         }
         StringBuffer sb = new StringBuffer( dcCountTotal * 80 * 5); // rough unimportant estimation of 80 chars per restraint.
-        
+
         //General.showDebug( "Total number of distance constraints todo: " + dcCountTotal );
-        
+
 
         // Write them in a sorted fashion if needed.
         int[] map = null;
@@ -1508,11 +1508,11 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             }
             map = mainRelation.getRowOrderMap(Relation.DEFAULT_ATTRIBUTE_ORDER_ID  ); // Includes just the dcs in this list
             if ( (map != null) && (map.length != dcCountTotal )) {
-                General.showWarning("Trying to get an order map but failed to give back the correct number of elements: " + dcCountTotal + " instead found: " + map.length );
+                General.showDebug("Trying to get an order map but failed to give back the correct number of elements: " + dcCountTotal + " instead found: " + map.length );
                 map = null;
             }
             if ( map == null ) {
-                General.showWarning("Failed to get the row order sorted out for distance constraints; using physical ordering."); // not fatal
+                General.showDebug("Failed to get the row order sorted out for distance constraints; using physical ordering."); // not fatal
                 map = PrimitiveArray.toIntArray( dcSet );
                 if ( map == null ) {
                     General.showError("Failed to get the used row map list so not writing this table.");
@@ -1524,14 +1524,14 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             if ( map == null ) {
                 General.showError("Failed to get the used row map list so not writing this table.");
                 return false;
-            }            
+            }
         }
-        
+
         BitSet mapAsSet = PrimitiveArray.toBitSet(map,-1);
-        if ( mapAsSet == null ) { 
+        if ( mapAsSet == null ) {
             General.showCodeBug("Failed to create bitset back from map.");
             return false;
-        }   
+        }
         BitSet mapXor = (BitSet) mapAsSet.clone();
         mapXor.xor(dcSet);
         if ( mapXor.cardinality() != 0 ) {
@@ -1543,7 +1543,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             return false;
         }
 
-        
+
         // important to get the indexes after the sortAll.
         IndexSortedInt indexMembAtom = (IndexSortedInt) distConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_MEMB_ID,                                    Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexNodeMemb = (IndexSortedInt) distConstrMemb.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_NODE_ID,                                    Index.INDEX_TYPE_SORTED);
@@ -1554,23 +1554,23 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             General.showCodeBug("Failed to get all indexes to dc main in atom/memb/node");
             return false;
         }
-        
+
         StringBuffer sbRst = new StringBuffer();
         Parameters p = new Parameters();
-        
+
         // FOR EACH CONSTRAINT
-        for (int d = 0; d<map.length;d++) { 
+        for (int d = 0; d<map.length;d++) {
             sbRst.setLength(0);
             sbRst.append( "assi {" + Format.sprintf( "%4d", p.add( (d+1) )) + "} ");
             currentDCId = map[ d ];
             //General.showDebug("Preparing distance constraint: " + dcCount + " at rid: " + currentDCId);
             Integer currentDCIdInteger = new Integer(currentDCId);
             IntArrayList dcNodes = (IntArrayList) indexMainNode.getRidList(  currentDCIdInteger, Index.LIST_TYPE_INT_ARRAY_LIST, null);
-            //General.showDebug("Found the following rids of nodes in constraint: " + PrimitiveArray.toString( dcNodes ));                
+            //General.showDebug("Found the following rids of nodes in constraint: " + PrimitiveArray.toString( dcNodes ));
             if ( dcNodes == null ) {
                 General.showError("Failed to get nodes");
                 return false;
-            }                    
+            }
             if ( dcNodes.size() < 1 ) {
                 General.showError("Failed to get at least one node");
                 return false;
@@ -1580,7 +1580,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                 return false;
             }
 
-            int dCNodeNumber = 1;                 
+            int dCNodeNumber = 1;
             // FOR EACH NODE
             boolean containsAriaOR = false;
             for ( int currentDCNodeBatchId=0;currentDCNodeBatchId<dcNodes.size(); currentDCNodeBatchId++) {
@@ -1589,12 +1589,12 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
 
                 // For each constraint node (those with distance etc but without logic) add the distance info to
                 // the distance star loop.
-                if ( ! Defs.isNull( logicalOp[currentDCNodeId] ) ) { 
+                if ( ! Defs.isNull( logicalOp[currentDCNodeId] ) ) {
                     dCNodeNumber++;
                     containsAriaOR = true;
                     continue;
                 }
-                
+
                 if ( containsAriaOR && (dCNodeNumber>2)) {
                     sbRst.append('\n');
                     sbRst.append("    or      ");
@@ -1602,13 +1602,13 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
 
                 // FOR EACH MEMBER (usually just 2)
                 //General.showDebug("Looking for members in constraint node rid:" + currentDCNodeId );
-                IntArrayList dcMembs = (IntArrayList) indexNodeMemb.getRidList(  new Integer(currentDCNodeId), 
+                IntArrayList dcMembs = (IntArrayList) indexNodeMemb.getRidList(  new Integer(currentDCNodeId),
                     Index.LIST_TYPE_INT_ARRAY_LIST, null);
                 //General.showDebug("Found the following rids of members in constraint node (" + currentDCNodeId + "): " + PrimitiveArray.toString( dcMembs ));
                 if ( dcMembs.size() != 2 ) {
                     General.showError("Are we using a number different than 2 as the number of members in a node?");
                     return false;
-                }                    
+                }
                 if ( ! PrimitiveArray.orderIntArrayListByIntArray( dcMembs, numbMemb )) {
                     General.showError("Failed to order members by order column");
                     return false;
@@ -1622,10 +1622,10 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                     int molNum      = Defs.NULL_INT;
 //                    int prevMolNum  = Defs.NULL_INT;
                     //int entityNum   = Defs.NULL_INT;
-                    String atomName     = null;                       
+                    String atomName     = null;
 
                     /** Next objects can be reused if code needs optimalization. */
-                    IntArrayList dcAtoms = (IntArrayList) indexMembAtom.getRidList(  new Integer(currentDCMembID), 
+                    IntArrayList dcAtoms = (IntArrayList) indexMembAtom.getRidList(  new Integer(currentDCMembID),
                         Index.LIST_TYPE_INT_ARRAY_LIST, null);
                     if ( dcAtoms.size() < 1 ) {
                         General.showError("No atoms in member");
@@ -1642,7 +1642,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                     atomRids.setSize( dcAtoms.size() );
                     for (int i=0;i<dcAtoms.size();i++) {
                         atomRids.setQuick( i, atomIdAtom[ dcAtoms.getQuick(i) ]);
-                    }                        
+                    }
                     //General.showDebug("Found the following rids of atoms in constraint node (" + dCNodeNumber + "): " + PrimitiveArray.toString( atomRids ));
                     if ( atomRids.size() < 1 ) {
                         General.showError("Didn't find a single atom for a member in constraint node (" + dCNodeNumber + "): for constraint number: " + dcCount);
@@ -1654,9 +1654,9 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                     statusList.setSize( dcAtoms.size() );
                     pseudoNameList.ensureCapacity( dcAtoms.size() );
                     pseudoNameList.setSize( dcAtoms.size() );
-                    if ( ! gumbo.atom.collapseToPseudo( atomRids, statusList, pseudoNameList, dbms.ui.wattosLib.pseudoLib )) {                    
+                    if ( ! gumbo.atom.collapseToPseudo( atomRids, statusList, pseudoNameList, dbms.ui.wattosLib.pseudoLib )) {
                         General.showError("Failed to collapse atoms to pseudo atom names." );
-                        return false;                    
+                        return false;
                     }
                     for ( int currentDCAtomBatchId=0; currentDCAtomBatchId<dcAtoms.size(); currentDCAtomBatchId++) {
                         int statusAtom = statusList.getQuick( currentDCAtomBatchId );
@@ -1703,13 +1703,13 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                             }
 
                             molNum  =  gumbo.mol.number[ molId ];
-//                            if ( molNum != prevMolNum ) { 
+//                            if ( molNum != prevMolNum ) {
 //                                entityNum    = ((Integer)molNumber2EntityNumberMap.get( new Integer(molNum))).intValue(); // expensive so only do when changes are possible.
 //                            }
                             if ( statusAtom == PseudoLib.DEFAULT_REPLACED_BY_PSEUDO ) {
                                 atomName    = (String) pseudoNameList.getQuick( currentDCAtomBatchId ); // get the next one from the list.
                             } else {
-                                atomName = gumbo.atom.nameList[atomId];                            
+                                atomName = gumbo.atom.nameList[atomId];
                                 if ( statusAtom != PseudoLib.DEFAULT_OK ) {
                                     General.showError("Didn't expect this one in File31 for atom name: " + atomName);
                                     return false;
@@ -1724,12 +1724,12 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                             resName         = resNameList[       currentDCAtomId ];
                             atomName        = atomNameList[      currentDCAtomId ];
                         }
-                                                
+
                         sbRst.append(constr.toXplorAtomSel(molNum, resNum, resName, atomName,atomNomenclature));
 
 //                        varDCConstraintsID[             currentStarDCAtomId ] = dcListCount;
 //                        varDCDistconstrainttreeID[      currentStarDCAtomId ] = dcCount;
-//                        varDCTreenodemembernodeID[      currentStarDCAtomId ] = nodeId[              nodeId  ];         
+//                        varDCTreenodemembernodeID[      currentStarDCAtomId ] = nodeId[              nodeId  ];
 //                        varDCContributionfractionalval[ currentStarDCAtomId ] = contribution[        nodeId ];
 //                        varDCConstrainttreenodememberID[currentStarDCAtomId ] = numbMemb[ membId ];
 //                        varDCLabelentityassemblyID[     currentStarDCAtomId ] = molNum;
@@ -1741,9 +1741,9 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
 //                        varDCAuthseqID[                 currentStarDCAtomId ] = authResIdList[       currentDCAtomId ];
 //                        varDCAuthcompID[                currentStarDCAtomId ] = authResNameList[     currentDCAtomId ];
 //                        varDCAuthatomID[                currentStarDCAtomId ] = authAtomNameList[    currentDCAtomId ];
-//                        sbRst.append(") ");                    
+//                        sbRst.append(") ");
                     } // end of loop per atom
-                    sbRst.append(") ");                    
+                    sbRst.append(") ");
                 } // end of loop per member
 
                 boolean showDistanceList = false; // show only once per restraint.
@@ -1754,71 +1754,71 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                 } else if ( dCNodeNumber == 1 ) {
                     showDistanceList = true;
                 }
-                if ( showDistanceList ) { 
-                    float[] xplorDistSet = toXplorDistanceSet( 
-                    		target[  currentDCNodeId],
-                    		lowBound[currentDCNodeId],
-                    		uppBound[currentDCNodeId]
-                    		);
+                if ( showDistanceList ) {
+                    float[] xplorDistSet = toXplorDistanceSet(
+                            target[  currentDCNodeId],
+                            lowBound[currentDCNodeId],
+                            uppBound[currentDCNodeId]
+                            );
                     if ( xplorDistSet == null ) {
-                    	General.showError("Failed to convert distances to xplor for restraint: " +
-                    			toString(currentDCId));
-                    	return false;
+                        General.showError("Failed to convert distances to xplor for restraint: " +
+                                toString(currentDCId));
+                        return false;
                     }
                     for (int i=0;i<3;i++ ) {
-                    	sbRst.append(Format.sprintf( "%8.3f ", p.add( xplorDistSet[i] )));
+                        sbRst.append(Format.sprintf( "%8.3f ", p.add( xplorDistSet[i] )));
                     }
-                }         
-                
+                }
+
                 dCNodeNumber++;
-            } // end of loop per node 
+            } // end of loop per node
             sb.append(sbRst.toString()); // need to instantiate the string?
             sb.append('\n');
             dcCount++;
         }
 //        dcCount--; // started with one
         fn = fn + "_dc";
-        String outputFileName = InOut.addFileNumberBeforeExtension( fn, fileCount, true, 3 );        
+        String outputFileName = InOut.addFileNumberBeforeExtension( fn, fileCount, true, 3 );
         File f = new File(outputFileName+".tbl");
         InOut.writeTextToFile(f,sb.toString(),true,false);
         General.showOutput("Written " + Strings.sprintf(dcCount,"%5d") + " dcs to: " + f.toString());
         return true;
     }
-     
+
     /** WARNING; this format will change in the future.
      *Optionaly shows theoretically possible distances if available.
      */
     public String toString(BitSet todo, boolean showViolations, boolean showTheos) {
-        
+
         int todoCount = todo.cardinality();
         StringBuffer sb = new StringBuffer( todoCount * 80 * 5); // rough unimportant estimation of 80 chars per restraint.
-        
+
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(3);
-        
+
         if ( todoCount == 0 ) {
             return "No distance constraints selected in toString.";
         }
-        
+
         float[] upp_theo = null;
         float[] low_theo = null;
-        
+
         if ( mainRelation.containsColumn( DEFAULT_UPP_THEO) &&
                 mainRelation.containsColumn( DEFAULT_LOW_THEO) ) {
             upp_theo = mainRelation.getColumnFloat(DEFAULT_UPP_THEO);
             low_theo = mainRelation.getColumnFloat(DEFAULT_LOW_THEO);
         }
         boolean containsTheos = true;
-        
+
         if (
                 upp_theo          == null ||
                 low_theo          == null
                 ) {
             containsTheos = false;
         }
-        
+
         //sb.append( "Total number of distance constraints todo: " + todoCount + "\n");
-        
+
         IndexSortedInt indexMembAtom = (IndexSortedInt) distConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_MEMB_ID,                                    Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexNodeMemb = (IndexSortedInt) distConstrMemb.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_NODE_ID,                                    Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexMainNode = (IndexSortedInt) distConstrNode.getIndex(Constr.DEFAULT_ATTRIBUTE_SET_DC[ RelationSet.RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_SORTED);
@@ -1828,13 +1828,13 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             General.showCodeBug("Failed to get all indexes.");
             return null;
         }
-        
+
 //        int currentDCViolId         = Defs.NULL_INT;
         int currentDCNodeId         = Defs.NULL_INT;
         int currentDCId             = Defs.NULL_INT;
 //        int currentDCListId         = Defs.NULL_INT;
         int currentDCEntryId        = Defs.NULL_INT;
-        
+
         int dcCount = 0;
         // FOR EACH CONSTRAINT
         BitSet unlinkedAtomSelected = (BitSet) hasUnLinkedAtom.clone();
@@ -1850,7 +1850,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             }
             sb.append( "DC: " + currentDCId );
             if ( showViolations ) {
-                
+
                 if ( ! Defs.isNull( violLowMax[currentDCId]) ) {
                     sb.append( " violLowMax: " + df.format(violLowMax[currentDCId]) +
                             " at model: " + violLowMaxModelNum[currentDCId]);
@@ -1870,7 +1870,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                     sb.append( " no lowTheo/uppTheo: ");
                 }
             }
-            
+
             sb.append( General.eol );
             if ( hasUnLinkedAtom.get( currentDCId )) {
                 General.showDetail("Skipping toString for constraint at rid: " + currentDCId + " because not all atoms are linked." );
@@ -1893,22 +1893,22 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
              * " with avgMethod: " + DistConstrList.DEFAULT_AVERAGING_METHOD_NAMES[avgMethod] +
              * " and number of monomers: " + numberMonomers);
              */
-            
-            
+
+
             boolean atomFound = true; // signals at least one atom could not be found when 'false'
             IntArrayList dcNodes = (IntArrayList) indexMainNode.getRidList(  currentDCIdInteger, Index.LIST_TYPE_INT_ARRAY_LIST, null);
             //General.showDebug("Found the following rids of nodes in constraint: " + PrimitiveArray.toStringMakingCutoff( dcNodes ));
-            
+
             int dCNodeNumber = 1;
             // Define a list of n constraint nodes with 2 sets of atoms so elements are of type IntArrayList[2]
 //            ArrayList atomsInvolved = new ArrayList();
-            
-            
+
+
             // FOR EACH NODE
             for ( int currentDCNodeBatchId=0;currentDCNodeBatchId<dcNodes.size(); currentDCNodeBatchId++) {
                 currentDCNodeId = dcNodes.getQuick( currentDCNodeBatchId ); // quick enough?;-)
                 //General.showDebug("Using distance constraint node: " + dCNodeNumber + " at rid: " + currentDCNodeId );
-                
+
                 // For each constraint node (those with distance etc but without logic) add the distance info to
                 // the distance star loop.
                 int logOp = logicalOp[currentDCNodeId];
@@ -1916,13 +1916,13 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                 if ( ! Defs.isNull( logOp ) ) {
                     sb.append( " " + DEFAULT_LOGICAL_OPERATION_NAMES[logOp] + " ");
                 }
-                
+
                 sb.append( "Low/target/Upp" );
                 sb.append( ": " );
                 sb.append( Defs.toString( lowBound[ currentDCNodeId ]) +
                         " " + Defs.toString( target[   currentDCNodeId ]) +
                         " " + Defs.toString( uppBound[ currentDCNodeId ]) + General.eol);
-                
+
                 if ( ! Defs.isNull( logOp ) ) {
                     if ( logOp != DEFAULT_LOGICAL_OPERATION_ID_OR ) {
                         General.showError("Can't deal with logical operations different than OR but found: [" + logOp + "]");
@@ -1934,7 +1934,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                 // Assumption at this point is that the constraint nodes are OR-ed. Change code here to
                 // allow different type of trees.
                 //General.showDebug( "Dc node is a constraint node and not a logical node." );
-                
+
                 // FOR BOTH MEMBER (just 2)
                 IntArrayList dcMembs = (IntArrayList) indexNodeMemb.getRidList(  new Integer(currentDCNodeId),
                         Index.LIST_TYPE_INT_ARRAY_LIST, null);
@@ -1943,7 +1943,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                     General.showError("Are we using a number different than 2 as the number of members in a node? Can't do toString for it yet.");
                     return null;
                 }
-                
+
                 /** Next objects can be reused if code needs optimalization. */
                 for (int m=0;m<dcMembs.size();m++ ) {
                     IntArrayList dcAtoms = (IntArrayList) indexMembAtom.getRidList(  new Integer(dcMembs.get(m)),
@@ -1973,18 +1973,18 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         } // end of loop per constraint
         return sb.toString();
     }
-    
+
     /** Returns an (empty) set of dc list rids for the given dc set.
      */
     public BitSet getDCListSetFromDCSet( BitSet todo ) {
         BitSet result = new BitSet();
-        
+
         int todoCount = todo.cardinality();
         if ( todoCount == 0 ) {
             General.showWarning("No distance constraints selected in getDCListSetFromDCSet.");
             return result;
         }
-        
+
         BitSet dcMainListRids = SQLSelect.getDistinct(
                 dbms,
                 mainRelation,
@@ -2007,13 +2007,13 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
          */
         return result;
     }
-    
+
     /** Returns a list of saveframes for each dc list or the empty string if
      *there are no given restraints.
      *Showtheo is not implemented yet. showViolations is always done.
      */
     public String toSTAR(BitSet todo, float cutoffValue, boolean showViolations, boolean showTheo) {
-        
+
         int todoCount = todo.cardinality();
         if ( todoCount == 0 ) {
             General.showOutput("No distance constraints selected in toSTAR.");
@@ -2023,18 +2023,18 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
 //            General.showError("Failed to calcViolation");
 //            return null;
 //        }
-        
+
         BitSet dcListRids = getDCListSetFromDCSet(todo);
         if ( dcListRids == null ) {
             General.showError("Failed getDCListSetFromDCSet");
             return null;
         }
-        
+
         if ( dcListRids.cardinality() == 0 ) {
             General.showCodeBug("Got empty set from getDCListSetFromDCSet.");
             return null;
         }
-        
+
         // Create star nodes
         DataBlock db = new DataBlock();
         if ( db == null ) {
@@ -2043,8 +2043,8 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         int entryId = gumbo.entry.getEntryId();
         db.title = gumbo.entry.nameList[entryId];
-        
-        
+
+
         int dcListCount = 1;
         for ( int currentDCListId=dcListRids.nextSetBit(0);currentDCListId>=0;currentDCListId=dcListRids.nextSetBit(currentDCListId+1)) {
             General.showDebug("Doing constr.dcList.toSTAR for dcListCount: " + dcListCount);
@@ -2063,7 +2063,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             db.add(sF);
             dcListCount++;
         }
-        
+
         if ( ! db.toStarTextFormatting( dbms.ui.wattosLib.starDictionary )) {
             General.showWarning("Failed to format all columns as per dictionary this is not fatal however.");
         }
@@ -2074,10 +2074,10 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             General.showError("Failed to render dc results to STAR text.");
             return null;
         }
-        
+
         return result;
     }
-    
+
     /** Returns the rid of the first node of this restraint the slow way. Returns -1 on error.
      */
     public int getdCNodeFirstWithoutLogicalOpRid( int currentDCId ) {
@@ -2110,7 +2110,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         return lowestDCNodeRid;
     }
-    
+
     /** Returns the rids of the nodes of this restraint without the first.
      */
     public BitSet getdCNodeSetWithoutLogicalOpRid( int currentDCId ) {
@@ -2134,9 +2134,9 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         return dcNodesSet;
     }
-    
-    
-    
+
+
+
     /** Returns the rid of the first node of this restraint the slow way. Returns -1 on error.
      */
     public int[] getdCMembFirst2Rid( int currentDCNodeId ) {
@@ -2151,7 +2151,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             General.showError("Failed to getdCMembFirst2Rid.");
             return null;
         }
-        
+
         ArrayList tempList = new ArrayList();
         // Fill temp array; kind of expensive.
         for (int i=set.nextSetBit(0); i>=0; i=set.nextSetBit(i+1))  {
@@ -2160,13 +2160,13 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         // sort collection based on the old id
         Collections.sort( tempList, new ComparatorIntIntPair());
-        
+
         ObjectIntPair p1 = (ObjectIntPair) tempList.get(0);
         ObjectIntPair p2 = (ObjectIntPair) tempList.get(1);
         int[] result = new int[] { p1.i, p2.i };
         return result;
     }
-    
+
     /** Get the first atom in the member. sorted in the normal order.
      *Todo, use pseudo atom name in code above.
      */
@@ -2195,21 +2195,21 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                 lowestAtomRid = atomRid;
             }
         }
-        
+
         return lowestAtomRid;
     }
-    
+
     /** Get the first atom (pseudo-)name in the member. sorted in the normal order.
      */
     public String getAtomFirstPseudoOrRegularName(int dCMembRid) {
 //        General.showOutput("Looking at member: " + dCMembRid);
-        
+
         BitSet dcAtomSet = SQLSelect.selectBitSet(dbms,
                 distConstrAtom,
                 Constr.DEFAULT_ATTRIBUTE_DC_MEMB_ID,
                 SQLSelect.OPERATION_TYPE_EQUALS,
                 new Integer(dCMembRid),
-                false);        
+                false);
         if ( dcAtomSet == null ) {
             General.showError("Failed to get dc atoms for toSTAR");
             return null;
@@ -2219,7 +2219,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             General.showError("No atoms in member");
             return null;
         }
-        
+
         int lowestAtomRid = atomIdAtom[dcAtoms.get(0)]; // atom rid
         // Faster...
         if ( dcAtoms.size() == 1 ) {
@@ -2227,7 +2227,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
 //            General.showOutput("Returning atom: " + atomName);
             return atomName;
         }
-        
+
         IntArrayList atomRidSet = new IntArrayList();
         atomRidSet.setSize( dcAtoms.size() );
         int lowestDCAtomRid = 0;
@@ -2237,20 +2237,20 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
 //            General.showOutput("Added atom: " + gumbo.atom.toString(atomRid));
             if ( gumbo.atom.compare( atomRid, lowestAtomRid, false, false ) < 0 ) {
                 lowestAtomRid = atomRid;
-                lowestDCAtomRid = i;   
+                lowestDCAtomRid = i;
             }
-        }                        
+        }
 //        General.showOutput("First atom: " + gumbo.atom.toString(lowestAtomRid));
-        
-        // find any 
+
+        // find any
         IntArrayList    statusList         = new IntArrayList();    // List of status (like ok, pseudo, deleted) for the original atoms
         ObjectArrayList pseudoNameList     = new ObjectArrayList(); // List of pseudo atom names also parrallel to dcAtoms.
         statusList.setSize( dcAtoms.size() );
         pseudoNameList.setSize( dcAtoms.size() );
-        
-        if ( ! gumbo.atom.collapseToPseudo( atomRidSet, statusList, pseudoNameList, dbms.ui.wattosLib.pseudoLib )) {                    
+
+        if ( ! gumbo.atom.collapseToPseudo( atomRidSet, statusList, pseudoNameList, dbms.ui.wattosLib.pseudoLib )) {
             General.showError("Failed to collapse atoms to pseudo atom names." );
-            return null;                    
+            return null;
         }
 //        General.showOutput("atoms:          " + gumbo.atom.toString(PrimitiveArray.toBitSet(atomRidSet)));
 //        General.showOutput("statusList:     " + PrimitiveArray.toString(statusList));
@@ -2258,16 +2258,16 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         int statusAtom = statusList.getQuick( lowestDCAtomRid );
         String atomName = null;
         if ( statusAtom == PseudoLib.DEFAULT_OK ) {
-            atomName = gumbo.atom.nameList[lowestAtomRid]; // there was a bug here by using index: lowestDCAtomRid                            
+            atomName = gumbo.atom.nameList[lowestAtomRid]; // there was a bug here by using index: lowestDCAtomRid
         } else {
             atomName = (String) pseudoNameList.getQuick( lowestDCAtomRid ); // get the next one from the list.
         }
-        
+
 //        General.showOutput("Returning atom: " + atomName);
         return atomName;
     }
-    
-    
+
+
     public float[] getModelViolationsFromViol(int currentDCId) {
         BitSet dcViolSet = SQLSelect.selectBitSet(dbms,
                 distConstrViol,
@@ -2295,7 +2295,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         return result;
     }
-    
+
     public float[] getModelDistancesFromViol(int currentDCId) {
         BitSet dcViolSet = SQLSelect.selectBitSet(dbms,
                 distConstrViol,
@@ -2308,45 +2308,45 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             return null;
         }
         int[] dcViolList = PrimitiveArray.toIntArray(dcViolSet);
-        
+
         float[] result = new float[dcViolList.length];
         for (int i=0;i<dcViolList.length;i++) {
             result[i] = distance[ dcViolList[i] ];
-        } 
+        }
         return result;
     }
-    
+
     /** Add to the tagtable the info for the current DC */
     public boolean toSTAR( TagTable tT, int currentDCId, int currentDCListId,
             int dcCount, int listNumber ) {
-        
+
         DistConstrList dcl = constr.dcList;
         if ( hasUnLinkedAtom.get( currentDCId )) {
             General.showWarning("Skipping toSTAR rendering of atom ids for constraint at rid: " + currentDCId + " because not all atoms are linked." );
         }
-        
+
         int dCNodeFirstRid = getdCNodeFirstWithoutLogicalOpRid(currentDCId);
         if ( dCNodeFirstRid < 0 ) {
             General.showError("Failed to getdCNodeFirstRid for toSTAR");
             return false;
         }
         int currentDCNodeId = dCNodeFirstRid;
-        
+
         int[] dCMembFirst2Rids = getdCMembFirst2Rid(currentDCNodeId);
         if ( dCMembFirst2Rids == null ) {
             General.showError("Failed to getdCMembFirst2Rid for toSTAR");
             return false;
         }
-        
+
         int rowIdx = tT.getNewRowId();
         if ( rowIdx < 0 ) {
             General.showError("Failed tT.getNewRowId.");
             return false;
         }
         FloatIntPair fip = getMaxViolAndModelNumber(currentDCId);
-        float maxViol = fip.f;        
+        float maxViol = fip.f;
         int max_violation_model_number = fip.i;
-                
+
         float[] distanceList = getModelDistancesFromViol(currentDCId);
         if ( distanceList == null ) {
             General.showError("Failed to getModelDistancesFromViol for toSTAR");
@@ -2354,7 +2354,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         float[] avSd = Statistics.getAvSd(distanceList);
         float[] minMaxDist = Statistics.getMinMax(distanceList);
-        
+
         float[] violList = getModelViolationsFromViol(currentDCId);
         if ( violList == null ) {
             General.showError("Failed to getModelViolationsFromViol for toSTAR");
@@ -2369,9 +2369,9 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             return false;
         }
         above_cutoff_violation_per_model = "[" + above_cutoff_violation_per_model + "]";
-        
+
         int countMakingCutoff = PrimitiveArray.countMakingCutoff(above_cutoff_violation_per_model);
-        
+
         float low = lowBound[ currentDCNodeId ];
         if ( low <= 2.0f ) {
             low = Defs.NULL_FLOAT;
@@ -2393,8 +2393,8 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         tT.setValue(rowIdx, dcl.tagNameDCStats_Above_cutoff_violation_per_model, above_cutoff_violation_per_model);
 //        tT.setValue(rowIdx, dcl.tagNameDCStats_Entry_ID                        , 1);
         tT.setValue(rowIdx, dcl.tagNameDCStats_Distance_constraint_stats_ID    , listNumber);
-        
-        // FOR BOTH MEMBER        
+
+        // FOR BOTH MEMBER
         /** Next objects can be reused if code needs optimalization. */
         for (int m=0;m<2;m++ ) {
             int memberRid = dCMembFirst2Rids[m];
@@ -2404,18 +2404,18 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                 return false;
             }
             String atomName = getAtomFirstPseudoOrRegularName(memberRid);
-            
+
             int resRid = gumbo.atom.resId[atomRid];
             int molRid = gumbo.atom.molId[atomRid];
             int molNumber = gumbo.mol.number[molRid];
             String resName = gumbo.res.nameList[resRid];
-            int resNumber  = gumbo.res.number[resRid];            
-                    
+            int resNumber  = gumbo.res.number[resRid];
+
             String atom_entity_ID       = dcl.tagNameDCStats_Atom_1_entity_ID;
             String atom_comp_index_ID   = dcl.tagNameDCStats_Atom_1_comp_index_ID;
             String atom_comp_ID         = dcl.tagNameDCStats_Atom_1_comp_ID;
             String atom_ID              = dcl.tagNameDCStats_Atom_1_ID;
-            
+
             if ( m == 1 ) {
                 atom_entity_ID       = dcl.tagNameDCStats_Atom_2_entity_ID;
                 atom_comp_index_ID   = dcl.tagNameDCStats_Atom_2_comp_index_ID;
@@ -2429,8 +2429,8 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         return true;
     }
-    
-    
+
+
     /** A wrapper around the classify method that will also print the results
      */
     public boolean getClassification(BitSet todo ) {
@@ -2440,7 +2440,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         Parameters p = new Parameters(); // for printf
         int total = 0;
-        
+
         /** Create the sets anew */
         String[] dcSetNames = DEFAULT_CLASS_NAMES;
         for (int c=0;c< dcSetNames.length;c++) {
@@ -2457,33 +2457,33 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         General.showOutput("Total: " + total );
         return true;
     }
-    
+
     /** Convenience method to combine low and upp viols to one overall and get
      *the responsible model number back.
      */
     FloatIntPair getMaxViolAndModelNumber( int rid ) {
-        
+
         FloatIntPair fip = new FloatIntPair();
         fip.f = Defs.NULL_FLOAT;
-        
+
         if ( ! Defs.isNull(violUppMax[rid])) {
             fip.f = violUppMax[rid];
             fip.i = violUppMaxModelNum[rid];
         }
-        
+
         if ( ! Defs.isNull(violLowMax[rid])) {
-            if ( Defs.isNull(violUppMax[rid])) {                
+            if ( Defs.isNull(violUppMax[rid])) {
                 fip.f = violLowMax[rid];
                 fip.i = violLowMaxModelNum[rid];
             } else if ( violLowMax[rid] > fip.f ) {
                 fip.f = violLowMax[rid];
-                fip.i = violLowMaxModelNum[rid];                
+                fip.i = violLowMaxModelNum[rid];
             }
         }
-        
+
         return fip;
     }
-    
+
     /** Finds the restraint rids for restraints that involve one or more of the
      *atoms given. The method is optimized for a large number of atoms given. For
      *that case a simple scan works best.
@@ -2497,8 +2497,8 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         return result;
     }
-    
-    
+
+
     /** Using the classification scheme below. Taken from IUPAC recommendations
      *and added the category undetermined for constraints in which the different contributions
      *don't fall in the same class or for which the atom failed to be matched to the topology.
@@ -2516,7 +2516,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
      *Returns true if no restraints are todo. Even the bitset will be created before returning.
      */
     public boolean classify(BitSet todo ) {
-        
+
         /** Create the sets anew */
         String[] dcSetNames = DEFAULT_CLASS_NAMES;
         for (int c=0;c< dcSetNames.length;c++) {
@@ -2543,7 +2543,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         BitSet LSet =  mainRelation.getColumnBit( DEFAULT_CLASS_NAMES[ DEFAULT_CLASS_LONG ] );
         BitSet NSet =  mainRelation.getColumnBit( DEFAULT_CLASS_NAMES[ DEFAULT_CLASS_INTER ] );
         BitSet XSet =  mainRelation.getColumnBit( DEFAULT_CLASS_NAMES[ DEFAULT_CLASS_MIXED ] );
-        
+
         IndexSortedInt indexMainAtom = (IndexSortedInt) distConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_SET_DC[ RelationSet.RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexNodeAtom = (IndexSortedInt) distConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_DC_NODE_ID, Index.INDEX_TYPE_SORTED);
         IndexSortedInt indexMainNode = (IndexSortedInt) distConstrNode.getIndex(Constr.DEFAULT_ATTRIBUTE_SET_DC[ RelationSet.RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_SORTED);
@@ -2553,22 +2553,22 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             General.showCodeBug("Failed to get all indexes.");
             return false;
         }
-        
+
         int currentDCId             = Defs.NULL_INT;
         int currentDCNodeId         = Defs.NULL_INT;
 //        int currentDCAtomId         = Defs.NULL_INT;
-        
+
         BitSet todoNow = (BitSet) todo.clone();
         USet.or( todoNow );
         USet.and( hasUnLinkedAtom );
         todoNow.xor( USet );
-        
-        int todoCount = todo.cardinality();        
+
+        int todoCount = todo.cardinality();
         if ( todoCount == 0 ) {
             General.showWarning("No distance constraints selected in DistanceConstr.classify().");
             return true;
         }
-        
+
         // FOR EACH CONSTRAINT
         for (currentDCId = todoNow.nextSetBit(0);currentDCId>=0;currentDCId = todoNow.nextSetBit(currentDCId+1)) {
             Integer currentDCIdInteger = new Integer(currentDCId);
@@ -2608,7 +2608,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                     break;
                 }
             }
-            
+
             switch ( status ) {
                 case DEFAULT_CLASS_UNDETERMINED: {
                     USet.set( currentDCId );
@@ -2655,7 +2655,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         return true;
     }
-    
+
     /** Returns the classification. Doesn't modify the argument because
      *it makes a private copy.
      */
@@ -2666,15 +2666,15 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         if ( ! status ) {
             return -1; // invalid id.
         }
-        
+
         int firstAtomId = a.getQuick(0);
         int lastAtomId  = a.getQuick(normalAtoms.length-1);
-        
+
         // last atom is undefined?
         if ( Defs.isNull( lastAtomId )) {
             return DEFAULT_CLASS_UNDETERMINED;
         }
-        
+
         if ( gumbo.atom.molId[ firstAtomId ] != gumbo.atom.molId[ lastAtomId ] ) {
             return DEFAULT_CLASS_INTER;
         }
@@ -2690,7 +2690,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         return DEFAULT_CLASS_LONG;
     }
-    
+
     /** Hashes the distance constraints based on the sorted list of atom rids in the constraint.
      *This not an absolute garantee a unique hash but it works for now. Pretty hard to fool
      *with real NMR data.
@@ -2711,23 +2711,23 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             General.showWarning("No distance constraints selected in DistanceConstr.getHashMap().");
             return map;
         }
-        
+
         IndexSortedInt indexMainAtom = (IndexSortedInt) distConstrAtom.getIndex(Constr.DEFAULT_ATTRIBUTE_SET_DC[ RelationSet.RELATION_ID_COLUMN_NAME ], Index.INDEX_TYPE_SORTED);
         if ( indexMainAtom == null ) {
             General.showCodeBug("Failed to get all indexes.");
             return null;
         }
-        
+
         int currentDCId             = Defs.NULL_INT;
 //        int currentDCAtomId         = Defs.NULL_INT;
-        
+
         BitSet todoNow = (BitSet) todo.clone();
         todoNow.andNot( hasUnLinkedAtom );
-        
+
         // FOR EACH CONSTRAINT
         for (currentDCId = todoNow.nextSetBit(0);currentDCId>=0;currentDCId = todoNow.nextSetBit(currentDCId+1)) {
             Integer currentDCIdInteger = new Integer(currentDCId);
-            
+
             IntArrayList dcAtoms = (IntArrayList) indexMainAtom.getRidList(  currentDCIdInteger, Index.LIST_TYPE_INT_ARRAY_LIST, null);
             int[] atoms = new int[dcAtoms.size()];
             for (int i=0;i<dcAtoms.size();i++) {
@@ -2741,7 +2741,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             //General.showDebug("Has hash code : " + hash);
             // in java 1.5 use the Arrays.hashCode method.
             // END BLOCK MAKE SURE THE HASHING METHOD IS THE SAME AS ELSEWHERE FOR THIS OBJECT
-            
+
             Integer hashInt = new Integer(hash);
             ArrayList oa = null;
             if ( map.containsKey( hashInt ) ) {
@@ -2751,7 +2751,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                         distConstrAtom,
                         Constr.DEFAULT_ATTRIBUTE_SET_DC[ RelationSet.RELATION_ID_COLUMN_NAME ],
                         SQLSelect.OPERATION_TYPE_EQUALS, new Integer(prevDCRid), false );
-                
+
                 int[] atomsPrev = new int[dcAtomsPrevSet.cardinality()];
                 int b=0;
                 for (int a=dcAtomsPrevSet.nextSetBit(0); a>=0; a=dcAtomsPrevSet.nextSetBit(a+1)) {
@@ -2776,8 +2776,8 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         return map;
     }
-    
-    
+
+
     public BitSet getAtomRidSet( int dcRid ) {
         BitSet atomDCAtomRidSet = SQLSelect.selectBitSet(dbms,
                 distConstrAtom,
@@ -2795,8 +2795,8 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         return atomRidSet;
     }
-    
-    
+
+
     public BitSet getAtomRidSet( BitSet dcRidSet ) {
         IndexSortedInt isi = (IndexSortedInt) distConstrAtom.getIndex(
                 Constr.DEFAULT_ATTRIBUTE_SET_DC[ RelationSet.RELATION_ID_COLUMN_NAME],
@@ -2813,8 +2813,8 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         return atomRidSet;
     }
-    
-    
+
+
     /** Change the atom ids in dc_atom so that any stereo assignment from the
      *triplet is swapped.
      *Note that the caller needs to make sure that there is a stereospecific
@@ -2829,12 +2829,12 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
      *should be followed.
      */
     public boolean swapStereoAssignment( int dcRid, Triplet triplet, PseudoLib pseudoLib) {
-        
+
         int tripletAtomRid      = triplet.atomRids[0];
         int tripletResRid       = gumbo.atom.resId[tripletAtomRid];
         String tripletResName   = gumbo.res.nameList[ tripletResRid ];
         ArrayList tripletAtomNameList = (ArrayList) pseudoLib.toAtoms.get(tripletResName,triplet.name);
-        
+
         BitSet atomDCAtomRidSet = SQLSelect.selectBitSet(gumbo.dbms,
                 distConstrAtom,
                 Constr.DEFAULT_ATTRIBUTE_SET_DC[ RelationSet.RELATION_ID_COLUMN_NAME],      // selection column
@@ -2870,7 +2870,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             }
             atomIdAtom[ridAtomDC] = atomRidStereoSibling;
         }
-        
+
         // Destroy index even though it needs to be used again at the beginning of this method.
         if ( distConstrAtom.containsIndex( Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[ RelationSet.RELATION_ID_COLUMN_NAME ] )){
             distConstrAtom.removeIndex( Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[ RelationSet.RELATION_ID_COLUMN_NAME ]);
@@ -2894,12 +2894,12 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
      *should be followed.
      */
     public boolean deassignStereoAssignment( int dcRid, Triplet triplet, PseudoLib pseudoLib) {
-        
+
         int tripletAtomRid      = triplet.atomRids[0];
         int tripletResRid       = gumbo.atom.resId[tripletAtomRid];
         String tripletResName   = gumbo.res.nameList[ tripletResRid ];
         ArrayList tripletAtomNameList = (ArrayList) pseudoLib.toAtoms.get(tripletResName,triplet.name);
-        
+
         BitSet atomDCAtomRidSet = SQLSelect.selectBitSet(gumbo.dbms,
                 distConstrAtom,
                 Constr.DEFAULT_ATTRIBUTE_SET_DC[ RelationSet.RELATION_ID_COLUMN_NAME],      // selection column
@@ -2947,14 +2947,14 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             distConstrAtom.copyRow(ridAtomDC,newRowIdx);
             atomIdAtom[newRowIdx] = atomRidStereoSibling; // only modification needed.
         }
-        
+
         // Destroy index even though it needs to be used again at the beginning of this method.
         if ( distConstrAtom.containsIndex( Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[ RelationSet.RELATION_ID_COLUMN_NAME ] )){
             distConstrAtom.removeIndex( Gumbo.DEFAULT_ATTRIBUTE_SET_ATOM[ RelationSet.RELATION_ID_COLUMN_NAME ]);
         }
         return true;
     }
-    
+
     /** Shows a plot for the total and maximum violations per residue */
     public boolean showPlotPerResidue(URL url, boolean saveImage, String file_name_base_dc) {
         DistConstrList dcl = constr.dcList;
@@ -2962,8 +2962,8 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             General.showError("Failed initConvenienceVariablesStar");
             return false;
         }
-        
-        StarFileReader sfr = new StarFileReader(dbms); 
+
+        StarFileReader sfr = new StarFileReader(dbms);
         StarNode sn = sfr.parse( url );
         if ( sn == null ) {
             General.showError("Parse not successful");
@@ -2971,7 +2971,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         General.showDebug("Parse successful");
         // data type modifications on column
-        ArrayList tTList = (ArrayList) sn.getTagTableList(StarGeneral.WILDCARD, 
+        ArrayList tTList = (ArrayList) sn.getTagTableList(StarGeneral.WILDCARD,
                 StarGeneral.WILDCARD, StarGeneral.WILDCARD, dcl.tagNameDCPer_resTotal_violation);
         if ( tTList == null ) {
             General.showError("Expected a match but none found");
@@ -2982,7 +2982,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             return false;
         }
         TagTable tT = (TagTable) tTList.get(0);
-        if ( 
+        if (
             (!tT.convertDataTypeColumn(dcl.tagNameDCPer_resTotal_violation,       TagTable.DATA_TYPE_FLOAT, null ))||
             (!tT.convertDataTypeColumn(dcl.tagNameDCPer_resMax_violation,         TagTable.DATA_TYPE_FLOAT,   null ))||
             (!tT.convertDataTypeColumn(dcl.tagNameDCPer_resAtom_entity_ID,        TagTable.DATA_TYPE_INT,   null ))||
@@ -2990,9 +2990,9 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             General.showError("Failed converting (some of) the data to the types expected.");
             return false;
         }
-        
+
         // Create a nice plot
-        try {        
+        try {
             StringArrayList columnNameListValue = new StringArrayList();
             columnNameListValue.add(dcl.tagNameDCPer_resTotal_violation);
             columnNameListValue.add(dcl.tagNameDCPer_resMax_violation);
@@ -3002,12 +3002,12 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
             seriesNameList.add(leftPropLabelName);
             seriesNameList.add(rightPropLabelName);
             DefaultTableXYDataset dataSet = ResiduePlot.createDatasetFromRelation(
-                    tT, 
+                    tT,
                     columnNameListValue,
                     seriesNameList);
 
             JFreeChart chart = ResiduePlot.createChart(dataSet,
-                    tT, 
+                    tT,
                     dcl.tagNameDCPer_resAtom_entity_ID,
                     dcl.tagNameDCPer_resAtom_comp_index_ID,
                     dcl.tagNameDCPer_resAtom_comp_ID);
@@ -3024,26 +3024,26 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
 //                    axis.setTickUnit(new NumberTickUnit(20));
 //                } else if ( key.equals(restrLabelName)) {
 //                    General.showDebug("Changing axis");
-//                    axis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());                    
+//                    axis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 //                }
 //            }
             if ( dbms.ui.hasGuiAttached() ) {
-                ChartPanel chartPanel = new ChartPanel(chart);                
-                dbms.ui.gui.setJPanelToBeFilled( 1, chartPanel ); // executed on event-dispatching thread                
+                ChartPanel chartPanel = new ChartPanel(chart);
+                dbms.ui.gui.setJPanelToBeFilled( 1, chartPanel ); // executed on event-dispatching thread
             } else {
                 General.showOutput("Skipping the actual show because there is not Gui attached.");
             }
-//            ResiduePlot.show(chart); 
+//            ResiduePlot.show(chart);
 
             if ( saveImage ) {
                 String fileName = file_name_base_dc+".jpg";
                 int width = 1024;
                 int height = 768;
                 General.showOutput("Saving chart as JPEG");
-                ChartUtilities.saveChartAsJPEG(new File(fileName), chart, width, height);            
+                ChartUtilities.saveChartAsJPEG(new File(fileName), chart, width, height);
                 General.showOutput("Saving chart as PDF");
                 fileName = file_name_base_dc+".pdf";
-                PdfGeneration.convertToPdf(chart, width, height, fileName);                        
+                PdfGeneration.convertToPdf(chart, width, height, fileName);
             }
         } catch (Throwable t) {
             General.showThrowable(t);
@@ -3067,7 +3067,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                 return f;
             } else {
                 return Math.max( f, f0 );
-            }            
+            }
         }
     }
 
@@ -3086,10 +3086,10 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
                 return f;
             } else {
                 return Math.min( f, f0 );
-            }            
+            }
         }
-    }    
-    
+    }
+
     /** Returns the distances target, lowerbound dev, upperbound dev given
      * target, low, upp. Returns null when given input can't be translated
      * e.g. all were nulls. In summary, 3 binary states in combination gives
@@ -3105,7 +3105,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
      * only t   [t]     0   0   t
      * only l   [t,oo]  l   0   oo
      * only u	[0,u]   0   0   u
-     * 
+     *
      * t&l      [l,t]   t   t-l 0
      * t&u      [t,u]   u   u-t 0
      * l&u      [l,u]   u   u-l 0
@@ -3117,7 +3117,7 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
      */
 
     public static float[] toXplorDistanceSet(float tar, float low, float upp) {
-    	float tarNew=Defs.NULL_FLOAT;
+        float tarNew=Defs.NULL_FLOAT;
         float lowDev=Defs.NULL_FLOAT;
         float uppDev=Defs.NULL_FLOAT;
         int state = -1;
@@ -3143,54 +3143,54 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         // 3 combinations where 1 is known
         if ( !Defs.isNull(tar) && Defs.isNull(low) && Defs.isNull(upp)) {
             state = 1;
-        	tarNew = 0f;
+            tarNew = 0f;
             lowDev = 0f;
-            uppDev = tar;        	
-        } 
+            uppDev = tar;
+        }
         if ( Defs.isNull(tar) && !Defs.isNull(low) && Defs.isNull(upp)) {
             state = 2;
             tarNew = low;
             lowDev = 0f;
-            uppDev = 999.999f; // needs to match the %8.3f formatting used for printing above            
-        } 
+            uppDev = 999.999f; // needs to match the %8.3f formatting used for printing above
+        }
         if ( Defs.isNull(tar) && Defs.isNull(low) && !Defs.isNull(upp)) {
             state = 3;
             tarNew = 0;
             lowDev = 0;
-            uppDev = upp;       
-        } 
-        // 3 combinations where 2 are known 
+            uppDev = upp;
+        }
+        // 3 combinations where 2 are known
         if ( !Defs.isNull(tar) && !Defs.isNull(low) && Defs.isNull(upp)) {
             state = 4;
             tarNew = tar;
             lowDev = tar-low;
-            uppDev = 0f;            
-        } 
+            uppDev = 0f;
+        }
         if ( !Defs.isNull(tar) &&  Defs.isNull(low) && !Defs.isNull(upp)) {
             state = 5;
             tarNew = upp;
             lowDev = upp-tar;
-            uppDev = 0f;               
-        } 
-        
+            uppDev = 0f;
+        }
+
         if (  Defs.isNull(tar) && !Defs.isNull(low) && !Defs.isNull(upp)) {
             state = 6;
             tarNew = upp;
             lowDev = upp-low;
-            uppDev = 0f;   
-        } 
+            uppDev = 0f;
+        }
         // the other 2 combinations; none known or all three known.
         if ( Defs.isNull(tar) && Defs.isNull(low) && Defs.isNull(upp)) {
             General.showError("Found all distances to be nonexisting");
             return null;
-        } 
+        }
         if ( !Defs.isNull(tar) && !Defs.isNull(low) && !Defs.isNull(upp)) {
             state = 7;
             tarNew = tar;
             lowDev = tar-low;
-            uppDev = upp-tar;            
+            uppDev = upp-tar;
         }
-        
+
         if ( Defs.isNull(tarNew) || Defs.isNull(lowDev) || Defs.isNull(uppDev) ){
             General.showCodeBug("Found at least one of the distances to be nonexisting");
             General.showCodeBug("In state: "+state);
@@ -3210,5 +3210,5 @@ ASSI { 6} (( segid "SH3 " and resid 53 and name HA )) (( segid "SH3 " and resid 
         }
         return new float[] {tarNew, lowDev, uppDev};
     }
-    
+
 }

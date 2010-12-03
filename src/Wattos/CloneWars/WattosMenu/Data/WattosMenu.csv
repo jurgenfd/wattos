@@ -41,6 +41,7 @@ Edit,Distance,,,FilterHighDistanceViol,,Removes violated distance restraints,,X
 Edit,Distance,,,CorDistPseudo,,Adds a distance correction to constraints that are involved in pseudo atoms,,X
 Edit,Distance,,,RemoveDistRed,,Removes intraresidual redundant distances,,X
 Edit,Select,,,SelectAtomsByNameRegExp,,,,X
+Edit,Select,,,SelectResiduesByRangesExp,,,,X
 Edit,Remove,,,RemoveAtoms,,,,X
 Edit,Remove,,,TruncateEnsembleToMaxResidues,,,,X
 Edit,Remove,,,TruncateEnsembleToMaxModels,,,,X

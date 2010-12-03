@@ -10,6 +10,9 @@ import java.text.NumberFormat;
 //import java.text.FieldPosition;
 import java.io.*;
 import java.util.*;
+
+import cern.colt.list.IntArrayList;
+
 import com.braju.format.*;              // printf equivalent
 
 import Wattos.CloneWars.UserInterface;
@@ -879,6 +882,109 @@ public class Strings {
         return true;
     }
 
+    /**
+    Convert a string with "," and "-" (or :) to a list of integers
+    eg. 1,2,5-8,11,20-40 or
+        -20:-19,-2:-1,3:4
+
+    returns empty list on empty inputStr
+
+    NB: - returns empty list when an invalid construct is entered.
+        - boundaries are inclusive at both ends unlike python array selections.
+        - Do not mix - and : either.
+
+    Possible 5 situations:
+    a      # 1 # positive int
+    -a     # 2 # single int
+    -a-b   # 3 #
+    -a--b  # 4 #
+    a-b    # 5 # most common
+     * @param rangeStrClean
+     * @return null on error.
+     */
+    public static int[] asci2list(String inputStr) {
+            IntArrayList result = new IntArrayList();
+
+            if ( inputStr == null ) {
+                General.showError("In asci2list failed to parse null" );
+                return new int[0];
+            }
+            if ( inputStr.length() == 0) {
+                General.showError("In asci2list failed to parse empty string" );
+                return new int[0];
+            }
+
+//            # Get rid of all whitespace
+            String inputStrCollapsed = inputStr.replace(" ", "");
+            String[] rangeStrList = Strings.splitWithAllReturned( inputStrCollapsed, ',' );
+            if ( rangeStrList == null ) {
+                General.showError("In asci2list failed to parse string into ',' seperated string values" );
+                General.showError("Input: ["+inputStr+"]");
+                return null;
+            }
+
+            try {
+                for (int i=0;i<rangeStrList.length;i++) {
+                    String rangeStr = rangeStrList[i];
+//                    General.showDebug("Looking at rangeStr: " + rangeStr);
+                    String[] tmpList = null;
+                    if (rangeStr.contains(":") ) {
+                        tmpList = Strings.splitWithAllReturned(rangeStr, ':');
+                    } else {
+                        int countDash = Strings.countChars(rangeStr, '-');
+                        if ( countDash == 0 ) {
+//                            General.showDebug("State 1 rangeStr: [" + rangeStr + "]");
+                            result.add(Integer.parseInt( rangeStr));
+                            continue; // quicky
+                        }
+                        int idxMinus = rangeStr.indexOf('-'); // first occurance
+                        if ( idxMinus == 0) {
+                            if ( countDash == 1 ) {
+//                                General.showDebug("State 2 rangeStr: " + rangeStr);
+                                result.add(Integer.parseInt(rangeStr));
+                                continue; // quicky
+                            }
+                        }
+//                        General.showDebug("State 3-5 elm: " + rangeStr);
+                        // Only states 3-5 left which are all ranges and thus contain an int separating dash
+                        int offset = 0;
+                        if ( idxMinus == 0 ) {
+                            offset = 1;
+                        }
+
+                        int idxRangeDash = rangeStr.indexOf('-',offset); // The dash that separates the two ints,
+                        String startStr = rangeStr.substring(0,idxRangeDash);
+                        String endStr = rangeStr.substring(idxRangeDash+1);
+                        tmpList = new String[] { startStr, endStr};
+                    }
+//                    General.showDebug("tmpList: " + Strings.toString( tmpList));
+                    int[] intList = new int[] { Integer.parseInt( tmpList[0]), Integer.parseInt( tmpList[1] ) };
+//                    General.showDebug("intList: " + PrimitiveArray.toString( intList, true));
+                    if ( intList[0] > intList[1]) { // equality is still ok
+                        General.showError("asci2list: invalid construct "+inputStr+
+                            " with start " + intList[0] + "and end " + intList[1] + " skipping element: " + rangeStr);
+                        continue;
+                    }
+                    int tmpListSize = tmpList.length;
+                    if (tmpListSize == 1) {
+                        result.add(intList[0]);
+                    } else if (tmpListSize == 2) {
+                        int j=intList[0];
+                        for (; j<intList[1]+1; j++) {
+                            result.add(j);
+                        }
+                    } else {
+                        General.showError("asci2list: invalid construct " + inputStr +" caused a tmpListSize of "+
+                                tmpListSize + " skipping element: " +  rangeStr);
+                    }
+                }
+            } catch (Throwable e) {
+                General.showThrowable(e); // disable this verbose messaging after done debugging.
+                General.showError("asci2list: failed to convert to int for construct" + inputStr);
+                return null;
+            }
+            return PrimitiveArray.toIntArray(result);
+    }
 
     /** Looks to see if the string contains only digits.     */
     public static boolean areDigits( String chk_string  ) {

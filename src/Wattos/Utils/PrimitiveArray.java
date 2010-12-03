@@ -940,7 +940,7 @@ public class PrimitiveArray {
 
     public static String toString( int[] in, boolean useBrackets ) {
         boolean printEOLAfterEach = false;
-        return toString( in, printEOLAfterEach, useBrackets );
+        return toString( in, useBrackets, printEOLAfterEach );
     }
 
     public static String toString( int[] in, boolean useBrackets, boolean printEOLAfterEach ) {
@@ -1012,8 +1012,8 @@ public class PrimitiveArray {
     }
 
     public static String toString( BooleanArrayList in ) {
-	boolean[] myElements = new boolean[in.size()];
-	for (int i=myElements.length; --i >= 0; ) {
+    boolean[] myElements = new boolean[in.size()];
+    for (int i=myElements.length; --i >= 0; ) {
             myElements[i]=in.getQuick(i);
         }
         return toString( myElements );
@@ -2334,6 +2334,14 @@ public class PrimitiveArray {
     public static boolean setValueByRids( IntArrayList in, BitSet rids, int value ) {
         for (int r=rids.nextSetBit(0); r>=0; r=rids.nextSetBit(r+1)) {
             in.setQuick(r, value);
+        }
+        return true;
+    }
+
+    /** Simple utility */
+    public static boolean setBitSetByIntArray( int[] in, BitSet out) {
+        for (int i=in.length-1;i>=0;i--) {
+            out.set(in[i]);
         }
         return true;
     }
