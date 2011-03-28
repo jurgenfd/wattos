@@ -8,7 +8,8 @@
 #	(not needed to exist yet) where Wattos can save settings and state.
 
 # How much memory is wattos allowed to gobble?
-setenv WATTOSMEM        512m
+#setenv WATTOSMEM        512m # DEFAULT
+setenv WATTOSMEM        4g
 
 # -------------------------------------------------
 # leave the rest untouched
@@ -32,11 +33,11 @@ alias wattos 'java -Xmx$WATTOSMEM Wattos.CloneWars.UserInterface -at'
 # the most simplest of routines used as a test program
 alias getEpochTime 'java Wattos.Utils.Programs.GetEpochTime'
 # Program to do relational operations on sets like PDB ids
-alias relate 'java Wattos.Utils.Programs.Relate $*'
+alias relate 'java -Xmx$WATTOSMEM Wattos.Utils.Programs.Relate $*'
 # Filter or just reformat a star file
-alias filter 'java Wattos.Star.STARFilter $*'
+alias filter 'java -Xmx$WATTOSMEM  Wattos.Star.STARFilter $*'
 # Filter or just reformat a star file
-alias mrannotator 'java Wattos.Episode_II.MRAnnotate'
+alias mrannotator 'java -Xmx$WATTOSMEM Wattos.Episode_II.MRAnnotate'
 
 # Wattos own classes
 setenv CLASSPATH ${WATTOSJARSDIR}/Wattos.jar

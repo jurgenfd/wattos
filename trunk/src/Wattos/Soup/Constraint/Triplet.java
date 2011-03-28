@@ -25,7 +25,7 @@ import cern.colt.list.IntArrayList;
 
 /**
  * A pair of atom(group)s and the representing pseudoatom.
- * 
+ *
  * @author jurgen
  *@see Wattos.Soup.Constraint.AssignStereo
  */
@@ -72,8 +72,8 @@ public class Triplet extends PseudoAtom {
             + "*  5 * Number of triplets that were swapped\n" + "*  6 * Percentage of triplets that were swapped\n"
             + "*  7 * Number of deassigned triplets\n" + "*  8 * Percentage of deassigned triplets\n"
             + "*  9 * Number of models in ensemble\n"
-            + "* 10 * Energy of the states with the lower energies summed for all triplets (Ang.**2)\n"
-            + "* 11 * Energy of the states with the higher energies summed for all triplets (Ang.**2)\n"
+            + "* 10 * Energy of the states with the lower energies summed for all triplets (Ang.**2) ensemble averaged\n"
+            + "* 11 * Energy of the states with the higher energies summed for all triplets (Ang.**2) ensemble averaged\n"
             + "* 12 * Item 9-8\n"
             + "* 13 * Criterium for swapping assignment on the absolute energy difference (Ang.**2)\n"
             + "* 14 * Criterium for swapping assignment on the relative energy difference (Ang.**2)\n"
@@ -87,14 +87,14 @@ public class Triplet extends PseudoAtom {
             + "*  5 * Ordinal number of assignment (1 is assigned first)\n"
             + "*  6 * 'yes' if assignment state is swapped with respect to restraint file\n"
             + "*  7 * Percentage of models in which the assignment with the lowest\n"
-            + "        overall energy is favoured\n"
+            + "        overall energy is favored\n"
             + "*  8 * Percentage of difference between lowest and highest overall energy\n"
             + "        with respect to the highest overall energy\n"
-            + "*  9 * Difference between lowest and highest overall energy\n"
-            + "* 10 * Energy of the highest overall energy state (Ang.**2)\n"
-            + "* 11 * Energy of the lowest overall energy state (Ang.**2)\n"
+            + "*  9 * Difference between lowest and highest overall energy ensemble averaged\n"
+            + "* 10 * Energy of the highest overall energy state (Ang.**2) ensemble averaged\n"
+            + "* 11 * Energy of the lowest overall energy state (Ang.**2) ensemble averaged\n"
             + "* 12 * Number of restraints involved with the triplet. The highest ranking\n"
-            + "        triplet on this number, is assigned first\n"
+            + "        triplet on this number, is assigned first (optional)\n"
             + "* 13 * Number of restraints involved with the triplet that are ambiguous\n"
             + "        besides the ambiguity from this triplet\n"
             + "* 14 * 'yes' if restraints included in this triplet are deassigned\n"
@@ -102,8 +102,7 @@ public class Triplet extends PseudoAtom {
             + "* 16 * Number of violated restraints above threshold for a single model\n"
             + "        before deassignment (given by Single_mdl_crit_count)\n"
             + "* 17 * Number of violated restraints above threshold for a multiple models\n"
-            + "        before deassignment (given by Multi_mdl_crit_count)\n"
-            + "* 18 * NMR-STAR 3.0 administrative tag\n" + "* 19 * NMR-STAR 3.0 administrative tag";
+            + "        before deassignment (given by Multi_mdl_crit_count)";
 
     public Triplet(String name, int type, int atomRidFirst) {
         super(name, type, atomRidFirst);
@@ -157,25 +156,26 @@ public class Triplet extends PseudoAtom {
      *              ( totalEnergy[0] &gt; totalEnergy[1] )) {
      *             swapped = true;
      *</PRE>
+     * If swapping is needed the swapped flag is set and the involved restraints are in fact swapped.
+     * Returns true on success (always).
      */
     public boolean assign(float energy_abs_criterium, float energy_rel_criterium, float model_criterium, DistConstr dc,
             PseudoLib pseudoLib) {
 
         if (totalEnergy[0] <= totalEnergy[1]) {
-            // General.showDebug("criterium not met: totalEnergy[0] > totalEnergy[1]: " + totalEnergy[0] + " and " +
-            // totalEnergy[1]);
+            General.showDebug("criterium not met: totalEnergy[0] > totalEnergy[1]: " + totalEnergy[0] + " and " + totalEnergy[1]);
             return true;
         }
         if (percentageModelFavoured < model_criterium) {
-            // General.showDebug("criterium not met: percentageModelFavoured >= model_criterium");
+            General.showDebug("criterium not met: percentageModelFavoured >= model_criterium");
             return true;
         }
         if (energyDifference < energy_abs_criterium) {
-            // General.showDebug("criterium not met: energyDifference >= energy_abs_criterium");
+            General.showDebug("criterium not met: energyDifference >= energy_abs_criterium");
             return true;
         }
         if (energyDifferencePercentage < energy_rel_criterium) {
-            // General.showDebug("criterium not met: energyDifferencePercentage >= energy_rel_criterium");
+            General.showDebug("criterium not met: energyDifferencePercentage >= energy_rel_criterium");
             return true;
         }
         swapped = true;
