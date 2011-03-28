@@ -386,9 +386,10 @@ blabla
 
         /** Some debugging: */
 //        General.showOutput("Read number of commands and menus: " + mainMenuCommandNames.size());
-        String longestString = Strings.longestString( Strings.toStringArray(mainMenuCommandNames));
-//        General.showOutput("Longest commands and menus is    : " + longestString + " at length: " + longestString.length());
-
+        if ( false ) {
+	        String longestString = Strings.longestString( Strings.toStringArray(mainMenuCommandNames));
+	        General.showOutput("Longest commands and menus is    : " + longestString + " at length: " + longestString.length());
+        }
 
         return true;
     }

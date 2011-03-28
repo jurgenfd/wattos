@@ -181,6 +181,12 @@ public class AssignStereo {
             }
             int resRid = atom.resId[atomRid];
             String resName = gumbo.res.nameList[resRid];
+//            if ( comparingToFc ) {
+//                if ( resName.equalsIgnoreCase("PHE") || resName.equalsIgnoreCase("TYR") ) {
+////                    General.showDebug("Ignoring Phe/Tyr for comparison with Fc.");
+//                    continue;
+//                }
+//            }
             String atomName = atom.nameList[atomRid];
             ArrayList pseudoAtomNameList = (ArrayList) pseudoLib.fromAtoms.get(resName, atomName);
             if (pseudoAtomNameList == null) { // atoms is not in known pseudoatom.
@@ -199,8 +205,14 @@ public class AssignStereo {
                     continue;
                 }
                 BitSet atomRidSet = PrimitiveArray.toBitSet(triplet.atomRids);
+//                if ( resName.equals("LEU")) {
+//                    General.showDebug("Found number of atoms in triplet " + triplet + " : " + atomRidSet.cardinality());
+//                }
                 inTriplet.or(atomRidSet); // Make sure they're not added again.
                 BitSet restraintRidSet = dc.getWithAtoms(atomRidSet);
+//                if ( resName.equals("LEU")) {
+//                    General.showDebug("Found number of restraints for triplet " + triplet + " : " + restraintRidSet.cardinality());
+//                }
                 triplet.restraintRidList = PrimitiveArray.toIntArrayList(restraintRidSet);
                 if (!removeRestraintsAmbiInTriplet(triplet)) {
                     General.showError("Failed to removeRestraintsAmbiInTriplet for triplet: " + triplet);

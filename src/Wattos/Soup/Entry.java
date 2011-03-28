@@ -287,7 +287,9 @@ public class Entry extends GumboItem implements Serializable {
      */
     public boolean readPdbFormattedFile( URL url, String atomNomenclatureFlavor ) {
         PdbFile pdbFile = new PdbFile( dbms );
+//        General.showOutput("Starting pdbFile.readFile");
         boolean status = pdbFile.readFile(url, atomNomenclatureFlavor);
+//        General.showOutput("Done pdbFile.readFile");
         if ( ! status ) {
             General.showWarning("entry.readPdbFormattedFile was unsuccessful. Failed to read pdb formatted file");
             return false;

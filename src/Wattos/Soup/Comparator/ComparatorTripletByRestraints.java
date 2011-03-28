@@ -17,12 +17,12 @@ import java.util.Comparator;
  * @author jurgen
  */
 public class ComparatorTripletByRestraints implements Comparator {
-    
+
     public ComparatorTripletByRestraints() {
     }
-    
+
     /** Just do comparison on first object */
-    public int compare(Object o1, Object o2) {  
+    public int compare(Object o1, Object o2) {
         Triplet t1 = (Triplet) o1;
         Triplet t2 = (Triplet) o2;
         if ( t1.countRestraints != t2.countRestraints ) {
@@ -30,7 +30,7 @@ public class ComparatorTripletByRestraints implements Comparator {
                 return -1;
             } else {
                 return 1;
-            }                
+            }
         }
         if ( t1.countRestraintsUniqueAssigned != t2.countRestraintsUniqueAssigned ) {
             if (t1.countRestraintsUniqueAssigned < t2.countRestraintsUniqueAssigned) {
@@ -39,6 +39,9 @@ public class ComparatorTripletByRestraints implements Comparator {
                 return 1;
             }
         }
-        return 0;
-    }    
+        int ar1 = t1.atomRids[0];
+        int ar2 = t2.atomRids[0];
+        // reversed order...
+        return t1.gumbo.atom.compare( ar2, ar1, false, false );
+    }
 }
