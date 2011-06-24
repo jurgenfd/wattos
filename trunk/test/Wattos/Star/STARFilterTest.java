@@ -62,6 +62,30 @@ public class STARFilterTest extends TestCase {
 //        assertEquals(true, result);        
     }
     
+    /**
+     * Test of filter method, of class Wattos.Star.STARFilter.
+     */
+    public void testPassThru() {
+        String baseInputName = "t";
+        //String baseInputName = "1brv_DOCR";
+        File inputFile      = new File( "/Library/WebServer/Documents/NRG-CING/prep/F/br/1brv/stereo_assign.str" );
+        File outputFile     = new File( outputDir,baseInputName + "_out.str" );
+        File filterFile     = new File( "." );
+        
+//        String inputFileStr = "M:\\jurgen\\DOCR_big_tmp_\\link\\1q56\\1q56_full.str";
+        //String inputFileStr = "http://www.bmrb.wisc.edu/data_library/files/bmr4020.str";
+        String inputFileStr = inputFile.toString();
+        String outputFileStr = outputFile.toString();
+        String filterFileStr = filterFile.toString();
+        String[] args = { inputFileStr, outputFileStr, filterFileStr};
+//        String[] args = { inputFileStr, outputFileStr, "."};
+        long start = System.currentTimeMillis();
+        new STARFilter().filter(args);
+        long taken = System.currentTimeMillis() - start;
+        General.showDebug("Filter took  : " + taken + "(" + (taken/1000.0) + " sec)" );        
+//        assertEquals(true, result);        
+    }
+    
     
 //    public void testStarSingleRowTTest() {
 //        General.setVerbosityToDebug();        

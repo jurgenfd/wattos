@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.BitSet;
 import java.util.HashMap;
 
+import Wattos.Ccpn.Constants;
 import Wattos.Database.DBMS;
 import Wattos.Database.Defs;
 import Wattos.Database.ForeignKeyConstrSet;
@@ -33,15 +34,15 @@ import com.braju.format.Parameters;
  * @version 1
  */
 public class Molecule extends GumboItem implements Serializable {
-    private static final long serialVersionUID = -1207795172754062330L;        
-        
+    private static final long serialVersionUID = -1207795172754062330L;
+
     /** Convenience variables */
     public int[]       modelId;        // starting with fkcs
-    public int[]       entryId;          
+    public int[]       entryId;
     //public int[]       type;    // e.g. polymer
     public int[]       polType; // e.g. polydeoxyribonucleotide
     public String[]     asymId;
-    
+
     // enumerations will be taken as an integer value.
     public static String[] typeEnum = new String[] {
             "polymer", // 0
@@ -53,45 +54,45 @@ public class Molecule extends GumboItem implements Serializable {
     /** Molecule is a polymer */
     public static int POLYMER_TYPE      =  0;
     /** Molecule is NOT a polymer */
-    public static int NON_POLYMER_TYPE  =  1;   
+    public static int NON_POLYMER_TYPE  =  1;
     /** Molecule is a polymer */
     public static int WATER_TYPE        =  2;
     /** Molecule might be a polymer, non-polymer, water, or other, it's unknown at this point.*/
-    public static int UNKNOWN_TYPE      =  typeEnum.length -1;   
+    public static int UNKNOWN_TYPE      =  typeEnum.length -1;
     public static StringIntMap typeEnumMap;
-    
+
     public static String[] polTypeEnum = new String[] {
         "DNA/RNA hybrid",  // 0
         "polydeoxyribonucleotide" ,
-        "polypeptide(D)", 
-        "polypeptide(L)", 
-        "polyribonucleotide", 
-        "polysaccharide(D)", 
+        "polypeptide(D)",
+        "polypeptide(L)",
+        "polyribonucleotide",
+        "polysaccharide(D)",
         "polysaccharide(L)",
         "other",
         "non-polymer",
         "unknown" // last one should always be unknown.
 };
-    public static int UNKNOWN_POL_TYPE  =  polTypeEnum.length -1;   
-    public static int NON_POLYMER_POL_TYPE  =  polTypeEnum.length -2;   
-    public static StringIntMap polTypeEnumMap;    
+    public static int UNKNOWN_POL_TYPE  =  polTypeEnum.length -1;
+    public static int NON_POLYMER_POL_TYPE  =  polTypeEnum.length -2;
+    public static StringIntMap polTypeEnumMap;
 
     public static String[] polTypeEnumXplor = new String[] {
         "rna",  // need to patch only the deoxies.
         "dna" ,
-        "prot", 
-        "prot", 
-        "rna", 
+        "prot",
+        "prot",
+        "rna",
         "SUGAR",          // needs to be added to psfGen defs
         "SUGAR",
         "OTHER",
         "NON-POLYMER",
         "UNKNOWN" // last one should always be unknown.
 };
-    
-    
+
+
     public Molecule(DBMS dbms, RelationSoS relationSoSParent) {
-        super(dbms, relationSoSParent); 
+        super(dbms, relationSoSParent);
     }
 
     public Molecule(DBMS dbms, String relationSetName, RelationSoS relationSoSParent) {
@@ -105,11 +106,11 @@ public class Molecule extends GumboItem implements Serializable {
         sequentialArray = PrimitiveArray.createSequentialArray( polTypeEnum.length, 1);
         polTypeEnumMap = new StringIntMap( polTypeEnum, sequentialArray );
     }
-    
+
     /** Translates 1,2,..,26,27,... to A,B,C,..,AA,AB,..
      *Returns Defs.NULL_STRING_NULL for out of range.
-     */ 
-    public static String toChain(int i) {        
+     */
+    public static String toChain(int i) {
         if ( i>0 && i<=26 ) {
             char c = (char) (i + 64);
             return new String(new char[] {c});
@@ -120,27 +121,27 @@ public class Molecule extends GumboItem implements Serializable {
         }
         return Defs.NULL_STRING_NULL;
     }
-    
+
     /** Translates 1,A,2B3 to 1,2,3 as per example from mmCIF:_struct_asym.id
      *Returns Defs.NULL_STRING_NULL for out of range.
      *The map should be prefilled with
      *null,"1","A","2B3"
-     */ 
-    public static int fromChain(String s, HashMap map) {        
+     */
+    public static int fromChain(String s, HashMap map) {
         Object i = map.get(s);
         if ( i == null ) {
             return Defs.NULL_INT;
         }
         return ((Integer) i).intValue();
     }
-    
-    
+
+
     public boolean init(DBMS dbms) {
         if ( ! super.init(dbms) ) {
             General.showCodeBug("Failed to Molecule.super.init()");
             return false;
         }
-            
+
 
         name = Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[RELATION_ID_SET_NAME];
 
@@ -150,15 +151,15 @@ public class Molecule extends GumboItem implements Serializable {
         DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_POL_TYPE,                           new Integer(DATA_TYPE_INT));
         DEFAULT_ATTRIBUTES_TYPES.put( Gumbo.DEFAULT_ATTRIBUTE_ASYM_ID,                            new Integer(DATA_TYPE_STRINGNR));
 
-        
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RELATION_ID_COLUMN_NAME ]);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RELATION_ID_COLUMN_NAME ]);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_POL_TYPE);         
-        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_ASYM_ID);        
-        
+
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RELATION_ID_COLUMN_NAME ]);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RELATION_ID_COLUMN_NAME ]);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_POL_TYPE);
+        DEFAULT_ATTRIBUTES_ORDER.add( Gumbo.DEFAULT_ATTRIBUTE_ASYM_ID);
+
         DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[RELATION_ID_COLUMN_NAME],  Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[RELATION_ID_MAIN_RELATION_NAME]});
         DEFAULT_ATTRIBUTE_FKCS_FROM_TO.add( new String[] { Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[RELATION_ID_COLUMN_NAME],  Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[RELATION_ID_MAIN_RELATION_NAME]});
-            
+
         Relation relation = null;
         String relationName = Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[RELATION_ID_MAIN_RELATION_NAME];
         try {
@@ -169,8 +170,8 @@ public class Molecule extends GumboItem implements Serializable {
         }
 
         // Create the fkcs without checking that the columns exist yet.
-        DEFAULT_ATTRIBUTE_FKCS = ForeignKeyConstrSet.createFromRelation(dbms, DEFAULT_ATTRIBUTE_FKCS_FROM_TO, relationName);        
-        if ( ! relation.insertColumnSet( 0, DEFAULT_ATTRIBUTES_TYPES, DEFAULT_ATTRIBUTES_ORDER, 
+        DEFAULT_ATTRIBUTE_FKCS = ForeignKeyConstrSet.createFromRelation(dbms, DEFAULT_ATTRIBUTE_FKCS_FROM_TO, relationName);
+        if ( ! relation.insertColumnSet( 0, DEFAULT_ATTRIBUTES_TYPES, DEFAULT_ATTRIBUTES_ORDER,
             DEFAULT_ATTRIBUTE_VALUES, DEFAULT_ATTRIBUTE_FKCS) ) {
             General.showCodeBug("Failed to initialize Molecule with column set given");
             return false;
@@ -179,11 +180,11 @@ public class Molecule extends GumboItem implements Serializable {
         mainRelation = relation;
 
         // OTHER RELATIONS HERE
-        
+
         return true;
-    }            
-    
-    
+    }
+
+
     /** Adds a new molecule in the array, filling in all the required properties
      *as available from the parent.
      *If no name is given (null value) then the routine will automatically name
@@ -198,7 +199,7 @@ public class Molecule extends GumboItem implements Serializable {
          *SELECT FROM MOLECULE m
          *WHERE m.model_id = parentId
          */
-        BitSet moleculesInSameModel = SQLSelect.selectBitSet( dbms, 
+        BitSet moleculesInSameModel = SQLSelect.selectBitSet( dbms,
             mainRelation,                                                               // Relation
             Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RelationSet.RELATION_ID_COLUMN_NAME],    // column
             SQLSelect.OPERATION_TYPE_EQUALS,                                            // operation
@@ -214,9 +215,9 @@ public class Molecule extends GumboItem implements Serializable {
         // If no name given then simply number them starting at 1.
         if ( molName == null ) {
             Parameters p = new Parameters(); // Printf parameters
-            p.add( gumbo.entry.nameList[ gumbo.model.entryId[ parentId ]] );            
+            p.add( gumbo.entry.nameList[ gumbo.model.entryId[ parentId ]] );
             p.add( molCount );
-            molName = Format.sprintf("%s%03i", p);                            
+            molName = Format.sprintf("%s%03i", p);
             //General.showDebug("Came up with molecule name: [" + molName + "]");
         }
 //        General.showDebug("In Molecule.add used molecule name: [" + molName + "]");
@@ -224,7 +225,7 @@ public class Molecule extends GumboItem implements Serializable {
         if ( result < 0 ) {
             General.showCodeBug( "Failed to get a new row id for a molecule with name: " + molName);
             return -1;
-        }        
+        }
         if ( asymIdValue == null ) {
            asymIdValue = toChain(molCount);
 //           General.showDebug("asymIdValue: ["+asymIdValue+"]");
@@ -239,26 +240,26 @@ public class Molecule extends GumboItem implements Serializable {
 
     public void setType(int rid, String typeStr ) {
         if ( ! typeEnumMap.containsKey(typeStr)) {
-            General.showWarning("For Molecule rid: " + rid + " type: "     + typeStr + 
+            General.showWarning("For Molecule rid: " + rid + " type: "     + typeStr +
                     " isn't in enumeration: " + Strings.toString( typeEnum));
             typeStr = "unknown";
-            General.showWarning("set to: " + typeStr );            
+            General.showWarning("set to: " + typeStr );
         }
         type[rid] = typeEnumMap.getInt(typeStr);
-    } 
-    
+    }
+
     public void setPolType(int rid, String typeStr ) {
         if ( ! polTypeEnumMap.containsKey(typeStr)) {
-            General.showWarning("Molecule rid: " + rid + " polymer type: " + typeStr + 
+            General.showWarning("Molecule rid: " + rid + " polymer type: " + typeStr +
                     " isn't in enumeration: " + Strings.toString( polTypeEnum));
             typeStr = "unknown";
-            General.showWarning("set to: " + typeStr );            
+            General.showWarning("set to: " + typeStr );
         }
         polType[rid] = polTypeEnumMap.getInt(typeStr);
-    } 
-    
+    }
+
     public BitSet getResSet(int rowId ) {
-        BitSet resInSameMol = SQLSelect.selectBitSet( dbms, 
+        BitSet resInSameMol = SQLSelect.selectBitSet( dbms,
             gumbo.res.mainRelation,                                                     // Relation
             Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[ RelationSet.RELATION_ID_COLUMN_NAME],      // column
             SQLSelect.OPERATION_TYPE_EQUALS,                                            // operation
@@ -287,7 +288,7 @@ public class Molecule extends GumboItem implements Serializable {
             General.showWarning("Not able to return the full sequence.");
             return null;
         }
-        int resCount = resInSameMol.cardinality(); 
+        int resCount = resInSameMol.cardinality();
         //General.showDebug("Getting sequence count of: " + resCount);
         if ( resCount == 0 ) {
             return Defs.NULL_STRING_DOT;
@@ -319,7 +320,7 @@ public class Molecule extends GumboItem implements Serializable {
             if ( value == null ) {
                 General.showError("Failed to get a residue name in getSequenceFull");
                 return null;
-            }                   
+            }
             if ( useFullName ) {
                 result.append( value );
             } else {
@@ -336,7 +337,7 @@ public class Molecule extends GumboItem implements Serializable {
         if ( doSep ) {
             result.setLength(result.length()-1); // Truncate the last char.
         }
-        return result.toString();                
+        return result.toString();
     }
 
     /** All molecules in bitset given are renumbered within model.
@@ -355,9 +356,9 @@ public class Molecule extends GumboItem implements Serializable {
         }
         // For each model (through the molecule)
         for (int mol=selMolSub.nextSetBit(0);   mol>=0; mol=selMolSub.nextSetBit(mol+1)) {
-            model = modelId[mol];                   
+            model = modelId[mol];
             // Get the molecules for this model that are also in toDo.
-            BitSet selMolSub2 = SQLSelect.selectBitSet(dbms, mainRelation, 
+            BitSet selMolSub2 = SQLSelect.selectBitSet(dbms, mainRelation,
                 columnLabelModelId, SQLSelect.OPERATION_TYPE_EQUALS, new Integer(model), false);
             if ( selMolSub2 == null ) {
                 General.showCodeBug("Failed to get a molecule set in model with rid: " + model);
@@ -370,22 +371,22 @@ public class Molecule extends GumboItem implements Serializable {
         }
         //General.showDebug("Renumbered molecules at this point");
         return true;
-    }            
-    
-    
+    }
+
+
     /**     */
-    public boolean resetConvenienceVariables() {        
+    public boolean resetConvenienceVariables() {
         super.resetConvenienceVariables();
         modelId         = (int[])   mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_SET_MODEL[ RelationSet.RELATION_ID_COLUMN_NAME]);
-        entryId         = (int[])   mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME]);        
+        entryId         = (int[])   mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_SET_ENTRY[ RelationSet.RELATION_ID_COLUMN_NAME]);
         polType         = (int[])   mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_POL_TYPE );
-        asymId          = (String[])mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_ASYM_ID);        
+        asymId          = (String[])mainRelation.getColumn(  Gumbo.DEFAULT_ATTRIBUTE_ASYM_ID);
         return true;
-    }    
-    
-    /** 
+    }
+
+    /**
      * @param rid for given molecule
-     * @return xplor segid just like the convert_star2pdb routine does. null when over 36 segis. 
+     * @return xplor segid just like the convert_star2pdb routine does. null when over 36 segis.
      */
     public String getXplorSEGI(int rid) {
         int beginIndex = number[rid]; // starts at 1.
@@ -396,10 +397,10 @@ public class Molecule extends GumboItem implements Serializable {
         String result = "   " + "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".substring(beginIndex-1, beginIndex);
         return result;
     }
-    
+
     /** Will write xplor-nih python code for that defines enough detail to create a psf file
      * from it with the routine psfGen.seqToPSF
-     * Note that since xplor-nih doesn't run on Windows, it doesn't make sense to use 
+     * Note that since xplor-nih doesn't run on Windows, it doesn't make sense to use
      * Windows end of lines.
      * @param format See AtomMap TODO:
      */
@@ -424,7 +425,7 @@ public class Molecule extends GumboItem implements Serializable {
                 General.showError("Failed to generate xplor segi");
                 return false;
             }
-            sb.append("segName='"+segi+"'\n");            
+            sb.append("segName='"+segi+"'\n");
             String sequence = getSequence(rid,true,10,' ', "\n");
             sb.append("seq=\"\"\"\n"+
                     sequence+"\n"
@@ -437,13 +438,13 @@ public class Molecule extends GumboItem implements Serializable {
             }
             sb.append("seqType='"+seqType+"'\n");
             sb.append("seqSplit = seq.split()\n");
-            sb.append("#print \"finished reading [\"+`len(seqSplit)`+\"] residue(s) for a [\"+seqType+\"] type segi: [\"+segName+\"]\"\n");            
+            sb.append("#print \"finished reading [\"+`len(seqSplit)`+\"] residue(s) for a [\"+seqType+\"] type segi: [\"+segName+\"]\"\n");
 
-            
+
             if ( ! InOut.writeTextToFile(new File(outputFileName), sb.toString().toCharArray(), true, false)) {
                 General.showError("Failed to write file: " + outputFileName);
                 return false;
-            }     
+            }
             sequence = getSequence(rid,false,99999,Defs.NULL_CHAR, "\n");
 //            General.showDebug("seq: " + sequence);
             int sequenceLength = sequence.length();
@@ -458,11 +459,11 @@ public class Molecule extends GumboItem implements Serializable {
         BitSet bs = getResSet(molrid);
         for (int i=bs.nextSetBit(0);i>=0;i=bs.nextSetBit(i+1)) {
             float mass = gumbo.res.getMass(i);
-            result += mass;            
+            result += mass;
         }
         return result;
     }
-    
+
     public float getMass(BitSet molSet) {
         float result = 0f;
         for (int i=molSet.nextSetBit(0);i>=0;i=molSet.nextSetBit(i+1)) {
@@ -483,10 +484,10 @@ public class Molecule extends GumboItem implements Serializable {
             result.or(resSet);
         }
         return result;
-    }     
-    
+    }
+
     private BitSet getRes(int molRid) {
-        BitSet result = SQLSelect.selectBitSet(dbms, gumbo.res.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[  RELATION_ID_COLUMN_NAME], 
+        BitSet result = SQLSelect.selectBitSet(dbms, gumbo.res.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[  RELATION_ID_COLUMN_NAME],
                 SQLSelect.OPERATION_TYPE_EQUALS, new Integer(molRid), false);
         if ( result == null ) {
             General.showCodeBug("Failed to getRes(int molRid) for molecule: " + nameList[molRid]);
@@ -506,16 +507,38 @@ public class Molecule extends GumboItem implements Serializable {
             result.or(atomSet);
         }
         return result;
-    }     
-    
+    }
+
     public BitSet getAtoms(int molRid) {
-        BitSet result = SQLSelect.selectBitSet(dbms, gumbo.atom.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[  RELATION_ID_COLUMN_NAME], 
+        BitSet result = SQLSelect.selectBitSet(dbms, gumbo.atom.mainRelation, Gumbo.DEFAULT_ATTRIBUTE_SET_MOL[  RELATION_ID_COLUMN_NAME],
                 SQLSelect.OPERATION_TYPE_EQUALS, new Integer(molRid), false);
         if ( result == null ) {
             General.showCodeBug("Failed to getAtoms(BitSet molSet) for molecule(B): " + nameList[molRid]);
             return null;
         }
         return result;
-    }     
+    }
+
+    /** Return true on error. */
+    public boolean setCcpnCompatibleName(int molRid) {
+        String molName = nameList[molRid];
+        int n = Constants.CCPN_DEFAULT_NAME_LENGTH;
+        if ( molName.length() <= n ) {
+            General.showDebug("name already compatible.");
+            return false;
+        }
+        int molNumber = gumbo.mol.number[molRid];
+        String postfix = "_mol_" + molNumber;
+        int l = postfix.length();
+        int m = n - l;
+        String molNameNew = molName.substring(0,m) + postfix;
+        General.showDebug("Renaming molecule " + molName + " to " + molNameNew);
+        setName( molRid, molNameNew );
+        if ( ! nameList[molRid].equals(molNameNew)) { /** Test to have a true to return */
+            General.showError("Failed to find new molecule " + molNameNew + " but found " + nameList[molRid]);
+            return true;
+        }
+        return false;
+    }
 }
- 
+

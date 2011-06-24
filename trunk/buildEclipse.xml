@@ -67,6 +67,7 @@
     NB the debug settings.
     -->
     <target name="compile" description="compile" depends="init">
+        <mkdir dir="${build.dir}" />
         <javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" debuglevel="lines,vars,source">
             <classpath>
                 <path path="${javac.classpath}" />

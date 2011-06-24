@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
 
+import Wattos.Ccpn.Constants;
 import Wattos.CloneWars.UserInterface;
 import Wattos.Common.OrfIdList;
 import Wattos.Database.DBMS;
@@ -320,6 +321,28 @@ public class Entry extends GumboItem implements Serializable {
             General.showError("Failed to getAtomsInMasterModel");
             return false;
         }
+
+        /** Limit the name of a molecule to CCPN default: 80
+         */
+        BitSet molInMasterModelSet = getMolInMasterModel(true);
+//        int chainCount = molInMasterModelSet.cardinality();
+//        General.showDebug("Found number of chains: " + chainCount);
+        for (int molRid=molInMasterModelSet.nextSetBit(0);molRid>=0;molRid=molInMasterModelSet.nextSetBit(molRid+1)) {
+//            int molNumber = gumbo.mol.number[molRid];
+//            General.showDebug("Working on mol number: " + molNumber);
+            String molName = gumbo.mol.nameList[molRid];
+            General.showDebug("Checking mol name: " + molName);
+            if ( molName.length() >= Constants.CCPN_DEFAULT_NAME_LENGTH ){
+                General.showDebug("Mol name: " + molName + " will be truncated as to be compatible with CCPN data model limit of " + Constants.CCPN_DEFAULT_NAME_LENGTH);
+                if ( gumbo.mol.setCcpnCompatibleName(molRid)) {
+                    General.showError("Failed to setCcpnCompatibleName");
+                    return false;
+                }
+            }
+        }
+
+
+
         AtomLibAmber atomLibAmber = null;
 
         try {

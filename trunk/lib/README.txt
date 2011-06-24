@@ -25,4 +25,4 @@ servlet-api.jar			Servlet Api
 starlibj_with_source.jarSteve's lib to STAR
 swing-layout-1.0.jar	Swing related specific for Sjors Webapp.
 
-NB The binaries here should be CVS checked in as binaries otherwise there might be problems. 
+NB The binaries here should be SVN checked in as binaries otherwise there might be problems. 
