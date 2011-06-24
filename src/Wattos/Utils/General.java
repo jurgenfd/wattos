@@ -10,7 +10,6 @@
 
 package Wattos.Utils;
 
-import Wattos.CloneWars.UserInterface;
 import Wattos.Database.Defs;
 
 import com.braju.format.*;              // printf equivalent

@@ -1,0 +1,8 @@
+[run]
+source=python
+
+#[report]
+#include=STAR
+
+#[xml]
+#output=coverage.xml
