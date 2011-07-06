@@ -16,11 +16,9 @@ echo "DEBUG: PYTHONPATH 2  : $PYTHONPATH"
 echo "DEBUG: CLASSPATH  2  : $CLASSPATH"
 
 # Comment out the next line after done testing for it's a security issue.
-setenv | sort
+#setenv | sort
 
-ant -f buildEclipse.xml clean
-ant -f buildEclipse.xml compile
-ant -f buildEclipse.xml jar
+ant -f buildEclipse.xml clean compile jar
 # Run as a test from the newly created jar.
 getEpochTime
 #ant -f buildEclipse.xml test
