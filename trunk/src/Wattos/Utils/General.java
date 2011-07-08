@@ -530,10 +530,10 @@ never used so don't define here.
             General.showError("Failed to run svn info");
             return Defs.NULL_INT;
         }
-        if (! result[2].equals("")) {
-            General.showError("Got error from svn info. Returned in last element of string array " + Strings.toString(result));
-            return Defs.NULL_INT;
-        }
+//        if (! result[2].equals("")) {
+//            General.showError("Got error from svn info. Returned in last element of string array " + Strings.toString(result));
+//            return Defs.NULL_INT;
+//        }
         ArrayList lineList = Strings.getLines(result[1]);
         for (int i=0;i<lineList.size();i++) {
             String line = (String) lineList.get(i);
