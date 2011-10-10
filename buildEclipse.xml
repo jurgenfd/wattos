@@ -136,7 +136,7 @@
     Use:
         for resigning all jars. They need to be the same for WebApps such as Sjors.
     -->
-    <target name="jar" depends="init" description="Build JAR.">
+    <target name="jar" depends="init,compile" description="Build JAR.">
         <jar destfile="${jar.name}" basedir="${build.dir}" />
         <!--
         <signjar
