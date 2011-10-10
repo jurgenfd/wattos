@@ -1,4 +1,4 @@
-#!/bin/tcsh -e
+#!/bin/tcsh
 
 # Used by Jenkins to build and test this installation automatically on various platforms. 
 

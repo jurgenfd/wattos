@@ -683,7 +683,7 @@ HETATM 4800  O  O      . HOH U 5 .  ? 0.205   -2.311  -3.453  1.00 0.00 ? ? ? ? 
                             // cache rid residue
                             rid_res[modelCount][molCount][resCount] = currentResId;
                         } else {
-                            if ( ! resName.equals("HOH")) {
+                            if ( ! (resName.equals("HOH") || resName.equals("DOD"))) {
                                 General.showError("Found a water posing residue: " + resName);
                                 return false;
                             }
