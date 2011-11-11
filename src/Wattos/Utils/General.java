@@ -512,19 +512,27 @@ never used so don't define here.
         return result;
     }
 
+    public static int getSvnRevision() {
+    	return getSvnRevision(null);
+    }
+    
     /**
+     * @param rootName TODO
      * @return revision number (int) or null if the revision isn't known. It depends on svn being available on the system.
      *
      */
-    public static int getSvnRevision() {
+    public static int getSvnRevision(String rootName) {
+        if ( rootName == null ) {
+            rootName = "WATTOSROOT"; 
+        }
+        String rootDirStr = InOut.getEnvVar(rootName);
 
-        String wattosRootDirStr = InOut.getEnvVar("WATTOSROOT");
-
-        if ( wattosRootDirStr == null ) {
-            General.showError("Without set WATTOSROOT variable can't getSvnRevision");
+        if ( rootDirStr == null ) {
+            General.showError("Without set " + rootName + " variable can't getSvnRevision");
             return Defs.NULL_INT;
         }
-        String cmd = "svn info " + wattosRootDirStr;
+        String cmd = "svn info " + rootDirStr;
+        
         String[] result = OSExec.getstatusoutput(cmd);
         if (! result[0].equals("0")) {
             General.showError("Failed to run svn info");
@@ -543,8 +551,8 @@ never used so don't define here.
                     General.showError("Got error from svn info on line with revision: [" + line + "]");
                     return Defs.NULL_INT;
                 }
-                int wattosRevision = Integer.valueOf(split[split.length-1]);
-                return wattosRevision;
+                int revision = Integer.valueOf(split[split.length-1]);
+                return revision;
             }
         }
         General.showDebug("Failed get svn revision.");

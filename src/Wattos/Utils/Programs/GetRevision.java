@@ -4,6 +4,7 @@
 
 package Wattos.Utils.Programs;
 
+import Wattos.Database.Defs;
 import Wattos.Utils.General;
 
 /**
@@ -20,7 +21,17 @@ class GetRevision {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String e = Long.toString( General.getSvnRevision() );
+        if ( args.length < 1 ) {
+            String message = "No arument given.";
+            General.doErrorExit(message);
+        }
+        String rootName = args[0];
+//        General.showOutput("rootName: " + rootName);
+        int revision = General.getSvnRevision( rootName);
+        if ( Defs.isNull(revision)) {
+            General.doErrorExit("Failed Wattos.Utils.Programs.GetRevision");
+        }
+        String e = Long.toString( revision);
         System.out.println(e);
-    }   
+    }
 }
