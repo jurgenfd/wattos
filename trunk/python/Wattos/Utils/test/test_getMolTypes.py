@@ -18,10 +18,10 @@ os.chdir(wattosDirTmpTest)
 
 class test_getMolTypes(TestCase):
         
-        def test_getMolTypes(self):
-            """Simplest test not useful except for testing testing framework."""
+    def _test_getMolTypes(self):
+        """Simplest test not useful except for testing testing framework."""
 
-            self.assertFalse(getMolTypes())
+        self.assertFalse(getMolTypes())
      
 if __name__ == "__main__":
     unittest.main()

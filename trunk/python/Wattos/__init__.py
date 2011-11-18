@@ -17,4 +17,4 @@ if not os.path.exists(wattosDirTmp):
     if os.mkdir(wattosDirTmp):
         print("ERROR: Failed to create a temporary dir for wattos at: " + wattosDirTmp)
         sys.exit(1)
-print 'DEBUG: using wattosDirTmp: ' + wattosDirTmp
+#print 'DEBUG: using wattosDirTmp: ' + wattosDirTmp
