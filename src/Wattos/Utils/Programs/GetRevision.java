@@ -21,13 +21,14 @@ class GetRevision {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        if ( args.length < 1 ) {
-            String message = "No arument given.";
-            General.doErrorExit(message);
+        String rootName = null;
+        if ( args.length >0 ) {
+            rootName = args[0];
+        } else {
+//          General.showDebug("No arument given; default assumed.");
         }
-        String rootName = args[0];
 //        General.showOutput("rootName: " + rootName);
-        int revision = General.getSvnRevision( rootName);
+        int revision = General.getSvnRevision( rootName );
         if ( Defs.isNull(revision)) {
             General.doErrorExit("Failed Wattos.Utils.Programs.GetRevision");
         }
