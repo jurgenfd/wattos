@@ -23,5 +23,9 @@ class test_getMolTypes(TestCase):
 
         self.assertFalse(getMolTypes())
      
+    def test_general(self):
+        """Just to have A test"""
+        self.assertFalse(1==0)
+     
 if __name__ == "__main__":
     unittest.main()
