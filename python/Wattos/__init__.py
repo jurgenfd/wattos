@@ -10,7 +10,10 @@ try:
 except:
     if os.environ.has_key("TMPDIR"):
         wattosDirTmp = os.path.join(os.environ["TMPDIR"], "watttos")
-# end if
+    else:
+        wattosDirTmp = starDirTmp
+    # end if
+# end try
 
 if not os.path.exists(wattosDirTmp):
 #    print("DEBUG: Creating a temporary dir for wattos: [%s]" % wattosDirTmp)
