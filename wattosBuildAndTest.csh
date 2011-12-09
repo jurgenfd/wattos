@@ -4,10 +4,6 @@
 
 cd $0:h
 
-if ( ! $?PYTHONPATH ) then
-    echo "DEBUG: initializing non-existing PYTHONPATH to ."
-    setenv PYTHONPATH .
-endif
 if ( ! $?CLASSPATH ) then
     echo "DEBUG: initializing non-existing CLASSPATH to ."
     setenv CLASSPATH .
@@ -19,6 +15,15 @@ echo "DEBUG: CLASSPATH  1: $CLASSPATH"
 
 setenv WATTOSROOT $cwd
 source $WATTOSROOT/scripts/wsetup
+
+setenv WATTOS_VARS ${WATTOSROOT}/python
+if ( $?PYTHONPATH ) then
+    echo "DEBUG: prepending Wattos' to PYTHONPATH"
+    setenv PYTHONPATH ${WATTOS_VARS}:${PYTHONPATH}
+else
+    echo "DEBUG: initializing non-existing PYTHONPATH to ."
+    setenv PYTHONPATH ${WATTOS_VARS}
+endif
 
 echo "DEBUG: PATH       2  : $PATH"
 echo "DEBUG: PYTHONPATH 2  : $PYTHONPATH"
