@@ -50,7 +50,9 @@ public class GetMolType {
         return result;
     }
     
-    public static void run() {
+    
+	@SuppressWarnings("deprecation")
+	public static void run() {
         ArrayList pdbList = getBmrbNmrGridEntries();
         General.showOutput( "Read pdb entries from NMR Restraints Grid:"+ pdbList.size() );
 //        pdbList = new ArrayList();

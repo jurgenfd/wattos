@@ -592,7 +592,8 @@ never used so don't define here.
       p.add(at);
       String result = Format.sprintf("User: %s on: %-42s at: %32s",p);
 
-      int thisYear = 1900 + now.getYear();
+      @SuppressWarnings("deprecation")
+	int thisYear = 1900 + now.getYear();
       String copyright_years = "1999-" + thisYear; // Never have to update this again...
 //      String[] authorList      = new String[]  { "Jurgen F. Doreleijers", "jurgend@cmbi.ru.nl"};
 //    String wattosRevisionUrl = "http://code.google.com/p/wattos/source/detail?r=";
