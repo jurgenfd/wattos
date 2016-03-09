@@ -3,7 +3,7 @@
 /*
  * This software is copyright (c) 2006 Board of Regents, University of
  * Wisconsin. All Rights Reserved.
- * 
+ *
  * $Id$
  *
  */
@@ -13,7 +13,6 @@
 /* Lex Definitions for a STAR File */
 
 package Wattos.Star;
-import Wattos.Utils.*;
 
 /**
  * STAR Lexer with some error checking.
@@ -50,14 +49,14 @@ public class STARLexer {
    *                  at the beginning of a line
    * l is of the form l = 2*k, k a non negative integer
    */
-  private static final int ZZ_LEXSTATE[] = { 
+  private static final int ZZ_LEXSTATE[] = {
      0,  1,  2,  2,  3,  3,  4,  4,  5, 5
   };
 
-  /** 
+  /**
    * Translates characters to character classes
    */
-  private static final String ZZ_CMAP_PACKED = 
+  private static final String ZZ_CMAP_PACKED =
     "\10\0\2\1\1\3\2\0\1\2\22\0\1\1\1\23\1\30\1\26"+
     "\1\22\1\25\1\23\1\27\5\23\2\25\1\23\12\24\1\23\1\31"+
     "\1\23\1\0\1\23\1\0\1\23\1\10\1\7\1\24\1\12\1\16"+
@@ -124,12 +123,12 @@ public class STARLexer {
     "\1\0\207\20\23\0\12\20\7\0\32\20\6\0\32\20\13\0\131\20"+
     "\3\0\6\20\2\0\6\20\2\0\6\20\2\0\3\20\43\0";
 
-  /** 
+  /**
    * Translates characters to character classes
    */
   private static final char [] ZZ_CMAP = zzUnpackCMap(ZZ_CMAP_PACKED);
 
-  /** 
+  /**
    * Translates DFA states to action switch labels.
    */
   private static final int [] ZZ_ACTION = zzUnpackAction();
@@ -161,7 +160,7 @@ public class STARLexer {
   }
 
 
-  /** 
+  /**
    * Translates a state to a row index in the transition table
    */
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
@@ -194,7 +193,7 @@ public class STARLexer {
     return j;
   }
 
-  /** 
+  /**
    * The transition table of the DFA
    */
   private static final int [] ZZ_TRANS = zzUnpackTrans();
@@ -323,12 +322,12 @@ public class STARLexer {
   private int yychar;
 
   /**
-   * the number of characters from the last newline up to the start of the 
+   * the number of characters from the last newline up to the start of the
    * matched text
    */
   private int yycolumn;
 
-  /** 
+  /**
    * zzAtBOL == true <=> the scanner is currently at the beginning of a line
    */
   private boolean zzAtBOL = true;
@@ -338,7 +337,7 @@ public class STARLexer {
 
   /* user code: */
     private static final boolean DEBUG = false;
-    
+
     public static final int ERROR = 0;
             /** Parser warning. */
     public static final int WARNING = 1;
@@ -357,7 +356,7 @@ public class STARLexer {
             /** Start of loop. */
     public static final int LOOPSTART = 8;
             /** End of loop. */
-    public static final int STOP = 9;   
+    public static final int STOP = 9;
             /** Tag. */
     public static final int TAGNAME = 10;
             /** Value enclosed in single quotes. */
@@ -373,7 +372,7 @@ public class STARLexer {
             /** Comment. */
     public static final int COMMENT = 16;
             /** End of input. */
-    public static final int EOF = 17;    
+    public static final int EOF = 17;
     /** tokens */
     public enum Types {
         /** Parser error. */
@@ -486,7 +485,7 @@ public class STARLexer {
     this(new java.io.InputStreamReader(in));
   }
 
-  /** 
+  /**
    * Unpacks the compressed character translation table.
    *
    * @param packed   the packed character translation table
@@ -509,7 +508,7 @@ public class STARLexer {
    * Refills the input buffer.
    *
    * @return      <code>false</code>, iff there was new input.
-   * 
+   *
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
   private boolean zzRefill() throws java.io.IOException {
@@ -543,7 +542,7 @@ public class STARLexer {
       zzEndRead+= numRead;
       return false;
     }
-    // unlikely but not impossible: read 0 characters, but not at end of stream    
+    // unlikely but not impossible: read 0 characters, but not at end of stream
     if (numRead == 0) {
       int c = zzReader.read();
       if (c == -1) {
@@ -551,14 +550,14 @@ public class STARLexer {
       } else {
         zzBuffer[zzEndRead++] = (char) c;
         return false;
-      }     
+      }
     }
 
 	// numRead < 0
     return true;
   }
 
-    
+
   /**
    * Closes the input stream.
    */
@@ -575,11 +574,11 @@ public class STARLexer {
    * Resets the scanner to read from a new input stream.
    * Does not close the old reader.
    *
-   * All internal variables are reset, the old input stream 
+   * All internal variables are reset, the old input stream
    * <b>cannot</b> be reused (internal buffer is discarded and lost).
    * Lexical state is set to <tt>ZZ_INITIAL</tt>.
    *
-   * @param reader   the new input stream 
+   * @param reader   the new input stream
    */
   public final void yyreset(java.io.Reader reader) {
     zzReader = reader;
@@ -619,12 +618,12 @@ public class STARLexer {
 
 
   /**
-   * Returns the character at position <tt>pos</tt> from the 
-   * matched text. 
-   * 
+   * Returns the character at position <tt>pos</tt> from the
+   * matched text.
+   *
    * It is equivalent to yytext().charAt(pos), but faster
    *
-   * @param pos the position of the character to fetch. 
+   * @param pos the position of the character to fetch.
    *            A value from 0 to yylength()-1.
    *
    * @return the character at position pos
@@ -645,8 +644,8 @@ public class STARLexer {
   /**
    * Reports an error that occured while scanning.
    *
-   * In a wellformed scanner (no or only correct usage of 
-   * yypushback(int) and a match-all fallback rule) this method 
+   * In a wellformed scanner (no or only correct usage of
+   * yypushback(int) and a match-all fallback rule) this method
    * will only be called with things that "Can't Possibly Happen".
    * If this method is called, something is seriously wrong
    * (e.g. a JFlex bug producing a faulty scanner etc.).
@@ -666,7 +665,7 @@ public class STARLexer {
     }
 
     throw new Error(message);
-  } 
+  }
 
 
   /**
@@ -754,9 +753,9 @@ public class STARLexer {
           zzEndReadL = zzEndRead;
           zzMarkedPosL = zzMarkedPos;
           zzBufferL = zzBuffer;
-          if (eof) 
+          if (eof)
             zzPeek = false;
-          else 
+          else
             zzPeek = zzBufferL[zzMarkedPosL] == '\n';
         }
         if (zzPeek) yyline--;
@@ -771,7 +770,7 @@ public class STARLexer {
         case '\u2029':
           zzAtBOL = true;
           break;
-        case '\r': 
+        case '\r':
           if (zzMarkedPosL < zzEndReadL)
             zzAtBOL = zzBufferL[zzMarkedPosL] != '\n';
           else if (zzAtEOF)
@@ -781,9 +780,9 @@ public class STARLexer {
             zzMarkedPosL = zzMarkedPos;
             zzEndReadL = zzEndRead;
             zzBufferL = zzBuffer;
-            if (eof) 
+            if (eof)
               zzAtBOL = false;
-            else 
+            else
               zzAtBOL = zzBufferL[zzMarkedPosL] != '\n';
           }
           break;
@@ -794,7 +793,7 @@ public class STARLexer {
       zzAction = -1;
 
       zzCurrentPosL = zzCurrentPos = zzStartRead = zzMarkedPosL;
-  
+
       if (zzAtBOL)
         zzState = ZZ_LEXSTATE[zzLexicalState+1];
       else
@@ -803,7 +802,7 @@ public class STARLexer {
 
       zzForAction: {
         while (true) {
-    
+
           if (zzCurrentPosL < zzEndReadL)
             zzInput = zzBufferL[zzCurrentPosL++];
           else if (zzAtEOF) {
@@ -846,7 +845,7 @@ public class STARLexer {
       zzMarkedPos = zzMarkedPosL;
 
       switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
-        case 16: 
+        case 16:
           // lookahead expression with fixed base length
           zzMarkedPos = zzStartRead + 1;
           { //System.err.printf( "In YYSEMIEND, matched |%s|, exit\n", yytext() );
@@ -854,76 +853,76 @@ public class STARLexer {
         return Types.DVNSEMICOLON;
           }
         case 24: break;
-        case 10: 
+        case 10:
           { buf.append( "\n" );
           }
         case 25: break;
-        case 19: 
+        case 19:
           { buf.setLength( 0 );
         return Types.SAVEEND;
           }
         case 26: break;
-        case 11: 
+        case 11:
           { if( DEBUG ) System.err.printf( "Matched |%s| in {SINGLESTART}\n", yytext() );
         buf.setLength( 0 );
         yybegin( YYSINGLE );
           }
         case 27: break;
-        case 9: 
+        case 9:
           { //System.err.printf( "In YYSEMIEND, matched |%s|, drop back\n", yytext() );
         buf.append( "\n" );
         buf.append( yytext() );
         yybegin( YYSEMI );
           }
         case 28: break;
-        case 4: 
+        case 4:
           { //System.err.printf( "Matched %s in ^{SEMI}\n", yytext() );
         buf.setLength( 0 );
         buf.append( yytext().substring( 1 ) );
         yybegin( YYSEMI );
           }
         case 29: break;
-        case 8: 
+        case 8:
           { //System.err.printf( "In YYSEMI, matched |%s|, begin SEMIEND\n", yytext() );
     yybegin( YYSEMIEND );
           }
         case 30: break;
-        case 22: 
+        case 22:
           { buf.setLength( 0 );
         buf.append( yytext().substring( 5 ) );
         return Types.SAVESTART;
           }
         case 31: break;
-        case 17: 
+        case 17:
           { buf.setLength( 0 );
         buf.append( yytext() );
         return Types.TAGNAME;
           }
         case 32: break;
-        case 21: 
+        case 21:
           { buf.setLength( 0 );
         buf.append( yytext().substring( 5 ) );
         return Types.DATASTART;
           }
         case 33: break;
-        case 12: 
+        case 12:
           { if( DEBUG ) System.err.printf( "Matched |%s| in {DOUBLESTART}\n", yytext() );
         buf.setLength( 0 );
         yybegin( YYDOUBLE );
           }
         case 34: break;
-        case 13: 
+        case 13:
           { buf.setLength( 0 );
         buf.append( yytext().substring( 1 ) );
         return Types.DVNFRAMECODE;
           }
         case 35: break;
-        case 7: 
+        case 7:
           { //System.err.printf( "In YYSEMI, matched |%s|\n", yytext() );
         buf.append( yytext() );
           }
         case 36: break;
-        case 14: 
+        case 14:
           // lookahead expression with fixed base length
           zzMarkedPos = zzStartRead + 1;
           { //System.err.printf( "Matched %s in {YYSINGLE}, exit\n", yytext() );
@@ -931,12 +930,12 @@ public class STARLexer {
     return Types.DVNSINGLE;
           }
         case 37: break;
-        case 18: 
+        case 18:
           { buf.setLength( 0 );
         return Types.LOOPSTART;
           }
         case 38: break;
-        case 15: 
+        case 15:
           // lookahead expression with fixed base length
           zzMarkedPos = zzStartRead + 1;
           { //System.err.printf( "Matched %s in {YYDOUBLE}, exit\n", yytext() );
@@ -944,12 +943,12 @@ public class STARLexer {
     return Types.DVNDOUBLE;
           }
         case 39: break;
-        case 20: 
+        case 20:
           { buf.setLength( 0 );
         return Types.STOP;
           }
         case 40: break;
-        case 6: 
+        case 6:
           { //System.err.printf( "In ERROR, matched |%s|\n", yytext() );
     buf.setLength( 0 );
     buf.append( "Unknown token: ``" );
@@ -958,33 +957,33 @@ public class STARLexer {
     return Types.ERROR;
           }
         case 41: break;
-        case 23: 
+        case 23:
           { buf.setLength( 0 );
         return Types.GLOBALSTART;
           }
         case 42: break;
-        case 1: 
+        case 1:
           { if( DEBUG ) System.err.printf( "Matched |%s| in {NON_WS}+\n", yytext() );
         buf.setLength( 0 );
         buf.append( yytext() );
         return Types.DVNNON;
           }
         case 43: break;
-        case 3: 
+        case 3:
           { buf.setLength( 0 );
         return Types.COMMENT;
           }
         case 44: break;
-        case 5: 
+        case 5:
           { //System.err.printf( "Matched %s in {YYSINGLE|DOUBLE}, cont.\n", yytext() );
         buf.append( yytext() );
           }
         case 45: break;
-        case 2: 
-          { 
+        case 2:
+          {
           }
         case 46: break;
-        default: 
+        default:
           if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
             zzAtEOF = true;
             switch (zzLexicalState) {
@@ -996,7 +995,7 @@ public class STARLexer {
             default:
             return null;
             }
-          } 
+          }
           else {
             zzScanError(ZZ_NO_MATCH);
           }

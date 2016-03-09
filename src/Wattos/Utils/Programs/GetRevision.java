@@ -12,11 +12,11 @@ import Wattos.Utils.General;
  * @author Jurgen F. Doreleijers
  */
 class GetRevision {
-    
-    /** Creates a new instance of GetEpochTime */
+
+    /** Creates a new instance of GetRevision */
     public GetRevision() {
     }
-     
+
     /**
      * @param args the command line arguments
      */
@@ -25,14 +25,14 @@ class GetRevision {
         if ( args.length >0 ) {
             rootName = args[0];
         } else {
-//          General.showDebug("No arument given; default assumed.");
+//          General.showDebug("No argument given; default assumed.");
         }
 //        General.showOutput("rootName: " + rootName);
         int revision = General.getSvnRevision( rootName );
         if ( Defs.isNull(revision)) {
             General.doErrorExit("Failed Wattos.Utils.Programs.GetRevision");
         }
-        String e = Long.toString( revision);
-        System.out.println(e);
+//        String e = Long.toString( revision);
+        System.out.println(revision); // can be unboxed automatically since Java 1.5.
     }
 }

@@ -17,10 +17,10 @@ import Wattos.Utils.*;
  */
 public class OrfIdList implements Cloneable, Serializable {
 
-    /** Faking this variable makes the serializing not worry 
+    /** Faking this variable makes the serializing not worry
      *about potential small differences.*/
     private static final long serialVersionUID = -1207795172754062330L;
-    
+
     public ArrayList orfIdList = new ArrayList();
 
     /** Creates new OrfId */
@@ -28,7 +28,7 @@ public class OrfIdList implements Cloneable, Serializable {
     }
 
     /** First attempt at writing some cloning method. Taken from:
-     * "The Java Programming Launguage, Third Edition" by Arnold, Gosling,
+     * "The Java Programming Language, Third Edition" by Arnold, Gosling,
      * and Holmes.
      * @return  cloned object */
     public Object clone() {
@@ -41,21 +41,21 @@ public class OrfIdList implements Cloneable, Serializable {
             throw new InternalError(e.toString());
         }
     }
-    
+
     public void init() {
         orfIdList.clear();
-    }    
-    
+    }
+
     public boolean toBmrbStyle() {
         for (Iterator it=orfIdList.iterator();it.hasNext();) {
             OrfId o = (OrfId) it.next();
             o.toBmrbStyle();
         }
         return true;
-    }    
-        
+    }
+
     public String toFasta() {
-        
+
         StringBuffer sb = new StringBuffer();
         for (int i=0;i<orfIdList.size();i++) {
             //General.showOutput("Now at i: " + i);
@@ -63,17 +63,17 @@ public class OrfIdList implements Cloneable, Serializable {
             if ( i != 0 ) {
                 sb.append( FastaDefinitions.FASTA_DELIM );
             }
-            sb.append( o.toFasta() );            
+            sb.append( o.toFasta() );
         }
-        /** Print at least an empty one 
+        /** Print at least an empty one
          */
         if ( orfIdList.size() == 0 ) {
             OrfId o = new OrfId();
             sb.append( o.toFasta() );
         }
         return sb.toString();
-    }    
-    
+    }
+
     /** Reads the header line of standard fasta file to a list of orf ids.
      *Well documented in file: FastaSpecs.txt
      */
@@ -92,7 +92,7 @@ public class OrfIdList implements Cloneable, Serializable {
         // Chop the > off and hash by pipe
         String str_todo = line.substring(1);
         String[] part_list = Strings.splitWithAllReturned( str_todo, FastaDefinitions.FASTA_DELIM );
-        
+
         for (int i=0;(i+3)<part_list.length;i=i+4) {
             //General.showDebug("parsing set: " + i/4 );
             OrfId orf_id = new OrfId();
@@ -111,17 +111,17 @@ public class OrfIdList implements Cloneable, Serializable {
             General.showError("Found number of sets: " + set_count);
             return false;
         }
-            
+
         return true;
     }
-    
-    
+
+
     public String toString() {
         StringBuffer sb = new StringBuffer();
         int i = 0;
         for (Iterator it=orfIdList.iterator();it.hasNext();) {
             OrfId o = (OrfId) it.next();
-            sb.append( "OrfId #: " + i + General.eol);            
+            sb.append( "OrfId #: " + i + General.eol);
             sb.append( o.toString() );
             i++;
         }
@@ -131,7 +131,7 @@ public class OrfIdList implements Cloneable, Serializable {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+
         //String line = ">bmrb|4020|brsv-g||cesg|orfie123|or_5_actually||FASTA_FORMAT_ID_GENERAL";
         String line = ">sesame|GO.1||,At1g75770|FASTA_FORMAT_ID_GENERAL";
         Orf orf = new Orf();

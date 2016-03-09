@@ -318,11 +318,11 @@ public class AtomNode implements Cloneable {
 
     public static void main(String[] args) {
 
-        AtomNode atom_node_1 = new AtomNode();
-        AtomNode atom_node_2 = new AtomNode();
-        AtomNode atom_node_3 = new AtomNode();
-        AtomNode atom_node_4 = new AtomNode();
-        AtomNode atom_node_5 = new AtomNode();
+//        AtomNode atom_node_1 = new AtomNode();
+//        AtomNode atom_node_2 = new AtomNode();
+//        AtomNode atom_node_3 = new AtomNode();
+//        AtomNode atom_node_4 = new AtomNode();
+//        AtomNode atom_node_5 = new AtomNode();
 
 //        if ( false ) {
 //            atom_node_1.info.putValue("resi", "1");
