@@ -61,7 +61,6 @@ setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/colt.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/CSVutils.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/jakarta-regexp.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/javacc.jar
-#setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/jdbc20x.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/JFlex.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/printf_hb15.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/mysql-connector-java-5.0.3-bin.jar
@@ -72,6 +71,7 @@ setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/jcommon-1.0.0.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/gnujaxp.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/itext-1.4.jar
 setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/junit-3.8.1.jar
+#setenv CLASSPATH ${CLASSPATH}:${WATTOSJARSDIR}/jdbc20x.jar
 
 #echo "Initialized Wattos with Java classpath:" $CLASSPATH
 

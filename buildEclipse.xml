@@ -8,9 +8,12 @@
     <echo>Starting Ant with updated build file</echo>
     <property file="wattos.properties" />
 
-    <!-- Added for for functionality. Requires a ant-contrib.jar in classpath. -->
-    <!-- Fedora 9: -->
+    <!-- Added for for functionality. Requires an ant-contrib.jar in classpath. -->
+    <!-- Fedora 9: 
     <taskdef classpath="/usr/share/java/ant-contrib.jar" resource="net/sf/antcontrib/antlib.xml" />
+    -->
+    <!-- macOS: -->
+    <taskdef classpath="/Users/jd/workspace/wattos/lib/ant-contrib.jar" resource="net/sf/antcontrib/antlib.xml" />
     <!-- systems where ant-contrib installs properly: -->
 
     <taskdef resource="net/sf/antcontrib/antlib.xml" />
