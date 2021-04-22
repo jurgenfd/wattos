@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>Wattos.CloneWars.UserInterface</OriginalElement>
+  <nodes>
+    <node x="0.0" y="0.0">Wattos.CloneWars.UserInterface</node>
+    <node x="509.0" y="195.0">Wattos.CloneWars.WattosMenu.WattosMenu</node>
+    <node x="544.0" y="0.0">Wattos.CloneWars.WattosMenu.WattosMenuItem</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="Wattos.CloneWars.WattosMenu.WattosMenu" target="Wattos.CloneWars.WattosMenu.WattosMenuItem" relationship="GENERALIZATION">
+      <point x="0.0" y="-370.0" />
+      <point x="0.0" y="72.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="false" x="232.0" y="468.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
