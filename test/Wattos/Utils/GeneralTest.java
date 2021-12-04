@@ -10,10 +10,6 @@ package Wattos.Utils;
 
 import junit.framework.*;
 
-/**
- *
- * @author jurgen
- */
 public class GeneralTest extends TestCase {
 
     public GeneralTest(String testName) {
@@ -25,9 +21,6 @@ public class GeneralTest extends TestCase {
         return suite;
     }
 
-    /**
-     * Test of showMemoryUsed method, of class Wattos.Utils.General.
-     */
     public void testShowMemoryUsed() {
         // System.out.println("showMemoryUsed");
         General.verbosity = General.verbosityDebug;
@@ -36,12 +29,8 @@ public class GeneralTest extends TestCase {
         String startMsg = General.getStartMessage();
         this.assertTrue(startMsg.length() > 10);
         General.showOutput("start msg:\n" + startMsg);
-        int svnRevision = General.getSvnRevision();
-        General.showOutput("GeneralTest.java found: SVN revision: " + svnRevision);
-        this.assertTrue(svnRevision > 100);
-        // TODO review the generated test code and remove the default call to
-        // fail.
-        // fail("The test case is a prototype.");
+        String revision = General.getRevision();
+        General.showOutput("GeneralTest.java found: SVN revision: " + revision);
+        this.assertTrue(revision.length() == 7);
     }
-
 }

@@ -90,12 +90,11 @@ public class OSExec {
      * command. I.e. don't try to 'ls' on a Windows system without such a
      * command.
      *
-     * @param args
-     *            Command to be executed. Examples that work are given below. On
-     *            Linux: "nedit -geometry 80x50-0+0" On Windows:
-     *            "\"D:\\Program Files\\Microsoft Office\\Office\\Winword.exe\""
+     * @param args Command to be executed. Examples that work are given below. On
+     *             Linux: "nedit -geometry 80x50-0+0" On Windows:
+     *             "\"D:\\Program Files\\Microsoft Office\\Office\\Winword.exe\""
      * @return Exit status of the command. 0 usually means success. What is
-     *         usually?
+     * usually?
      */
     public static int exec(String args) {
         // Standard error exit value
@@ -154,10 +153,10 @@ public class OSExec {
      * See namesake python method: commands#getstatusoutput but also include error output in separate String.
      *
      * @return strings for status and output of given shell command. Or null in
-     *         case of error. Exit status is the String representation that can
-     *         be parsed to an int.
-     *
-     *         status, outputMsg, errorMsg
+     * case of error. Exit status is the String representation that can
+     * be parsed to an int.
+     * <p>
+     * status, outputMsg, errorMsg
      */
     public static String[] getstatusoutput(String args) {
         String errorMsg;
@@ -176,7 +175,7 @@ public class OSExec {
                 cmd[1] = "/C";
             } else if (osName.equals("Linux") || osName.equals("SunOS") || osName.startsWith("Mac OS")) {
                 // It's a unix variant
-                cmd[0] = "/bin/csh";
+                cmd[0] = "/bin/bash";
                 cmd[1] = "-c";
             } else {
                 General.showOutput("Any Operating System that is not:");
@@ -189,33 +188,28 @@ public class OSExec {
             cmd[2] = args;
 
             Runtime rt = Runtime.getRuntime();
-            // General.showOutput("Execing: " + cmd[0].toString());
-            // General.showOutput("Execing: " + cmd[1].toString());
-            // General.showOutput("Execing: " + cmd[2].toString());
+//            General.showDebug("Execing: " + cmd[0].toString());
+//            General.showDebug("Execing: " + cmd[1].toString());
+//            General.showDebug("Execing: " + cmd[2].toString());
             Process proc = rt.exec(cmd);
-            // any error message?
             StreamBuffer errorGobbler = new StreamBuffer(proc.getErrorStream(), "STDERR");
-
-            // any output?
             StreamBuffer outputGobbler = new StreamBuffer(proc.getInputStream(), "STDOUT");
 
-            // kick them off
             errorGobbler.start();
             outputGobbler.start();
 
-            // any error???
-            status = String.valueOf(  proc.waitFor() );
+            status = String.valueOf(proc.waitFor());
             Thread.sleep(300);
             errorMsg = errorGobbler.getString();
             outputMsg = outputGobbler.getString();
-//            General.showOutput("status: " + status);
-//            General.showOutput("errorMsg: " + errorMsg);
-//            General.showOutput("outputMsg: " + outputMsg);
+//            General.showDebug("status: " + status);
+//            General.showDebug("errorMsg: " + errorMsg);
+//            General.showDebug("outputMsg: " + outputMsg);
         } catch (Throwable t) {
             General.showThrowable(t);
             return null;
         }
-        return new String[] { status, outputMsg, errorMsg };
+        return new String[]{status, outputMsg, errorMsg};
     }
 
     /**
@@ -223,8 +217,7 @@ public class OSExec {
      * on the machine an error will be issued. On both my Windows and Linux
      * machine it does however.
      *
-     * @param args
-     *            Command line arguments.
+     * @param args Command line arguments.
      */
     public static void main(String args[]) {
         if (args.length < 0) {
@@ -261,10 +254,9 @@ public class OSExec {
      * Convenience method to namesake method.
      *
      * @param cmdList
-     * @param delayBetweenSubmittingJobs
-     *            in milliseconds.
+     * @param delayBetweenSubmittingJobs in milliseconds.
      * @return Exit status of the command. 0 usually means success. 1 for
-     *         failure.
+     * failure.
      */
     public static int exec(String[] cmdList, int delayBetweenSubmittingJobs) {
         int status = 0;

@@ -11,6 +11,7 @@ package Wattos.Utils;
 
 import Wattos.Database.Defs;
 import com.braju.format.*; // printf equivalent
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -32,21 +33,25 @@ public class InOut {
      * like star/pdb formatted files. It may be used to back calculate the real size of a file.
      */
     public static final float DEFAULT_COMPRESSION_FACTOR = 5;
-    /** Normally we assume the OS is linux */
+    /**
+     * Normally we assume the OS is linux
+     */
     public static boolean isOSLinux = true;
     public static boolean isOSWindows = false;
 
     public static final ArrayList fileNameExtensionsText;
-    /** Not used yet but opposite of above */
+    /**
+     * Not used yet but opposite of above
+     */
     public static final ArrayList fileNameExtensionsBina;
 
     static {
         fileNameExtensionsText = new ArrayList();
         fileNameExtensionsBina = new ArrayList();
-        fileNameExtensionsText.addAll(Arrays.asList(new String[] { "aco", "awk", "bat", "c", "cc", "csh", "f", "html",
+        fileNameExtensionsText.addAll(Arrays.asList(new String[]{"aco", "awk", "bat", "c", "cc", "csh", "f", "html",
                 "java", "lol", "mr", "mtf", "pdb", "perl", "py", "readme", "seq", "sh", "sql", "str", "star", "txt",
-                "tbl", "upl", "xml" }));
-        fileNameExtensionsBina.addAll(Arrays.asList(new String[] { "bin", "doc", "gz", "tar", "tgz", "zip", "Z" }));
+                "tbl", "upl", "xml"}));
+        fileNameExtensionsBina.addAll(Arrays.asList(new String[]{"bin", "doc", "gz", "tar", "tgz", "zip", "Z"}));
         String osName = System.getProperty("os.name");
         if (osName.startsWith("Windows")) {
             isOSWindows = true;
@@ -70,7 +75,6 @@ public class InOut {
     }
 
     /**
-     *
      * @return true for error
      */
     public static boolean chmod(File f, String mod) {
@@ -196,6 +200,7 @@ public class InOut {
     /**
      * Returns a list of File objects with full path names of all the files (not directories) in the given dir. Will
      * call itself.
+     *
      * @param includeDirectories TODO
      */
     public static ArrayList getFilesRecursive(File dir, boolean includeDirectories) {
@@ -217,8 +222,8 @@ public class InOut {
             }
             if (potFile.isFile()) {
                 result.add(potFile);
-            } else if ( includeDirectories ) {
-                if ( potFile.isDirectory() ) {
+            } else if (includeDirectories) {
+                if (potFile.isDirectory()) {
                     result.add(potFile);
                 }
             }
@@ -231,15 +236,14 @@ public class InOut {
      * notation: see <CODE>java.net.URL</CODE> or <scheme>://<authority><path>?<query>#<fragment> as in:
      * http://archive.ncsa.uiuc.edu:80/SDG/Software/Mosaic/Demo/url-primer.html?i=j#FAQ scheme http authority
      * archive.ncsa.uiuc.edu:80 path /SDG/Software/Mosaic/Demo/url-primer.html query i=j fragment FAQ
-     *
+     * <p>
      * or by pathname as in : /share/jurgen/handy.txt toURI : file:///share/jurgen/handy.txt or
      * file://S:\jurgen\handy.txt uri.toURL : same just recommended by API to go through URI for abstract pathnames.
      * abstract meaning without scheme (e.g. ftp).
+     * <p>
+     * See method getUrlFileFromName to see how the canonicalization is done.
      *
-     *See method getUrlFileFromName to see how the canonicalization is done.
-     *
-     * @param prompt
-     *            What should the user be asked for.
+     * @param prompt What should the user be asked for.
      * @return null in case of failure
      */
     public static URL getUrlFile(BufferedReader in, String prompt) {
@@ -608,7 +612,9 @@ public class InOut {
         return o;
     }
 
-    /** Convenience method allowing EOL */
+    /**
+     * Convenience method allowing EOL
+     */
     public static Object readObjectOrEOF(String file_name) {
         boolean allowEOF = true;
         return readObjectOrEOF(file_name, allowEOF);
@@ -622,7 +628,9 @@ public class InOut {
         return readObjectOrEOF(file_name, allowEOF);
     }
 
-    /** Convenience method allowing EOL if chosen. */
+    /**
+     * Convenience method allowing EOL if chosen.
+     */
     public static Object readObjectOrEOF(String file_name, boolean allowEOF) {
         // General.showDebug("Reading object from file: " + file_name);
         Object o = null;
@@ -646,13 +654,17 @@ public class InOut {
         return o;
     }
 
-    /** Convenience method allowing EOL */
+    /**
+     * Convenience method allowing EOL
+     */
     public static Object readObjectOrEOF(ObjectInputStream in) {
         boolean allowEOF = true;
         return readObjectOrEOF(in, allowEOF);
     }
 
-    /** Convenience method disallowing EOL */
+    /**
+     * Convenience method disallowing EOL
+     */
     public static Object readObject(ObjectInputStream in) {
         boolean allowEOF = false;
         return readObjectOrEOF(in, allowEOF);
@@ -784,14 +796,11 @@ public class InOut {
     /**
      * Checks age for an existing file.
      *
-     * @param d
-     *            Directory in which the file will be that is to be checked.
-     * @param name
-     *            file name to be checked.
-     * @param x
-     *            Number of days the file may be old in order to qualify.
+     * @param d    Directory in which the file will be that is to be checked.
+     * @param name file name to be checked.
+     * @param x    Number of days the file may be old in order to qualify.
      * @return Returns <CODE>true</CODE> if the file exists and is newer than x days. Returns <CODE>false</CODE> if file
-     *         doesn't exist or is older than x days.
+     * doesn't exist or is older than x days.
      */
     public static boolean FileNewerThanXDays(File d, String name, int x) {
         // First check if the file disqualifies on the basis of
@@ -821,11 +830,9 @@ public class InOut {
         /**
          * Checks if the file is a gif file.
          *
+         * @param d    Directory where the file resides.
+         * @param name File name to be analyzed.
          * @return <CODE>true</CODE> if the file has a filename extension of "gif".
-         * @param d
-         *            Directory where the file resides.
-         * @param name
-         *            File name to be analyzed.
          */
         public boolean accept(File d, String name) {
             return (name.endsWith(".gif"));
@@ -839,12 +846,10 @@ public class InOut {
         /**
          * Checks if the file is a pdb file.
          *
+         * @param d    Directory where the file resides.
+         * @param name File name to be analyzed.
          * @return <CODE>true</CODE> if the file has a filename where the base could be a pdb code. The directory should
-         *         also exist.
-         * @param d
-         *            Directory where the file resides.
-         * @param name
-         *            File name to be analyzed.
+         * also exist.
          */
         public boolean accept(File d, String name) {
             return (d.isDirectory() && Wattos.Utils.Strings.is_pdb_code(name));
@@ -892,8 +897,7 @@ public class InOut {
         /**
          * Constructor with initialization value.
          *
-         * @param x
-         *            see x
+         * @param x see x
          */
         public Gif_NewerThanXDays_FilenameFilter(int x) {
             this.x = x;
@@ -902,12 +906,10 @@ public class InOut {
         /**
          * Checks if the file is a gif file.
          *
+         * @param d    Directory where the file resides.
+         * @param name File name to be analyzed.
          * @return <CODE>true</CODE> if all of the below is satisfied: <LI>file exists <LI>has extension gif <LI>is
-         *         newer than x number of days
-         * @param d
-         *            Directory where the file resides.
-         * @param name
-         *            File name to be analyzed.
+         * newer than x number of days
          */
         public boolean accept(File d, String name) {
             // First check if the directory disqualifies on the basis of
@@ -933,21 +935,19 @@ public class InOut {
         int x = 7;
 
         // Constructor with initialization value
+
         /**
          * Constructor with initialization value.
          *
-         * @param x
-         *            see x
+         * @param x see x
          */
         public PDBIdDir_NewerThanXDays_FilenameFilter(int x) {
             this.x = x;
         }
 
         /**
-         * @param d
-         *            Directory where the sub dir resides.
-         * @param name
-         *            subdir name.
+         * @param d    Directory where the sub dir resides.
+         * @param name subdir name.
          * @return <CODE>true</CODE> if pdb id is newer than x days.
          */
         public boolean accept(File d, String name) {
@@ -964,8 +964,7 @@ public class InOut {
      * Extracts the file content from starting to end lines given as parameters. A negative value for end will be taken
      * as no limit on the end.
      *
-     * @param file_name
-     *            file to be analyzed.
+     * @param file_name file to be analyzed.
      * @return the file name extentsion. E.g. mr for a file named: "/tmp/1brv.mr".
      */
     public static String getLines(String file_name, int start, int end) {
@@ -1070,8 +1069,7 @@ public class InOut {
     /**
      * Extracts the filename extensions with multiple dots if present. Returns empty string if there is no extension.
      *
-     * @param file
-     *            the file to be analyzed.
+     * @param file the file to be analyzed.
      * @return the file name extentsion. E.g. mr for a file named: "/tmp/1brv.mr".
      */
     public static String getFilenameExtension(File file) {
@@ -1091,7 +1089,7 @@ public class InOut {
     }
 
     public static String getFilenameBase(File file) {
-        if ( file == null ) {
+        if (file == null) {
             General.showCodeBug("Got null File argument in getFilenameBase");
             return null;
         }
@@ -1102,13 +1100,12 @@ public class InOut {
     /**
      * Extracts the filename base. Deals with multiple dots by recursion.
      *
-     * @param file_name
-     *            the file to be analyzed.
+     * @param file_name the file to be analyzed.
      * @return the file name base. E.g.: /tmp/1brv.mr.gz -> 1brv
-     *         http://localhost:8084/NRG/servlet/MRGridServlet?db_username=wattos -> MRGridServlet
+     * http://localhost:8084/NRG/servlet/MRGridServlet?db_username=wattos -> MRGridServlet
      */
     public static String getFilenameBase(String file_name) {
-        if ( file_name == null ) {
+        if (file_name == null) {
             General.showCodeBug("Got null string argument in getFilenameBase");
             return null;
         }
@@ -1147,9 +1144,8 @@ public class InOut {
     /**
      * Copy files.
      *
-     * @param recursively
-     *            If true recurse into directories and copy all files found. The directory structure is recreated. The
-     *            base name c: or / on unix can't be given as in. The code hasn't been extensively checked.
+     * @param recursively If true recurse into directories and copy all files found. The directory structure is recreated. The
+     *                    base name c: or / on unix can't be given as in. The code hasn't been extensively checked.
      */
     public static boolean copyFiles(File in, File out, boolean recursively, boolean force, boolean interactive) {
         boolean status;
@@ -1298,7 +1294,9 @@ public class InOut {
         return true;
     }
 
-    /** Returns the text in an array */
+    /**
+     * Returns the text in an array
+     */
     public static char[] readTextFromFile(File file) {
         char[] buf = null;
         FileReader r = null;
@@ -1421,13 +1419,13 @@ public class InOut {
                 String key = line.substring(0, idx);
                 String value = line.substring(idx + 1);
                 envVars.setProperty(key, value);
-                // System.out.println( key + " = " + value );
+                General.showDebug(key + " = " + value);
             }
         } catch (Exception e) {
             General.showThrowable(e);
             return null;
         }
-        // General.showOutput("Got getEnvVars: " +envVars.toString());
+         General.showDebug("Got getEnvVars: " +envVars.toString());
 
         return envVars;
     }
@@ -1435,8 +1433,7 @@ public class InOut {
     /**
      * Self test; tests the method: <CODE>getFilenameExtension</CODE>
      *
-     * @param args
-     *            ignored.
+     * @param args ignored.
      */
     public static void main(String[] args) {
 
@@ -1560,9 +1557,6 @@ public class InOut {
 
     /**
      * Extracts the filename itself.
-     *
-     * @param file_name
-     *            the file to be analyzed.
      * @return the file name base. E.g.: /tmp/1brv.mr.gz -> 1brv.mr.gz
      */
     public static String getFileName(String fi) {
