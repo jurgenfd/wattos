@@ -9,6 +9,8 @@ import Wattos.Utils.General;
 
 class GetRevision {
     public static void main(String[] args) {
+        General.verbosity = General.verbosityDebug;
+
         String rootName = null;
         if (args.length > 0) {
             rootName = args[0];

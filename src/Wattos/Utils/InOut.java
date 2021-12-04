@@ -1419,13 +1419,13 @@ public class InOut {
                 String key = line.substring(0, idx);
                 String value = line.substring(idx + 1);
                 envVars.setProperty(key, value);
-                General.showDebug(key + " = " + value);
+//                General.showDebug(key + " = " + value);
             }
         } catch (Exception e) {
             General.showThrowable(e);
             return null;
         }
-         General.showDebug("Got getEnvVars: " +envVars.toString());
+//         General.showDebug("Got getEnvVars: " +envVars.toString());
 
         return envVars;
     }

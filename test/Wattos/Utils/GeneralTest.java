@@ -30,7 +30,7 @@ public class GeneralTest extends TestCase {
         this.assertTrue(startMsg.length() > 10);
         General.showOutput("start msg:\n" + startMsg);
         String revision = General.getRevision();
-        General.showOutput("GeneralTest.java found: SVN revision: " + revision);
+        General.showOutput("GeneralTest.java found: revision: " + revision);
         this.assertTrue(revision.length() == 7);
     }
 }
